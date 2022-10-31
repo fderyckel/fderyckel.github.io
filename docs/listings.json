@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/kmeans-intro/index.html",
       "/posts/markov-chains/index.html",
       "/posts/kmeans-regime-change/index.html",
       "/posts/xgboost-time-series/index.html",

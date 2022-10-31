@@ -294,6 +294,41 @@
     "text": "1 + 1\n\n[1] 2"
   },
   {
+    "objectID": "posts/kmeans-intro/index.html",
+    "href": "posts/kmeans-intro/index.html",
+    "title": "Intro to Kmeans",
+    "section": "",
+    "text": "The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use my post on it\nAs mentiioned, Kmeans is an unsupervised learning algorithm, aiming to group “records” based on their distances to a fixed number (i.e., k) of “centroids.” Centroids being defined as the means of the K-clusters.\nThe objective is, for a given number of centroids (i.e. k), to minimize the total intra-cluster variation or within cluster variation (distance from the observation to the centroid).\nThe standard Kmeans algorithm (Hartigan Wong) aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids.\nFirst, we calculate the within-centroid sum of square: \\[W(C_k) = \\sum_{x_i \\in C_k} (x_i - \\mu_k)^2 \\tag{1}\\]\nThen we need to add each of the centroids sum to get the **total within cluster variation”: \\[tot.withinss = \\sum_{k=1}^k W(C_k) = \\sum_{k=1}^k \\sum_{x_i \\in C_k} (x_i - \\mu_k)^2   \\tag{2}\\]"
+  },
+  {
+    "objectID": "posts/kmeans-intro/index.html#number-of-clusters",
+    "href": "posts/kmeans-intro/index.html#number-of-clusters",
+    "title": "Intro to Kmeans",
+    "section": "Number of clusters",
+    "text": "Number of clusters\n\nThe elbow method\nThe idea is to identify where does drop in the total within-cluster sum of square start to slowdown. Of course the total within-clusters sum of square decrease as the number of centroids increase. If we have n centroids (that is \\(n = k\\) - as many centroids as observations), the total within-cluster sum of square will be 0. And if we have only one centroid, the total within-one-cluster sum of square will be the sum of square of the mean of each of the variables.\nSo when does adding a centroid does not significantly reduce the total within-cluster sum of square.\n\n\nThe silhouette method"
+  },
+  {
+    "objectID": "posts/kmeans-intro/index.html#number-of-iterations",
+    "href": "posts/kmeans-intro/index.html#number-of-iterations",
+    "title": "Intro to Kmeans",
+    "section": "Number of iterations",
+    "text": "Number of iterations"
+  },
+  {
+    "objectID": "posts/kmeans-intro/index.html#number-of-start",
+    "href": "posts/kmeans-intro/index.html#number-of-start",
+    "title": "Intro to Kmeans",
+    "section": "Number of start",
+    "text": "Number of start"
+  },
+  {
+    "objectID": "posts/kmeans-intro/index.html#con",
+    "href": "posts/kmeans-intro/index.html#con",
+    "title": "Intro to Kmeans",
+    "section": "con",
+    "text": "con\n\nYou don’t always know in advance thee number of centroids. You can use the elbow method or the silhouette method to determine the numbers of centroids you want.\n\nbecause of the random initialization stage, results might not necessarily be reproducible. If results have to be reproduced, then you need to set a seed."
+  },
+  {
     "objectID": "posts/xgboost-time-series/index.html",
     "href": "posts/xgboost-time-series/index.html",
     "title": "Translating Python Part 1 - Xgboost with Time-Series",
@@ -410,6 +445,6 @@
     "href": "index.html",
     "title": "blog",
     "section": "",
-    "text": "Random Walk\n\n\nMarkov Chain\n\n\ncode\n\n\npython\n\n\n\n\n\n\n\n\n\n\n\nOct 21, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nkmeans\n\n\ncode\n\n\nanalysis\n\n\ntidymodel\n\n\n\n\n\n\n\n\n\n\n\nOct 12, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nxgboost\n\n\ncode\n\n\nanalysis\n\n\ntidymodel\n\n\n\n\n\n\n\n\n\n\n\nOct 1, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nSep 30, 2022\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nSep 29, 2022\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "kmeans\n\n\ncode\n\n\nanalysis\n\n\nmodel\n\n\n\n\n\n\n\n\n\n\n\nOct 31, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRandom Walk\n\n\nMarkov Chain\n\n\ncode\n\n\npython\n\n\n\n\n\n\n\n\n\n\n\nOct 21, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nkmeans\n\n\ncode\n\n\nanalysis\n\n\ntidymodel\n\n\n\n\n\n\n\n\n\n\n\nOct 12, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nxgboost\n\n\ncode\n\n\nanalysis\n\n\ntidymodel\n\n\n\n\n\n\n\n\n\n\n\nOct 1, 2022\n\n\nFrancois de Ryckel\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nSep 30, 2022\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nSep 29, 2022\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   }
 ]

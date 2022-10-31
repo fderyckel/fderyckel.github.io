@@ -1,0 +1,65 @@
+---
+title: "Intro to Kmeans"
+author: "Francois de Ryckel"
+date: "2022-10-31"
+categories: [kmeans, code, analysis, model]
+editor: source
+---
+
+The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use [my post on it](https://fderyckel.github.io/blog/posts/kmeans-regime-change/)
+
+ As mentiioned, Kmeans is an unsupervised learning algorithm, aiming to group “records” based on their distances to a fixed number (i.e., k) of “centroids.” Centroids being defined as the means of the K-clusters.  
+
+The objective is, for a given number of centroids (i.e. k), to **minimize the total intra-cluster variation** or within cluster variation (distance from the observation to the centroid). 
+
+The standard Kmeans algorithm (Hartigan Wong) aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids. 
+
+First, we calculate the within-centroid sum of square: 
+$$W(C_k) = \sum_{x_i \in C_k} (x_i - \mu_k)^2$$ {#eq-sum-of-square-for-a-cluster}
+
+* $x_i$ is the ith-observation in our dataset
+* $k$ is the number of centroids and $C_k$ is the $k^{th}$ centroid. 
+* $\mu_k$ is the mean value of all the points assigned to the $C_k$ cluster.  You get the mean of the centroid is a p-dimensional vector comprising the mean of each of the variables.  
+
+Then we need to add each of the centroids sum to get the **total within cluster variation": 
+$$tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2  $$ {#eq-total-within-cluster-sum-of-square}
+
+# The Kmeans algorithms 
+
+* **Step 1** Choose the number of centroids 
+* **Step 2: Cluster assignment step** Randomly pick k observations that will be used as first centroids in the given hyperspace. All other observations are assigned to one of the initial k observations (the first k centroids) based on the closest Euclidean distance. 
+* **Step 3: Centroids update** calculate a new mean for each centroids using all the $x_i \in C_k$.  
+* **step 4: Reaching convergence** Repeat step 2 and 3.  Once the new mean is established, we calculate again, for each observations its closest centroid.  Then calculate again a new mean.   We reiterate this step this until each given centroids are not changing anymore. 
+
+
+# The parameters 
+
+## Number of clusters 
+
+### The elbow method 
+
+The idea is to identify where does drop in the total within-cluster sum of square start to slowdown.  Of course the total within-clusters sum of square decrease as the number of centroids increase.  If we have n centroids (that is $n = k$ - as many centroids as observations), the total within-cluster sum of square will be 0.  And if we have only one centroid, the total within-one-cluster sum of square will be the sum of square of the mean of each of the variables.   
+So when does adding a centroid does not significantly reduce the total within-cluster sum of square. 
+
+
+### The silhouette method 
+
+## Number of iterations
+
+## Number of start 
+
+
+# Vizualisation 
+
+A common trick is to use PCA and check the how well data are separated (in regards to their clusters) using the first 2 principal components dimensions.  
+
+
+# Pro & Con 
+
+
+## con 
+
+* You don't always know in advance thee number of centroids.   You can use the **elbow method** or the **silhouette method** to determine the numbers of centroids you want.  
+* because of the random initialization stage, results might not necessarily be reproducible.  If results have to be reproduced, then you need to set a seed. 
+
+
