@@ -1,0 +1,80 @@
+---
+title: "Statistical Moments"
+author: "Francois de Ryckel"
+date: "2022-11-02"
+categories: [statistics, code, analysis]
+editor: source
+---
+
+This post is about summarizing the various statistical moments when analyzing stock returns. 
+
+We'll show these parameters using both R and python.  
+
+
+# Using R
+
+
+# Using Python
+
+```{python}
+import numpy as np
+import pandas as pd
+
+amd = pd.read_csv('../../raw_data/AMD.csv')
+
+x = amd['Adj Close']
+
+returns_21d = np.log(x / x.shift(21)).dropna()
+
+mean_21dret = np.mean(returns_21d)
+std_21dret = np.std(returns_21d)
+
+print("The mean rolling 21 days return is: %s" % round(mean_21dret, 5))
+print("The standard deviation of the rolling 21 days return is: %s" %round(std_21dret, 5))
+```
+
+The standard deviation is quite bigger than the mean.  An histogram of the returns will confirm that. 
+
+```{python}
+import matplotlib.pyplot as plt
+
+plt.hist(returns_21d, bins = 'rice', label = 'Rolling 21-days return')
+plt.show()
+```
+
+We are seeing a large left tail with indeed the mean looking around 0. 
+An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot. 
+
+```{python}
+plt.boxplot(returns_21d, labels = ['Rolling 21-days return'])
+plt.show()
+```
+
+::: {.callout-tip} 
+
+# Skewness 
+
+Skewness is measure of asymmetry of a distribution (or actually lack of).  How symmetric around the mean is the distribution? 
+A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew. 
+
+In a zero skew distribution, the mean = the median. 
+
+:::
+
+```{python}
+from scipy.stats import skew, skewtest
+
+skew(returns_21d)
+```
+
+The skew value is quite large and negative which confirms the fat left tail we saw on the histogram 
+
+```{python}
+skewtest(returns_21d)
+```
+
+Very small p-value.  We reject the null-hypothesis.  The distribution is not symetrical. 
+
+
+
+ kurtosis is a measure that describes the shape of a distribution's tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures "tailedness," not "peakedness." 
