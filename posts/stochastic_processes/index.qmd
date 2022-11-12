@@ -1,0 +1,130 @@
+---
+title: "Stochastic processes - Discrete Time Markov Chain"
+author: "Francois de Ryckel"
+date: "2022-11-12"
+categories: [Markov Chain]
+editor: source
+---
+
+This post is an introduction to Markov Chain with a presentation of Discrete Time Markov Chains.  
+
+## Definition 
+
+A stochastic process is $\{ X(t), t \in T \}$ is a collection of random variables indexed by a parameter t that belongs to a set T.  
+
+* t is generally the time 
+* $X(t)$ is the state of the process at time t
+* The *state space* $S$ of a stochastic process is all possible state $X(t)$ for any $t \in T$
+* if T is a countable set, we call this a **discrete-time process** 
+
+A **discrete-time Markov Chain** is a discrete-time stochastic process which state space *S* is finite such that: 
+$$\mathbb{P}(X_{n+1} = j | X_0 = i_0, X_1 = i_1, X_2 = i_2, \dots, x_n = i) = \mathbb{P}(X_{n+1} = j | X_n = i) = P_{ij}$$ 
+
+that is, the conditional probability of the process being in state j at time n + 1 given all the previous states depends only on the last-known position (state i at time n).  
+
+## Some other teminology 
+
+* A state is called **absorbing** if the chain cannot leave it once it enters it. An absorbing Markov chain has at least one absorbing state. 
+* A state is termed **reflecting** if once the chain leaves it, it cannot return to it. 
+* The **period d of a state i** is the number such that, starting in i, the chain can return to i only in the number of steps that are multiples of d. A
+state with period d = 1 is called **aperiodic.** Periodicity is a class property. 
+  + For a reflecting state, the period is infinite, since the chain never comes back to this state. 
+  + Absorbing states necessarily have loops and thus are aperiodic states.
+* a state is called recurrent if with probability 1 the chain ever reenters that state. Otherwise, the state is called transient.
+
+
+## Chapman-Kolmogorov equations 
+
+We denote the probability to go from state $i$ to state $j$ in n-steps by $\bf{P}_{ij}^{(n)}$.  It is also denoted as the **n-steps transition probability matrix**.  That is for any time $m >= 0, \bf{P}_{ij}^n = \mathbb{P}(X_{m+n} = j | X_m = i)$ . 
+$\bf{P}^{(n)} = \bf{P}^n$ based on the Chapman-Kolmogorov equation. 
+
+The Chapman-Kolmogorov equation states that for all positive integers $m$ and $n$ , $\bf{P}^{(m+n)} = \bf{P}^m \cdot \bf{P}^n$ where P is a one-step probability transition matrix (a square matrix)
+
+## Example 1
+
+To model a Markov Chain, let's first set up a *one-step probability transition matrix* (called here **osptm**).  
+
+We start with an easy 3 possible state process. That is the state space $S = \{1, 2, 3\}$.  The osptm will provide the probability to go from one state to another. 
+
+```{r}
+osptm = matrix(c(0.7,0.1,0.2, 0,0.6,0.4, 0.5,0.2,0.3), nrow = 3, byrow = TRUE)
+osptm
+```
+
+We can always have a look at how the osptm looks like. 
+
+```{r}
+# note we have to transpose the osptm matrix first. 
+osptm_transposed = t(osptm)
+osptm_transposed
+
+diagram::plotmat(osptm_transposed, pos = c(1, 2), arr.length = 0.3, 
+                 box.col = "lightblue", box.prop = 0.5, box.size = 0.12, box.type="circle", 
+                 self.cex = 0.6, self.shifty=-0.01, self.shiftx = 0.15)
+```
+
+The *markovchain* package can provide us with all the state characteristics of a one-step probabilty transition matrix. 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(markovchain)
+osptm_mc <- new("markovchain", transitionMatrix = osptm)
+
+recurrentClasses(osptm_mc)
+transientClasses(osptm_mc)
+absorbingStates(osptm_mc)
+period(osptm_mc)
+round(steadyStates(osptm_mc), 4)
+
+```
+
+
+The next step is to calculate, for instance, what is the probability to go from state 1 to state 3 in 4 steps.  
+
+```{r}
+#| warning: false
+#| message: false
+
+library(expm)
+
+# the expm library brings in the " %^%" operator for power. 
+osptm %^% 4
+```
+
+Looking at the result, we can see that the probability to go from State 1 to State 3 in 4 steps is 0.2676  
+
+We can also calculate the unconditional distribution after 4 steps 
+
+```{r}
+initial_pro <- c(1/3, 1/3, 1/3)
+initial_pro %*% (osptm %^% 4)
+```
+
+
+## Example 2 
+
+Using a slightly more interesting one-step probability transition matrix having 6 different states. 
+
+```{r}
+#specifying transition probability matrix
+osptm<- matrix(c(0.3,0.7,0,0,0,0,1,0,0,0,0,0,0.5,0,0,0,0,0.5, 0,0,0.6,0,0,0.4,0,0,0,0,0.1,0.9,0,0,0,0,0.7,0.3), nrow=6, byrow=TRUE)
+osptm
+osptm_transposed = t(osptm)
+diagram::plotmat(osptm_transposed, arr.length = 0.3, arr.width = 0.1, 
+                 box.col = "lightblue", box.prop = 0.5, box.size = 0.09, box.type="circle", 
+                 cex.txt = 0.8, self.cex = 0.6, self.shifty=-0.01, self.shiftx = 0.13)
+
+osptm_mc <- new("markovchain", transitionMatrix = osptm)
+
+recurrentClasses(osptm_mc)
+transientClasses(osptm_mc)
+absorbingStates(osptm_mc)
+period(osptm_mc)
+round(steadyStates(osptm_mc), 4)
+```
+
+
+
+

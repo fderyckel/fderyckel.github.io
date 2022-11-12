@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/stochastic_processes/index.html",
       "/posts/statistical-moments/index.html",
       "/posts/kmeans-intro/index.html",
       "/posts/markov-chains/index.html",
