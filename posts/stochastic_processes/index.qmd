@@ -30,7 +30,8 @@ that is, the conditional probability of the process being in state j at time n +
 state with period d = 1 is called **aperiodic.** Periodicity is a class property. 
   + For a reflecting state, the period is infinite, since the chain never comes back to this state. 
   + Absorbing states necessarily have loops and thus are aperiodic states.
-* a state is called recurrent if with probability 1 the chain ever reenters that state. Otherwise, the state is called transient.
+* a state is called recurrent if with probability 1 the chain ever reenters that state. Otherwise, the state is called transient. 
+* A Markov Chain that has a unique stationary distribution (or steady-state distribution) is called an **ergodic** chain. 
 
 
 ## Chapman-Kolmogorov equations 
@@ -125,6 +126,6 @@ period(osptm_mc)
 round(steadyStates(osptm_mc), 4)
 ```
 
-
+We can see that there are 2 possible steady states.  Hence the Markov Chain is non-ergodic. 
 
 

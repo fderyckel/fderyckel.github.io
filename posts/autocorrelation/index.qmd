@@ -1,0 +1,19 @@
+---
+title: "Auto-Correlation - Part 1"
+author: "Francois de Ryckel"
+date: "2022-09-29"
+categories: [news]
+---
+
+Auto-correlation as the name indicates is the correlation of the time-serie with itself ... well, with a lag version of itself. 
+
+Let's consider $\{X_t\}$ a time series.  
+
+*   Then the mean function of $\{X_t\}$ (the first moment) is defined as $\mu_t = \textbf{E}(X_t)$.  In other words, $\mu_t$ is the expected value of the time series at point t.  
+*   The Variance of the time series is defined as $\sigma_t ^2 = Var(X_t) = \textbf{E}[(X_t - \mu_t)^2]$. 
+*   In general, $\mu_t$ and $\sigma_t ^2$ are different at different point in time. 
+
+Now, we define the **autocovariance** function of the time series as $$\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]$$. 
+In the same vein, we define the autocorrelation function of the time series as 
+$$\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}$$
+
