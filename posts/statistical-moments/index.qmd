@@ -6,7 +6,7 @@ categories: [statistics, code, analysis]
 editor: source
 ---
 
-This post is about summarizing the various statistical moments when analyzing stock returns. 
+This post is about summarizing the various statistical moments when doing quantitative finance. 
 
 We'll show these parameters using both R and python.  
 
