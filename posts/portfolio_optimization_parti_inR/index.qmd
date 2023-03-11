@@ -169,7 +169,9 @@ Mean returns of each assets are $\mu = \pmatrix{\mu_1 \\ \mu_2 \\ \vdots \\ \mu_
 
 Then, the **expected portfolio return** is $\mu_{\pi} = w^{T} \cdot \mu$ where $w^{T}$ is the transpose of $w$ (aka transforming $w$ from a column vector to a row vector in order to have right dimensions to compute the dot product). 
 
-And the **expected portfolio variance** is computed by $\sigma_{\pi}^2 = w^T \cdot \Sigma \cdot w$ where $\sigma$ is the covariance matrix. 
+And the **expected portfolio variance** is computed by $$\sigma_{\pi}^2 = w^T \cdot \Sigma \cdot w$$ where $\Sigma$ is the covariance matrix. Also, don't forget to square root the variance when using sd: $\sigma_{\pi} = \sqrt{w^T \cdot \Sigma \cdot w}$ 
+
+To put this into code, we first create the matrix of returns,then create the covariance matrix.  Using both matrices, we create a function that return the portfolio mean and variance using the randomly chosen weights. 
 
 ```{r}
 #| warning: false
@@ -205,14 +207,14 @@ create_one_portfolio_simulation <- function(n) {
   sharpe_ratio = return_pi / volat_pi
   
   # wrap everything into a df for later checks / analysis
-  df <- tibble(portf_ret = return_pi * 100, portf_volat = volat_pi * 100, 
-               weights = t(weights), sharpe_ratio = sharpe_ratio)
+  df <- tibble(portf_ret = round(return_pi * 100, 4), portf_volat = round(volat_pi * 100, 4),  
+               weights = round(t(weights) * 100, 4), sharpe_ratio = sharpe_ratio)
 
   return(df)
 }
 
 #this is really the only inputs to get 
-num_portfolio = 5000
+num_portfolio = 7000
 
 mc_simu = tibble(id = 1:num_portfolio) |> 
   mutate(simul = map(id, create_one_portfolio_simulation)) |> 

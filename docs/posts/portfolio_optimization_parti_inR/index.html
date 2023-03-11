@@ -385,7 +385,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Weights of each assets are <span class="math inline">\(w = \pmatrix{w_1 \\ w_2 \\ \vdots \\ w_n}\)</span>.<br>
 Mean returns of each assets are <span class="math inline">\(\mu = \pmatrix{\mu_1 \\ \mu_2 \\ \vdots \\ \mu_n}\)</span></p>
 <p>Then, the <strong>expected portfolio return</strong> is <span class="math inline">\(\mu_{\pi} = w^{T} \cdot \mu\)</span> where <span class="math inline">\(w^{T}\)</span> is the transpose of <span class="math inline">\(w\)</span> (aka transforming <span class="math inline">\(w\)</span> from a column vector to a row vector in order to have right dimensions to compute the dot product).</p>
-<p>And the <strong>expected portfolio variance</strong> is computed by <span class="math inline">\(\sigma_{\pi}^2 = w^T \cdot \Sigma \cdot w\)</span> where <span class="math inline">\(\sigma\)</span> is the covariance matrix.</p>
+<p>And the <strong>expected portfolio variance</strong> is computed by <span class="math display">\[\sigma_{\pi}^2 = w^T \cdot \Sigma \cdot w\]</span> where <span class="math inline">\(\Sigma\)</span> is the covariance matrix. Also, don’t forget to square root the variance when using sd: <span class="math inline">\(\sigma_{\pi} = \sqrt{w^T \cdot \Sigma \cdot w}\)</span></p>
+<p>To put this into code, we first create the matrix of returns,then create the covariance matrix. Using both matrices, we create a function that return the portfolio mean and variance using the randomly chosen weights.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this df to provide vectors of expected returns</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_stat <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
@@ -416,14 +417,14 @@ Mean returns of each assets are <span class="math inline">\(\mu = \pmatrix{\mu_1
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  sharpe_ratio <span class="ot">=</span> return_pi <span class="sc">/</span> volat_pi</span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wrap everything into a df for later checks / analysis</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">portf_ret =</span> return_pi <span class="sc">*</span> <span class="dv">100</span>, <span class="at">portf_volat =</span> volat_pi <span class="sc">*</span> <span class="dv">100</span>, </span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>               <span class="at">weights =</span> <span class="fu">t</span>(weights), <span class="at">sharpe_ratio =</span> sharpe_ratio)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">portf_ret =</span> <span class="fu">round</span>(return_pi <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">4</span>), <span class="at">portf_volat =</span> <span class="fu">round</span>(volat_pi <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">4</span>),  </span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>               <span class="at">weights =</span> <span class="fu">round</span>(<span class="fu">t</span>(weights) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">4</span>), <span class="at">sharpe_ratio =</span> sharpe_ratio)</span>
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
 <span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">#this is really the only inputs to get </span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>num_portfolio <span class="ot">=</span> <span class="dv">5000</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>num_portfolio <span class="ot">=</span> <span class="dv">7000</span></span>
 <span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>mc_simu <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>num_portfolio) <span class="sc">|&gt;</span> </span>
 <span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">simul =</span> <span class="fu">map</span>(id, create_one_portfolio_simulation)) <span class="sc">|&gt;</span> </span>
@@ -433,14 +434,14 @@ Mean returns of each assets are <span class="math inline">\(\mu = \pmatrix{\mu_1
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mc_simu)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
-     id portf_ret portf_volat weights[,1]  [,2]   [,3]  [,4]   [,5] sharpe_ratio
-  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;
-1  4668      36.4        29.2     0.00548 0.325 0.0216 0.479 0.168          1.25
-2   900      35.0        28.2     0.0145  0.289 0.0150 0.474 0.208          1.24
-3  1872      32.5        26.4     0.00524 0.214 0.0173 0.499 0.265          1.23
-4  4041      40.8        33.2     0.0372  0.447 0.0104 0.460 0.0456         1.23
-5  2539      33.8        27.6     0.0403  0.263 0.0188 0.465 0.213          1.22
-6  4675      35.8        29.3     0.00473 0.331 0.0151 0.422 0.228          1.22</code></pre>
+     id portf_ret portf_volat weights[,1]  [,2]  [,3]  [,4]  [,5] sharpe_ratio
+  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
+1  6821      34.8        28.3        8.10  27.4  2.85  52.4  9.30         1.23
+2  6864      34.9        28.4        1.32  29.9  5.94  48.1 14.7          1.23
+3  5876      36.5        29.8        6.34  32.9  5.35  51.5  3.92         1.23
+4  3051      34.0        27.8        2.57  26.7  8.54  52.7  9.52         1.22
+5  3947      36.9        30.3        1.08  36.3  1.55  41.4 19.7          1.22
+6  5561      34.7        28.4        2.25  29.8  6.51  47.6 13.8          1.22</code></pre>
 </div>
 </div>
 <section id="vizualisation-of-mean-variances-points" class="level3">
