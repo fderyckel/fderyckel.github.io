@@ -4,6 +4,7 @@ author: "Francois de Ryckel"
 date: "2022-11-02"
 categories: [statistics, code, analysis]
 editor: source
+date-modified: "2023-02-27"
 ---
 
 This post is about summarizing the various statistical moments when doing quantitative finance. 

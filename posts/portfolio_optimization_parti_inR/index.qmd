@@ -1,0 +1,234 @@
+---
+title: "Portfolio Optimization Part I (in R)"
+author: "Francois de Ryckel"
+date: "2023-02-27"
+categories: [portfolio, R-code, quant-finance, model]
+editor: source
+---
+
+First post on portfolio optimization from a quantitative finance lense.  
+
+We are optimizing a portfolio with *N assets*, where $N \geq 2$ (N is a positive integer)
+
+::: {#def-weights}
+
+The weight of each assets *i* in the portfolio is defined as:
+
+$$ W_i = \frac{\mbox{Market value of asset i}}{\mbox{Total market value of portfolio}} $$ {#eq-def-weight}
+:::
+
+Of course, the sum of all the weights should be equal to 1.  
+$$\sum_{i = 1}^{N} W_i = 1 $$ {#eq-sum-of-weights}
+
+Few assumptions made on the assets. 
+
+* each asset has an expected return denoted by $\mu_i \mbox{ with } i = 1, 2, \ldots, N$. In that sense $\mu_i = E[R_i]$ 
+* each asset has standard deviation on their returns denotated by $\sigma_i \mbox{ with } i = 1, 2, \ldots, N$
+* the correlation between asset *i* and asset *j* is denoted by $\rho_{ij} \mbox{ with } i,j = 1, 2, \ldots, N$. In that sense, $\rho_{ij} = corr(R_i, R_j)$
+
+The **Mean-Variance Optimization** problem can be formulated in 2 ways: 
+
+* Highest possible returns for a given amount of risk 
+* Lowest possible amount of risk for a given expected return
+
+Return is the expected return of the asset and risk is the variance of the returns of the asset. 
+
+The **Risk-Free Asset (RFA)** is the money deposited in a bank account-ish (a secure term-deposit) at a fixed rate **R**. The expected return is thus R and volatitliy is 0.  Also the correlation between the RFA and any other assets is 0. 
+
+Each asset can be represented on a 2D-plane with the risk on the x-axis and returns on the y-axis. 
+
+```{r}
+#| label: fig-asset-plane
+#| warning: false
+#| message: false
+#| echo: false
+
+library(ggplot2)
+df <- tibble::tibble(x = c(0.12, 0.12, 0, 0), y = c(0.08, 0, 0.08, 0.036))
+ggplot(df, aes(x, y)) + 
+  geom_point(color = 'blue') + 
+  geom_segment(x = 0, y = df$y[1], xend = df$x[1], yend = df$y[1], 
+               linetype = 'dashed', color = 'blue') + 
+  geom_segment(x = df$x[1], y = 0, xend = df$x[1], yend = df$y[1], 
+               linetype = 'dashed', color = 'blue') + 
+  annotate("text", x = df$x[1] + 0.005, y = df$y[1] + 0.005, parse = TRUE, 
+           label = "'Asset'[i]", color = 'blue') + 
+  annotate("text", x = 0 + 0.005, y = df$y[1] + 0.005, parse = TRUE, 
+           label = "mu[i]", color = 'blue', size = 5) + 
+  annotate("text", x = df$x[1] + 0.005, y = 0 + 0.005, parse = TRUE, 
+           label = "sigma[i]", color = 'blue', size = 5) +   
+  annotate("text", x = 0 + 0.007, y = df$y[4] + 0.005, parse = TRUE, 
+           label = "mu[RFA]", color = 'blue', size = 5) +   
+  #geom_label(nudge_x = 0.005, nudge_y = 0.005, color = 'blue') + 
+  xlab('Risk') + 
+  ylab('Return')
+```
+
+
+There are some other assumptions made when trying to construct a mean-variance optimum portfolio: 
+
+* results are based on total returns (include dividends, interest paid, etc.)
+* fractional shares are possible
+* can deposit and withdraw money freely at the risk-free rate
+* no restriction on short selling 
+* doesn't account for tax, transaction fees, collateral and margins.  
+ 
+
+# In practice
+
+To bring these idea into practices, there are a few ways to go about it. 
+The first approach is to have *Monte-Carlo simulations* using historical data for the parameters of the mean and variance. 
+Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility). 
+
+## Create MC simulations of weights to assess mean-variance of a portfolio
+
+Let's get 5 different financial assets: AA, LLY, AMD, SBUX, FDX. Although they are from different industries, it is not a very diverse bunch as they are all from US big companies. 
+
+We already have the assets downloaded and we'll use their closing prices. 
+
+```{r}
+#| warning: false
+#| message: false
+#| label: setting_up_assets
+
+library(readr)      # read_csv()
+library(dplyr)      # select(), arrange(), filter(), mutate(), summarize()
+library(purrr)      # map()
+library(tidyr)      # drop_na(), pivot_wider(), unnest()
+library(glue)       # glue()
+
+# read adjusted closing prices and compute annualized daily returns and sd
+read_prices <- function(ticker) { 
+  df <- read_csv(glue('../../raw_data/', {ticker}, '.csv')) |> 
+    arrange(date) |> 
+    select(date, adj_close = adjClose) |> 
+    filter(date > '2018-01-01') |> 
+    mutate(ret1d = (adj_close / lag(adj_close, 1)) - 1) |> 
+    summarize(mean_ret = mean(ret1d, na.rm = T) * 252 * 100, 
+              std_ret = sd(ret1d, na.rm = T) * sqrt(252) * 100)
+}
+
+assets <- c('AA', 'LLY', 'AMD', 'SBUX', 'FDX')
+df <- tibble(ticker = assets, 
+             prices = map(ticker, read_prices)) |> 
+  unnest()
+
+```
+
+```{r}
+#| echo: false
+#| label: tbl-mean-variance
+#| tbl-cap: Annualized Mean and Standard Deviation of daily returns
+#| tbl-colwidths: [100,200, 200]
+
+library(knitr)
+kable(df, col.names = c('Ticker', 'Mean Ret', 'Std of Ret'), digits = 2, 'html')
+```
+
+
+First, we create the df of returns: 
+
+* it's a long df with only ticker, date, daily returns
+* one row per daily observation. 
+* we drop first row with no returns 
+* the returns df is a wide df with date and tickers as columns, then daily returns as row
+
+```{r}
+#| warning: false
+#| message: false
+#| label: create-return-df
+
+# functions to get daily returns of each assets
+create_returns_df <- function(ticker) { 
+  df <- read_csv(glue('../../raw_data/', {ticker}, '.csv')) |> 
+    arrange(date) |> 
+    select(date, adj_close = adjClose) |> 
+    filter(date > '2018-01-01') |> 
+    mutate(ret1d = (adj_close / lag(adj_close, 1)) - 1) |> 
+    select(date, ret1d)
+}
+
+# df of each assets and all their daily returns
+df <- tibble(ticker = assets, 
+             prices = map(ticker, create_returns_df)) |> 
+  unnest(cols = c(prices)) |> 
+  drop_na()
+
+
+returns <- df |> arrange(ticker) |> 
+  pivot_wider(names_from = ticker, values_from = ret1d)  
+
+head(returns)
+
+```
+
+To optimize the mean-variance of the portfolio, we consider the following 
+
+Weights of each assets are $w = \pmatrix{w_1 \\ w_2 \\ \vdots \\ w_n}$.  
+Mean returns of each assets are $\mu = \pmatrix{\mu_1 \\ \mu_2 \\ \vdots \\ \mu_n}$ 
+
+Then, the **expected portfolio return** is $\mu_{\pi} = w^{T} \cdot \mu$ where $w^{T}$ is the transpose of $w$ (aka transforming $w$ from a column vector to a row vector in order to have right dimensions to compute the dot product). 
+
+And the **expected portfolio variance** is computed by $\sigma_{\pi}^2 = w^T \cdot \Sigma \cdot w$ where $\sigma$ is the covariance matrix. 
+
+```{r}
+#| warning: false
+#| message: false
+#| label: MC-simulation 
+
+# this df to provide vectors of expected returns
+df_stat <- df |> 
+  group_by(ticker) |> 
+  summarize(mean_ret = mean(ret1d, na.rm = T) * 252) |> 
+  ungroup() |> arrange(ticker) 
+
+mu = as.matrix(df_stat$mean_ret, nrow = length(assets))
+
+# this df to provide the covariance matrix
+# note how we have also multiplied it by 252
+sigma <- df |> arrange(ticker) |> 
+  pivot_wider(names_from = ticker, values_from = ret1d) |> 
+  #drop_na() |> 
+  select(-date) |> cov() * 252
+
+sigma <- as.matrix(sigma, nrow = length(assets))
+
+# this function to create one simulation using random weights
+create_one_portfolio_simulation <- function(n) { 
+  # pick random weights
+  weights_rand = runif(length(assets))
+  weights = matrix(weights_rand / sum(weights_rand), nrow = length(assets))
+  
+  #these are textbook formula for return and volat of a portfolio
+  return_pi = as.numeric(t(weights) %*% mu)
+  volat_pi = sqrt(as.numeric((t(weights) %*% sigma) %*% weights))
+  sharpe_ratio = return_pi / volat_pi
+  
+  # wrap everything into a df for later checks / analysis
+  df <- tibble(portf_ret = return_pi * 100, portf_volat = volat_pi * 100, 
+               weights = t(weights), sharpe_ratio = sharpe_ratio)
+
+  return(df)
+}
+
+#this is really the only inputs to get 
+num_portfolio = 5000
+
+mc_simu = tibble(id = 1:num_portfolio) |> 
+  mutate(simul = map(id, create_one_portfolio_simulation)) |> 
+  unnest(cols=c(simul)) |> 
+  arrange(desc(sharpe_ratio))
+
+head(mc_simu)
+```
+
+### Vizualisation of mean-variances points
+
+```{r}
+library(ggplot2)
+
+ggplot(mc_simu, aes(x = portf_volat, y = portf_ret)) + 
+  geom_point(aes(colour = sharpe_ratio)) + 
+  scale_color_distiller(palette="Set1") 
+```
+

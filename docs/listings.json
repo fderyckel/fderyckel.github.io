@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/portfolio_optimization_parti_inR/index.html",
       "/posts/stochastic_processes/index.html",
       "/posts/statistical-moments/index.html",
       "/posts/kmeans-intro/index.html",
