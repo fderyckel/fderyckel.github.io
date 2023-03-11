@@ -207,7 +207,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#in-practice-create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" id="toc-in-practice-create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" class="nav-link active" data-scroll-target="#in-practice-create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio">In practice: Create MC simulations of weights to assess mean-variance of a portfolio</a></li>
+  <li><a href="#in-practice" id="toc-in-practice" class="nav-link active" data-scroll-target="#in-practice">In practice</a>
+  <ul class="collapse">
+  <li><a href="#create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" id="toc-create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" class="nav-link" data-scroll-target="#create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio">Create MC simulations of weights to assess mean-variance of a portfolio</a>
+  <ul class="collapse">
+  <li><a href="#vizualisation-of-mean-variances-points" id="toc-vizualisation-of-mean-variances-points" class="nav-link" data-scroll-target="#vizualisation-of-mean-variances-points">Vizualisation of mean-variances points</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -260,8 +266,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>no restriction on short selling</li>
 <li>doesn’t account for tax, transaction fees, collateral and margins.</li>
 </ul>
-<section id="in-practice-create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" class="level2">
-<h2 class="anchored" data-anchor-id="in-practice-create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio">In practice: Create MC simulations of weights to assess mean-variance of a portfolio</h2>
+<section id="in-practice" class="level1">
+<h1>In practice</h1>
+<p>To bring these idea into practices, there are a few ways to go about it. The first approach is to have <em>Monte-Carlo simulations</em> using historical data for the parameters of the mean and variance. Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility).</p>
+<section id="create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" class="level2">
+<h2 class="anchored" data-anchor-id="create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio">Create MC simulations of weights to assess mean-variance of a portfolio</h2>
 <p>Let’s get 5 different financial assets: AA, LLY, AMD, SBUX, FDX. Although they are from different industries, it is not a very diverse bunch as they are all from US big companies.</p>
 <p>We already have the assets downloaded and we’ll use their closing prices.</p>
 <div class="cell">
@@ -424,19 +433,38 @@ Mean returns of each assets are <span class="math inline">\(\mu = \pmatrix{\mu_1
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mc_simu)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
-     id portf_ret portf_volat weights[,1]  [,2]     [,3]  [,4]   [,5] sharpe_r…¹
-  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
-1    28      37.7        29.8     0.00932 0.341 0.0160   0.529 0.105        1.26
-2  2785      37.0        29.3     0.0276  0.323 0.000793 0.518 0.131        1.26
-3   825      37.5        29.9     0.0524  0.331 0.0244   0.549 0.0428       1.25
-4  3989      33.9        27.4     0.0550  0.246 0.00738  0.512 0.179        1.24
-5  1896      32.8        26.6     0.0114  0.220 0.00710  0.497 0.265        1.23
-6  3383      38.1        30.9     0.0682  0.370 0.00758  0.474 0.0803       1.23
-# … with abbreviated variable name ¹​sharpe_ratio</code></pre>
+     id portf_ret portf_volat weights[,1]  [,2]   [,3]  [,4]   [,5] sharpe_ratio
+  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;
+1  4668      36.4        29.2     0.00548 0.325 0.0216 0.479 0.168          1.25
+2   900      35.0        28.2     0.0145  0.289 0.0150 0.474 0.208          1.24
+3  1872      32.5        26.4     0.00524 0.214 0.0173 0.499 0.265          1.23
+4  4041      40.8        33.2     0.0372  0.447 0.0104 0.460 0.0456         1.23
+5  2539      33.8        27.6     0.0403  0.263 0.0188 0.465 0.213          1.22
+6  4675      35.8        29.3     0.00473 0.331 0.0151 0.422 0.228          1.22</code></pre>
+</div>
+</div>
+<section id="vizualisation-of-mean-variances-points" class="level3">
+<h3 class="anchored" data-anchor-id="vizualisation-of-mean-variances-points">Vizualisation of mean-variances points</h3>
+<p>We have highlithed the portfolio with best mean-variance returns with a red square around its dot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mc_simu, <span class="fu">aes</span>(<span class="at">x =</span> portf_volat, <span class="at">y =</span> portf_ret)) <span class="sc">+</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> sharpe_ratio)) <span class="sc">+</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_distiller</span>(<span class="at">palette=</span><span class="st">"Set1"</span>) <span class="sc">+</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> mc_simu[<span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x =</span> portf_volat, <span class="at">y =</span> portf_ret), </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">size =</span> <span class="dv">6</span>, <span class="at">shape=</span><span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Portfolio Volatility'</span>) <span class="sc">+</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Portfolio Returns'</span>) <span class="sc">+</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'MC simulation for 5 stocks'</span>, <span class="at">color =</span> <span class="st">'Sharpe </span><span class="sc">\n</span><span class="st"> Ratio'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

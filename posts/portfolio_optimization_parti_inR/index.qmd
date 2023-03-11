@@ -224,11 +224,18 @@ head(mc_simu)
 
 ### Vizualisation of mean-variances points
 
+We have highlithed the portfolio with best mean-variance returns with a red square around its dot. 
+
 ```{r}
 library(ggplot2)
 
 ggplot(mc_simu, aes(x = portf_volat, y = portf_ret)) + 
   geom_point(aes(colour = sharpe_ratio)) + 
-  scale_color_distiller(palette="Set1") 
+  scale_color_distiller(palette="Set1") + 
+  geom_point(data = mc_simu[1,], aes(x = portf_volat, y = portf_ret), 
+             color = 'red', size = 6, shape=5) + 
+  xlab('Portfolio Volatility') + 
+  ylab('Portfolio Returns') + 
+  labs(title = 'MC simulation for 5 stocks', color = 'Sharpe \n Ratio') 
 ```
 
