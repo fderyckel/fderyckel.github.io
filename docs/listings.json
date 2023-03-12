@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",
       "/posts/stochastic_processes/index.html",
       "/posts/statistical-moments/index.html",

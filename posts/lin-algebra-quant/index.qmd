@@ -1,0 +1,42 @@
+---
+title: "Linear Algebra for Quantitative Finance"
+author: "Francois de Ryckel"
+date: "2023-03-11"
+categories: [R-code, quant-finance, Linear-Algebra]
+editor: source
+---
+
+On this post, I am just sharing some linear algebra tools and tricks useful in quantitative finance. This is mainly a post for myself to have a place where I can remember them for when I need them.
+
+# Going from Correlation to Covariance matrix.
+
+How to go from the correlation matrix and standard deviation vector to the covariance matrix? 
+
+The standard deviation vector is defined as $\sigma = \pmatrix{\sigma_1 \\ \sigma_2 \\ \vdots \\ \sigma_n}$ 
+
+The correlation matrix is defined as 
+$$ R = \begin{pmatrix} 1 & \rho_{12} & \cdots & \rho_{1n} \\ 
+                       \rho_{21} & 1 & \cdots & \rho_{2n} \\
+                        \vdots & \vdots & \ddots \\
+                        \rho_{n1} & \rho_{n2} & \cdots & 1
+                                    \end{pmatrix} $$
+
+where $\rho_{ij}$ is the correlation between returns of asset $i$ and asset $j$
+
+we create a diagonal matrix from the standard deviation vector. 
+
+$$ S = D(\sigma) = \begin{pmatrix} \sigma_1 & 0 & \cdots & 0 \\ 
+                                    0 & \sigma_2 & \cdots & 0 \\
+                                    \vdots & \vdots & \ddots \\
+                                    0 & 0 & \cdots & \sigma_n
+                                    \end{pmatrix} $$ (aka all other entries being 0)
+
+In R, we use the function **diag(x)** with x being a vector!  Note that S is symmetric, and so $S = S^T$
+
+To get the covariance matrix $\Sigma$, we'll pre & post-multiply the correlation matrix by the diagonal of standard deviation.  Hence: 
+$$ S \cdot R \cdot S = \Sigma = \begin{pmatrix} 
+\sigma_1^2 & \rho_{12} \sigma_1 \sigma2 & \cdots & \rho_{1n} \sigma_1 \sigma_n  \\ 
+\rho_{21} \sigma_2 \sigma1 & \sigma2^2 & \cdots & \rho_{2n} \sigma_2 \sigma_n \\
+\vdots & \vdots & \ddots \\
+\rho_{n1} \sigma_n \sigma_1 & \rho_{n2} \sigma_n \sigma_2 & \cdots & \sigma_n^2
+                                    \end{pmatrix} $$
