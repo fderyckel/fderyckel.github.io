@@ -268,7 +268,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <section id="in-practice" class="level1">
 <h1>In practice</h1>
-<p>To bring these idea into practices, there are a few ways to go about it. The first approach is to have <em>Monte-Carlo simulations</em> using historical data for the parameters of the mean and variance. Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility).</p>
+<p>To bring these idea into practices, there are a few ways to go about it. The first approach is to have <em>Monte-Carlo simulations</em> using historical data for the parameters of the mean and variance. Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility). In this way, we’ll find the efficient frontier: aka the best returns for a given risk or a lowest risk for a given returns.</p>
 <section id="create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" class="level2">
 <h2 class="anchored" data-anchor-id="create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio">Create MC simulations of weights to assess mean-variance of a portfolio</h2>
 <p>Let’s get 5 different financial assets: AA, LLY, AMD, SBUX, FDX. Although they are from different industries, it is not a very diverse bunch as they are all from US big companies.</p>
@@ -279,22 +279,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)      <span class="co"># map()</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)      <span class="co"># drop_na(), pivot_wider(), unnest()</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)       <span class="co"># glue()</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># read adjusted closing prices and compute annualized daily returns and sd</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>read_prices <span class="ot">&lt;-</span> <span class="cf">function</span>(ticker) { </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">glue</span>(<span class="st">'../../raw_data/'</span>, {ticker}, <span class="st">'.csv'</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span> </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(date, <span class="at">adj_close =</span> adjClose) <span class="sc">|&gt;</span> </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2018-01-01'</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ret1d =</span> (adj_close <span class="sc">/</span> <span class="fu">lag</span>(adj_close, <span class="dv">1</span>)) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">mean_ret =</span> <span class="fu">mean</span>(ret1d, <span class="at">na.rm =</span> T) <span class="sc">*</span> <span class="dv">252</span> <span class="sc">*</span> <span class="dv">100</span>, </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">std_ret =</span> <span class="fu">sd</span>(ret1d, <span class="at">na.rm =</span> T) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">252</span>) <span class="sc">*</span> <span class="dv">100</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>assets <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'AA'</span>, <span class="st">'LLY'</span>, <span class="st">'AMD'</span>, <span class="st">'SBUX'</span>, <span class="st">'FDX'</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">ticker =</span> assets, </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">prices =</span> <span class="fu">map</span>(ticker, read_prices)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># read adjusted closing prices and compute annualized daily returns and sd</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>read_prices <span class="ot">&lt;-</span> <span class="cf">function</span>(ticker) { </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">glue</span>(<span class="st">'../../raw_data/'</span>, {ticker}, <span class="st">'.csv'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(date, <span class="at">adj_close =</span> adjClose) <span class="sc">|&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2018-01-01'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ret1d =</span> (adj_close <span class="sc">/</span> <span class="fu">lag</span>(adj_close, <span class="dv">1</span>)) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">mean_ret =</span> <span class="fu">mean</span>(ret1d, <span class="at">na.rm =</span> T) <span class="sc">*</span> <span class="dv">252</span> <span class="sc">*</span> <span class="dv">100</span>, </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">std_ret =</span> <span class="fu">sd</span>(ret1d, <span class="at">na.rm =</span> T) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">252</span>) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>assets <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'AA'</span>, <span class="st">'LLY'</span>, <span class="st">'AMD'</span>, <span class="st">'SBUX'</span>, <span class="st">'FDX'</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">ticker =</span> assets, </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">prices =</span> <span class="fu">map</span>(ticker, read_prices)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -321,8 +322,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> AMD </td>
-   <td style="text-align:right;"> 55.31 </td>
-   <td style="text-align:right;"> 56.70 </td>
+   <td style="text-align:right;"> 54.96 </td>
+   <td style="text-align:right;"> 56.68 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> SBUX </td>
@@ -400,7 +401,7 @@ Mean returns of each assets are <span class="math inline">\(\mu = \pmatrix{\mu_1
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># note how we have also multiplied it by 252</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">arrange</span>(ticker) <span class="sc">|&gt;</span> </span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> ticker, <span class="at">values_from =</span> ret1d) <span class="sc">|&gt;</span> </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#drop_na() |&gt; </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>date) <span class="sc">|&gt;</span> <span class="fu">cov</span>() <span class="sc">*</span> <span class="dv">252</span></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(sigma, <span class="at">nrow =</span> <span class="fu">length</span>(assets))</span>
@@ -434,14 +435,14 @@ Mean returns of each assets are <span class="math inline">\(\mu = \pmatrix{\mu_1
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mc_simu)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
-     id portf_ret portf_volat weights[,1]  [,2]  [,3]  [,4]  [,5] sharpe_ratio
-  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
-1  6821      34.8        28.3        8.10  27.4  2.85  52.4  9.30         1.23
-2  6864      34.9        28.4        1.32  29.9  5.94  48.1 14.7          1.23
-3  5876      36.5        29.8        6.34  32.9  5.35  51.5  3.92         1.23
-4  3051      34.0        27.8        2.57  26.7  8.54  52.7  9.52         1.22
-5  3947      36.9        30.3        1.08  36.3  1.55  41.4 19.7          1.22
-6  5561      34.7        28.4        2.25  29.8  6.51  47.6 13.8          1.22</code></pre>
+     id portf_ret portf_volat weights[,1]  [,2]  [,3]  [,4]   [,5] sharpe_ratio
+  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;
+1  1035      39.4        31.1       2.40   37.8 0.455  54.5  4.85          1.26
+2   475      36.0        28.7       3.22   29.9 0.286  52.1 14.6           1.26
+3  3890      37.9        30.3       0.160  36.1 1.96   49.8 12.0           1.25
+4  1875      36.3        29.1       0.308  31.7 3.86   52.3 11.8           1.25
+5  4568      36.0        28.9       7.33   28.9 1.40   55.7  6.65          1.25
+6  3281      38.0        30.6       4.00   35.5 4.67   54.9  0.855         1.24</code></pre>
 </div>
 </div>
 <section id="vizualisation-of-mean-variances-points" class="level3">

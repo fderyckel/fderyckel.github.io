@@ -5,6 +5,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
+api_keys
 
 /env/
 /.quarto/
+

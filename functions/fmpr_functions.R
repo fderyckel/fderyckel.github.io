@@ -3,12 +3,14 @@ library(glue)
 library(lubridate)
 library(readr)
 
+source("api_keys")
+
 get_fmpr_prices <- function(ticker, from = "2001-01-02", to = today()) { 
   base_url <- "https://financialmodelingprep.com/api/v3/"
   endpoint <- 'historical-price-full/'
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', `from` = from, `to` = to, 
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint, ticker), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
@@ -22,7 +24,7 @@ get_fmpr_profile <- function(ticker) {
   endpoint <- "profile/"
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', `ticker` = ticker, 
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint, ticker), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
@@ -50,7 +52,7 @@ get_fmpr_etf_holder <- function(etf) {
   endpoint <- 'etf-holder/'
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', 
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint, etf), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
@@ -65,7 +67,7 @@ get_fmpr_senate_trading <- function(ticker) {
   endpoint <- 'senate-trading?symbol='
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', 
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint, ticker), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
@@ -80,7 +82,7 @@ get_fmpr_senate_trading_rss <- function() {
   endpoint <- 'senate-trading-rss-feed?page=0'
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', 
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
@@ -95,7 +97,7 @@ get_fmpr_stock_news <- function(ticker){
   endpoint <- 'stock_news?tickers='
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', limit = 50,
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint, ticker), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
@@ -109,7 +111,7 @@ get_fmpr_upgrade_downgrade <- function(ticker){
   endpoint <- 'upgrades-downgrades?symbol='
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', 
-                `apikey` = "9b274cc7e7560cdb56d931b697c1ed45")
+                `apikey` = fmpr_api_keys)
   res <- httr::GET(url = glue(base_url, endpoint, ticker), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")
