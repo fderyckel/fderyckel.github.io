@@ -78,7 +78,7 @@ There are some other assumptions made when trying to construct a mean-variance o
 
 To bring these idea into practices, there are a few ways to go about it. 
 The first approach is to have *Monte-Carlo simulations* using historical data for the parameters of the mean and variance. 
-Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility). 
+Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility). In this way, we'll find the efficient frontier: aka the best returns for a given risk or a lowest risk for a given returns. 
 
 ## Create MC simulations of weights to assess mean-variance of a portfolio
 
@@ -96,6 +96,7 @@ library(dplyr)      # select(), arrange(), filter(), mutate(), summarize()
 library(purrr)      # map()
 library(tidyr)      # drop_na(), pivot_wider(), unnest()
 library(glue)       # glue()
+library(lubridate)
 
 # read adjusted closing prices and compute annualized daily returns and sd
 read_prices <- function(ticker) { 
@@ -112,7 +113,6 @@ assets <- c('AA', 'LLY', 'AMD', 'SBUX', 'FDX')
 df <- tibble(ticker = assets, 
              prices = map(ticker, read_prices)) |> 
   unnest()
-
 ```
 
 ```{r}
@@ -190,7 +190,7 @@ mu = as.matrix(df_stat$mean_ret, nrow = length(assets))
 # note how we have also multiplied it by 252
 sigma <- df |> arrange(ticker) |> 
   pivot_wider(names_from = ticker, values_from = ret1d) |> 
-  #drop_na() |> 
+  drop_na() |> 
   select(-date) |> cov() * 252
 
 sigma <- as.matrix(sigma, nrow = length(assets))
