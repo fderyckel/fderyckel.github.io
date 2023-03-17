@@ -4,11 +4,21 @@ author: "Francois de Ryckel"
 date: "2023-03-11"
 categories: [R-code, quant-finance, Linear-Algebra]
 editor: source
+date-modified: "2023-03-17"
 ---
 
 On this post, I am just sharing some linear algebra tools and tricks useful in quantitative finance. This is mainly a post for myself to have a place where I can remember them for when I need them.
 
-# Going from Correlation to Covariance matrix.
+# Finding the inverse of a 3x3 matrix 
+
+* Find the transpose of the cofactor matrix.  
+    + for each element of the matrix, find its minor (cross the row $i$ and column $j$ for element $ij$, and find the determinant of the square matrix left) 
+    + alternate the signs (diagonals are positive) $\begin{pmatrix} + & - & + \\  -  & + & - \\ + & - & + \\  \end{pmatrix}$ 
+* Find the determinant of the 3x3 matrix 
+    + $a_{1,1} \cdot (\mbox{ cofactor of } a_{1,1}) - a_{1,2} \cdot (\mbox{ cofactor of } a_{1,2}) + a_{1,3} \cdot (\mbox{ cofactor of } a_{1,3})$
+
+
+# Going from Correlation to Covariance matrix
 
 How to go from the correlation matrix and standard deviation vector to the covariance matrix? 
 
