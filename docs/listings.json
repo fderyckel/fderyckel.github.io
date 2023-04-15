@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/linear_regression/index.html",
+      "/posts/binomials_models/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",
       "/posts/stochastic_processes/index.html",

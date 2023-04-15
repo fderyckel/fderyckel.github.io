@@ -1,0 +1,8 @@
+---
+title: "Binomials models for Quantitative Finance"
+author: "Francois de Ryckel"
+date: "2023-04-06"
+categories: [R-code, quant-finance, binomial_models]
+editor: source
+date-modified: "2023-04-10"
+---
