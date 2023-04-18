@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/random-behavior-assets/index.html",
       "/posts/linear_regression/index.html",
       "/posts/binomials_models/index.html",
       "/posts/lin-algebra-quant/index.html",

@@ -6,3 +6,39 @@ categories: [R-code, quant-finance, binomial_models]
 editor: source
 date-modified: "2023-04-10"
 ---
+
+```{r}
+library(tibble)     # tibble()
+library(dplyr)      # mutate()
+library(ggplot2)    # ggplot()
+```
+
+
+# Trinomials model 
+
+A discrete random variable (DRV) $y$ can either go up with a probability of $\alpha$ or down with a probability of $\alpha$ or stay the same with a probability of $1 - 2\alpha$.  
+
+We call that a trinomial walk. 
+
+
+```{r}
+alpha <- 0.3
+
+#let's do a 100 steps trinomial walk. 
+
+num_steps <- 100
+prob <- runif(num_steps)
+
+df <- tibble(step = 1:num_steps, prob = prob) |> 
+  mutate(direction = if_else(prob < alpha, -1, if_else(prob > (1 - alpha), 1, 0)), 
+         cum_walk = cumsum(direction))
+
+ggplot(df, aes(x = step, y = cum_walk)) + 
+  geom_line()
+```
+
+This is just one instance of a trinomial walk.  In reality, we are interested in getting to know the probabilistic properties of the $y$ variable. 
+
+## Forward equation 
+
+

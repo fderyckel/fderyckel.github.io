@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Francois de Ryckel">
-<meta name="dcterms.date" content="2023-04-06">
+<meta name="dcterms.date" content="2023-04-18">
 
-<title>QUANT dira-t-on? - Binomials models for Quantitative Finance</title>
+<title>QUANT dira-t-on? - Random Behavior of Financial Assets</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -169,7 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Binomials models for Quantitative Finance</h1>
+      <h1 class="title">Random Behavior of Financial Assets</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R-code</div>
                 <div class="quarto-category">quant-finance</div>
@@ -191,14 +191,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 6, 2023</p>
+        <p class="date">April 18, 2023</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">April 10, 2023</p>
+        <p class="date-modified">April 20, 2023</p>
       </div>
     </div>
       
@@ -212,10 +212,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#trinomials-model" id="toc-trinomials-model" class="nav-link active" data-scroll-target="#trinomials-model">Trinomials model</a>
-  <ul class="collapse">
-  <li><a href="#forward-equation" id="toc-forward-equation" class="nav-link" data-scroll-target="#forward-equation">Forward equation</a></li>
-  </ul></li>
+  <li><a href="#discrete-approach" id="toc-discrete-approach" class="nav-link active" data-scroll-target="#discrete-approach">Discrete approach</a></li>
+  <li><a href="#continuous-approach" id="toc-continuous-approach" class="nav-link" data-scroll-target="#continuous-approach">Continuous approach</a></li>
+  <li><a href="#practice-in-r" id="toc-practice-in-r" class="nav-link" data-scroll-target="#practice-in-r">Practice in R</a></li>
   </ul>
 </nav>
 </nav>
@@ -228,53 +227,97 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)     <span class="co"># tibble()</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)      <span class="co"># mutate()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)    <span class="co"># ggplot()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="trinomials-model" class="level1">
-<h1>Trinomials model</h1>
-<p>A discrete random variable (DRV) <span class="math inline">\(y\)</span> can either go up with a probability of <span class="math inline">\(\alpha\)</span> or down with a probability of <span class="math inline">\(\alpha\)</span> or stay the same with a probability of <span class="math inline">\(1 - 2\alpha\)</span>.</p>
-<p>We call that a trinomial walk.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#let's do a 100 steps trinomial walk. </span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>num_steps <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">runif</span>(num_steps)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>num_steps, <span class="at">prob =</span> prob) <span class="sc">|&gt;</span> </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">direction =</span> <span class="fu">if_else</span>(prob <span class="sc">&lt;</span> alpha, <span class="sc">-</span><span class="dv">1</span>, <span class="fu">if_else</span>(prob <span class="sc">&gt;</span> (<span class="dv">1</span> <span class="sc">-</span> alpha), <span class="dv">1</span>, <span class="dv">0</span>)), </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">cum_walk =</span> <span class="fu">cumsum</span>(direction))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> step, <span class="at">y =</span> cum_walk)) <span class="sc">+</span> </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>This is just one instance of a trinomial walk. In reality, we are interested in getting to know the probabilistic properties of the <span class="math inline">\(y\)</span> variable.</p>
-<section id="forward-equation" class="level2">
-<h2 class="anchored" data-anchor-id="forward-equation">Forward equation</h2>
-
-
+<p>One of the main pillar of quantitative finance is the assumption that assets’ returns behave in a random manner. Assets returns are normally distributed. It is a poor assumption as asset’s return are usually not normally distributed (fat tails, skewness, etc.), but it is one that is considered when doing approaching finance with a quantitative finance.</p>
+<section id="discrete-approach" class="level1">
+<h1>Discrete approach</h1>
+<p><span id="eq-ret1"><span class="math display">\[R_i = \frac{S_{i+1}-S_i}{S_i} \tag{1}\]</span></span> <span class="math display">\[\bar{R} = \frac{\sum_{i=1}^{n} R_i}{n}\]</span></p>
+<ul>
+<li><span class="math inline">\(R_i\)</span> = return of an asset at time i</li>
+<li><span class="math inline">\(S_i\)</span> = price of an asset at time i</li>
+</ul>
+<p>If returns are normally distributed, we could re-write <a href="#eq-ret1">Equation&nbsp;1</a> as <span id="eq-ret2"><span class="math display">\[R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + Std \phi \tag{2}\]</span></span></p>
+<ul>
+<li>Std of returns (Std): <span class="math inline">\(\sqrt{\frac{1}{n-1} \sum_{i=1}^{n}(R_i - \bar{R})^2}\)</span></li>
+<li><span class="math inline">\(\Phi\)</span> is just a number taken from the normal distribution with mean = 0 and std = 1</li>
+<li><span class="math inline">\(\Phi = \frac{1}{\sqrt{2 \pi}} \cdot e^{- \frac{x^2}{2}}\)</span></li>
+</ul>
 </section>
+<section id="continuous-approach" class="level1">
+<h1>Continuous approach</h1>
+<p>Returns should scale with time.</p>
+<p>Mean returns = <span class="math inline">\(\mu \cdot \delta t\)</span></p>
+<ul>
+<li><span class="math inline">\(\mu\)</span> = Annualized means returns on a continuous basis (usually not known, or hard to know)</li>
+<li><span class="math inline">\(\delta t\)</span> = a small time increment</li>
+</ul>
+<p><span class="math display">\[R_i = \frac{S_{i+1} - S_i}{S_i} = \mu \delta t\]</span> <span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t\]</span> <span id="eq-asset-price1"><span class="math display">\[S_{i+1} = S_i \cdot (1 +  \mu \delta t) \tag{3}\]</span></span></p>
+<p>We could also rewrite <a href="#eq-asset-price1">Equation&nbsp;3</a> so it depends of the initial (starting) price, instead of the previous price.</p>
+<p><span class="math inline">\(S_n = S_0 (1+\mu \delta t)^n\)</span></p>
+<p>Using natural log:</p>
+<p><span class="math inline">\(S_n = S_0 e^{log (1+\mu \delta t)^n} = S_0 e^{n \cdot log{(1+\mu \delta t)}}\)</span></p>
+<p>We could argue that <span class="math inline">\(log(1+\mu \delta t) = \mu \delta t\)</span> as <span class="math inline">\(log(1+x) = x\)</span> for small values of x.</p>
+<p><span id="eq-asset-price2"><span class="math display">\[S_n = S_0 \cdot e^{n \mu \delta t} \tag{4}\]</span></span></p>
+<p>Now, <span class="math inline">\(n \cdot \delta t\)</span> is the same as <span class="math inline">\(t\)</span>. Hence,</p>
+<div class="callout-tip callout callout-style-simple no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><span class="math display">\[S(t) = S_0 \cdot e^{\mu t}\]</span></p>
+<p>And the standard deviation of returns = <span class="math inline">\(\sigma \sqrt{\delta t}\)</span></p>
+<ul>
+<li>unit of <span class="math inline">\(\mu = \frac{1}{t}\)</span></li>
+<li>unit of <span class="math inline">\(\sigma = \frac{1}{\sqrt{t}}\)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<p>From earlier <a href="#eq-ret2">Equation&nbsp;2</a>, we can re-write it as: <span class="math inline">\(R_i = \bar{R} + Std \phi = \mu \delta t + \sigma \sqrt{\delta t} \phi\)</span></p>
+<p><span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \sqrt{\delta t} \phi\]</span></p>
+<ul>
+<li><span class="math inline">\(S_{i+1} - S_i = dS\)</span></li>
+<li><span class="math inline">\(S_i = S(t)\)</span></li>
+<li><span class="math inline">\(\delta t = dt\)</span></li>
+<li><span class="math inline">\(\phi \sqrt{\delta t} = dX\)</span> where <span class="math inline">\(dX\)</span> is a random variable with mean = 0 and variance = dt. Hence <span class="math inline">\(E[dX] = 0\)</span> and <span class="math inline">\(E[(dX)^2] = dt\)</span></li>
+</ul>
+<div class="callout-tip callout callout-style-simple no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><span class="math display">\[dS = S \mu dt + S \sigma dX\]</span> This stochastic differential equation on the change of prices assume:</p>
+<ul>
+<li>returns are treated as random</li>
+<li>returns are assumed to be normally distributed (again not totally exact)</li>
+<li>prices (S) are modelled as a log-normal walk (SDE)</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-in-r" class="level1">
+<h1>Practice in R</h1>
+<p>Let’s use the previous note with a SBUX as a ticker.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)    <span class="co"># read_csv()</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># select(), filter(), mutate()</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/SBUX.csv'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, adjClose) <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2019-10-01'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ret =</span> (adjClose <span class="sc">-</span> <span class="fu">lag</span>(adjClose)) <span class="sc">/</span> <span class="fu">lag</span>(adjClose))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>r_bar <span class="ot">=</span> <span class="fu">mean</span>(df<span class="sc">$</span>ret, <span class="at">na.rm =</span> T)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>stdev <span class="ot">=</span> <span class="fu">sd</span>(df<span class="sc">$</span>ret, <span class="at">na.rm =</span> T)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> r_bar <span class="sc">/</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> stdev <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The average daily return of SBUX over the last 3-ish year is -1.3^{-4} and using <span class="math inline">\(\bar{R} = \mu \delta t\)</span> , or <span class="math inline">\(\mu = \frac{\bar{R}}{\delta t}\)</span> and in our case <span class="math inline">\(\delta t = \frac{1}{252}\)</span>; hence annualized returns is -3.38 % with standard deviation of 33.868 % annualized.</p>
+
+
 </section>
 
 </main> <!-- /main -->

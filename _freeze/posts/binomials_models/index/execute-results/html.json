@@ -1,0 +1,16 @@
+{
+  "hash": "5bb3f320d8934c8f8606637a24bb16e3",
+  "result": {
+    "markdown": "---\ntitle: \"Binomials models for Quantitative Finance\"\nauthor: \"Francois de Ryckel\"\ndate: \"2023-04-06\"\ncategories: [R-code, quant-finance, binomial_models]\neditor: source\ndate-modified: \"2023-04-10\"\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tibble)     # tibble()\nlibrary(dplyr)      # mutate()\n```\n\n::: {.cell-output .cell-output-stderr}\n```\n\nAttaching package: 'dplyr'\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n```\n:::\n\n```{.r .cell-code}\nlibrary(ggplot2)    # ggplot()\n```\n:::\n\n\n\n# Trinomials model \n\nA discrete random variable (DRV) $y$ can either go up with a probability of $\\alpha$ or down with a probability of $\\alpha$ or stay the same with a probability of $1 - 2\\alpha$.  \n\nWe call that a trinomial walk. \n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nalpha <- 0.3\n\n#let's do a 100 steps trinomial walk. \n\nnum_steps <- 100\nprob <- runif(num_steps)\n\ndf <- tibble(step = 1:num_steps, prob = prob) |> \n  mutate(direction = if_else(prob < alpha, -1, if_else(prob > (1 - alpha), 1, 0)), \n         cum_walk = cumsum(direction))\n\nggplot(df, aes(x = step, y = cum_walk)) + \n  geom_line()\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n\nThis is just one instance of a trinomial walk.  In reality, we are interested in getting to know the probabilistic properties of the $y$ variable. \n\n## Forward equation \n\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

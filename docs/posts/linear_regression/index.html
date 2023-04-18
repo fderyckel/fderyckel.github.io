@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Francois de Ryckel">
-<meta name="dcterms.date" content="2023-04-06">
+<meta name="dcterms.date" content="2023-04-14">
 
-<title>QUANT dira-t-on? - Binomials models for Quantitative Finance</title>
+<title>QUANT dira-t-on? - Linear Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,69 +22,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -169,11 +106,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Binomials models for Quantitative Finance</h1>
+      <h1 class="title">Linear Regression</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R-code</div>
-                <div class="quarto-category">quant-finance</div>
-                <div class="quarto-category">binomial_models</div>
+                <div class="quarto-category">linear-regression</div>
               </div>
                   </div>
   </div>
@@ -191,7 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 6, 2023</p>
+        <p class="date">April 14, 2023</p>
       </div>
     </div>
     
@@ -212,10 +148,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#trinomials-model" id="toc-trinomials-model" class="nav-link active" data-scroll-target="#trinomials-model">Trinomials model</a>
+  <li><a href="#simple-linear-regression" id="toc-simple-linear-regression" class="nav-link active" data-scroll-target="#simple-linear-regression">Simple linear regression</a>
   <ul class="collapse">
-  <li><a href="#forward-equation" id="toc-forward-equation" class="nav-link" data-scroll-target="#forward-equation">Forward equation</a></li>
+  <li><a href="#finding-the-coefficients-from-scratch" id="toc-finding-the-coefficients-from-scratch" class="nav-link" data-scroll-target="#finding-the-coefficients-from-scratch">Finding the coefficients from scratch</a></li>
+  <li><a href="#considerations-when-doing-linear-regression" id="toc-considerations-when-doing-linear-regression" class="nav-link" data-scroll-target="#considerations-when-doing-linear-regression">Considerations when doing linear regression</a></li>
   </ul></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
   </ul>
 </nav>
 </nav>
@@ -228,53 +166,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)     <span class="co"># tibble()</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)      <span class="co"># mutate()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
+<p>Linear regression is probably the most basic example of a machine learning algorithms.</p>
+<section id="simple-linear-regression" class="level1">
+<h1>Simple linear regression</h1>
+<section id="finding-the-coefficients-from-scratch" class="level2">
+<h2 class="anchored" data-anchor-id="finding-the-coefficients-from-scratch">Finding the coefficients from scratch</h2>
+<p>In the case of simple linear regression, we just have one independent variable and one dependent variable. Let’s say we have <span class="math inline">\(n\)</span> observations <span class="math inline">\((x_i, y_i)\)</span> and we want to find a linear equations that predict y <span class="math inline">\(\hat{y_i}\)</span> based on a given <span class="math inline">\(x_i\)</span>.</p>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 x_i + \epsilon_i\]</span></p>
+<ul>
+<li><span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are parameters of our model that have to be found.
+<ul>
+<li><span class="math inline">\(\beta_0\)</span> is the intercept (value of y when x=0)</li>
+<li><span class="math inline">\(\beta_1\)</span> is the slope of our linear model</li>
+</ul></li>
+<li><span class="math inline">\(\epsilon_i\)</span> is the residual or error term of the <span class="math inline">\(i^{th}\)</span> observations<br>
+</li>
+<li><span class="math inline">\(\hat{y_i}\)</span> is the estimated or predicted value of y. In that sense <span class="math inline">\(\hat{y_i} = \beta_0 + \beta_1 x_i\)</span>. The error term is then the difference between the actual y and the predicted y: <span class="math inline">\(\epsilon_i = y - \hat{y_i}\)</span></li>
+</ul>
+<p>The cost function (or loss function) is to minimize the sum of squared error. In that sense, we seek to minimize <span id="eq-loss-function"><span class="math display">\[SSE = \sum_{i=1}^{n} \epsilon_i^2 = \sum_{i=1}^{n} (y_i-\beta_0 - \beta_1 x_i)^2 \tag{1}\]</span></span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="errors_visual.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trying to minimize the sum of the squared of the vertical bars</figcaption><p></p>
+</figure>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)    <span class="co"># ggplot()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="trinomials-model" class="level1">
-<h1>Trinomials model</h1>
-<p>A discrete random variable (DRV) <span class="math inline">\(y\)</span> can either go up with a probability of <span class="math inline">\(\alpha\)</span> or down with a probability of <span class="math inline">\(\alpha\)</span> or stay the same with a probability of <span class="math inline">\(1 - 2\alpha\)</span>.</p>
-<p>We call that a trinomial walk.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#let's do a 100 steps trinomial walk. </span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>num_steps <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">runif</span>(num_steps)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>num_steps, <span class="at">prob =</span> prob) <span class="sc">|&gt;</span> </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">direction =</span> <span class="fu">if_else</span>(prob <span class="sc">&lt;</span> alpha, <span class="sc">-</span><span class="dv">1</span>, <span class="fu">if_else</span>(prob <span class="sc">&gt;</span> (<span class="dv">1</span> <span class="sc">-</span> alpha), <span class="dv">1</span>, <span class="dv">0</span>)), </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">cum_walk =</span> <span class="fu">cumsum</span>(direction))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> step, <span class="at">y =</span> cum_walk)) <span class="sc">+</span> </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>This is just one instance of a trinomial walk. In reality, we are interested in getting to know the probabilistic properties of the <span class="math inline">\(y\)</span> variable.</p>
-<section id="forward-equation" class="level2">
-<h2 class="anchored" data-anchor-id="forward-equation">Forward equation</h2>
-
-
+<p>To find the SSE, we will need to use partial derivatives for both coefficients and solve it for 0.</p>
+<p>Let’s first focus on <span class="math inline">\(\beta_0\)</span></p>
+<p><span class="math display">\[\frac{\partial SSE}{\partial \beta_0} = -2 \sum_{i=1}^{n} (y_i-\beta_0 - \beta_1 x_i) = 0\]</span> Breaking down our sum: <span class="math display">\[\sum_{i=1}^{n} y_i - \sum_{i=1}^{n} \beta_0 - \sum_{i=1}^{n} \beta_1 x_i = 0\]</span> <span class="math inline">\(\beta0\)</span> and <span class="math inline">\(\beta_1\)</span> are coefficient, hence: <span class="math display">\[\sum_{i=1}^{n} y_i - n \beta_0 - \beta_1 \sum_{i=1}^{n} x_i = 0\]</span> and <span class="math display">\[\beta_0 = \frac{\sum_{i=1}^{n} y_i - \beta_1 \sum_{i=1}^{n} x_i}{n}\]</span> <span class="math inline">\(\bar{y} = \frac{\sum_{i=1}^{n} y_i}{n}\)</span> (mean of y values) and <span class="math inline">\(\bar{x}=\frac{\sum_{i=1}^{n} x_i}{n}\)</span> (mean of x values).</p>
+<p>and our previous equation can then be simplified as <span id="eq-beta0"><span class="math display">\[\beta_0 = \bar{y} - \beta_1 \bar{x} \tag{2}\]</span></span></p>
+<p>Let’s now address the second partial derivative wrt <span class="math inline">\(\beta_1\)</span>.</p>
+<p><span class="math display">\[\frac{\partial SSE}{\partial \beta_1} = -2 \sum_{i=1}^{n} x_i (y_i-\beta_0 - \beta_1 x_i) = 0\]</span>.</p>
+<p>Distributing the <span class="math inline">\(x_i\)</span> and substituting in the value of <span class="math inline">\(\beta_0\)</span> from <a href="#eq-beta0">Equation&nbsp;2</a><br>
+<span class="math display">\[\sum_{i=1}^{n} (x_i y_i - x_i (\bar{y} - \beta_1 \bar{x}) - \beta_1 x_i^2) = 0\]</span>.</p>
+<p>Factoring <span class="math inline">\(\beta_1\)</span> and breaking down the sum and being careful to the sign, we get: <span class="math display">\[\beta_1 = \frac{\sum_{i=1}^{n} x_i (y_i - \bar{y})}{\sum_{i=1}^{n} x_i (x_i - \bar{x})}\]</span></p>
+<p>Knowing <span class="math inline">\(\bar{x} = \frac{\sum_{i=1}^{n} x_i}{n}\)</span> and <span class="math inline">\(\bar{y} = \frac{\sum_{i=1}^{n} y_i}{n}\)</span>, we can get one step further (have a common denominator with over n). I have also removed the index on the sum for readability.<br>
+<span id="eq-beta1"><span class="math display">\[\beta_1 = \frac{n \Sigma x_i y_i - \Sigma x_i \Sigma y_i}{n \Sigma x_i^2 - (\Sigma x_i)^2} \tag{3}\]</span></span></p>
+<p>We can now use the values of <span class="math inline">\(\beta_0\)</span> <a href="#eq-beta0">Equation&nbsp;2</a> and <span class="math inline">\(\beta_1\)</span> <a href="#eq-beta1">Equation&nbsp;3</a> into our estimate of y: <span class="math inline">\(\hat{y_i} = \beta_0 + \beta_1 x_i\)</span></p>
 </section>
+<section id="considerations-when-doing-linear-regression" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-when-doing-linear-regression">Considerations when doing linear regression</h2>
+<ul>
+<li>Start with a <strong>scatter plot</strong> to check if data have a linear trend. No points of doing a linear regression on a set of data, if data are not showing a linear trend.<br>
+</li>
+<li>How well the data fits the regression line (correlation) have NO incidence on causality. Correlation is no indication of causation</li>
+<li>Variables have to be normally distributed. This can be checked using histrogram or Q-Q plot or some other stat tests - Shapiro-Wilk test, Kolmogorov–Smirnov test. Skewness and kurtosis can also be used for that. In case of violation of this assumption, a Box-Cox transformation could be used.</li>
+<li>Homoscedasticity in the residuals. Variance in the spread of residuals should be constant. <img src="residuals_visual.png" class="img-fluid" alt="Visuals on how error terms can behave"></li>
+<li>Error terms are normally distributed (visual: histogram, QQ-plot)</li>
+<li>In the case of multi-variables linear regression, ensure no correlation between independent variables</li>
+</ul>
+</section>
+</section>
+<section id="sources" class="level1">
+<h1>Sources</h1>
+<ul>
+<li><a href="https://www.analyticsvidhya.com/blog/2021/05/all-you-need-to-know-about-your-first-machine-learning-model-linear-regression/">All you need to know about your first Machine Learning model – Linear Regression</a></li>
+<li><a href="https://towardsai.net/p/machine-learning/linear-regression-complete-derivation-with-mathematics-explained">Linear Regression Complete Derivation With Mathematics Explained!</a></li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->
