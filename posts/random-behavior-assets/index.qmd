@@ -7,7 +7,7 @@ editor: source
 date-modified: "2023-04-20"
 ---
 
-One of the main pillar of quantitative finance is the assumption that assets' returns behave in a random manner.  Assets returns are normally distributed.  It is a poor assumption as asset's return are usually not normally distributed (fat tails, skewness, etc.), but it is one that is considered when doing approaching finance with a quantitative finance. 
+One of the main pillar of quantitative finance is the assumption that assets' returns behave in a random manner.  Assets returns are normally distributed.  It is a poor assumption as asset's return are usually not normally distributed (fat tails, skewness, etc.), but it is one that is considered when approaching finance with a quantitative finance. 
 
 # Discrete approach  
 
@@ -21,8 +21,8 @@ If returns are normally distributed, we could re-write @eq-ret1 as
 $$R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + Std \phi$$ {#eq-ret2}
 
 * Std of returns (Std): $\sqrt{\frac{1}{n-1} \sum_{i=1}^{n}(R_i - \bar{R})^2}$
-* $\Phi$ is just a number taken from the normal distribution with mean = 0 and std = 1 
-* $\Phi = \frac{1}{\sqrt{2 \pi}} \cdot e^{- \frac{x^2}{2}}$ 
+* $\phi$ is just a number taken from the normal distribution with mean = 0 and std = 1 
+* $\phi = \frac{1}{\sqrt{2 \pi}} \cdot e^{- \frac{x^2}{2}}$ 
 
 # Continuous approach 
 
@@ -88,10 +88,11 @@ Let's use the previous note with a SBUX as a ticker.
 
 library(readr)    # read_csv()
 library(dplyr)    # select(), filter(), mutate()
+library(tidyr)    #drop_na()
 
 df <- read_csv('../../raw_data/SBUX.csv') |> 
   select(date, adjClose) |> 
-  filter(date > '2019-10-01') |> 
+  filter(date > '2019-10-01') |> drop_na() |>
   mutate(ret = (adjClose - lag(adjClose)) / lag(adjClose))
 
 r_bar = mean(df$ret, na.rm = T)
@@ -101,7 +102,7 @@ mu = r_bar / (1/252)
 sigma = stdev / sqrt(1/252)
 ```
 
-The average daily return of SBUX over the last 3-ish year is `r round(r_bar, 5)` and using $\bar{R} = \mu \delta t$ , or $\mu = \frac{\bar{R}}{\delta t}$ and in our case $\delta t = \frac{1}{252}$; hence annualized returns is  `r round(mu, 5) * 100` % with standard deviation of `r round(sigma, 5) * 100` % annualized. 
+The average daily return of SBUX over the last 3-ish year is `r round(r_bar, 6)` and using $\bar{R} = \mu \delta t$ , or $\mu = \frac{\bar{R}}{\delta t}$ and in our case $\delta t = \frac{1}{252}$; hence annualized returns is  `r round(mu, 5) * 100` % with standard deviation of `r round(sigma, 5) * 100` % annualized. 
 
 We could plot the returns and the std of returns
 
