@@ -2,8 +2,9 @@
 title: "Random Behavior of Financial Assets"
 author: "Francois de Ryckel"
 date: "2023-04-18"
-categories: [R-code, quant-finance, binomial_models]
+categories: [R-code, quant-finance]
 editor: source
+image: 'histogram-of-returns.png'
 date-modified: "2023-04-20"
 ---
 
@@ -33,35 +34,53 @@ Mean returns = $\mu \cdot \delta t$
 * $\mu$ = Annualized means returns on a continuous basis (usually not known, or hard to know)
 * $\delta t$ = a small time increment 
 
-$$R_i = \frac{S_{i+1} - S_i}{S_i} = \mu \delta t$$
-$$S_{i+1} - S_i= S_i \mu \delta t$$
+## Ignoring randomness 
+
+$$R_i = \frac{S_{i+1} - S_i}{S_i} = mean  = \mu \delta t$$
+$$S_{i+1} - S_i= S_i \mu \delta t$$ 
 $$S_{i+1} = S_i \cdot (1 +  \mu \delta t)$$ {#eq-asset-price1}
+
 
 We could also rewrite @eq-asset-price1 so it depends of the initial (starting) price, instead of the previous price.  
 
-$S_n = S_0 (1+\mu \delta t)^n$
+$$S_n = S_0 (1+\mu \delta t)^n$$
 
 Using natural log: 
 
 $S_n = S_0 e^{log (1+\mu \delta t)^n} = S_0 e^{n \cdot log{(1+\mu \delta t)}}$ 
 
-We could argue that $log(1+\mu \delta t) = \mu \delta t$ as $log(1+x) = x$ for small values of x. 
+We could argue that $log(1+\mu \delta t) \approx \mu \delta t$ as $log(1+x) \approx x$ for small values of x. 
 
-$$S_n = S_0 \cdot e^{n \mu \delta t}$$ {#eq-asset-price2} 
+$$S_n \approx S_0 \cdot e^{n \mu \delta t}$$ {#eq-asset-price2} 
 
 Now, $n \cdot \delta t$ is the same as $t$.  Hence, 
 
 ::: {.callout-tip appearance="minimal"}
-$$S(t) = S_0 \cdot e^{\mu t}$$
-
-And the standard deviation of returns = $\sigma \sqrt{\delta t}$
-
-* unit of $\mu = \frac{1}{t}$ 
-* unit of $\sigma = \frac{1}{\sqrt{t}}$ 
+$$S(t) \approx S_0 \cdot e^{\mu t}$$ 
 ::: 
 
-From earlier @eq-ret2, we can re-write it as: $R_i = \bar{R} + Std \phi = \mu \delta t + \sigma \sqrt{\delta t} \phi$
+## Considering randomness 
 
+Let's restart with @eq-ret2
+
+$$R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + std \cdot \phi = \mu \delta t + \sigma \phi \delta t^{1/2}$$
+$$S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \phi \delta t^{1/2}$$ {#eq-asset-price2}
+
+::: {.callout-tip appearance="minimal"} 
+$$S_{i+1} = S_i \cdot (1 +  \mu \delta t) + S_i \sigma \phi \delta t^{1/2}$$ {#eq-asset-price3}
+
+This last @eq-asset-price3 is the basis for Monte-Carlo simulation. 
+
+* Notice the standard deviation of return: $\sigma \sqrt{\delta t}$
+* unit of $\mu = \frac{1}{t}$ 
+* unit of $\sigma = \frac{1}{\sqrt{t}}$
+* this is because we can only variance together (no sd).  For independent variable X and Y: $Var(X+Y) = Var(X) + Var(Y)$
+* the standard deviation of returns scale up with the square root of the time step. 
+:::
+
+## Going to continuous time 
+
+Restarting from @eq-asset-price2 : 
 $$S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \sqrt{\delta t} \phi$$ 
 
 * $S_{i+1} - S_i = dS$
@@ -75,12 +94,16 @@ This stochastic differential equation on the change of prices assume:
 
 * returns are treated as random 
 * returns are assumed to be normally distributed (again not totally exact) 
-* prices (S) are modelled as a log-normal walk (SDE)
+* prices (S) are modelled as a log-normal walk (SDE) 
+* $\mu$ is the drift rate or growth rate 
+* because of the different scaling of time ($t$ and $\sqrt{t}$), on a short time frame, drift is negligible and volatility matters. 
 ::: 
+
+
 
 # Practice in R 
 
-Let's use the previous note with a SBUX as a ticker.   
+Let's use the above notes with the ticker SBUX as a financial asset.   
 
 ```{r}
 #| warning: false
@@ -100,21 +123,43 @@ stdev = sd(df$ret, na.rm = T)
 
 mu = r_bar / (1/252)
 sigma = stdev / sqrt(1/252)
+
+r_bar
+stdev
 ```
 
-The average daily return of SBUX over the last 3-ish year is `r round(r_bar, 6)` and using $\bar{R} = \mu \delta t$ , or $\mu = \frac{\bar{R}}{\delta t}$ and in our case $\delta t = \frac{1}{252}$; hence annualized returns is  `r round(mu, 5) * 100` % with standard deviation of `r round(sigma, 5) * 100` % annualized. 
+Knowing the average daily return of SBUX over the last 3-ish year and using $\bar{R} = \mu \delta t$ , or $\mu = \frac{\bar{R}}{\delta t}$ and in our case $\delta t = \frac{1}{252}$; we find the average annualized returns $\mu$ is: `r round(mu, 5) * 100` % with standard deviation $\sigma$ of `r round(sigma, 3) * 100` % annualized. 
 
 We could plot the returns and the std of returns
 
 ```{r}
+#| warning: false
+
 library(ggplot2)
 
-ggplot(df, aes(x = date, y = ret)) + 
+ggplot(df |> drop_na(), aes(x = date, y = ret)) + 
   geom_line() + 
   geom_hline(yintercept = stdev, linetype = 'dotted', color = 'red', linewidth= 0.8) + 
   geom_hline(yintercept = -stdev, linetype = 'dotted', color = 'red', linewidth = 0.8) + 
-    geom_hline(yintercept = 2*stdev, linetype = 'dotted', color = 'red', linewidth= 1) + 
+  geom_hline(yintercept = 2*stdev, linetype = 'dotted', color = 'red', linewidth= 1) + 
   geom_hline(yintercept = -2*stdev, linetype = 'dotted', color = 'red', linewidth = 1) + 
+  xlab(label = 'Date') + ylab(label = 'Daily returns') + 
   labs(title = 'Daily returns')
 ```
 
+We could standardized the returns (aka ensure they have a mean = 0 and std = 1) and compare it to the standard normal distribution. 
+
+```{r}
+#| warning: false
+df1 <- df |> 
+  mutate(std_ret = (ret - r_bar) / stdev) |> 
+  drop_na()
+
+ggplot(df1, aes(std_ret)) + 
+  geom_histogram(aes(y = ..density..), alpha = 0.3, fill = 'blue', binwidth = 0.5) + 
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = 'red', size = 1) +
+  scale_y_continuous() + 
+  scale_x_continuous(limits = c(-5, 5), n.breaks = 9)
+```
+
+This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean. 

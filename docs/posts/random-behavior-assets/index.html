@@ -173,7 +173,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
                                 <div class="quarto-categories">
                 <div class="quarto-category">R-code</div>
                 <div class="quarto-category">quant-finance</div>
-                <div class="quarto-category">binomial_models</div>
               </div>
                   </div>
   </div>
@@ -213,7 +212,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#discrete-approach" id="toc-discrete-approach" class="nav-link active" data-scroll-target="#discrete-approach">Discrete approach</a></li>
-  <li><a href="#continuous-approach" id="toc-continuous-approach" class="nav-link" data-scroll-target="#continuous-approach">Continuous approach</a></li>
+  <li><a href="#continuous-approach" id="toc-continuous-approach" class="nav-link" data-scroll-target="#continuous-approach">Continuous approach</a>
+  <ul class="collapse">
+  <li><a href="#ignoring-randomness" id="toc-ignoring-randomness" class="nav-link" data-scroll-target="#ignoring-randomness">Ignoring randomness</a></li>
+  <li><a href="#considering-randomness" id="toc-considering-randomness" class="nav-link" data-scroll-target="#considering-randomness">Considering randomness</a></li>
+  <li><a href="#going-to-continuous-time" id="toc-going-to-continuous-time" class="nav-link" data-scroll-target="#going-to-continuous-time">Going to continuous time</a></li>
+  </ul></li>
   <li><a href="#practice-in-r" id="toc-practice-in-r" class="nav-link" data-scroll-target="#practice-in-r">Practice in R</a></li>
   </ul>
 </nav>
@@ -250,13 +254,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="math inline">\(\mu\)</span> = Annualized means returns on a continuous basis (usually not known, or hard to know)</li>
 <li><span class="math inline">\(\delta t\)</span> = a small time increment</li>
 </ul>
-<p><span class="math display">\[R_i = \frac{S_{i+1} - S_i}{S_i} = \mu \delta t\]</span> <span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t\]</span> <span id="eq-asset-price1"><span class="math display">\[S_{i+1} = S_i \cdot (1 +  \mu \delta t) \tag{3}\]</span></span></p>
+<section id="ignoring-randomness" class="level2">
+<h2 class="anchored" data-anchor-id="ignoring-randomness">Ignoring randomness</h2>
+<p><span class="math display">\[R_i = \frac{S_{i+1} - S_i}{S_i} = mean  = \mu \delta t\]</span> <span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t\]</span> <span id="eq-asset-price1"><span class="math display">\[S_{i+1} = S_i \cdot (1 +  \mu \delta t) \tag{3}\]</span></span></p>
 <p>We could also rewrite <a href="#eq-asset-price1">Equation&nbsp;3</a> so it depends of the initial (starting) price, instead of the previous price.</p>
-<p><span class="math inline">\(S_n = S_0 (1+\mu \delta t)^n\)</span></p>
+<p><span class="math display">\[S_n = S_0 (1+\mu \delta t)^n\]</span></p>
 <p>Using natural log:</p>
 <p><span class="math inline">\(S_n = S_0 e^{log (1+\mu \delta t)^n} = S_0 e^{n \cdot log{(1+\mu \delta t)}}\)</span></p>
-<p>We could argue that <span class="math inline">\(log(1+\mu \delta t) = \mu \delta t\)</span> as <span class="math inline">\(log(1+x) = x\)</span> for small values of x.</p>
-<p><span id="eq-asset-price2"><span class="math display">\[S_n = S_0 \cdot e^{n \mu \delta t} \tag{4}\]</span></span></p>
+<p>We could argue that <span class="math inline">\(log(1+\mu \delta t) \approx \mu \delta t\)</span> as <span class="math inline">\(log(1+x) \approx x\)</span> for small values of x.</p>
+<p><span id="eq-asset-price2"><span class="math display">\[S_n \approx S_0 \cdot e^{n \mu \delta t} \tag{4}\]</span></span></p>
 <p>Now, <span class="math inline">\(n \cdot \delta t\)</span> is the same as <span class="math inline">\(t\)</span>. Hence,</p>
 <div class="callout-tip callout callout-style-simple no-icon">
 <div class="callout-body d-flex">
@@ -264,17 +270,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<p><span class="math display">\[S(t) = S_0 \cdot e^{\mu t}\]</span></p>
-<p>And the standard deviation of returns = <span class="math inline">\(\sigma \sqrt{\delta t}\)</span></p>
+<p><span class="math display">\[S(t) \approx S_0 \cdot e^{\mu t}\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="considering-randomness" class="level2">
+<h2 class="anchored" data-anchor-id="considering-randomness">Considering randomness</h2>
+<p>Let’s restart with <a href="#eq-ret2">Equation&nbsp;2</a></p>
+<p><span class="math display">\[R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + std \cdot \phi = \mu \delta t + \sigma \phi \delta t^{1/2}\]</span> <span id="eq-asset-price2"><span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \phi \delta t^{1/2} \tag{5}\]</span></span></p>
+<div class="callout-tip callout callout-style-simple no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><span id="eq-asset-price3"><span class="math display">\[S_{i+1} = S_i \cdot (1 +  \mu \delta t) + S_i \sigma \phi \delta t^{1/2} \tag{6}\]</span></span></p>
+<p>This last <a href="#eq-asset-price3">Equation&nbsp;6</a> is the basis for Monte-Carlo simulation.</p>
 <ul>
+<li>Notice the standard deviation of return: <span class="math inline">\(\sigma \sqrt{\delta t}\)</span></li>
 <li>unit of <span class="math inline">\(\mu = \frac{1}{t}\)</span></li>
 <li>unit of <span class="math inline">\(\sigma = \frac{1}{\sqrt{t}}\)</span></li>
+<li>this is because we can only variance together (no sd). For independent variable X and Y: <span class="math inline">\(Var(X+Y) = Var(X) + Var(Y)\)</span></li>
+<li>the standard deviation of returns scale up with the square root of the time step.</li>
 </ul>
 </div>
 </div>
 </div>
-<p>From earlier <a href="#eq-ret2">Equation&nbsp;2</a>, we can re-write it as: <span class="math inline">\(R_i = \bar{R} + Std \phi = \mu \delta t + \sigma \sqrt{\delta t} \phi\)</span></p>
-<p><span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \sqrt{\delta t} \phi\]</span></p>
+</section>
+<section id="going-to-continuous-time" class="level2">
+<h2 class="anchored" data-anchor-id="going-to-continuous-time">Going to continuous time</h2>
+<p>Restarting from <a href="#eq-asset-price2">Equation&nbsp;5</a> : <span class="math display">\[S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \sqrt{\delta t} \phi\]</span></p>
 <ul>
 <li><span class="math inline">\(S_{i+1} - S_i = dS\)</span></li>
 <li><span class="math inline">\(S_i = S(t)\)</span></li>
@@ -292,14 +318,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>returns are treated as random</li>
 <li>returns are assumed to be normally distributed (again not totally exact)</li>
 <li>prices (S) are modelled as a log-normal walk (SDE)</li>
+<li><span class="math inline">\(\mu\)</span> is the drift rate or growth rate</li>
+<li>because of the different scaling of time (<span class="math inline">\(t\)</span> and <span class="math inline">\(\sqrt{t}\)</span>), on a short time frame, drift is negligible and volatility matters.</li>
 </ul>
 </div>
 </div>
 </div>
 </section>
+</section>
 <section id="practice-in-r" class="level1">
 <h1>Practice in R</h1>
-<p>Let’s use the previous note with a SBUX as a ticker.</p>
+<p>Let’s use the above notes with the ticker SBUX as a financial asset.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)    <span class="co"># read_csv()</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># select(), filter(), mutate()</span></span>
@@ -314,27 +343,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>stdev <span class="ot">=</span> <span class="fu">sd</span>(df<span class="sc">$</span>ret, <span class="at">na.rm =</span> T)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> r_bar <span class="sc">/</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> stdev <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> stdev <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>r_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.0001341147</code></pre>
 </div>
-<p>The average daily return of SBUX over the last 3-ish year is -1.34^{-4} and using <span class="math inline">\(\bar{R} = \mu \delta t\)</span> , or <span class="math inline">\(\mu = \frac{\bar{R}}{\delta t}\)</span> and in our case <span class="math inline">\(\delta t = \frac{1}{252}\)</span>; hence annualized returns is -3.38 % with standard deviation of 33.868 % annualized.</p>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>stdev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.02133465</code></pre>
+</div>
+</div>
+<p>Knowing the average daily return of SBUX over the last 3-ish year and using <span class="math inline">\(\bar{R} = \mu \delta t\)</span> , or <span class="math inline">\(\mu = \frac{\bar{R}}{\delta t}\)</span> and in our case <span class="math inline">\(\delta t = \frac{1}{252}\)</span>; we find the average annualized returns <span class="math inline">\(\mu\)</span> is: -3.38 % with standard deviation <span class="math inline">\(\sigma\)</span> of 33.9 % annualized.</p>
 <p>We could plot the returns and the std of returns</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> ret)) <span class="sc">+</span> </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth=</span> <span class="fl">0.8</span>) <span class="sc">+</span> </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span>stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">2</span><span class="sc">*</span>stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth=</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Daily returns'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1 row containing missing values (`geom_line()`).</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df <span class="sc">|&gt;</span> <span class="fu">drop_na</span>(), <span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> ret)) <span class="sc">+</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth=</span> <span class="fl">0.8</span>) <span class="sc">+</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span>stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">2</span><span class="sc">*</span>stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth=</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>stdev, <span class="at">linetype =</span> <span class="st">'dotted'</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="at">label =</span> <span class="st">'Date'</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="at">label =</span> <span class="st">'Daily returns'</span>) <span class="sc">+</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Daily returns'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>We could standardized the returns (aka ensure they have a mean = 0 and std = 1) and compare it to the standard normal distribution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">std_ret =</span> (ret <span class="sc">-</span> r_bar) <span class="sc">/</span> stdev) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df1, <span class="fu">aes</span>(std_ret)) <span class="sc">+</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">'blue'</span>, <span class="at">binwidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">n =</span> <span class="dv">101</span>, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>), <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>() <span class="sc">+</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>), <span class="at">n.breaks =</span> <span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean.</p>
 
 
 </section>
