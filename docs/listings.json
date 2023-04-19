@@ -2,18 +2,18 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/normality-returns/index.html",
       "/posts/random-behavior-assets/index.html",
-      "/posts/linear_regression/index.html",
+      "/posts/linear-regression/index.html",
       "/posts/binomials_models/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",
-      "/posts/stochastic_processes/index.html",
+      "/posts/stochastic-processes/index.html",
       "/posts/statistical-moments/index.html",
       "/posts/kmeans-intro/index.html",
       "/posts/markov-chains/index.html",
       "/posts/kmeans-regime-change/index.html",
       "/posts/xgboost-time-series/index.html",
-      "/posts/starting-quarto/index.html",
       "/posts/autocorrelation/index.html"
     ]
   }

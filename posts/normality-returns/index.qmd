@@ -1,0 +1,11 @@
+---
+title: "Normality of asset returns"
+author: "Francois de Ryckel"
+date: "2023-04-19"
+categories: [R-code, quant-finance, normal-distribution]
+editor: source
+image: 'histogram-of-returns.png'
+date-modified: "2023-04-20"
+---
+
+As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random.  That being said they are not totally normally distributed.  This post is about 

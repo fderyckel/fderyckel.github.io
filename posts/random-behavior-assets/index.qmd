@@ -19,9 +19,9 @@ $$\bar{R} = \frac{\sum_{i=1}^{n} R_i}{n}$$
 * $S_i$ = price of an asset at time i
 
 If returns are normally distributed, we could re-write @eq-ret1 as 
-$$R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + Std \phi$$ {#eq-ret2}
+$$R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + std \cdot \phi$$ {#eq-ret2}
 
-* Std of returns (Std): $\sqrt{\frac{1}{n-1} \sum_{i=1}^{n}(R_i - \bar{R})^2}$
+* Std of returns (std): $\sqrt{\frac{1}{n-1} \sum_{i=1}^{n}(R_i - \bar{R})^2}$
 * $\phi$ is just a number taken from the normal distribution with mean = 0 and std = 1 
 * $\phi = \frac{1}{\sqrt{2 \pi}} \cdot e^{- \frac{x^2}{2}}$ 
 
