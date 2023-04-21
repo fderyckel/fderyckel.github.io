@@ -5,7 +5,134 @@ date: "2023-04-19"
 categories: [R-code, quant-finance, normal-distribution]
 editor: source
 image: 'histogram-of-returns.png'
-date-modified: "2023-04-20"
+date-modified: "2023-04-21"
 ---
 
-As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random.  That being said they are not totally normally distributed.  This post is about 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(tibble)
+library(dplyr)
+library(readr)
+library(ggplot2)
+```
+
+# Introduction 
+
+As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random.  That being said they are not totally normally distributed.  This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns. 
+
+Let's start by considering an ETF (low-ish volatility) like the SPY500.  
+To better illustrate our point, we'll also consider a fictitious stock with random and almost perfectly normally distributed returns. 
+
+From previous post, returns can be explained with a drift rate + some randomness: 
+$$R_i = \mu \delta t + \phi \sigma \delta t^{1/2}$$
+
+# Comparing SPY returns with a similar imaginary stock 
+
+Let's make some assumptions on how to get the drift rate and volatility of SPY.  Using all the trading sessions since 01 Jan 2020, we'll use the mean historical returns as standard deviation of returns as drift and volatility.   
+
+```{r}
+#| warning: false
+#| message: false
+
+df_spy <- read_csv('../../raw_data/SPY.csv') |> 
+  select(date, adjClose) |> 
+  arrange(date) |> 
+  mutate(return = log(adjClose / lag(adjClose))) |> 
+  filter(date > '2020-01-01')
+
+drift = mean(df_spy$return) 
+sigma = sd(df_spy$return) 
+```
+
+So over the last 3-ish years, SPY had an annualized drift rate of `r round((drift * 252)*100, 2)`% with an volatility of `r round((sigma * sqrt(252))*100, 2)`%
+
+Let's consider now an imaginary stock with a similar drift rate and standard deviation as SPY.  
+
+```{r}
+set.seed(21042023)
+phi = rnorm(831, mean = 0, sd = 1)
+df <- tibble(time = 1:length(phi), 
+             phi = phi, 
+             return = drift + sigma * phi)
+
+prices = c(100)
+for (i in 2:(nrow(df))) {
+  prices[i] = prices[i-1] * (1 + df$return[i])
+}
+
+df <- add_column(df, prices)
+
+ggplot(df, aes(x = time, y = prices)) + 
+  geom_line() + 
+  labs(title = 'Imaginary Stock', 
+       subtitle = 'Same drift as volatility as SPY')
+```
+
+```{r}
+mean(df$return)
+mean(df_spy$return)
+```
+
+
+## Visual checks on imaginary stock vs SPY 
+
+Usual visual checks for normality are the histogram and the QQ-plot. 
+
+### Histograms 
+
+Let's see how well the returns stack to our imaginary stock (with close to perfect pseudo-randomness)
+
+```{r}
+#| warning: false
+
+ggplot(df, aes(return)) + 
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.3, fill = 'blue') + 
+  geom_density() + 
+  stat_function(fun = dnorm, n = nrow(df), args = list(mean = drift, sd = sigma), color = 'red', size = 1) +
+  scale_y_continuous() + 
+  scale_x_continuous(limits = c(-0.055, 0.055), n.breaks = 9)
+```
+
+The black line is the actual density of returns, while the red line is the density of the normal distribution with same drift and volatility as earlier.   Lines are pretty close to each other.  
+
+And now onto the histogram on SPY (again same drift and volatility) as fictitious stock above. 
+
+```{r}
+#| warning: false
+
+ggplot(df_spy, aes(return)) + 
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.3, fill = 'blue') + 
+  geom_density() + 
+  geom_vline(xintercept = drift+sigma, color = 'blue', linetype = 3, linewidth = 1) + 
+  geom_vline(xintercept = drift-(0.6*sigma),  color = 'blue', linetype = 3, linewidth = 1) + 
+  stat_function(fun = dnorm, n = nrow(df), args = list(mean = drift, sd = sigma), color = 'red', size = 1) +
+  scale_y_continuous() + 
+  scale_x_continuous(limits = c(-0.055, 0.055), n.breaks = 9)
+```
+
+And here, we clearly see the big disconnect from normality: above expected number of returns at the mean, less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then fat tails.  
+
+### QQ Plots 
+
+Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot).  On the y-axis, we have the returns, on the x-axis the theoretical quantiles. 
+
+```{r}
+ggplot(df, aes(sample = return)) + 
+  stat_qq() + 
+  stat_qq_line(color = 'blue', linetype = 3, linewidth = 1) + 
+  labs(title = 'QQ-Plot for fictious stock returns')
+
+```
+
+
+```{r}
+ggplot(df_spy, aes(sample = return)) + 
+  stat_qq() + 
+  stat_qq_line(color = 'blue', linetype = 3, linewidth = 1) + 
+  labs(title = 'QQ-Plot for SPY returns')
+```
+
+Again, our second plot clearly indicate how the returns deviate from normality.  
