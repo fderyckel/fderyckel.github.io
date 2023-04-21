@@ -4,7 +4,7 @@ author: "Francois de Ryckel"
 date: "2023-04-19"
 categories: [R-code, quant-finance, normal-distribution]
 editor: source
-image: 'histogram-of-returns.png'
+image: 'qqplot-spy.png'
 date-modified: "2023-04-21"
 ---
 
