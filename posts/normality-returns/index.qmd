@@ -113,7 +113,7 @@ ggplot(df_spy, aes(return)) +
   scale_x_continuous(limits = c(-0.055, 0.055), n.breaks = 9)
 ```
 
-And here, we clearly see the big disconnect from normality: above expected number of returns at the mean, less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then fat tails.  
+And here, we clearly see the big disconnect from normality: above expected number of returns at the mean (aka too peaked), less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then higher number of observations than expected in the tails (aka fat tails).  Distribution of returns for equity are interesting in that sense: both too peaked and fat tails. 
 
 ### QQ Plots 
 
@@ -127,6 +127,7 @@ ggplot(df, aes(sample = return)) +
 
 ```
 
+And now the QQ-plot for the returs of SPY. 
 
 ```{r}
 ggplot(df_spy, aes(sample = return)) + 
@@ -135,4 +136,8 @@ ggplot(df_spy, aes(sample = return)) +
   labs(title = 'QQ-Plot for SPY returns')
 ```
 
-Again, our second plot clearly indicate how the returns deviate from normality.  
+Oh boy! Again, our second plot clearly indicate how the returns deviate from normality.  
+
+This QQ-plot can also be used to check for asymetry in the distribution of returns.  We can see a slightly left skew distribution (a negatively skew distribution). 
+
+

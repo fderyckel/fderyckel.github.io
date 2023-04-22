@@ -4,15 +4,31 @@ author: "Francois de Ryckel"
 date: "2022-11-02"
 categories: [statistics, code, analysis]
 editor: source
-date-modified: "2023-02-27"
+date-modified: "2023-04-22"
 ---
 
 This post is about summarizing the various statistical moments when doing quantitative finance. 
 
 We'll show these parameters using both R and python.  
 
+# Mean 
 
-# Using R
+# Standard Deviation 
+
+Standard deviation is the second moment.  
+
+# Skewness 
+
+::: {.callout-tip} 
+
+# Skewness 
+
+Skewness is measure of asymmetry of a distribution (or actually lack of).  How symmetric around the mean is the distribution? 
+A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew. 
+
+In a zero skew distribution, the mean = the median. 
+
+:::
 
 
 # Using Python
@@ -51,16 +67,7 @@ plt.boxplot(returns_21d, labels = ['Rolling 21-days return'])
 plt.show()
 ```
 
-::: {.callout-tip} 
 
-# Skewness 
-
-Skewness is measure of asymmetry of a distribution (or actually lack of).  How symmetric around the mean is the distribution? 
-A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew. 
-
-In a zero skew distribution, the mean = the median. 
-
-:::
 
 ```{python}
 from scipy.stats import skew, skewtest
