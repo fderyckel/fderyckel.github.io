@@ -1,8 +1,9 @@
 ---
 title: "Auto-Correlation - Part 1"
 author: "Francois de Ryckel"
-date: "2022-09-29"
-categories: [news]
+date: '2022-09-29'
+categories: [time-series]
+date-modified: '2022-09-09'
 ---
 
 Auto-correlation as the name indicates is the correlation of the time-serie with itself ... well, with a lag version of itself. 

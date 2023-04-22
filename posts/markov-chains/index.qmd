@@ -1,9 +1,10 @@
 ---
 title: "Markov Chains"
 author: "Francois de Ryckel"
-date: "2022-10-21"
+date: '2022-10-21'
 categories: [Random Walk, Markov Chain, code, python]
 editor: source
+date-modified: '2022-10-21'
 ---
 
 Introduction to Markov Chains

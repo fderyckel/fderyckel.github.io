@@ -7,11 +7,46 @@ editor: source
 date-modified: "2023-04-22"
 ---
 
-This post is about summarizing the various statistical moments when doing quantitative finance. 
+This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 
 
 We'll show these parameters using both R and python.  
 
+We'll use the SPY as a low-ish vol asset and AMD as an equity with higher vol.  We only use the last 5 years of data (from 2018 and beyond)
+
+Let's first load our libraries and the 2 data frame worth of prices. 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(readr)    # read_csv()
+library(dplyr)    # mutate(), filter()
+library(lubridate)
+library(ggplot2)
+
+df_spy <- read_csv('../../raw_data/SPY.csv') |> 
+  select(date, adjClose) |> 
+  arrange(date) |> 
+  mutate(return = log(adjClose / lag(adjClose))) |> 
+  filter(date > '2018-01-01')
+
+df_amd <- read_csv('../../raw_data/AMD.csv') |> 
+  select(date, adjClose) |> 
+  arrange(date) |> 
+  mutate(return = log(adjClose / lag(adjClose))) |> 
+  filter(date > '2018-01-01')
+```
+
+
 # Mean 
+
+The mean is our first moment. We'll cons
+
+Mathematically speaking, we define the mean as $$\sum^{n}_{i=1} \frac{r_i}{n}$$
+
+* $r_i$ is the return of the i-th observation
+    * using log return 
+* $n$ is the number of observation
 
 # Standard Deviation 
 
@@ -39,7 +74,7 @@ import pandas as pd
 
 amd = pd.read_csv('../../raw_data/AMD.csv')
 
-x = amd['Adj Close']
+x = amd['adjClose']
 
 returns_21d = np.log(x / x.shift(21)).dropna()
 
@@ -59,7 +94,7 @@ plt.hist(returns_21d, bins = 'rice', label = 'Rolling 21-days return')
 plt.show()
 ```
 
-We are seeing a large left tail with indeed the mean looking around 0. 
+We are seeing a larger left tail with indeed the mean looking around 0. 
 An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot. 
 
 ```{python}

@@ -1,9 +1,10 @@
 ---
 title: "Stochastic processes - Discrete Time Markov Chain"
 author: "Francois de Ryckel"
-date: "2022-11-12"
+date: '2022-11-12'
 categories: [Markov Chain]
 editor: source
+date-modified: '2022-11-12'
 ---
 
 This post is an introduction to Markov Chain with a presentation of Discrete Time Markov Chains.  

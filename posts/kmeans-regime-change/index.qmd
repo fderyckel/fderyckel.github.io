@@ -1,9 +1,10 @@
 ---
 title: "Kmeans with regime changes"
 author: "Francois de Ryckel"
-date: "2022-10-12"
+date: '2022-10-12'
 categories: [kmeans, code, analysis, tidymodel]
 editor: source
+date-modified: '2022-10-12'
 ---
 
 This post is about how to use Kmeans to classify various market regimes or to use Kmeans to classify financial observations. 
@@ -36,7 +37,7 @@ library(glue)         # concatenate strings together
 library(dplyr)        # the tidy plyr tool for data wrangling
 library(tidyr)        # to use the drop_na function
 the_path <- here::here()
-df <- read_csv(glue(the_path, "/raw_data/intc.csv")) |> 
+df <- read_csv(glue(the_path, "/raw_data/AMD.csv")) |> 
   rename(date = Date, high = High, low = Low, close = Close, adj_close = 'Adj Close') |> 
   select(date, high, low, close, adj_close)
 glimpse(df)
@@ -194,8 +195,8 @@ Original blog post
 #| eval: false
 
 import yfinance as yf     #only to download data
-data  = yf.download("INTC")
-data.to_csv("../../raw_data/intc.csv")
+data  = yf.download("AMD")
+data.to_csv("../../raw_data/AMD.csv")
 ```
 
 

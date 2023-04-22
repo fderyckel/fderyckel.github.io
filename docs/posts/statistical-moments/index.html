@@ -124,6 +124,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -197,7 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">February 27, 2023</p>
+        <p class="date-modified">April 22, 2023</p>
       </div>
     </div>
       
@@ -211,7 +212,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#using-r" id="toc-using-r" class="nav-link active" data-scroll-target="#using-r">Using R</a></li>
+  <li><a href="#mean" id="toc-mean" class="nav-link active" data-scroll-target="#mean">Mean</a></li>
+  <li><a href="#standard-deviation" id="toc-standard-deviation" class="nav-link" data-scroll-target="#standard-deviation">Standard Deviation</a></li>
+  <li><a href="#skewness" id="toc-skewness" class="nav-link" data-scroll-target="#skewness">Skewness</a></li>
   <li><a href="#using-python" id="toc-using-python" class="nav-link" data-scroll-target="#using-python">Using Python</a></li>
   </ul>
 </nav>
@@ -225,51 +228,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<p>This post is about summarizing the various statistical moments when doing quantitative finance.</p>
+<p>This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a <a href="../../posts/normality-returns/index.html">previous post</a>, we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails).</p>
 <p>We’ll show these parameters using both R and python.</p>
-<section id="using-r" class="level1">
-<h1>Using R</h1>
-</section>
-<section id="using-python" class="level1">
-<h1>Using Python</h1>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>amd <span class="op">=</span> pd.read_csv(<span class="st">'../../raw_data/AMD.csv'</span>)</span>
+<p>We’ll use the SPY as a low-ish vol asset and AMD as an equity with higher vol.&nbsp;We only use the last 5 years of data (from 2018 and beyond)</p>
+<p>Let’s first load our libraries and the 2 data frame worth of prices.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)    <span class="co"># read_csv()</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># mutate(), filter()</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> amd[<span class="st">'Adj Close'</span>]</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>returns_21d <span class="op">=</span> np.log(x <span class="op">/</span> x.shift(<span class="dv">21</span>)).dropna()</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>mean_21dret <span class="op">=</span> np.mean(returns_21d)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>std_21dret <span class="op">=</span> np.std(returns_21d)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21dret, <span class="dv">5</span>))</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>The mean rolling 21 days return is: 0.00611
-The standard deviation of the rolling 21 days return is: 0.17846</code></pre>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df_spy <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/SPY.csv'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, adjClose) <span class="sc">|&gt;</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">return =</span> <span class="fu">log</span>(adjClose <span class="sc">/</span> <span class="fu">lag</span>(adjClose))) <span class="sc">|&gt;</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2018-01-01'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>df_amd <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/AMD.csv'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, adjClose) <span class="sc">|&gt;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">return =</span> <span class="fu">log</span>(adjClose <span class="sc">/</span> <span class="fu">lag</span>(adjClose))) <span class="sc">|&gt;</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2018-01-01'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>The standard deviation is quite bigger than the mean. An histogram of the returns will confirm that.</p>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.hist(returns_21d, bins <span class="op">=</span> <span class="st">'rice'</span>, label <span class="op">=</span> <span class="st">'Rolling 21-days return'</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-3-output-1.png" width="583" height="411"></p>
-</div>
-</div>
-<p>We are seeing a large left tail with indeed the mean looking around 0. An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot.</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-4-output-1.png" width="590" height="411"></p>
-</div>
-</div>
+<section id="mean" class="level1">
+<h1>Mean</h1>
+<p>The mean is our first moment. We’ll cons</p>
+<p>Mathematically speaking, we define the mean as <span class="math display">\[\sum^{n}_{i=1} \frac{r_i}{n}\]</span></p>
+<ul>
+<li><span class="math inline">\(r_i\)</span> is the return of the i-th observation
+<ul>
+<li>using log return</li>
+</ul></li>
+<li><span class="math inline">\(n\)</span> is the number of observation</li>
+</ul>
+</section>
+<section id="standard-deviation" class="level1">
+<h1>Standard Deviation</h1>
+<p>Standard deviation is the second moment.</p>
+</section>
+<section id="skewness" class="level1">
+<h1>Skewness</h1>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -284,19 +282,78 @@ Skewness
 <p>In a zero skew distribution, the mean = the median.</p>
 </div>
 </div>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skew, skewtest</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>skew(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>-0.2776856914467193</code></pre>
+</section>
+<section id="using-python" class="level1">
+<h1>Using Python</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>amd <span class="op">=</span> pd.read_csv(<span class="st">'../../raw_data/AMD.csv'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> amd[<span class="st">'adjClose'</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>returns_21d <span class="op">=</span> np.log(x <span class="op">/</span> x.shift(<span class="dv">21</span>)).dropna()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>mean_21dret <span class="op">=</span> np.mean(returns_21d)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>std_21dret <span class="op">=</span> np.std(returns_21d)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The mean rolling 21 days return is: -0.00594</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The standard deviation of the rolling 21 days return is: 0.1832</code></pre>
+</div>
+</div>
+<p>The standard deviation is quite bigger than the mean. An histogram of the returns will confirm that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.hist(returns_21d, bins <span class="op">=</span> <span class="st">'rice'</span>, label <span class="op">=</span> <span class="st">'Rolling 21-days return'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(array([  2.,   0.,   3.,   4.,   5.,  26.,  31.,  56.,  66., 117., 192.,
+       269., 357., 420., 607., 637., 644., 567., 464., 380., 206., 157.,
+       109.,  98.,  73.,  31.,  28.,  14.,  10.,   8.,   2.,   1.,   0.,
+         3.,   2.,   1.]), array([-0.7537718 , -0.70724263, -0.66071346, -0.6141843 , -0.56765513,
+       -0.52112596, -0.47459679, -0.42806762, -0.38153845, -0.33500928,
+       -0.28848011, -0.24195095, -0.19542178, -0.14889261, -0.10236344,
+       -0.05583427, -0.0093051 ,  0.03722407,  0.08375324,  0.1302824 ,
+        0.17681157,  0.22334074,  0.26986991,  0.31639908,  0.36292825,
+        0.40945742,  0.45598659,  0.50251575,  0.54904492,  0.59557409,
+        0.64210326,  0.68863243,  0.7351616 ,  0.78169077,  0.82821994,
+        0.8747491 ,  0.92127827]), &lt;BarContainer object of 36 artists&gt;)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We are seeing a larger left tail with indeed the mean looking around 0. An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x16136c040&gt;, &lt;matplotlib.lines.Line2D object at 0x16136c2e0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x16136c580&gt;, &lt;matplotlib.lines.Line2D object at 0x16136c820&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x16134be80&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x16136cac0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x16136cd60&gt;], 'means': []}</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skew, skewtest</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>skew(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.21432056577181507</code></pre>
 </div>
 </div>
 <p>The skew value is quite large and negative which confirms the fat left tail we saw on the histogram</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>skewtest(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>SkewtestResult(statistic=-11.533410550708874, pvalue=8.95254274542113e-31)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>skewtest(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SkewtestResult(statistic=6.477804949429641, pvalue=9.306654969735504e-11)</code></pre>
 </div>
 </div>
 <p>Very small p-value. We reject the null-hypothesis. The distribution is not symetrical.</p>

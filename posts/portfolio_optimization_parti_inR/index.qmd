@@ -1,9 +1,10 @@
 ---
 title: "Portfolio Optimization Part I (in R)"
 author: "Francois de Ryckel"
-date: "2023-02-27"
+date: '2023-02-27'
 categories: [portfolio, R-code, quant-finance, model]
 editor: source
+date-modified: '2023-02-27'
 ---
 
 First post on portfolio optimization from a quantitative finance lense.  

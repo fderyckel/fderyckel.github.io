@@ -1,9 +1,10 @@
 ---
 title: "Intro to Kmeans"
 author: "Francois de Ryckel"
-date: "2022-10-31"
+date: '2022-10-31'
 categories: [kmeans, code, analysis, model]
 editor: source
+date-modified: '2022-10-31'
 ---
 
 The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use [my post on it](https://fderyckel.github.io/blog/posts/kmeans-regime-change/)

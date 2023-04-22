@@ -2,8 +2,9 @@
 title: "Translating Python Part 1 - Xgboost with Time-Series"
 author: "Francois de Ryckel"
 date: "2022-10-01"
-categories: [xgboost, code, analysis, tidymodel]
+categories: [xgboost, tidymodel]
 editor: source
+date-modified: '2022-10-01'
 ---
 
 This post is about using xgboost on a time-series using both R with the tidymodel framework and python.  It is part of a series of articles aiming at translating python timeseries blog articles into their tidymodels equivalent. 

@@ -140,4 +140,6 @@ Oh boy! Again, our second plot clearly indicate how the returns deviate from nor
 
 This QQ-plot can also be used to check for asymetry in the distribution of returns.  We can see a slightly left skew distribution (a negatively skew distribution). 
 
+## Kurtosis 
+
 

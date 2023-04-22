@@ -1,2 +1,2 @@
 GITHUB_PAT="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"
-RETICULATE_PYTHON=../../my_env/bin/python
+RETICULATE_PYTHON=/Users/francoisderyckel/.virtualenvs/my-env/bin/python

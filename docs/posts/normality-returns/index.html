@@ -220,6 +220,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#histograms" id="toc-histograms" class="nav-link" data-scroll-target="#histograms">Histograms</a></li>
   <li><a href="#qq-plots" id="toc-qq-plots" class="nav-link" data-scroll-target="#qq-plots">QQ Plots</a></li>
   </ul></li>
+  <li><a href="#kurtosis" id="toc-kurtosis" class="nav-link" data-scroll-target="#kurtosis">Kurtosis</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -322,7 +323,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>And here, we clearly see the big disconnect from normality: above expected number of returns at the mean, less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then fat tails.</p>
+<p>And here, we clearly see the big disconnect from normality: above expected number of returns at the mean (aka too peaked), less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then higher number of observations than expected in the tails (aka fat tails). Distribution of returns for equity are interesting in that sense: both too peaked and fat tails.</p>
 </section>
 <section id="qq-plots" class="level3">
 <h3 class="anchored" data-anchor-id="qq-plots">QQ Plots</h3>
@@ -336,6 +337,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>And now the QQ-plot for the returs of SPY.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_spy, <span class="fu">aes</span>(<span class="at">sample =</span> return)) <span class="sc">+</span> </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span> </span>
@@ -345,10 +347,14 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Again, our second plot clearly indicate how the returns deviate from normality.</p>
-
-
+<p>Oh boy! Again, our second plot clearly indicate how the returns deviate from normality.</p>
+<p>This QQ-plot can also be used to check for asymetry in the distribution of returns. We can see a slightly left skew distribution (a negatively skew distribution).</p>
 </section>
+</section>
+<section id="kurtosis" class="level2">
+<h2 class="anchored" data-anchor-id="kurtosis">Kurtosis</h2>
+
+
 </section>
 </section>
 
