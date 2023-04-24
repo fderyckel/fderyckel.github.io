@@ -64,19 +64,20 @@ We can now use the values of $\beta_0$ @eq-beta0 and $\beta_1$ @eq-beta1 into ou
 
 ## Linking the slope and covariance 
 
-While going over some textbooks or online resources, we find another formula for the slope of our regression line.  That formula involve the covariance and or the coefficient of correlation.  
+While going over some textbooks or online resources, we find another formula for the slope of our regression line.  That formula involve the covariance and or the Pearson coefficient of correlation.  
 
-$$\beta_1 = \frac{\sum (x_i - \bar{x}) \cdot (y_i - \bar{y})}{\sum(x_i - \bar{x})^2} = \frac{Cov(x, y)}{\sigma^2 x}$$ {#eq-beta1-cov}
+$$\beta_1 = \frac{Cov(x, y)}{\sigma^2 x}$$ {#eq-beta1-cov}
 
-Now let's connect both @eq-beta1a and @q-beta1-cov
+Now let's connect both @eq-beta1a and @eq-beta1-cov
 
 I'll rewrite @eq-beta1a in a slightly simpler form just to lighten the notation 
 $$\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})}$$
 
 Now, it can be noted that that 
-$\sum (x_i - \bar{x}) = 0$ or similarly $\sum (y_i - \bar{y}) = 0$.  
-Hence $\bar{x} \sum (y_i - \bar{y}) = 0$
-Considering $x_i$ or $y_i$ are constant, we could also write $\sum \bar{x} (y_i - \bar{y}) = 0$ and similarly $\sum \bar{x} (x_i - \bar{x}) = 0$.  
+$\sum (x_i - \bar{x}) = 0$ or similarly $\sum (y_i - \bar{y}) = 0$.  Hence $\bar{x} \sum (y_i - \bar{y}) = 0$ 
+
+
+Considering $\bar{x}$ or $\bar{y}$ are constant, we could also write $\sum \bar{x} (y_i - \bar{y}) = 0$ and similarly $\sum \bar{x} (x_i - \bar{x}) = 0$.  
 
 With that in mind, we can now, go back on our @eq-beta1a 
 $$\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})} = 
@@ -89,6 +90,9 @@ Defining $Cov(x, y) = \frac{\sum (x_i - \bar{x}) (y_i - \bar{y})}{n}$ and $\sigm
 We can finally rewrite 
 
 $$\beta_1 = \frac{Cov(x, y)}{\sigma_x^2}$$
+
+Finally, if we want to involve the Pearson coefficient of correlation $\rho = \frac{Cov(x, y)}{\sigma_x \sigma_y}$, we could also re-write our slope as 
+$$\beta_1 = \rho \frac{\sigma_y}{\sigma_x}$$
 
 ## Considerations when doing linear regression 
 
@@ -105,3 +109,5 @@ $$\beta_1 = \frac{Cov(x, y)}{\sigma_x^2}$$
 
 * [All you need to know about your first Machine Learning model – Linear Regression](https://www.analyticsvidhya.com/blog/2021/05/all-you-need-to-know-about-your-first-machine-learning-model-linear-regression/)
 * [Linear Regression Complete Derivation With Mathematics Explained!](https://towardsai.net/p/machine-learning/linear-regression-complete-derivation-with-mathematics-explained)
+* [Involving cavariance in the slope](https://youtu.be/ewnc1cXJmGA) 
+

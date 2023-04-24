@@ -210,18 +210,19 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="linking-the-slope-and-covariance" class="level2">
 <h2 class="anchored" data-anchor-id="linking-the-slope-and-covariance">Linking the slope and covariance</h2>
-<p>While going over some textbooks or online resources, we find another formula for the slope of our regression line. That formula involve the covariance and or the coefficient of correlation.</p>
-<p><span id="eq-beta1-cov"><span class="math display">\[\beta_1 = \frac{\sum (x_i - \bar{x}) \cdot (y_i - \bar{y})}{\sum(x_i - \bar{x})^2} = \frac{Cov(x, y)}{\sigma^2 x} \tag{5}\]</span></span></p>
-<p>Now let’s connect both <a href="#eq-beta1a">Equation&nbsp;3</a> and <span class="citation" data-cites="q-beta1-cov">@q-beta1-cov</span></p>
+<p>While going over some textbooks or online resources, we find another formula for the slope of our regression line. That formula involve the covariance and or the Pearson coefficient of correlation.</p>
+<p><span id="eq-beta1-cov"><span class="math display">\[\beta_1 = \frac{Cov(x, y)}{\sigma^2 x} \tag{5}\]</span></span></p>
+<p>Now let’s connect both <a href="#eq-beta1a">Equation&nbsp;3</a> and <a href="#eq-beta1-cov">Equation&nbsp;5</a></p>
 <p>I’ll rewrite <a href="#eq-beta1a">Equation&nbsp;3</a> in a slightly simpler form just to lighten the notation <span class="math display">\[\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})}\]</span></p>
-<p>Now, it can be noted that that <span class="math inline">\(\sum (x_i - \bar{x}) = 0\)</span> or similarly <span class="math inline">\(\sum (y_i - \bar{y}) = 0\)</span>.<br>
-Hence <span class="math inline">\(\bar{x} \sum (y_i - \bar{y}) = 0\)</span> Considering <span class="math inline">\(x_i\)</span> or <span class="math inline">\(y_i\)</span> are constant, we could also write <span class="math inline">\(\sum \bar{x} (y_i - \bar{y}) = 0\)</span> and similarly <span class="math inline">\(\sum \bar{x} (x_i - \bar{x}) = 0\)</span>.</p>
+<p>Now, it can be noted that that <span class="math inline">\(\sum (x_i - \bar{x}) = 0\)</span> or similarly <span class="math inline">\(\sum (y_i - \bar{y}) = 0\)</span>. Hence <span class="math inline">\(\bar{x} \sum (y_i - \bar{y}) = 0\)</span></p>
+<p>Considering <span class="math inline">\(\bar{x}\)</span> or <span class="math inline">\(\bar{y}\)</span> are constant, we could also write <span class="math inline">\(\sum \bar{x} (y_i - \bar{y}) = 0\)</span> and similarly <span class="math inline">\(\sum \bar{x} (x_i - \bar{x}) = 0\)</span>.</p>
 <p>With that in mind, we can now, go back on our <a href="#eq-beta1a">Equation&nbsp;3</a> <span class="math display">\[\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})} =
 \frac{\sum x_i (y_i - \bar{y}) - \sum \bar{x} (y_i - \bar{y})}{\sum x_i (x_i - \bar{x}) - \sum \bar{x} (x_i - \bar{x})}\]</span></p>
 <p><span class="math display">\[\beta1 = \frac{\sum (x_i - \bar{x}) (y_i - \bar{y})}{\sum (x_i - \bar{x})^2}\]</span></p>
 <p>Defining <span class="math inline">\(Cov(x, y) = \frac{\sum (x_i - \bar{x}) (y_i - \bar{y})}{n}\)</span> and <span class="math inline">\(\sigma_x = \sqrt{\frac{\sum (x_i - \bar{x})^2}{n}}\)</span></p>
 <p>We can finally rewrite</p>
 <p><span class="math display">\[\beta_1 = \frac{Cov(x, y)}{\sigma_x^2}\]</span></p>
+<p>Finally, if we want to involve the Pearson coefficient of correlation <span class="math inline">\(\rho = \frac{Cov(x, y)}{\sigma_x \sigma_y}\)</span>, we could also re-write our slope as <span class="math display">\[\beta_1 = \rho \frac{\sigma_y}{\sigma_x}\]</span></p>
 </section>
 <section id="considerations-when-doing-linear-regression" class="level2">
 <h2 class="anchored" data-anchor-id="considerations-when-doing-linear-regression">Considerations when doing linear regression</h2>
