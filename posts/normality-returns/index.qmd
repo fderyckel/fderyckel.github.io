@@ -2,7 +2,7 @@
 title: "Normality of asset returns"
 author: "Francois de Ryckel"
 date: "2023-04-19"
-categories: [R-code, quant-finance, normal-distribution]
+categories: [quant-finance, normal-distribution, qq-plot, kurtosis]
 editor: source
 image: 'qqplot-spy.png'
 date-modified: "2023-04-21"
