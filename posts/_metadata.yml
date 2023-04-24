@@ -12,3 +12,7 @@ toc: true
 toc-title: Table of contents
 toc-location: left
 toc-depth: 3
+
+comments: 
+  giscus: 
+    repo: fderyckel/fderyckel.github.io

@@ -17,7 +17,3 @@ format:
     css: styles.css
 
 editor: source
-
-comments: 
-  giscus: 
-    repo: fderyckel/fderyckel.github.io
