@@ -2,11 +2,11 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/linear-regression/index.html",
       "/posts/statistical-moments/index.html",
       "/posts/normality-returns/index.html",
       "/posts/random-behavior-assets/index.html",
       "/posts/binomials_models/index.html",
-      "/posts/linear-regression/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",
       "/posts/stochastic-processes/index.html",
