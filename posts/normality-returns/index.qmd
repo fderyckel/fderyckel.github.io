@@ -5,7 +5,7 @@ date: "2023-04-19"
 categories: [quant-finance, normal-distribution, qq-plot, kurtosis]
 editor: source
 image: 'qqplot-spy.png'
-date-modified: "2023-04-21"
+date-modified: '2023-04-25'
 ---
 
 ```{r}
@@ -22,6 +22,13 @@ library(ggplot2)
 # Introduction 
 
 As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random.  That being said they are not totally normally distributed.  This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns. 
+
+When testing for normality, there are many ways to get there.  
+
+* Visual ways: histogram, density plot and QQ-plots  
+* Statistical tests such as the Shapiro-Wilk test (small to medium sample size, $n \leq 300$) or the Kolmogorov-Smirnov test 
+* Using Skewness or Kurtosis. 
+
 
 Let's start by considering an ETF (low-ish volatility) like the SPY500.  
 To better illustrate our point, we'll also consider a fictitious stock with random and almost perfectly normally distributed returns. 
@@ -77,11 +84,11 @@ mean(df_spy$return)
 ```
 
 
-## Visual checks on imaginary stock vs SPY 
+# Visual checks on imaginary stock vs SPY 
 
 Usual visual checks for normality are the histogram and the QQ-plot. 
 
-### Histograms 
+## Histograms 
 
 Let's see how well the returns stack to our imaginary stock (with close to perfect pseudo-randomness)
 
@@ -115,7 +122,7 @@ ggplot(df_spy, aes(return)) +
 
 And here, we clearly see the big disconnect from normality: above expected number of returns at the mean (aka too peaked), less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then higher number of observations than expected in the tails (aka fat tails).  Distribution of returns for equity are interesting in that sense: both too peaked and fat tails. 
 
-### QQ Plots 
+## QQ Plots 
 
 Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot).  On the y-axis, we have the returns, on the x-axis the theoretical quantiles. 
 
@@ -140,6 +147,40 @@ Oh boy! Again, our second plot clearly indicate how the returns deviate from nor
 
 This QQ-plot can also be used to check for asymetry in the distribution of returns.  We can see a slightly left skew distribution (a negatively skew distribution). 
 
-## Kurtosis 
+# Skewness and Kurtosis 
 
+Skewness and Kurtosis are the third and fourth [statiscal moments](../statistical-moments/index.qmd) of a distribution.  
+
+## Skewness 
+
+Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symmetric). 
+
+Let's test the symmetry of our 2 sets of return.  Unfortunately, we did not find any function to calculate skewness in base R (seems strange!).  
+
+```{r}
+moments::skewness(df$return)
+moments::skewness(df_spy$return)
+```
+
+As expected, our fictitious stock has almost 0 skew (symmetric around the mean), while the SPY has a moderate negative skew (which we could see already on the QQ-plot and histogram.)
+
+# Statistical tests 
+
+## Shapiro-Wilk test 
+
+Shapiro-Wilk test should actually not be used on large data set. Although, we use it here for demonstration purposes, results should be interpreted with a big spoon of salt. 
+
+Let's first test on our fictitious equity. 
+
+```{r}
+shapiro.test(df$return)
+```
+
+Expected, as the randomness of our fictitious stock was randomly distributed. 
+
+And then on the return of SPY 
+
+```{r}
+shapiro.test(df_spy$return)
+```
 

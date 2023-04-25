@@ -199,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">April 21, 2023</p>
+        <p class="date-modified">April 25, 2023</p>
       </div>
     </div>
       
@@ -214,14 +214,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#comparing-spy-returns-with-a-similar-imaginary-stock" id="toc-comparing-spy-returns-with-a-similar-imaginary-stock" class="nav-link" data-scroll-target="#comparing-spy-returns-with-a-similar-imaginary-stock">Comparing SPY returns with a similar imaginary stock</a>
-  <ul class="collapse">
+  <li><a href="#comparing-spy-returns-with-a-similar-imaginary-stock" id="toc-comparing-spy-returns-with-a-similar-imaginary-stock" class="nav-link" data-scroll-target="#comparing-spy-returns-with-a-similar-imaginary-stock">Comparing SPY returns with a similar imaginary stock</a></li>
   <li><a href="#visual-checks-on-imaginary-stock-vs-spy" id="toc-visual-checks-on-imaginary-stock-vs-spy" class="nav-link" data-scroll-target="#visual-checks-on-imaginary-stock-vs-spy">Visual checks on imaginary stock vs SPY</a>
   <ul class="collapse">
   <li><a href="#histograms" id="toc-histograms" class="nav-link" data-scroll-target="#histograms">Histograms</a></li>
   <li><a href="#qq-plots" id="toc-qq-plots" class="nav-link" data-scroll-target="#qq-plots">QQ Plots</a></li>
   </ul></li>
-  <li><a href="#kurtosis" id="toc-kurtosis" class="nav-link" data-scroll-target="#kurtosis">Kurtosis</a></li>
+  <li><a href="#skewness-and-kurtosis" id="toc-skewness-and-kurtosis" class="nav-link" data-scroll-target="#skewness-and-kurtosis">Skewness and Kurtosis</a>
+  <ul class="collapse">
+  <li><a href="#skewness" id="toc-skewness" class="nav-link" data-scroll-target="#skewness">Skewness</a></li>
+  </ul></li>
+  <li><a href="#statistical-tests" id="toc-statistical-tests" class="nav-link" data-scroll-target="#statistical-tests">Statistical tests</a>
+  <ul class="collapse">
+  <li><a href="#shapiro-wilk-test" id="toc-shapiro-wilk-test" class="nav-link" data-scroll-target="#shapiro-wilk-test">Shapiro-Wilk test</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -241,6 +246,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>As mentioned in one of our <a href="../../posts/random-behavior-assets/index.html">previous posts</a>, we know that in quantitative finance, assets returns are assumed to be random. That being said they are not totally normally distributed. This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns.</p>
+<p>When testing for normality, there are many ways to get there.</p>
+<ul>
+<li>Visual ways: histogram, density plot and QQ-plots<br>
+</li>
+<li>Statistical tests such as the Shapiro-Wilk test (small to medium sample size, <span class="math inline">\(n \leq 300\)</span>) or the Kolmogorov-Smirnov test</li>
+<li>Using Skewness or Kurtosis.</li>
+</ul>
 <p>Let’s start by considering an ETF (low-ish volatility) like the SPY500.<br>
 To better illustrate our point, we’ll also consider a fictitious stock with random and almost perfectly normally distributed returns.</p>
 <p>From previous post, returns can be explained with a drift rate + some randomness: <span class="math display">\[R_i = \mu \delta t + \phi \sigma \delta t^{1/2}\]</span></p>
@@ -292,11 +304,12 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <pre><code>[1] 0.0003587736</code></pre>
 </div>
 </div>
-<section id="visual-checks-on-imaginary-stock-vs-spy" class="level2">
-<h2 class="anchored" data-anchor-id="visual-checks-on-imaginary-stock-vs-spy">Visual checks on imaginary stock vs SPY</h2>
+</section>
+<section id="visual-checks-on-imaginary-stock-vs-spy" class="level1">
+<h1>Visual checks on imaginary stock vs SPY</h1>
 <p>Usual visual checks for normality are the histogram and the QQ-plot.</p>
-<section id="histograms" class="level3">
-<h3 class="anchored" data-anchor-id="histograms">Histograms</h3>
+<section id="histograms" class="level2">
+<h2 class="anchored" data-anchor-id="histograms">Histograms</h2>
 <p>Let’s see how well the returns stack to our imaginary stock (with close to perfect pseudo-randomness)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(return)) <span class="sc">+</span> </span>
@@ -326,8 +339,8 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 </div>
 <p>And here, we clearly see the big disconnect from normality: above expected number of returns at the mean (aka too peaked), less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then higher number of observations than expected in the tails (aka fat tails). Distribution of returns for equity are interesting in that sense: both too peaked and fat tails.</p>
 </section>
-<section id="qq-plots" class="level3">
-<h3 class="anchored" data-anchor-id="qq-plots">QQ Plots</h3>
+<section id="qq-plots" class="level2">
+<h2 class="anchored" data-anchor-id="qq-plots">QQ Plots</h2>
 <p>Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot). On the y-axis, we have the returns, on the x-axis the theoretical quantiles.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> return)) <span class="sc">+</span> </span>
@@ -352,8 +365,54 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <p>This QQ-plot can also be used to check for asymetry in the distribution of returns. We can see a slightly left skew distribution (a negatively skew distribution).</p>
 </section>
 </section>
-<section id="kurtosis" class="level2">
-<h2 class="anchored" data-anchor-id="kurtosis">Kurtosis</h2>
+<section id="skewness-and-kurtosis" class="level1">
+<h1>Skewness and Kurtosis</h1>
+<p>Skewness and Kurtosis are the third and fourth <a href="../../posts/statistical-moments/index.html">statiscal moments</a> of a distribution.</p>
+<section id="skewness" class="level2">
+<h2 class="anchored" data-anchor-id="skewness">Skewness</h2>
+<p>Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symmetric).</p>
+<p>Let’s test the symmetry of our 2 sets of return. Unfortunately, we did not find any function to calculate skewness in base R (seems strange!).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">skewness</span>(df<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0398789</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">skewness</span>(df_spy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.7418496</code></pre>
+</div>
+</div>
+<p>As expected, our fictitious stock has almost 0 skew (symmetric around the mean), while the SPY has a moderate negative skew (which we could see already on the QQ-plot and histogram.)</p>
+</section>
+</section>
+<section id="statistical-tests" class="level1">
+<h1>Statistical tests</h1>
+<section id="shapiro-wilk-test" class="level2">
+<h2 class="anchored" data-anchor-id="shapiro-wilk-test">Shapiro-Wilk test</h2>
+<p>Shapiro-Wilk test should actually not be used on large data set. Although, we use it here for demonstration purposes, results should be interpreted with a big spoon of salt.</p>
+<p>Let’s first test on our fictitious equity.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df$return
+W = 0.99895, p-value = 0.9215</code></pre>
+</div>
+</div>
+<p>Expected, as the randomness of our fictitious stock was randomly distributed.</p>
+<p>And then on the return of SPY</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df_spy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df_spy$return
+W = 0.894, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
 
 
 </section>

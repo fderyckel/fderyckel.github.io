@@ -215,6 +215,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#mean" id="toc-mean" class="nav-link active" data-scroll-target="#mean">Mean</a></li>
   <li><a href="#standard-deviation" id="toc-standard-deviation" class="nav-link" data-scroll-target="#standard-deviation">Standard Deviation</a></li>
   <li><a href="#skewness" id="toc-skewness" class="nav-link" data-scroll-target="#skewness">Skewness</a></li>
+  <li><a href="#kurtosis" id="toc-kurtosis" class="nav-link" data-scroll-target="#kurtosis">Kurtosis</a></li>
   <li><a href="#using-python" id="toc-using-python" class="nav-link" data-scroll-target="#using-python">Using Python</a></li>
   </ul>
 </nav>
@@ -279,9 +280,30 @@ Skewness
 </div>
 <div class="callout-body-container callout-body">
 <p>Skewness is measure of asymmetry of a distribution (or actually lack of). How symmetric around the mean is the distribution? A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew.</p>
-<p>In a zero skew distribution, the mean = the median.</p>
+<p>In a zero skew distribution, the mean = the median and the distribution is symmetric.</p>
 </div>
 </div>
+<p>Mathematically, we define skewness as</p>
+<p><span id="eq-skewness-pop"><span class="math display">\[\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^3}} \tag{1}\]</span></span></p>
+<p>In the case of a sample, we’ll multiply <a href="#eq-skewness-pop">Equation&nbsp;1</a> by a factor of <span class="math inline">\(\frac{\sqrt{n(n-1)}}{n-2}\)</span></p>
+</section>
+<section id="kurtosis" class="level1">
+<h1>Kurtosis</h1>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Kurtosis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Kurtosis is a measure that describes the shape of a distribution’s tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures “tailedness,” not “peakedness.”</p>
+</div>
+</div>
+<p>Most statistical packages are providing <strong>excess kurtosis</strong> by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0.</p>
+<p>There are 3 categories of kurtosis: leptokurtic, mesokurtic (aka normal distribution), platykurtic. <img src="kurtosis.png" class="img-fluid" alt="Type of Kurtosis"></p>
 </section>
 <section id="using-python" class="level1">
 <h1>Using Python</h1>
@@ -334,7 +356,7 @@ Skewness
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x1497e8040&gt;, &lt;matplotlib.lines.Line2D object at 0x1497e82e0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x1497e8580&gt;, &lt;matplotlib.lines.Line2D object at 0x1497e8820&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x1497c7e80&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x1497e8ac0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x1497e8d60&gt;], 'means': []}</code></pre>
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x17e34d040&gt;, &lt;matplotlib.lines.Line2D object at 0x17e34d2e0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x17e34d580&gt;, &lt;matplotlib.lines.Line2D object at 0x17e34d820&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x17e32ce80&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x17e34dac0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x17e34dd60&gt;], 'means': []}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -357,7 +379,6 @@ Skewness
 </div>
 </div>
 <p>Very small p-value. We reject the null-hypothesis. The distribution is not symetrical.</p>
-<p>kurtosis is a measure that describes the shape of a distribution’s tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures “tailedness,” not “peakedness.”</p>
 
 
 </section>

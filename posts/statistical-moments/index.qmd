@@ -61,10 +61,31 @@ Standard deviation is the second moment.
 Skewness is measure of asymmetry of a distribution (or actually lack of).  How symmetric around the mean is the distribution? 
 A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew. 
 
-In a zero skew distribution, the mean = the median. 
+In a zero skew distribution, the mean = the median and the distribution is symmetric. 
 
 :::
 
+Mathematically, we define skewness as 
+
+$$\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^3}}$$ {#eq-skewness-pop}
+
+In the case of a sample, we'll multiply @eq-skewness-pop by a factor of $\frac{\sqrt{n(n-1)}}{n-2}$
+
+
+# Kurtosis 
+
+::: {.callout-tip} 
+
+# Kurtosis
+
+Kurtosis is a measure that describes the shape of a distribution's tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures "tailedness," not "peakedness." 
+
+:::
+
+Most statistical packages are providing **excess kurtosis** by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0. 
+
+There are 3 categories of kurtosis: leptokurtic, mesokurtic (aka normal distribution), platykurtic. 
+![Type of Kurtosis](kurtosis.png)
 
 # Using Python
 
@@ -119,5 +140,3 @@ skewtest(returns_21d)
 Very small p-value.  We reject the null-hypothesis.  The distribution is not symetrical. 
 
 
-
- kurtosis is a measure that describes the shape of a distribution's tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures "tailedness," not "peakedness." 

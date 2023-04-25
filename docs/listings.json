@@ -2,9 +2,9 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/normality-returns/index.html",
       "/posts/linear-regression/index.html",
       "/posts/statistical-moments/index.html",
-      "/posts/normality-returns/index.html",
       "/posts/random-behavior-assets/index.html",
       "/posts/binomials_models/index.html",
       "/posts/lin-algebra-quant/index.html",
