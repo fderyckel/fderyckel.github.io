@@ -1,0 +1,25 @@
+---
+title: "Algebra For Quant"
+author: "Francois de Ryckel"
+date: "2022-10-01"
+categories: [statistics, code, analysis]
+editor: source
+date-modified: "2022-10-01"
+---
+
+
+I am storing here a few nuggets of algebra I need for quantitative finance and machine learning.  
+
+# $e^x$ as an infinite serie 
+
+Using the McLaurin series expansion, we can define $e^x$ as an infinite sum.  
+Here is how it goes: 
+$$e^x \approx f(0) + f'(0) \frac{x}{1} + f''(0) \frac{x^2}{2!} + f'''(0) \frac{x^3}{3!} + \cdots + f^n(0) \frac{x^n}{n!}$$
+
+As $f(0) = f'(0) = f''(0) = f^n(0) = e^0 = 1$, we can rewrite our previous expression as 
+
+$$e^x \approx 1 + \frac{x}{1} + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots + \frac{x^n}{n!}$$
+
+Hence: $e^x \approx \sum_{n=1}^\infty \frac{x^n}{n!}$
+
+

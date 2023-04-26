@@ -283,9 +283,15 @@ Skewness
 <p>In a zero skew distribution, the mean = the median and the distribution is symmetric.</p>
 </div>
 </div>
+<p>In a sense, skewness is quantifying for us how far is the median from the mean.</p>
 <p>Mathematically, we define skewness as</p>
 <p><span id="eq-skewness-pop"><span class="math display">\[\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^3}} \tag{1}\]</span></span></p>
-<p>In the case of a sample, we’ll multiply <a href="#eq-skewness-pop">Equation&nbsp;1</a> by a factor of <span class="math inline">\(\frac{\sqrt{n(n-1)}}{n-2}\)</span></p>
+<p>In the case of a sample, we’ll multiply <a href="#eq-skewness-pop">Equation&nbsp;2</a> by a factor of <span class="math inline">\(\frac{\sqrt{n(n-1)}}{n-2}\)</span></p>
+<ul>
+<li>skenwess = 0 ==&gt; normallly distributed</li>
+<li>$ -0.5 skewness $ ==&gt; moderately skew</li>
+<li>$$</li>
+</ul>
 </section>
 <section id="kurtosis" class="level1">
 <h1>Kurtosis</h1>
@@ -302,8 +308,17 @@ Kurtosis
 <p>Kurtosis is a measure that describes the shape of a distribution’s tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures “tailedness,” not “peakedness.”</p>
 </div>
 </div>
-<p>Most statistical packages are providing <strong>excess kurtosis</strong> by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0.</p>
-<p>There are 3 categories of kurtosis: leptokurtic, mesokurtic (aka normal distribution), platykurtic. <img src="kurtosis.png" class="img-fluid" alt="Type of Kurtosis"></p>
+<p>Because, we raised the difference of a data point to its mean to the 4th power, it is really the data points far away from the mean that do participate to the kurtosis.</p>
+<p>Mathematically, we define kurtosis as</p>
+<p><span id="eq-skewness-pop"><span class="math display">\[\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2} \tag{2}\]</span></span></p>
+<p>Some statistical packages are providing <strong>excess kurtosis</strong> by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0.</p>
+<p>There are 3 categories of kurtosis: leptokurtic (positive excess kurtosis), mesokurtic (aka normal distribution), platykurtic. <img src="kurtosis.png" class="img-fluid" alt="Type of Kurtosis"></p>
+<ul>
+<li>A kurtosis greater than 3 =&gt; leptokurtic</li>
+<li>A kurtosis around 3 =&gt; mesokurtic</li>
+<li>A kurtosis less than 3 =&gt; platykurtic</li>
+</ul>
+<p>Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.</p>
 </section>
 <section id="using-python" class="level1">
 <h1>Using Python</h1>
@@ -356,7 +371,7 @@ Kurtosis
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x17e34d040&gt;, &lt;matplotlib.lines.Line2D object at 0x17e34d2e0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x17e34d580&gt;, &lt;matplotlib.lines.Line2D object at 0x17e34d820&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x17e32ce80&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x17e34dac0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x17e34dd60&gt;], 'means': []}</code></pre>
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x179bf8040&gt;, &lt;matplotlib.lines.Line2D object at 0x179bf82e0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x179bf8580&gt;, &lt;matplotlib.lines.Line2D object at 0x179bf8820&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x179bd7e80&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x179bf8ac0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x179bf8d60&gt;], 'means': []}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">

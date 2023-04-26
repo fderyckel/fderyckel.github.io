@@ -65,11 +65,17 @@ In a zero skew distribution, the mean = the median and the distribution is symme
 
 :::
 
+In a sense, skewness is quantifying for us how far is the median from the mean.  
+
 Mathematically, we define skewness as 
 
 $$\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^3}}$$ {#eq-skewness-pop}
 
 In the case of a sample, we'll multiply @eq-skewness-pop by a factor of $\frac{\sqrt{n(n-1)}}{n-2}$
+
+* skenwess = 0 ==> normallly distributed
+* $ -0.5 \leq skewness \leq 0.5 $  ==> moderately skew
+* $$
 
 
 # Kurtosis 
@@ -82,10 +88,22 @@ Kurtosis is a measure that describes the shape of a distribution's tails in rela
 
 :::
 
-Most statistical packages are providing **excess kurtosis** by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0. 
+Because, we raised the difference of a data point to its mean to the 4th power, it is really the data points far away from the mean that do participate to the kurtosis. 
 
-There are 3 categories of kurtosis: leptokurtic, mesokurtic (aka normal distribution), platykurtic. 
+Mathematically, we define kurtosis as 
+
+$$\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2}$$ {#eq-skewness-pop}
+
+Some statistical packages are providing **excess kurtosis** by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0. 
+
+There are 3 categories of kurtosis: leptokurtic (positive excess kurtosis), mesokurtic (aka normal distribution), platykurtic. 
 ![Type of Kurtosis](kurtosis.png)
+
+* A kurtosis greater than 3 => leptokurtic
+* A kurtosis around 3 => mesokurtic 
+* A kurtosis less than 3 => platykurtic
+
+Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.  
 
 # Using Python
 

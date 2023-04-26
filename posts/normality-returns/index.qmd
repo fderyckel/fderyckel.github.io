@@ -19,26 +19,26 @@ library(readr)
 library(ggplot2)
 ```
 
-# Introduction 
+# Introduction
 
-As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random.  That being said they are not totally normally distributed.  This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns. 
+As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random. That being said they are not totally normally distributed. This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns.
 
-When testing for normality, there are many ways to get there.  
+As reminder, a dataset can be said to be normally distributed if its probability density function can be modelled by $$P(X = x) = \frac{1}{\sigma \sqrt{2 \pi}} \cdot e^{-\frac{(x-\mu)^2}{2 \sigma^2}}$$
 
-* Visual ways: histogram, density plot and QQ-plots  
-* Statistical tests such as the Shapiro-Wilk test (small to medium sample size, $n \leq 300$) or the Kolmogorov-Smirnov test 
-* Using Skewness or Kurtosis. 
+When testing for normality, there are many ways to get there.
 
+-   Visual ways: histogram, density plot and QQ-plots\
+-   Using Skewness or Kurtosis
+-   Statistical tests such as the Shapiro-Wilk test (small to medium sample size, $n \leq 300$) or the Kolmogorov-Smirnov test
 
-Let's start by considering an ETF (low-ish volatility) like the SPY500.  
-To better illustrate our point, we'll also consider a fictitious stock with random and almost perfectly normally distributed returns. 
+Let's start by considering an ETF (low-ish volatility) like the SPY500.\
+To better illustrate our point, we'll also consider a fictitious stock with random and almost perfectly normally distributed returns.
 
-From previous post, returns can be explained with a drift rate + some randomness: 
-$$R_i = \mu \delta t + \phi \sigma \delta t^{1/2}$$
+From previous post, returns can be explained with a drift rate + some randomness: $$R_i = \mu \delta t + \phi \sigma \delta t^{1/2}$$
 
-# Comparing SPY returns with a similar imaginary stock 
+# Comparing SPY returns with a similar imaginary stock
 
-Let's make some assumptions on how to get the drift rate and volatility of SPY.  Using all the trading sessions since 01 Jan 2020, we'll use the mean historical returns as standard deviation of returns as drift and volatility.   
+Let's make some assumptions on how to get the drift rate and volatility of SPY. Using all the trading sessions since 01 Jan 2020, we'll use the mean historical returns and standard deviation of returns as drift and volatility.
 
 ```{r}
 #| warning: false
@@ -56,39 +56,49 @@ sigma = sd(df_spy$return)
 
 So over the last 3-ish years, SPY had an annualized drift rate of `r round((drift * 252)*100, 2)`% with an volatility of `r round((sigma * sqrt(252))*100, 2)`%
 
-Let's consider now an imaginary stock with a similar drift rate and standard deviation as SPY.  
+Let's consider now an imaginary stock with a similar drift rate and standard deviation as SPY.
 
 ```{r}
 set.seed(21042023)
-phi = rnorm(831, mean = 0, sd = 1)
-df <- tibble(time = 1:length(phi), 
+phi = rnorm(nrow(df_spy), mean = 0, sd = 1)   # create randomness from a normal distribution
+df <- tibble(time = 1:length(phi),            
              phi = phi, 
-             return = drift + sigma * phi)
+             return = drift + sigma * phi)    # create the return as drift + randomness 
 
 prices = c(100)
 for (i in 2:(nrow(df))) {
-  prices[i] = prices[i-1] * (1 + df$return[i])
+  prices[i] = prices[i-1] * (1 + df$return[i])  #create a vector of prices based on the returns
 }
 
 df <- add_column(df, prices)
 
+```
+
+Let's have a quick check that indeed mean and standard deviation of returns are similar. 
+
+|                  | Drift                    | Volatility             |
+|------------------|--------------------------|------------------------|
+| SPY              | `r round(mean(df_spy$return), 5)` | `r round(sd(df$return), 4)`     |
+| Fictitious Asset | `r round(mean(df$return), 5)`     | `r round(sd(df_spy$return), 4)` |
+
+: Summary of first 2 moments for both assets
+
+```{r}
 ggplot(df, aes(x = time, y = prices)) + 
   geom_line() + 
   labs(title = 'Imaginary Stock', 
        subtitle = 'Same drift as volatility as SPY')
+
+ggplot(df_spy, aes(x = date, y = adjClose)) + 
+  geom_line() + 
+  labs(title = 'SPY')
 ```
 
-```{r}
-mean(df$return)
-mean(df_spy$return)
-```
+# Visual checks on imaginary stock vs SPY
 
+Usual visual checks for normality are the histogram and the QQ-plot.
 
-# Visual checks on imaginary stock vs SPY 
-
-Usual visual checks for normality are the histogram and the QQ-plot. 
-
-## Histograms 
+## Histograms
 
 Let's see how well the returns stack to our imaginary stock (with close to perfect pseudo-randomness)
 
@@ -103,9 +113,9 @@ ggplot(df, aes(return)) +
   scale_x_continuous(limits = c(-0.055, 0.055), n.breaks = 9)
 ```
 
-The black line is the actual density of returns, while the red line is the density of the normal distribution with same drift and volatility as earlier.   Lines are pretty close to each other.  
+The black line is the actual density of returns, while the red line is the density of the normal distribution with same drift and volatility as earlier. Lines are pretty close to each other.
 
-And now onto the histogram on SPY (again same drift and volatility) as fictitious stock above. 
+And now onto the histogram on SPY (again same drift and volatility) as fictitious stock above.
 
 ```{r}
 #| warning: false
@@ -120,11 +130,11 @@ ggplot(df_spy, aes(return)) +
   scale_x_continuous(limits = c(-0.055, 0.055), n.breaks = 9)
 ```
 
-And here, we clearly see the big disconnect from normality: above expected number of returns at the mean (aka too peaked), less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then higher number of observations than expected in the tails (aka fat tails).  Distribution of returns for equity are interesting in that sense: both too peaked and fat tails. 
+And here, we clearly see the big disconnect from normality: above expected number of returns at the mean (aka too peaked), less returns next to the mean (between 1 and 2 or 2 1/2 sd) and then higher number of observations than expected in the tails (aka fat tails). Distribution of returns for equity are interesting in that sense: both too peaked and fat tails.
 
-## QQ Plots 
+## QQ Plots
 
-Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot).  On the y-axis, we have the returns, on the x-axis the theoretical quantiles. 
+Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot). On the y-axis, we have the returns, on the x-axis the theoretical quantiles.
 
 ```{r}
 ggplot(df, aes(sample = return)) + 
@@ -134,7 +144,7 @@ ggplot(df, aes(sample = return)) +
 
 ```
 
-And now the QQ-plot for the returs of SPY. 
+And now the QQ-plot for the returs of SPY.
 
 ```{r}
 ggplot(df_spy, aes(sample = return)) + 
@@ -143,19 +153,19 @@ ggplot(df_spy, aes(sample = return)) +
   labs(title = 'QQ-Plot for SPY returns')
 ```
 
-Oh boy! Again, our second plot clearly indicate how the returns deviate from normality.  
+Oh boy! Again, our second plot clearly indicate how the returns deviate from normality.
 
-This QQ-plot can also be used to check for asymetry in the distribution of returns.  We can see a slightly left skew distribution (a negatively skew distribution). 
+This QQ-plot can also be used to check for asymetry in the distribution of returns. We can see a slightly left skew distribution (a negatively skew distribution).
 
-# Skewness and Kurtosis 
+# Skewness and Kurtosis
 
-Skewness and Kurtosis are the third and fourth [statiscal moments](../statistical-moments/index.qmd) of a distribution.  
+Skewness and Kurtosis are the third and fourth [statiscal moments](../statistical-moments/index.qmd) of a distribution.
 
-## Skewness 
+## Skewness
 
-Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symmetric). 
+Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symmetric).
 
-Let's test the symmetry of our 2 sets of return.  Unfortunately, we did not find any function to calculate skewness in base R (seems strange!).  
+Let's test the symmetry of our 2 sets of returns. Unfortunately, we did not find any function to calculate skewness in base R (seems strange!).
 
 ```{r}
 moments::skewness(df$return)
@@ -164,23 +174,31 @@ moments::skewness(df_spy$return)
 
 As expected, our fictitious stock has almost 0 skew (symmetric around the mean), while the SPY has a moderate negative skew (which we could see already on the QQ-plot and histogram.)
 
-# Statistical tests 
+## Kurtosis
 
-## Shapiro-Wilk test 
+```{r}
+moments::kurtosis(df$return)
+moments::kurtosis(df_spy$return)
+```
 
-Shapiro-Wilk test should actually not be used on large data set. Although, we use it here for demonstration purposes, results should be interpreted with a big spoon of salt. 
+Again, our fictious asset has kurtosis pretty close to perfect normality (almost 3).  SPY deviate very much from normality and displays leptokurotic kurtosis. 
 
-Let's first test on our fictitious equity. 
+# Statistical tests
+
+## Shapiro-Wilk test
+
+Shapiro-Wilk test should actually not be used on large data set. Although, we use it here for demonstration purposes, results should be interpreted with a big spoon of salt.
+
+Let's first test on our fictitious equity.
 
 ```{r}
 shapiro.test(df$return)
 ```
 
-Expected, as the randomness of our fictitious stock was randomly distributed. 
+Expected, as the randomness of our fictitious stock was randomly distributed.
 
-And then on the return of SPY 
+And then on the return of SPY
 
 ```{r}
 shapiro.test(df_spy$return)
 ```
-
