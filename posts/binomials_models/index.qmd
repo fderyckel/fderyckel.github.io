@@ -4,17 +4,147 @@ author: "Francois de Ryckel"
 date: "2023-04-06"
 categories: [R-code, quant-finance, binomial_models]
 editor: source
-date-modified: "2023-04-10"
+date-modified: "2023-04-27"
 ---
 
 ```{r}
+#| warning: false
+#| message: false
+
 library(tibble)     # tibble()
 library(dplyr)      # mutate()
 library(ggplot2)    # ggplot()
 ```
 
 
+# Binomial models 
+
+The idea is to develop an intuition for delta hedging and risk-neutrality when valuing an option. 
+
+![Stock and Option Value perspectives](draw1.jpg)
+
+* S is the stock price at the start (time $t=0$) 
+* $\delta t$ is a one increment of time (one unit of time)
+* $u$ is the factor when stock price rise
+* $v$ is the factor when stock price fall 
+    * $0<v<1<u$
+* $V$ is the option value at time $t=0$
+* $V^+$ is the option value at expiration when stock is ITM
+* $V^-$ is the option value at expiration when stock is OTM
+
+Now we are going to introduce $\Delta$ as the amount of stock to hedge (a percentage of a stock) to be risk-neutral.  At this stage, we are assuming that the probability to go up or down is the same (it's basically irrelevant in this case).  
+
+![Option value with hedging](draw2.jpg)
+
+If we want to hedge the stock to be risk-neutral, then at expiration we should have this equation 
+
+$$V^+ - \Delta us = V^--\Delta vs$$
+Solving for $\Delta$, we get: 
+
+$$\Delta = \frac{V^+-V^-}{(u-v)S} = \frac{\text{range of options payoff}}{\text{range of asset prices}}$$ {#eq-delta1}
+
+In other words we could see $\Delta$ as the rate of change of the option price in function of the stock price. $\Delta = \frac{\partial{V}}{\partial{S}}$
+
+Once we found $\Delta$, we could find $V$ by just making today's value of the trade = tomorrow's value of the trade (at expiration).  Just solve for $V$ 
+$$V - \Delta S = V^- - \Delta vS$$ or 
+$$V - \Delta S = V^+ - \Delta uS$$ which ever is easier to calculate.  
+
+Now, of course, cash is not free and there is a time value associated to it. In that sense, today's value for the trade should be equal a discounted value of tomorrow's trade value (at expiration).  
+$$V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$
+
+* $r$ is the value of the risk-free asset 
+* we are dealing with annualized values, if assets expires in one month and risk-free asset is let's say 3%, we would multiply 3% by 21 days or $0.03 \cdot \frac{21}{252}$
+
+Using our value of $\Delta$ from @eq-delta1, we can isolate $V$ as 
+$$V = \left(\frac{V^+-V^-}{u-v} \right) + \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$ {#eq-optionvalue1}
+
+::: {.callout-note} 
+
+# Example
+
+A stock is trading at \$100.  A call option with strike price of \$100.  Stock can either go to \$103 or \$98.  
+
+```{mermaid}
+flowchart LR 
+  100 --> 103
+  100 --> 98
+```
+
+
+* $V^+ = 3$
+* $V^- = 0$
+* $\Delta = \frac{3-0}{103-98} = \frac{3}{5}$
+* $V - \Delta S = V^+ - \Delta us$, plugging the value from above we get $V = \$1.2$
+
+:::
+
+
+
+## The Risk-free World
+
+Using the same idea as earlier and introducing some probabilities. 
+
+```{mermaid}
+flowchart LR
+  S -- p' --> uS
+  S -- 1-p' --> vS
+```
+
+From a probabilistic perspective we could write: 
+$$S = p'uS + (1-p')vS$$ 
+Or in the presence of a risk free asset, 
+$$S = \frac{1}{1+r \delta t} \left(p' uS + (1-p')vS \right)$$ 
+
+We could isolate $p'$ in this last equation to get: 
+$$p' = \frac{1+r \delta t - v}{u-v}$$ {#eq-pprime1}
+
+```{mermaid}
+flowchart LR
+  V -- p' --> V+
+  V -- 1-p' --> V-
+```
+
+To find $V$: 
+$$V = p' V^+ + (1-p') V^-$$
+
+Interesting to note that the option price $V$ is like an expectation (the sum of the probability) and $p'$ is from @eq-pprime1
+
+## Mixing real-world and risk-free world 
+
+Now if we collide both world: the real-world with drift and volatility and the risk-free world with $p'$: we can set up this 2 equations: 
+One for the expected mean rate of change of prices and another for the variance of these rate of change. 
+
+$$
+
+\left\{ \begin{aligned} 
+  \mu S \delta t = puS+(1-p)vS-S \\
+  \sigma^2S^2dt = S^2()^2
+\end{aligned} \right.
+
+$$
+
+(TODO re-write these 2 equations) 
+
+2 equations and 3 unknowns, we can choose a solution (the prettiest one!) among the infinitely many: 
+
+* $u = 1 + \sigma \sqrt{\delta t}$
+* $v = 1 - \sigma \sqrt{\delta t}$
+* $p = \frac{1}{2} + \frac{\mu \sqrt{\delta t}}{2 \sigma}$
+* $p' = \frac{1}{2} + \frac{r \sqrt{\delta t}}{2 \sigma}$   $p'$ is the risk-neutral probability. 
+
+## The binomial tree 
+
+* After one time step $\delta t$ our stock, initially at $S$ will either be at $uS$ or $vS$.  
+* After two time steps, the stock will either be at $u^2S$ or $uvS$ or $v^2S$
+* After three time steps, the stock will either be at $u^3S$ or $u^2vS$ or $uv^2S$ or finally $v^3S$
+* etc. 
+
+A bit of a crude representation using Geogebra 
+
+![Binomial tree representation](binomial-tree.png)
+
 # Trinomials model 
+
 
 A discrete random variable (DRV) $y$ can either go up with a probability of $\alpha$ or down with a probability of $\alpha$ or stay the same with a probability of $1 - 2\alpha$.  
 

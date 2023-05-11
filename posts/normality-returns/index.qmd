@@ -189,6 +189,11 @@ Again, our fictious asset has kurtosis pretty close to perfect normality (almost
 
 Shapiro-Wilk test should actually not be used on large data set. Although, we use it here for demonstration purposes, results should be interpreted with a big spoon of salt.
 
+Let's specify our hypothesis: 
+
+* $H_0$: the data follows a normal distribution 
+* $H_1$: the data does not follow a normal distribution
+
 Let's first test on our fictitious equity.
 
 ```{r}

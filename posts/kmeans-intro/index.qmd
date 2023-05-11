@@ -7,11 +7,11 @@ editor: source
 date-modified: '2022-10-31'
 ---
 
-The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use [my post on it](https://fderyckel.github.io/blog/posts/kmeans-regime-change/)
+The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use [the post](../kmeans-regime-change/index.qmd) on kmeans and regime change. 
 
- As mentiioned, Kmeans is an unsupervised learning algorithm, aiming to group “records” based on their distances to a fixed number (i.e., k) of “centroids.” Centroids being defined as the means of the K-clusters.  
+As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of the K-clusters.  
 
-The objective is, for a given number of centroids (i.e. k), to **minimize the total intra-cluster variation** or within cluster variation (distance from the observation to the centroid). 
+The objective is, for a given number of centroids (i.e. k), to **minimize the total within-cluster variation** or intra cluster variation (distance from the observation to the centroid). 
 
 The standard Kmeans algorithm (Hartigan Wong) aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids. 
 
@@ -22,7 +22,7 @@ $$W(C_k) = \sum_{x_i \in C_k} (x_i - \mu_k)^2$$ {#eq-sum-of-square-for-a-cluster
 * $k$ is the number of centroids and $C_k$ is the $k^{th}$ centroid. 
 * $\mu_k$ is the mean value of all the points assigned to the $C_k$ cluster.  You get the mean of the centroid is a p-dimensional vector comprising the mean of each of the variables.  
 
-Then we need to add each of the centroids sum to get the **total within cluster variation": 
+The objective is to minimize the total within cluster variation, that is the total sum of the distance of each observations to its centroid and that for each of the k-centroids: 
 $$tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2  $$ {#eq-total-within-cluster-sum-of-square}
 
 # The Kmeans algorithms 
@@ -30,7 +30,7 @@ $$tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \m
 * **Step 1** Choose the number of centroids 
 * **Step 2: Cluster assignment step** Randomly pick k observations that will be used as first centroids in the given hyperspace. All other observations are assigned to one of the initial k observations (the first k centroids) based on the closest Euclidean distance. 
 * **Step 3: Centroids update** calculate a new mean for each centroids using all the $x_i \in C_k$.  
-* **step 4: Reaching convergence** Repeat step 2 and 3.  Once the new mean is established, we calculate again, for each observations its closest centroid.  Then calculate again a new mean.   We reiterate this step this until each given centroids are not changing anymore. 
+* **step 4: Reaching convergence** Repeat step 2 and 3.  Once the new mean is established, we calculate again, for each observations its closest centroid.  Then calculate again a new mean.   We reiterate this step this until each given centroids are not changing anymore (or the change is below a given threshold). 
 
 
 # The parameters 

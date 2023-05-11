@@ -52,6 +52,33 @@ Mathematically speaking, we define the mean as $$\sum^{n}_{i=1} \frac{r_i}{n}$$
 
 Standard deviation is the second moment.  
 
+$$\sigma = \sqrt{\frac{\sum(x_i - \mu)^2}{n}}$$
+In the case of a sample: $s = \sqrt{\frac{(x_i - \bar{x})^2}{n-1}}$
+
+The variance is the square of the standard deviation.  There is this neat little alternative expression of variance (I like the way it sounds). 
+
+> Variance is the difference between the mean of the square and the square of the mean.  
+
+Here is how it goes: 
+
+$$\sigma^2 = \frac{\sum(x_i-\mu)^2}{n} = \frac{\sum(x_i)^2}{n} - 2 \frac{\sum(x_i \mu)}{n} + \frac{\sum(\mu)^2}{n}$$
+
+Considering 
+
+* $\frac{\sum(x_i \mu)}{n} = \mu \frac{\sum(x_i)}{n} = \mu \mu=\mu^2$ 
+* and considering $\frac{\sum(\mu)^2}{n} = n \frac{\mu^2}{n} = \mu^2$, we can re-write our variance like this
+
+$$\sigma^2 = \frac{\sum(x_i)^2}{n} - 2 \mu^2 + \mu^2 = \frac{\sum(x_i)^2}{n} - \mu^2$$
+
+# Coefficient of variation 
+
+The coefficient of variation is not a statistical moment, but considering it is the ratio of the first 2 moments (ratio of sd to the mean), we include it here as well. 
+It allows to compare together 2 different distributions (that have different mean and sd).  
+
+$$CV = \frac{\sigma}{\mu}$$
+
+Or in the case of a sample $CV = \frac{s}{\bar{x}}$
+
 # Skewness 
 
 ::: {.callout-tip} 
@@ -90,6 +117,8 @@ Kurtosis is a measure that describes the shape of a distribution's tails in rela
 
 Because, we raised the difference of a data point to its mean to the 4th power, it is really the data points far away from the mean that do participate to the kurtosis. 
 
+> "increasing kurtosis is associated with the “movement of probability mass from the shoulders of a distribution into its center and tails."  (Someone important who got published and knew his stuff!) 
+
 Mathematically, we define kurtosis as 
 
 $$\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2}$$ {#eq-skewness-pop}
@@ -102,6 +131,8 @@ There are 3 categories of kurtosis: leptokurtic (positive excess kurtosis), meso
 * A kurtosis greater than 3 => leptokurtic
 * A kurtosis around 3 => mesokurtic 
 * A kurtosis less than 3 => platykurtic
+
+A Student's T distribution with degree of freedom 4 has infinite kurtosis (huge peak and tails + narrow shoulders)
 
 Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.  
 

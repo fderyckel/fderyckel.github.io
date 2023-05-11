@@ -178,9 +178,9 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use <a href="https://fderyckel.github.io/blog/posts/kmeans-regime-change/">my post on it</a></p>
-<p>As mentiioned, Kmeans is an unsupervised learning algorithm, aiming to group “records” based on their distances to a fixed number (i.e., k) of “centroids.” Centroids being defined as the means of the K-clusters.</p>
-<p>The objective is, for a given number of centroids (i.e.&nbsp;k), to <strong>minimize the total intra-cluster variation</strong> or within cluster variation (distance from the observation to the centroid).</p>
+<p>The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use <a href="../../posts/kmeans-regime-change/index.html">the post</a> on kmeans and regime change.</p>
+<p>As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of the K-clusters.</p>
+<p>The objective is, for a given number of centroids (i.e.&nbsp;k), to <strong>minimize the total within-cluster variation</strong> or intra cluster variation (distance from the observation to the centroid).</p>
 <p>The standard Kmeans algorithm (Hartigan Wong) aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids.</p>
 <p>First, we calculate the within-centroid sum of square: <span id="eq-sum-of-square-for-a-cluster"><span class="math display">\[W(C_k) = \sum_{x_i \in C_k} (x_i - \mu_k)^2 \tag{1}\]</span></span></p>
 <ul>
@@ -188,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
 <li><span class="math inline">\(k\)</span> is the number of centroids and <span class="math inline">\(C_k\)</span> is the <span class="math inline">\(k^{th}\)</span> centroid.</li>
 <li><span class="math inline">\(\mu_k\)</span> is the mean value of all the points assigned to the <span class="math inline">\(C_k\)</span> cluster. You get the mean of the centroid is a p-dimensional vector comprising the mean of each of the variables.</li>
 </ul>
-<p>Then we need to add each of the centroids sum to get the **total within cluster variation”: <span id="eq-total-within-cluster-sum-of-square"><span class="math display">\[tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2   \tag{2}\]</span></span></p>
+<p>The objective is to minimize the total within cluster variation, that is the total sum of the distance of each observations to its centroid and that for each of the k-centroids: <span id="eq-total-within-cluster-sum-of-square"><span class="math display">\[tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2   \tag{2}\]</span></span></p>
 <section id="the-kmeans-algorithms" class="level1">
 <h1>The Kmeans algorithms</h1>
 <ul>
@@ -196,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Step 2: Cluster assignment step</strong> Randomly pick k observations that will be used as first centroids in the given hyperspace. All other observations are assigned to one of the initial k observations (the first k centroids) based on the closest Euclidean distance.</li>
 <li><strong>Step 3: Centroids update</strong> calculate a new mean for each centroids using all the <span class="math inline">\(x_i \in C_k\)</span>.<br>
 </li>
-<li><strong>step 4: Reaching convergence</strong> Repeat step 2 and 3. Once the new mean is established, we calculate again, for each observations its closest centroid. Then calculate again a new mean. We reiterate this step this until each given centroids are not changing anymore.</li>
+<li><strong>step 4: Reaching convergence</strong> Repeat step 2 and 3. Once the new mean is established, we calculate again, for each observations its closest centroid. Then calculate again a new mean. We reiterate this step this until each given centroids are not changing anymore (or the change is below a given threshold).</li>
 </ul>
 </section>
 <section id="the-parameters" class="level1">
@@ -370,6 +370,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="https://giscus.app/client.js" data-repo="fderyckel/fderyckel.github.io" data-repo-id="R_kgDOIWAxjA" data-category="General" data-category-id="DIC_kwDOIWAxjM4CWAZU" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 
