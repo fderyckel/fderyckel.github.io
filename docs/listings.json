@@ -2,11 +2,11 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/binomials_models/index.html",
       "/posts/normality-returns/index.html",
       "/posts/linear-regression/index.html",
       "/posts/statistical-moments/index.html",
       "/posts/random-behavior-assets/index.html",
-      "/posts/binomials_models/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",
       "/posts/stochastic-processes/index.html",
@@ -15,6 +15,7 @@
       "/posts/kmeans-regime-change/index.html",
       "/posts/xgboost-time-series/index.html",
       "/posts/algebra-quant/index.html",
+      "/posts/proba-quant/index.html",
       "/posts/autocorrelation/index.html"
     ]
   }
