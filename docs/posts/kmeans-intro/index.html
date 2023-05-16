@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,6 +22,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -150,7 +213,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#the-kmeans-algorithms" id="toc-the-kmeans-algorithms" class="nav-link active" data-scroll-target="#the-kmeans-algorithms">The Kmeans algorithms</a></li>
+  <li><a href="#the-kmeans-algorithms" id="toc-the-kmeans-algorithms" class="nav-link active" data-scroll-target="#the-kmeans-algorithms">The Kmeans algorithms</a>
+  <ul class="collapse">
+  <li><a href="#kmean---hartingan-wonk-in-practice." id="toc-kmean---hartingan-wonk-in-practice." class="nav-link" data-scroll-target="#kmean---hartingan-wonk-in-practice.">Kmean - Hartingan-Wonk in practice.</a></li>
+  </ul></li>
   <li><a href="#the-parameters" id="toc-the-parameters" class="nav-link" data-scroll-target="#the-parameters">The parameters</a>
   <ul class="collapse">
   <li><a href="#number-of-clusters" id="toc-number-of-clusters" class="nav-link" data-scroll-target="#number-of-clusters">Number of clusters</a>
@@ -179,9 +245,9 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use <a href="../../posts/kmeans-regime-change/index.html">the post</a> on kmeans and regime change.</p>
-<p>As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of the K-clusters.</p>
+<p>As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of all the points belonging to that centroid. All the points belonging to a centroid makes a cluster: all the observations belonging to the k-centroid makes the k-cluster.</p>
 <p>The objective is, for a given number of centroids (i.e.&nbsp;k), to <strong>minimize the total within-cluster variation</strong> or intra cluster variation (distance from the observation to the centroid).</p>
-<p>The standard Kmeans algorithm (Hartigan Wong) aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids.</p>
+<p>The standard Kmeans algorithm aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids.</p>
 <p>First, we calculate the within-centroid sum of square: <span id="eq-sum-of-square-for-a-cluster"><span class="math display">\[W(C_k) = \sum_{x_i \in C_k} (x_i - \mu_k)^2 \tag{1}\]</span></span></p>
 <ul>
 <li><span class="math inline">\(x_i\)</span> is the ith-observation in our dataset</li>
@@ -191,16 +257,206 @@ ul.task-list li input[type="checkbox"] {
 <p>The objective is to minimize the total within cluster variation, that is the total sum of the distance of each observations to its centroid and that for each of the k-centroids: <span id="eq-total-within-cluster-sum-of-square"><span class="math display">\[tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2   \tag{2}\]</span></span></p>
 <section id="the-kmeans-algorithms" class="level1">
 <h1>The Kmeans algorithms</h1>
+<p>Although there are 3 different ways to achieve the objective function, we’ll only explain the <em>Hartingan-Wonk algorithm</em> (1979).<br>
+It is noted that none of the algorithms guarantees a global minima. They all can be stuck into a local minima.</p>
 <ul>
 <li><strong>Step 1</strong> Choose the number of centroids</li>
-<li><strong>Step 2: Cluster assignment step</strong> Randomly pick k observations that will be used as first centroids in the given hyperspace. All other observations are assigned to one of the initial k observations (the first k centroids) based on the closest Euclidean distance.</li>
-<li><strong>Step 3: Centroids update</strong> calculate a new mean for each centroids using all the <span class="math inline">\(x_i \in C_k\)</span>.<br>
-</li>
-<li><strong>step 4: Reaching convergence</strong> Repeat step 2 and 3. Once the new mean is established, we calculate again, for each observations its closest centroid. Then calculate again a new mean. We reiterate this step this until each given centroids are not changing anymore (or the change is below a given threshold).</li>
+<li><strong>Step 2: Cluster assignment step</strong> All observations are randomly assigned a cluster (the first k centroids). Another way to start is to randomly pick k observations that will be used as first centroids in the given hyperspace.</li>
+<li><strong>Step 3: Calculate the centroid location</strong> Find the centroid location by calculating the mean value for each of the variables.</li>
+<li><strong>Step 4: Find distance to each centroids</strong> Find the distance between each observation and each centroid. Assign the centroid with minimum distance to that observation.</li>
+<li><strong>Step 5: Centroids update</strong> Recalculate the centroid location if there was a change of centroid mean. In other words: calculate a new mean for each centroids using all the <span class="math inline">\(x_i \in C_k\)</span>.</li>
+<li><strong>step 6: Reaching convergence</strong> Repeat step 4 and 5. Once the new mean is established, we calculate again, for each observations its closest centroid. Then calculate again a new mean. We reiterate this step this until each given centroids are not changing anymore (or the change is below a given threshold).</li>
 </ul>
+<p>Because of the initial random allocation of points to a cluster, results might differ. This is why in the <em>native</em> R <em>kmeans()</em> you can specify the <em>nstart</em> parameter and only the allocation providing the minimum distance will be kept.</p>
+<section id="kmean---hartingan-wonk-in-practice." class="level2">
+<h2 class="anchored" data-anchor-id="kmean---hartingan-wonk-in-practice.">Kmean - Hartingan-Wonk in practice.</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setting up the problem </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>num_obs <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">runif</span>(num_obs, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>), <span class="at">y =</span> <span class="fu">runif</span>(num_obs, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: choose number of centroids</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>k <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># step 2: assign randomly each point to a cluster</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">centroid =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>k, <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We are going to define a couple of function we will use more than once.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>calculate_centroid_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  yo <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">group_by</span>(centroid) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">mean_x =</span> <span class="fu">mean</span>(x), <span class="at">mean_y =</span> <span class="fu">mean</span>(y)) </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(yo)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(yo)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>total_within_cluster_distance <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  yo <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">distance =</span> (x <span class="sc">-</span> centroid_loc<span class="sc">$</span>mean_x[centroid])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                      (y <span class="sc">-</span> centroid_loc<span class="sc">$</span>mean_y[centroid])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(yo<span class="sc">$</span>distance))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># need to initialize an empty vector for the distance of the observation to a centroid</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>dist_centroid <span class="ot">&lt;-</span> <span class="fu">c</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Starting the iteration process </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># step3: </span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## a: calculate mean of each centroids</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>centroid_loc <span class="ot">&lt;-</span> <span class="fu">calculate_centroid_mean</span>(df)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="do">## b: calculate sum of distance between each observation and its assigned cluster </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">'Initial sum of within-cluster distance is: '</span>, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>           <span class="fu">round</span>(<span class="fu">total_within_cluster_distance</span>(df), <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial sum of within-cluster distance is: 3014.94</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rd <span class="ot">=</span> <span class="dv">1</span>    <span class="co"># to keep track on how many round / loops we are doing</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">0</span>     <span class="co"># to keep track on how many observations have not changed their centroids</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># we shall be running the loop until we have no more change of centroids  </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (i <span class="sc">&lt;</span> num_obs) { </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> <span class="dv">0</span>   <span class="co"># we keep going with the process until no more change of centroids for all the observations</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 4: for each data point </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (obs <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_obs) { </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># for each centroid </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (centroid <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>k) { </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># find distance from the observation to the centroid </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      dist_centroid[centroid] <span class="ot">=</span> <span class="fu">sqrt</span>((df<span class="sc">$</span>x[obs] <span class="sc">-</span> centroid_loc<span class="sc">$</span>mean_x[centroid])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                                     (df<span class="sc">$</span>y[obs] <span class="sc">-</span> centroid_loc<span class="sc">$</span>mean_y[centroid])<span class="sc">^</span><span class="dv">2</span>) </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      <span class="co"># print(glue('   The distance from point ', obs, ' to centroid ', centroid, ' is ', round(dist_centroid[centroid], 2))) </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># assign the observation to its new centroid (based on min distance) </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    prev_centroid <span class="ot">=</span> df<span class="sc">$</span>centroid[obs] </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    post_centroid <span class="ot">=</span> <span class="fu">which.min</span>(dist_centroid)  </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>centroid[obs] <span class="ot">=</span> post_centroid    <span class="co">#assign the new centroid  </span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (prev_centroid <span class="sc">!=</span> post_centroid) {  </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>      <span class="co"># we recaluate the centroid</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>      centroid_loc <span class="ot">&lt;-</span> <span class="fu">calculate_centroid_mean</span>(df)  </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">'  The initial centroid for point '</span>, obs, <span class="st">' was '</span>, </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>                 prev_centroid, <span class="st">'. It is now '</span>, post_centroid)) </span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># print(centroid_loc) </span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>      i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>      <span class="co">#print('  No change in centroid')</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  rd <span class="ot">=</span> rd <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">'Round '</span>, rd, <span class="st">'  The new sum of within-cluster distance is: '</span>, </span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>             <span class="fu">round</span>(<span class="fu">total_within_cluster_distance</span>(df), <span class="dv">2</span>)))</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  The initial centroid for point 3 was 3. It is now 1
+  The initial centroid for point 5 was 2. It is now 3
+  The initial centroid for point 6 was 3. It is now 1
+  The initial centroid for point 8 was 1. It is now 2
+  The initial centroid for point 10 was 1. It is now 2
+  The initial centroid for point 11 was 1. It is now 2
+  The initial centroid for point 12 was 2. It is now 3
+  The initial centroid for point 13 was 2. It is now 3
+  The initial centroid for point 14 was 1. It is now 3
+  The initial centroid for point 15 was 2. It is now 3
+  The initial centroid for point 16 was 1. It is now 2
+  The initial centroid for point 19 was 1. It is now 3
+  The initial centroid for point 20 was 3. It is now 2
+  The initial centroid for point 21 was 1. It is now 3
+  The initial centroid for point 23 was 1. It is now 3
+  The initial centroid for point 24 was 1. It is now 2
+  The initial centroid for point 25 was 1. It is now 3
+  The initial centroid for point 26 was 2. It is now 1
+  The initial centroid for point 28 was 1. It is now 3
+  The initial centroid for point 30 was 3. It is now 2
+  The initial centroid for point 31 was 1. It is now 2
+  The initial centroid for point 32 was 1. It is now 2
+  The initial centroid for point 33 was 2. It is now 3
+  The initial centroid for point 34 was 1. It is now 2
+  The initial centroid for point 35 was 2. It is now 3
+  The initial centroid for point 37 was 3. It is now 2
+  The initial centroid for point 38 was 2. It is now 3
+  The initial centroid for point 39 was 3. It is now 1
+  The initial centroid for point 44 was 2. It is now 3
+  The initial centroid for point 45 was 2. It is now 3
+  The initial centroid for point 48 was 2. It is now 3
+  The initial centroid for point 49 was 2. It is now 3
+Round 2  The new sum of within-cluster distance is: 1594.37
+  The initial centroid for point 2 was 3. It is now 1
+  The initial centroid for point 3 was 1. It is now 2
+  The initial centroid for point 5 was 3. It is now 1
+  The initial centroid for point 9 was 3. It is now 1
+  The initial centroid for point 14 was 3. It is now 1
+  The initial centroid for point 17 was 1. It is now 3
+  The initial centroid for point 28 was 3. It is now 1
+  The initial centroid for point 37 was 2. It is now 3
+  The initial centroid for point 41 was 3. It is now 1
+  The initial centroid for point 44 was 3. It is now 1
+Round 3  The new sum of within-cluster distance is: 1146.17
+  The initial centroid for point 7 was 2. It is now 3
+  The initial centroid for point 12 was 3. It is now 1
+  The initial centroid for point 32 was 2. It is now 3
+Round 4  The new sum of within-cluster distance is: 1081.9
+  The initial centroid for point 18 was 2. It is now 3
+Round 5  The new sum of within-cluster distance is: 1071.19
+Round 6  The new sum of within-cluster distance is: 1071.19</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(centroid_loc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  centroid  mean_x mean_y
+     &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+1        1  4.41    -4.99
+2        2 -0.0601   5.27
+3        3 -5.04    -5.47</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(centroid))) <span class="sc">+</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> centroid_loc, <span class="fu">aes</span>(<span class="at">x =</span> mean_x, <span class="at">y =</span> mean_y)) <span class="sc">+</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>yoo <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(df[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">centers =</span> <span class="dv">3</span>, </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">algorithm =</span> <span class="st">'Hartigan-Wong'</span>, <span class="at">nstart =</span> <span class="dv">10</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>yoo<span class="sc">$</span>tot.withinss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1017.417</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(yoo, df2) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> .cluster)) <span class="sc">+</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="fu">as_tibble</span>(yoo<span class="sc">$</span>centers), <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
 </section>
 <section id="the-parameters" class="level1">
 <h1>The parameters</h1>
+<p>While using K-means, there are 3 main parameters one can tune.</p>
+<ul>
+<li>the number of clusters: this is the main one to tune to avoid both under-fitting (too low of a K) or over-fitting (to high of a K). If K = equal number of observation, of course the total within cluster variation will be 0 and minimized!</li>
+<li>the number of iteration</li>
+<li>the number of start</li>
+</ul>
 <section id="number-of-clusters" class="level2">
 <h2 class="anchored" data-anchor-id="number-of-clusters">Number of clusters</h2>
 <section id="the-elbow-method" class="level3">

@@ -1,12 +1,14 @@
 ---
-title: "Auto-Correlation - Part 1"
+title: "Auto-Correlation & Stationarity - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
 categories: [time-series]
 date-modified: '2022-09-09'
 ---
 
-Auto-correlation as the name indicates is the correlation of the time-serie with itself ... well, with a lag version of itself. 
+# Autovariance & autocorrelation 
+
+Auto-correlation as the name indicates is the correlation of the time-series with itself ... well, with a lag version of itself. 
 
 Let's consider $\{X_t\}$ a time series.  
 
@@ -15,6 +17,86 @@ Let's consider $\{X_t\}$ a time series.
 *   In general, $\mu_t$ and $\sigma_t ^2$ are different at different point in time. 
 
 Now, we define the **autocovariance** function of the time series as $$\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]$$. 
-In the same vein, we define the autocorrelation function of the time series as 
+In the same vein, we define the **autocorrelation** function of the time series as 
 $$\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}$$
 
+Autocovariance and autocorrelation measure the linear correlation between between two points $X_s$ and $X_t$ on the same time-series. 
+
+Few properties of autocavariance and autocorrelation of time-series 
+
+* $\gamma(t, t) = \sigma_t^2$ 
+* $\gamma(s, t) = \gamma(t, s)$ 
+* $|\gamma(s, t)| \le \sigma_s \sigma_t$ 
+* $\rho(t, t) \equiv 1$
+
+# Stationarity 
+
+A time-series $\{X_t\}$ is (weakly) stationary if: 
+
+* $E[X_t] = \mu$ is a constant 
+* $E[X_t^2] < \infty$ 
+* $Cov(X_t, X_{t+k}) = \gamma(k)$ is independent of t for each integer k. $\gamma(k)$ is called the lag $k$ autocovariance of function of $\{X_t\}$
+
+# White Noise 
+
+White noise is a special type of time-series and a special case of stationarity. 
+
+$\{W_t\}$ is a white-noise if 
+
+* $E[W_t] = \mu$ is a constant for all t
+* $Var[W_t] = \sigma_w^2$ is a constant 
+* $Cov(W_s, W_t) = 0$ for any s and t with $s<t$.  In other words, any 2 subset of W are uncorrelated. 
+
+If $\{X_t\}$ is iid (independent and identically distributed) and $\rho(k) = 1$ (when k=0) and $\rho(k) = 0$ (otherwise, aka for any other values of k), then $\{X_t\}$ is a white noise. 
+
+Therefore, as $n \rightarrow \infty$, we can say that $\frac{1}{n} (X_1 + \dots + X_n) = E[X_t] = \mu$
+
+We can generate white-noise in R using the arima.sim() function.  
+
+```{r}
+library(ggplot2)
+library(tibble)
+
+set.seed(1234)
+
+# Generate a white noise in R
+wn <- stats::arima.sim(model = list(order = c(0, 0, 0)), n = 250)
+df <- tibble(x = 1:250, y = as.vector(wn))
+
+ggplot(df, aes(x, y)) + 
+  geom_line(color = 'dodgerblue3') + 
+  xlab('Time') + ylab('White Noise') + 
+  labs(title = 'Generated White Noise')
+```
+
+And let's check the autocorrelation plot to visually confirm that. 
+
+```{r}
+# using the standard R function. 
+acf(wn, lag.max = 20)
+```
+
+We could also use a ggplot function to plot the auto-correlation of our time-series. 
+```{r}
+# slightly fancier version (with more customization)
+ggacf <- function(series) {
+  significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
+  a <- acf(series, plot=F)
+  a.2<-with(a, data.frame(lag, acf))
+  g<- ggplot(a.2[-1,], aes(x=lag,y=acf)) + 
+    geom_segment(mapping = aes(xend = lag, yend = 0), linewidth = 0.8) + 
+    xlab('Lag') + ylab('ACF') + 
+    geom_hline(yintercept=c(significance_level,-significance_level), linetype= 'dashed', color = 'dodgerblue4');
+
+  # fix scale for integer lags
+  if (all(a.2$lag%%1 == 0)) {
+    g<- g + scale_x_discrete(limits = factor(seq(1, max(a.2$lag))));
+  }
+  return(g);
+}
+ggacf(wn)
+```
+
+
+
+# Python code 
