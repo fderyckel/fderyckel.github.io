@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Francois de Ryckel">
-<meta name="dcterms.date" content="2022-09-29">
+<meta name="dcterms.date" content="2023-05-16">
 
-<title>QUANT dira-t-on? - Auto-Correlation &amp; Stationarity - Part 1</title>
+<title>QUANT dira-t-on? - Naive-Bayes - Part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -124,7 +124,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -169,9 +168,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Auto-Correlation &amp; Stationarity - Part 1</h1>
+      <h1 class="title">Naive-Bayes - Part 1</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">time-series</div>
+                <div class="quarto-category">ML</div>
+                <div class="quarto-category">Naive-Bayes</div>
+                <div class="quarto-category">sentiment analysis</div>
               </div>
                   </div>
   </div>
@@ -189,14 +190,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 29, 2022</p>
+        <p class="date">May 16, 2023</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">September 9, 2022</p>
+        <p class="date-modified">May 16, 2023</p>
       </div>
     </div>
       
@@ -206,16 +207,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#auto-covariance-auto-correlation" id="toc-auto-covariance-auto-correlation" class="nav-link active" data-scroll-target="#auto-covariance-auto-correlation">Auto-covariance &amp; auto-correlation</a></li>
-  <li><a href="#stationarity" id="toc-stationarity" class="nav-link" data-scroll-target="#stationarity">Stationarity</a></li>
-  <li><a href="#white-noise" id="toc-white-noise" class="nav-link" data-scroll-target="#white-noise">White Noise</a></li>
-  <li><a href="#python-code" id="toc-python-code" class="nav-link" data-scroll-target="#python-code">Python code</a></li>
-  </ul>
-</nav>
+    
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -226,102 +218,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<section id="auto-covariance-auto-correlation" class="level1">
-<h1>Auto-covariance &amp; auto-correlation</h1>
-<p>Auto-correlation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself.</p>
-<p>Let’s consider <span class="math inline">\(\{X_t\}\)</span> a time series.</p>
-<ul>
-<li>Then the mean function of <span class="math inline">\(\{X_t\}\)</span> (the first moment) is defined as <span class="math inline">\(\mu_t = \textbf{E}(X_t)\)</span>. In other words, <span class="math inline">\(\mu_t\)</span> is the expected value of the time series at point t.<br>
-</li>
-<li>The Variance of the time series is defined as <span class="math inline">\(\sigma_t ^2 = Var(X_t) = \textbf{E}[(X_t - \mu_t)^2]\)</span>.</li>
-<li>In general, <span class="math inline">\(\mu_t\)</span> and <span class="math inline">\(\sigma_t ^2\)</span> are different at different point in time.</li>
-</ul>
-<p>Now, we define the <strong>auto-covariance</strong> function of the time series as <span class="math display">\[\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]\]</span>. In the same vein, we define the <strong>auto-correlation</strong> function of the time series as <span class="math display">\[\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}\]</span></p>
-<p>Autocovariance and autocorrelation measure the linear correlation between between two points <span class="math inline">\(X_s\)</span> and <span class="math inline">\(X_t\)</span> on the same time-series.</p>
-<p>Few properties of autocavariance and autocorrelation of time-series</p>
-<ul>
-<li><span class="math inline">\(\gamma(t, t) = \sigma_t^2\)</span></li>
-<li><span class="math inline">\(\gamma(s, t) = \gamma(t, s)\)</span></li>
-<li><span class="math inline">\(|\gamma(s, t)| \le \sigma_s \sigma_t\)</span></li>
-<li><span class="math inline">\(\rho(t, t) \equiv 1\)</span></li>
-</ul>
-</section>
-<section id="stationarity" class="level1">
-<h1>Stationarity</h1>
-<p>A time-series <span class="math inline">\(\{X_t\}\)</span> is (weakly) stationary if:</p>
-<ul>
-<li><span class="math inline">\(E[X_t] = \mu\)</span> is a constant</li>
-<li><span class="math inline">\(E[X_t^2] &lt; \infty\)</span></li>
-<li><span class="math inline">\(Cov(X_t, X_{t+k}) = \gamma(k)\)</span> is independent of t for each integer k. <span class="math inline">\(\gamma(k)\)</span> is called the lag <span class="math inline">\(k\)</span> autocovariance of function of <span class="math inline">\(\{X_t\}\)</span></li>
-</ul>
-</section>
-<section id="white-noise" class="level1">
-<h1>White Noise</h1>
-<p>White noise is a special type of time-series and a special case of stationarity.</p>
-<p><span class="math inline">\(\{W_t\}\)</span> is a white-noise if</p>
-<ul>
-<li><span class="math inline">\(E[W_t] = \mu\)</span> is a constant for all t</li>
-<li><span class="math inline">\(Var[W_t] = \sigma_w^2\)</span> is a constant</li>
-<li><span class="math inline">\(Cov(W_s, W_t) = 0\)</span> for any s and t with <span class="math inline">\(s&lt;t\)</span>. In other words, any 2 subset of W are uncorrelated.</li>
-</ul>
-<p>If <span class="math inline">\(\{X_t\}\)</span> is iid (independent and identically distributed) and <span class="math inline">\(\rho(k) = 1\)</span> (when k=0) and <span class="math inline">\(\rho(k) = 0\)</span> (otherwise, aka for any other values of k), then <span class="math inline">\(\{X_t\}\)</span> is a white noise.</p>
-<p>Therefore, as <span class="math inline">\(n \rightarrow \infty\)</span>, we can say that <span class="math inline">\(\frac{1}{n} (X_1 + \dots + X_n) = E[X_t] = \mu\)</span></p>
-<p>We can generate white-noise in R using the arima.sim() function.</p>
+<p>Some very basic ML using Naive-Bayes and the tidymodel framework.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)  <span class="co"># mutate(), row_number()</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate a white noise in R</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>wn <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)), <span class="at">n =</span> <span class="dv">250</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">250</span>, <span class="at">y =</span> <span class="fu">as.vector</span>(wn))</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">'dodgerblue3'</span>) <span class="sc">+</span> </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Time'</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">'White Noise'</span>) <span class="sc">+</span> </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Generated White Noise'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/financial_news.csv'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'sentiment'</span>, <span class="st">'text'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sentiment =</span> <span class="fu">factor</span>(sentiment))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>And let’s check the autocorrelation plot to visually confirm that.</p>
+<p>Using the tidyverse, we’ll</p>
+<ul>
+<li>split the df into a training and testing set.</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># using the standard R function. </span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(wn, <span class="at">lag.max =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)    <span class="co"># initial_split(), training(), testing()</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parsnip)    <span class="co"># naive_bayes(), set_engine()</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(workflows)  <span class="co"># workflow()</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(textrecipes)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>list_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(df, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> <span class="st">'sentiment'</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">training</span>(list_splits)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(list_splits)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>list_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(sentiment <span class="sc">~</span>., <span class="at">data =</span> df_train) <span class="sc">|&gt;</span> </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_tokenize</span>(text) <span class="sc">|&gt;</span> </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_stopwords</span>(text) <span class="sc">|&gt;</span> </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_tokenfilter</span>(text, <span class="at">max_tokens =</span> <span class="dv">100</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_tfidf</span>(text)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>mod_nb <span class="ot">&lt;-</span> <span class="fu">naive_Bayes</span>() <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">'naivebayes'</span>) <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">'classification'</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>mod_svm <span class="ot">&lt;-</span> <span class="fu">svm_poly</span>() <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">'kernlab'</span>) <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">'classification'</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>list_cv <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> <span class="st">'sentiment'</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>wf_nb <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(list_recipe) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(mod_nb)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>wf_nb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: naive_Bayes()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+4 Recipe Steps
+
+• step_tokenize()
+• step_stopwords()
+• step_tokenfilter()
+• step_tfidf()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Naive Bayes Model Specification (classification)
+
+Computational engine: naivebayes </code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wf_svm <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(list_recipe) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(mod_svm)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fit_mod_nb <span class="ot">&lt;-</span> <span class="fu">fit</span>(wf_nb, df_train)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>pred_mod_nb <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_mod_nb, df_test)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>pred_mod_nb_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_mod_nb, df_test, <span class="at">type =</span> <span class="st">'prob'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>fit_mod_svm <span class="ot">&lt;-</span> <span class="fu">fit</span>(wf_svm, df_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Setting default kernel parameters  </code></pre>
 </div>
-<p>We could also use a ggplot function to plot the auto-correlation of our time-series.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># slightly fancier version (with more customization)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ggacf <span class="ot">&lt;-</span> <span class="cf">function</span>(series) {</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  significance_level <span class="ot">&lt;-</span> <span class="fu">qnorm</span>((<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.95</span>)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(series)))  </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">acf</span>(series, <span class="at">plot=</span>F)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  a<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">with</span>(a, <span class="fu">data.frame</span>(lag, acf))</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(a<span class="fl">.2</span>[<span class="sc">-</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>lag,<span class="at">y=</span>acf)) <span class="sc">+</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">xend =</span> lag, <span class="at">yend =</span> <span class="dv">0</span>), <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">'Lag'</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">'ACF'</span>) <span class="sc">+</span> </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="fu">c</span>(significance_level,<span class="sc">-</span>significance_level), <span class="at">linetype=</span> <span class="st">'dashed'</span>, <span class="at">color =</span> <span class="st">'dodgerblue4'</span>);</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fix scale for integer lags</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">all</span>(a<span class="fl">.2</span><span class="sc">$</span>lag<span class="sc">%%</span><span class="dv">1</span> <span class="sc">==</span> <span class="dv">0</span>)) {</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    g<span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">factor</span>(<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">max</span>(a<span class="fl">.2</span><span class="sc">$</span>lag))));</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(g);</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggacf</span>(wn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pred_mod_svm <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_mod_svm, df_test)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pred_mod_svm_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_mod_svm, df_test, <span class="at">type =</span> <span class="st">'prob'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(df_test, pred_mod_nb) <span class="sc">|&gt;</span> <span class="fu">conf_mat</span>(sentiment, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction negative neutral positive
+  negative       18       3        7
+  neutral        75     546      197
+  positive       28      27       69</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(df_test, pred_mod_svm) <span class="sc">|&gt;</span> <span class="fu">conf_mat</span>(sentiment, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction negative neutral positive
+  negative       33      17       20
+  neutral        71     522      179
+  positive       17      37       74</code></pre>
 </div>
-</section>
-<section id="python-code" class="level1">
-<h1>Python code</h1>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#roc_nb &lt;- bind_cols(df_test, pred_mod_nb_prob) |&gt; roc_curve()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/naives-bayes-intro/index.html",
       "/posts/binomials_models/index.html",
       "/posts/normality-returns/index.html",
       "/posts/linear-regression/index.html",
