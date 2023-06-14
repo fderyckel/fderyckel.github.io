@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -291,7 +291,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Notice the standard deviation of return: <span class="math inline">\(\sigma \sqrt{\delta t}\)</span></li>
 <li>unit of <span class="math inline">\(\mu = \frac{1}{t}\)</span></li>
 <li>unit of <span class="math inline">\(\sigma = \frac{1}{\sqrt{t}}\)</span></li>
-<li>this is because we can only variance together (no sd). For independent variable X and Y: <span class="math inline">\(Var(X+Y) = Var(X) + Var(Y)\)</span></li>
+<li>this is because we can only add variance together (no sd). For independent variable X and Y: <span class="math inline">\(Var(X+Y) = Var(X) + Var(Y)\)</span></li>
 <li>the standard deviation of returns scale up with the square root of the time step.</li>
 </ul>
 </div>
@@ -332,7 +332,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)    <span class="co"># read_csv()</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># select(), filter(), mutate()</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)    <span class="co">#drop_na()</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)    <span class="co"># drop_na()</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/SBUX.csv'</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, adjClose) <span class="sc">|&gt;</span> </span>
@@ -386,7 +386,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean.</p>
+<p>This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean. We discuss this further in our post: <a href="../../posts/normality-returns/index.html">The normality of asset returns</a></p>
 
 
 </section>

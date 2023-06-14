@@ -39,7 +39,12 @@ A time-series $\{X_t\}$ is (weakly) stationary if:
 
 # White Noise 
 
-White noise is a special type of time-series and a special case of stationarity. 
+White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying **Random Walk**.  $\{X_t\}$ is a random-walk if it satisfies the equation: 
+
+$$X_t = X_{t-1} + W_t$$ (@eq-rw1)
+where $\{W_t\}$ is a white-noise.  In other words, $W_t \sim iid N(0, \sigma_w^2)$
+
+
 
 $\{W_t\}$ is a white-noise if 
 

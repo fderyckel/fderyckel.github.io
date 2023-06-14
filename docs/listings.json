@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/quant-puzzle-01/index.html",
       "/posts/naives-bayes-intro/index.html",
       "/posts/binomials_models/index.html",
       "/posts/normality-returns/index.html",

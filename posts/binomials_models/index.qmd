@@ -143,6 +143,52 @@ A bit of a crude representation using Geogebra
 
 ![Binomial tree representation](binomial-tree.png)
 
+
+Using the equations from the previous sections, we can now create a function to price the value of an option.  
+
+```{r}
+calculate_option_price <- function(spot, strike, rfr, sigma, time, steps) {
+  dt = time/steps            # get delta_t
+  u = 1 + sigma * sqrt(dt)   # multiplying factor when asset rise
+  v = 1 - sigma * sqrt(dt)
+  p_prime = 0.5 + (rfr * sqrt(dt)/(2*sigma))
+  discount_factor = 1 / (1 + rfr * dt)
+  
+  # Calculating vector of prices at maturity 
+  s = rep(0, steps+1)   # initialize a vector for prices at maturity - (terminal nodes on the trees)
+  s[1] = spot * v^steps # #initialize the first end-price - (the most bottom right node of the tree)
+  for (i in 2:(steps+1)) { 
+    s[i] = s[i-1] * u/v # this is the trick: to go up one leave = going back one step and then up
+  }
+  
+  # Calculating vector of options values at maturity 
+  opt = rep(0, steps + 1)
+  for (i in 1:(steps+1)) { 
+    opt[i] = max(0, s[i] - strike)
+  }
+  
+  # We have now to work backward and up in the trees (from bottom right and up)
+  # We know the final option value.
+  # We need know to calculate the options in the intermediates nodes
+  for (i in steps:1) {
+    for (j in 1:i) {
+      opt[j] = discount_factor * (p_prime * opt[j+1] + (1 - p_prime)*opt[j])
+    }
+  }
+  #print(glue::glue('Asset price for each time step:', s))
+  #print(glue::glue('Option price for each time step: ', opt))
+  return(opt)
+}
+
+```
+
+Let's try our function to get some results
+```{r}
+calculate_option_price(spot = 100, strike = 100, rfr = 0.03, sigma = 0.1, time = 1, steps = 4)
+```
+
+
+
 # Trinomials model 
 
 

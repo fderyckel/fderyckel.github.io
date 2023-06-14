@@ -1,0 +1,112 @@
+---
+title: "Quant Puzzle #01"
+author: "Francois de Ryckel"
+date: "2023-06-13"
+categories: [R-code, quant-finance]
+editor: source
+date-modified: "2023-06-20"
+---
+
+This is attempt to start a series of puzzles for quant.  The source for these puzzles is [this noteworthy substack on quant finance](https://ntquant.substack.com/p/quant-puzzles-week-1-portfolio-theory)
+
+# Puzzle 1 
+
+> An investment strategy has an annualized expected return of 3% and an annualized volatility of 10%. Assume returns are normally distributed and independent from one year to the next. After how many years will the mean annualized returns of a portfolio be positive with at least 91.3% probability? What about the compounded returns?
+
+Our previous post on the [random behavior of assets](../random-behavior-assets/index.qmd) is a good start. 
+
+To calculate the mean annualized returns, we will use $$Ret = \frac {\sum_{i=1}^{n} R_i}{n}$$
+
+* $R_i$ is the annual return for the year i
+* $n$ is the number of year. 
+
+
+## Solving using R 
+
+### Using the mean annualized returns 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(dplyr)  # mutate(), tibble(), if_else(), group_by(), summarize()
+library(purrr)  # pmap()
+library(tidyr)  # unnest()
+
+num_sim = 10000
+
+# Create a function to get yearly return (both average and compounded)
+create_simul_ret <- function(mu, sigma, num_year) { 
+  df = tibble(year_num = 1:num_year, 
+              ret = rnorm(num_year, mean = mu, sd = sigma)) |> 
+    mutate(ann_ret = 1 + ret, 
+           cum_ret = cumsum(ann_ret) / year_num,           # Function for mean annualized returns 
+           compounded_ret = cumprod(ann_ret)^(1/year_num), # Function to get compounded returns
+           posit_cum_ret = if_else(cum_ret > 1, 1, 0), 
+           posit_comp_ret = if_else(compounded_ret > 1, 1, 0))
+  return(df)
+}
+
+# To get all different random return numbers, I need to fetch the data from the row
+
+df <- tibble(sim_num = 1:num_sim, mu = 0.03, sigma = 0.1, num_year = 30) |> 
+  mutate(sim_ret = pmap(list(mu, sigma, num_year), create_simul_ret)) |> 
+  unnest(cols = c(sim_ret)) |>      # large df with 30 rows/year per simulation
+  group_by(year_num) |>             # group by year to calculate average returns
+  summarize(avg_num_pos_ret = mean(posit_cum_ret), 
+            avg_num_comp_pos_ret = mean(posit_comp_ret))
+
+```
+
+```{r}
+#| warning: false
+#| echo: false
+
+library(gt)
+library(gtExtras)
+
+df |> gt() |> 
+    gt_highlight_rows(rows = c(21,30), font_weight = "normal") 
+```
+
+
+## Solving Using Python 
+
+```{python}
+import random
+#Computes a moving average from a gaussian sample over n trials
+def gauss_moving_average(mu,sigma,n):
+    moving_average_list = []
+    for i in range(n):
+        if i == 0:
+            moving_average_list.append(random.gauss(mu,sigma))
+        else:
+            moving_average_list.append((moving_average_list[i-1]*i+random.gauss(mu,sigma))/(i+1))
+    return moving_average_list
+
+#Outputs a list of guassian moving average time series
+def run_sims(mu, sigma, n, years):
+    sims = []
+    for i in range(n):
+        sims.append(gauss_moving_average(mu,sigma,years))
+    return sims
+#Outputs the percentage of positive entries in a column of a matrix
+def percent_positive_column(matrix,column):
+    n = len(matrix)
+    percent_positive = 0
+    for i in range(n):
+        if matrix[i][column] > 0:
+            percent_positive+=(1/n) 
+    return percent_positive*100
+
+
+#Runs the simulation and checks for our confidence level
+matrix = run_sims(3,10,100000, 100)
+for i in range(100):
+    conf = percent_positive_column(matrix, i)
+    print(conf)
+    if  conf >= 91.3:
+        print("Year",i+1, "has positive returns with probability", conf)
+        break
+```
+

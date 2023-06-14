@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -390,6 +390,48 @@ Example
 <p></p><figcaption class="figure-caption">Binomial tree representation</figcaption><p></p>
 </figure>
 </div>
+<p>Using the equations from the previous sections, we can now create a function to price the value of an option.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>calculate_option_price <span class="ot">&lt;-</span> <span class="cf">function</span>(spot, strike, rfr, sigma, time, steps) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> time<span class="sc">/</span>steps            <span class="co"># get delta_t</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> sigma <span class="sc">*</span> <span class="fu">sqrt</span>(dt)   <span class="co"># multiplying factor when asset rise</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> sigma <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  p_prime <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">+</span> (rfr <span class="sc">*</span> <span class="fu">sqrt</span>(dt)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  discount_factor <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> rfr <span class="sc">*</span> dt)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculating vector of prices at maturity </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, steps<span class="sc">+</span><span class="dv">1</span>)   <span class="co"># initialize a vector for prices at maturity - (terminal nodes on the trees)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  s[<span class="dv">1</span>] <span class="ot">=</span> spot <span class="sc">*</span> v<span class="sc">^</span>steps <span class="co"># #initialize the first end-price - (the most bottom right node of the tree)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>(steps<span class="sc">+</span><span class="dv">1</span>)) { </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    s[i] <span class="ot">=</span> s[i<span class="dv">-1</span>] <span class="sc">*</span> u<span class="sc">/</span>v <span class="co"># this is the trick: to go up one leave = going back one step and then up</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculating vector of options values at maturity </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  opt <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, steps <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(steps<span class="sc">+</span><span class="dv">1</span>)) { </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    opt[i] <span class="ot">=</span> <span class="fu">max</span>(<span class="dv">0</span>, s[i] <span class="sc">-</span> strike)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We have now to work backward and up in the trees (from bottom right and up)</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We know the final option value.</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We need know to calculate the options in the intermediates nodes</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> steps<span class="sc">:</span><span class="dv">1</span>) {</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>i) {</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      opt[j] <span class="ot">=</span> discount_factor <span class="sc">*</span> (p_prime <span class="sc">*</span> opt[j<span class="sc">+</span><span class="dv">1</span>] <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> p_prime)<span class="sc">*</span>opt[j])</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(glue::glue('Asset price for each time step:', s))</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(glue::glue('Option price for each time step: ', opt))</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(opt)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s try our function to get some results</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_option_price</span>(<span class="at">spot =</span> <span class="dv">100</span>, <span class="at">strike =</span> <span class="dv">100</span>, <span class="at">rfr =</span> <span class="fl">0.03</span>, <span class="at">sigma =</span> <span class="fl">0.1</span>, <span class="at">time =</span> <span class="dv">1</span>, <span class="at">steps =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  5.415051  8.117623 11.822154 16.506917 21.550625</code></pre>
+</div>
+</div>
 </section>
 </section>
 <section id="trinomials-model" class="level1">
@@ -397,21 +439,21 @@ Example
 <p>A discrete random variable (DRV) <span class="math inline">\(y\)</span> can either go up with a probability of <span class="math inline">\(\alpha\)</span> or down with a probability of <span class="math inline">\(\alpha\)</span> or stay the same with a probability of <span class="math inline">\(1 - 2\alpha\)</span>.</p>
 <p>We call that a trinomial walk.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#let's do a 100 steps trinomial walk. </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>num_steps <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">runif</span>(num_steps)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>num_steps, <span class="at">prob =</span> prob) <span class="sc">|&gt;</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">direction =</span> <span class="fu">if_else</span>(prob <span class="sc">&lt;</span> alpha, <span class="sc">-</span><span class="dv">1</span>, <span class="fu">if_else</span>(prob <span class="sc">&gt;</span> (<span class="dv">1</span> <span class="sc">-</span> alpha), <span class="dv">1</span>, <span class="dv">0</span>)), </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">cum_walk =</span> <span class="fu">cumsum</span>(direction))</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> step, <span class="at">y =</span> cum_walk)) <span class="sc">+</span> </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#let's do a 100 steps trinomial walk. </span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>num_steps <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">runif</span>(num_steps)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>num_steps, <span class="at">prob =</span> prob) <span class="sc">|&gt;</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">direction =</span> <span class="fu">if_else</span>(prob <span class="sc">&lt;</span> alpha, <span class="sc">-</span><span class="dv">1</span>, <span class="fu">if_else</span>(prob <span class="sc">&gt;</span> (<span class="dv">1</span> <span class="sc">-</span> alpha), <span class="dv">1</span>, <span class="dv">0</span>)), </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">cum_walk =</span> <span class="fu">cumsum</span>(direction))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> step, <span class="at">y =</span> cum_walk)) <span class="sc">+</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This is just one instance of a trinomial walk. In reality, we are interested in getting to know the probabilistic properties of the <span class="math inline">\(y\)</span> variable.</p>

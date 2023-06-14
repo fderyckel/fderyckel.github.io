@@ -74,7 +74,7 @@ This last @eq-asset-price3 is the basis for Monte-Carlo simulation.
 * Notice the standard deviation of return: $\sigma \sqrt{\delta t}$
 * unit of $\mu = \frac{1}{t}$ 
 * unit of $\sigma = \frac{1}{\sqrt{t}}$
-* this is because we can only variance together (no sd).  For independent variable X and Y: $Var(X+Y) = Var(X) + Var(Y)$
+* this is because we can only add variance together (no sd).  For independent variable X and Y: $Var(X+Y) = Var(X) + Var(Y)$
 * the standard deviation of returns scale up with the square root of the time step. 
 :::
 
@@ -111,7 +111,7 @@ Let's use the above notes with the ticker SBUX as a financial asset.
 
 library(readr)    # read_csv()
 library(dplyr)    # select(), filter(), mutate()
-library(tidyr)    #drop_na()
+library(tidyr)    # drop_na()
 
 df <- read_csv('../../raw_data/SBUX.csv') |> 
   select(date, adjClose) |> 
@@ -162,4 +162,4 @@ ggplot(df1, aes(std_ret)) +
   scale_x_continuous(limits = c(-5, 5), n.breaks = 9)
 ```
 
-This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean. 
+This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean. We discuss this further in our post: [The normality of asset returns](../normality-returns/index.qmd)
