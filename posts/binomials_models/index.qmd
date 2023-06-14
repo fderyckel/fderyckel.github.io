@@ -4,18 +4,8 @@ author: "Francois de Ryckel"
 date: "2023-04-06"
 categories: [R-code, quant-finance, binomial_models]
 editor: source
-date-modified: "2023-04-27"
+date-modified: "2023-06-14"
 ---
-
-```{r}
-#| warning: false
-#| message: false
-
-library(tibble)     # tibble()
-library(dplyr)      # mutate()
-library(ggplot2)    # ggplot()
-```
-
 
 # Binomial models 
 
@@ -146,6 +136,7 @@ A bit of a crude representation using Geogebra
 
 Using the equations from the previous sections, we can now create a function to price the value of an option.  
 
+
 ```{r}
 calculate_option_price <- function(spot, strike, rfr, sigma, time, steps) {
   dt = time/steps            # get delta_t
@@ -190,6 +181,17 @@ calculate_option_price(spot = 100, strike = 100, rfr = 0.03, sigma = 0.1, time =
 
 
 # Trinomials model 
+
+
+```{r}
+#| warning: false
+#| message: false
+
+library(tibble)     # tibble()
+library(dplyr)      # mutate()
+library(ggplot2)    # ggplot()
+```
+
 
 
 A discrete random variable (DRV) $y$ can either go up with a probability of $\alpha$ or down with a probability of $\alpha$ or stay the same with a probability of $1 - 2\alpha$.  
