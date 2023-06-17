@@ -1,12 +1,14 @@
 ---
-title: "Auto-Correlation & Stationarity - Part 1"
+title: "AutoCorrelation, Stationarity and Random-Walk - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
 categories: [time-series]
 date-modified: '2022-09-09'
 ---
 
-# Auto-covariance & auto-correlation 
+This post is to set up the basic concepts of time-series analysis.  
+
+# Autocovariance & autocorrelation 
 
 Auto-correlation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself. 
 
@@ -28,6 +30,78 @@ Few properties of autocavariance and autocorrelation of time-series
 * $\gamma(s, t) = \gamma(t, s)$ 
 * $|\gamma(s, t)| \le \sigma_s \sigma_t$ 
 * $\rho(t, t) \equiv 1$
+
+## Autocorrelation plots - Correlogram 
+
+As exercise, we can plot the auto-correlation of a non-stationary (aka with significant autocorrelation) time-series.  We are using the [Monthly Milk production](https://www.kaggle.com/datasets/bhaveshsonagra/monthly-milk-production) (no idea where the data come from)
+
+### Using R 
+
+In R the standard function to plot a correlogram is the *acf()* function
+
+```{r}
+#| warning: false
+#| message: false
+
+library(readr)
+
+milk <- read_csv('../../raw_data/milk.csv')
+acf(milk$milk_prod_per_cow_kg)
+```
+
+Graph clearly shows some seasonality (at the 12 lags ==> yearly correlation) which indicates that our data are non-stationary (next section). 
+
+If we are more attached to the auto-correlation values, we can store the results in a dataframe. 
+
+```{r}
+yo <- acf(milk$milk_prod_per_cow_kg, plot = F)
+yo
+```
+
+
+We could use the *ggplot* package to create a function to draw acf and get more customization.  We will re-use this function later as well. 
+
+```{r}
+# slightly fancier version (with more customization)
+ggacf <- function(series) {
+  significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
+  a <- acf(series, plot=F)
+  a.2 <- with(a, data.frame(lag, acf))
+  g <- ggplot(a.2[-1,], aes(x=lag,y=acf)) + 
+    geom_segment(mapping = aes(xend = lag, yend = 0), linewidth = 0.8) + 
+    xlab('Lag') + ylab('ACF') + 
+    geom_hline(yintercept=c(significance_level,-significance_level), linetype= 'dashed', color = 'dodgerblue4');
+
+  # fix scale for integer lags
+  if (all(a.2$lag%%1 == 0)) {
+    g<- g + scale_x_discrete(limits = factor(seq(1, max(a.2$lag))));
+  }
+  return(g);
+}
+```
+
+
+```{r}
+library(ggplot2)
+library(tibble)
+
+ggacf(milk$milk_prod_per_cow_kg)
+```
+
+### Using Python 
+
+In python, we need to use the *statsmodel* package. 
+
+```{python}
+from pandas import read_csv
+import matplotlib.pyplot as plt
+from statsmodels.graphics.tsaplots import plot_acf
+
+df = read_csv('../../raw_data/milk.csv', index_col=0)
+plot_acf(df)
+plt.show()
+```
+
 
 # Stationarity 
 
@@ -59,8 +133,7 @@ Therefore, as $n \rightarrow \infty$, we can say that $\frac{1}{n} (X_1 + \dots 
 We can generate white-noise in R using the arima.sim() function.  
 
 ```{r}
-library(ggplot2)
-library(tibble)
+
 
 set.seed(1234)
 
@@ -82,23 +155,9 @@ acf(wn, lag.max = 20)
 ```
 
 We could also use a ggplot function to plot the auto-correlation of our time-series. 
-```{r}
-# slightly fancier version (with more customization)
-ggacf <- function(series) {
-  significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
-  a <- acf(series, plot=F)
-  a.2 <- with(a, data.frame(lag, acf))
-  g <- ggplot(a.2[-1,], aes(x=lag,y=acf)) + 
-    geom_segment(mapping = aes(xend = lag, yend = 0), linewidth = 0.8) + 
-    xlab('Lag') + ylab('ACF') + 
-    geom_hline(yintercept=c(significance_level,-significance_level), linetype= 'dashed', color = 'dodgerblue4');
 
-  # fix scale for integer lags
-  if (all(a.2$lag%%1 == 0)) {
-    g<- g + scale_x_discrete(limits = factor(seq(1, max(a.2$lag))));
-  }
-  return(g);
-}
+```{r}
+
 ggacf(wn)
 ```
 
