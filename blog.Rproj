@@ -1,6 +1,6 @@
 Version: 1.0
 
-RestoreWorkspace: Default
+RestoreWorkspace: Yes
 SaveWorkspace: Default
 AlwaysSaveHistory: Default
 
@@ -12,6 +12,6 @@ Encoding: UTF-8
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
-PythonType: conda
-PythonVersion: 3.8.16
-PythonPath: ~/opt/anaconda3/envs/r-reticulate/bin/python3.8
+PythonType: virtualenv
+PythonVersion: 3.10.6
+PythonPath: ~/.virtualenvs/my-env/bin/python

@@ -9,4 +9,5 @@ api_keys
 
 /env/
 /.quarto/
+/my-env/
 
