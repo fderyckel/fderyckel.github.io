@@ -10,7 +10,7 @@ This post is to set up the basic concepts of time-series analysis.
 
 # Autocovariance & autocorrelation 
 
-Auto-correlation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself. 
+Autocorrelation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself. 
 
 Let's consider $\{X_t\}$ a time series.  
 
@@ -18,8 +18,8 @@ Let's consider $\{X_t\}$ a time series.
 *   The Variance of the time series is defined as $\sigma_t ^2 = Var(X_t) = \textbf{E}[(X_t - \mu_t)^2]$. 
 *   In general, $\mu_t$ and $\sigma_t ^2$ are different at different point in time. 
 
-Now, we define the **auto-covariance** function of the time series as $$\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]$$. 
-In the same vein, we define the **auto-correlation** function of the time series as 
+Now, we define the **autocovariance** function of the time series as $$\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]$$. 
+In the same vein, we define the **autocorrelation** function of the time series as 
 $$\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}$$
 
 Autocovariance and autocorrelation measure the linear correlation between between two points $X_s$ and $X_t$ on the same time-series. 
@@ -111,11 +111,11 @@ A time-series $\{X_t\}$ is (weakly) stationary if:
 * $E[X_t^2] < \infty$ 
 * $Cov(X_t, X_{t+k}) = \gamma(k)$ is independent of t for each integer k. $\gamma(k)$ is called the lag $k$ autocovariance of function of $\{X_t\}$
 
-# White Noise 
+# Random Walk & White Noise 
 
 White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying **Random Walk**.  $\{X_t\}$ is a random-walk if it satisfies the equation: 
 
-$$X_t = X_{t-1} + W_t$$ (@eq-rw1)
+$$X_t = X_{t-1} + W_t$$ {#eq-rw1}
 where $\{W_t\}$ is a white-noise.  In other words, $W_t \sim iid N(0, \sigma_w^2)$
 
 
@@ -126,14 +126,15 @@ $\{W_t\}$ is a white-noise if
 * $Var[W_t] = \sigma_w^2$ is a constant 
 * $Cov(W_s, W_t) = 0$ for any s and t with $s<t$.  In other words, any 2 subset of W are uncorrelated. 
 
-If $\{X_t\}$ is iid (independent and identically distributed) and $\rho(k) = 1$ (when k=0) and $\rho(k) = 0$ (otherwise, aka for any other values of k), then $\{X_t\}$ is a white noise. 
+If $\{W_t\}$ is iid (independent and identically distributed) and $\rho(k) = 1$ (when k=0) and $\rho(k) = 0$ (otherwise, aka for any other values of k), then $\{W_t\}$ is a white noise. 
 
 Therefore, as $n \rightarrow \infty$, we can say that $\frac{1}{n} (X_1 + \dots + X_n) = E[X_t] = \mu$
+
+A random walk is mean stationary: $E(X_t) = E(X_0)$.  However, the random walk is NOT variance stationary: $Var(X_t) = Var(X_{t-1}) + \sigma_w^2 \gt Var(X_{t-1})$.  
 
 We can generate white-noise in R using the arima.sim() function.  
 
 ```{r}
-
 
 set.seed(1234)
 
