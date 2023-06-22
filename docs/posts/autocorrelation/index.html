@@ -236,7 +236,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This post is to set up the basic concepts of time-series analysis.</p>
 <section id="autocovariance-autocorrelation" class="level1">
 <h1>Autocovariance &amp; autocorrelation</h1>
-<p>Auto-correlation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself.</p>
+<p>Autocorrelation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself.</p>
 <p>Let’s consider <span class="math inline">\(\{X_t\}\)</span> a time series.</p>
 <ul>
 <li>Then the mean function of <span class="math inline">\(\{X_t\}\)</span> (the first moment) is defined as <span class="math inline">\(\mu_t = \textbf{E}(X_t)\)</span>. In other words, <span class="math inline">\(\mu_t\)</span> is the expected value of the time series at point t.<br>
@@ -244,7 +244,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>The Variance of the time series is defined as <span class="math inline">\(\sigma_t ^2 = Var(X_t) = \textbf{E}[(X_t - \mu_t)^2]\)</span>.</li>
 <li>In general, <span class="math inline">\(\mu_t\)</span> and <span class="math inline">\(\sigma_t ^2\)</span> are different at different point in time.</li>
 </ul>
-<p>Now, we define the <strong>auto-covariance</strong> function of the time series as <span class="math display">\[\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]\]</span>. In the same vein, we define the <strong>auto-correlation</strong> function of the time series as <span class="math display">\[\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}\]</span></p>
+<p>Now, we define the <strong>autocovariance</strong> function of the time series as <span class="math display">\[\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]\]</span>. In the same vein, we define the <strong>autocorrelation</strong> function of the time series as <span class="math display">\[\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}\]</span></p>
 <p>Autocovariance and autocorrelation measure the linear correlation between between two points <span class="math inline">\(X_s\)</span> and <span class="math inline">\(X_t\)</span> on the same time-series.</p>
 <p>Few properties of autocavariance and autocorrelation of time-series</p>
 <ul>
@@ -342,7 +342,7 @@ Autocorrelations of series 'milk$milk_prod_per_cow_kg', by lag
 <section id="white-noise" class="level1">
 <h1>White Noise</h1>
 <p>White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying <strong>Random Walk</strong>. <span class="math inline">\(\{X_t\}\)</span> is a random-walk if it satisfies the equation:</p>
-<p><span class="math display">\[X_t = X_{t-1} + W_t\]</span> (<strong>?@eq-rw1</strong>) where <span class="math inline">\(\{W_t\}\)</span> is a white-noise. In other words, <span class="math inline">\(W_t \sim iid N(0, \sigma_w^2)\)</span></p>
+<p><span id="eq-rw1"><span class="math display">\[X_t = X_{t-1} + W_t \tag{1}\]</span></span> where <span class="math inline">\(\{W_t\}\)</span> is a white-noise. In other words, <span class="math inline">\(W_t \sim iid N(0, \sigma_w^2)\)</span></p>
 <p><span class="math inline">\(\{W_t\}\)</span> is a white-noise if</p>
 <ul>
 <li><span class="math inline">\(E[W_t] = \mu\)</span> is a constant for all t</li>
