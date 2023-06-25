@@ -67,7 +67,7 @@ $$R_i = \frac{S_{i+1} - S_i}{S_i} = \bar{R} + std \cdot \phi = \mu \delta t + \s
 $$S_{i+1} - S_i= S_i \mu \delta t + S_i \sigma \phi \delta t^{1/2}$$ {#eq-asset-price2}
 
 ::: {.callout-tip appearance="minimal"} 
-$$S_{i+1} = S_i \cdot (1 +  \mu \delta t) + S_i \sigma \phi \delta t^{1/2}$$ {#eq-asset-price3}
+$$S_{i+1} = S_i \cdot (1 +  \mu \delta t +  \sigma \phi \sqrt{\delta t})$$ {#eq-asset-price3}
 
 This last @eq-asset-price3 is the basis for Monte-Carlo simulation. 
 
@@ -115,14 +115,16 @@ library(tidyr)    # drop_na()
 
 df <- read_csv('../../raw_data/SBUX.csv') |> 
   select(date, adjClose) |> 
-  filter(date > '2019-10-01') |> drop_na() |>
+  filter(date > '2019-07-01') |> drop_na() |>
   mutate(ret = (adjClose - lag(adjClose)) / lag(adjClose))
 
 r_bar = mean(df$ret, na.rm = T)
 stdev = sd(df$ret, na.rm = T)
 
-mu = r_bar / (1/252)
-sigma = stdev / sqrt(1/252)
+delta_t = 1/252
+
+mu = r_bar / delta_t
+sigma = stdev / sqrt(delta_t)
 
 r_bar
 stdev
@@ -163,3 +165,56 @@ ggplot(df1, aes(std_ret)) +
 ```
 
 This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean. We discuss this further in our post: [The normality of asset returns](../normality-returns/index.qmd)
+
+## The Euler-Maruyana Method to compute the SDE 
+
+We start with @eq-asset-price3 : $S_{i+1} = S_i \cdot (1 +  \mu \delta t +  \sigma \phi \sqrt{\delta t})$
+
+```{r}
+# create one simulation for price 
+ndays <- 252 
+price <- c()
+price[1] <- last(df$adjClose)
+
+phi = rnorm(ndays, mean = 0, sd = 1)
+
+for (i in 2:ndays){ 
+  price[i] = price[i-1] * (1 + mu * delta_t + sigma * phi[i] * sqrt(delta_t))
+}
+
+yo <- tibble(x = 1:ndays, price = price)
+ggplot(yo, aes(x, price)) + 
+  geom_line()
+```
+
+We can now create 100's such simulations re-using previous code in a function. 
+
+```{r}
+create_price_simul <- function(x) {
+  price <- c() 
+  price[1] <- last(df$adjClose) 
+  phi = rnorm(ndays, mean = 0, sd = 1) 
+  for (i in 2:ndays){ 
+    price[i] = price[i-1] * (1 + mu * delta_t + sigma * phi[i] * sqrt(delta_t)) 
+    } 
+  yo <- tibble(x = 1:ndays, price = price)
+  return(yo)
+}
+
+library(purrr)      # map()
+library(RColorBrewer)
+
+num_of_simul <- 100
+df1 <- tibble(simul_num = 1:num_of_simul) |> 
+  mutate(prices = map(simul_num, create_price_simul))
+
+yo <- df1 |> unnest(cols = c(prices))
+
+getPalette = colorRampPalette(brewer.pal(9, "Set1"))
+colourCount = num_of_simul
+ggplot(yo, aes(x, price, group = simul_num)) + 
+  scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Accent"))(colourCount)) +
+  geom_line(aes(color = simul_num)) + 
+  theme(legend.position = 'none')
+```
+

@@ -219,8 +219,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul></li>
   </ul></li>
   <li><a href="#stationarity" id="toc-stationarity" class="nav-link" data-scroll-target="#stationarity">Stationarity</a></li>
-  <li><a href="#white-noise" id="toc-white-noise" class="nav-link" data-scroll-target="#white-noise">White Noise</a></li>
+  <li><a href="#random-walk-white-noise" id="toc-random-walk-white-noise" class="nav-link" data-scroll-target="#random-walk-white-noise">Random Walk &amp; White Noise</a>
+  <ul class="collapse">
+  <li><a href="#statistical-test-to-check-white-noise." id="toc-statistical-test-to-check-white-noise." class="nav-link" data-scroll-target="#statistical-test-to-check-white-noise.">Statistical test to check white-noise.</a></li>
+  </ul></li>
+  <li><a href="#pacf" id="toc-pacf" class="nav-link" data-scroll-target="#pacf">PACF</a>
+  <ul class="collapse">
+  <li><a href="#application-to-a-financial-asset" id="toc-application-to-a-financial-asset" class="nav-link" data-scroll-target="#application-to-a-financial-asset">Application to a financial asset</a>
+  <ul class="collapse">
   <li><a href="#python-code" id="toc-python-code" class="nav-link" data-scroll-target="#python-code">Python code</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -339,8 +348,8 @@ Autocorrelations of series 'milk$milk_prod_per_cow_kg', by lag
 <li><span class="math inline">\(Cov(X_t, X_{t+k}) = \gamma(k)\)</span> is independent of t for each integer k. <span class="math inline">\(\gamma(k)\)</span> is called the lag <span class="math inline">\(k\)</span> autocovariance of function of <span class="math inline">\(\{X_t\}\)</span></li>
 </ul>
 </section>
-<section id="white-noise" class="level1">
-<h1>White Noise</h1>
+<section id="random-walk-white-noise" class="level1">
+<h1>Random Walk &amp; White Noise</h1>
 <p>White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying <strong>Random Walk</strong>. <span class="math inline">\(\{X_t\}\)</span> is a random-walk if it satisfies the equation:</p>
 <p><span id="eq-rw1"><span class="math display">\[X_t = X_{t-1} + W_t \tag{1}\]</span></span> where <span class="math inline">\(\{W_t\}\)</span> is a white-noise. In other words, <span class="math inline">\(W_t \sim iid N(0, \sigma_w^2)\)</span></p>
 <p><span class="math inline">\(\{W_t\}\)</span> is a white-noise if</p>
@@ -349,8 +358,9 @@ Autocorrelations of series 'milk$milk_prod_per_cow_kg', by lag
 <li><span class="math inline">\(Var[W_t] = \sigma_w^2\)</span> is a constant</li>
 <li><span class="math inline">\(Cov(W_s, W_t) = 0\)</span> for any s and t with <span class="math inline">\(s&lt;t\)</span>. In other words, any 2 subset of W are uncorrelated.</li>
 </ul>
-<p>If <span class="math inline">\(\{X_t\}\)</span> is iid (independent and identically distributed) and <span class="math inline">\(\rho(k) = 1\)</span> (when k=0) and <span class="math inline">\(\rho(k) = 0\)</span> (otherwise, aka for any other values of k), then <span class="math inline">\(\{X_t\}\)</span> is a white noise.</p>
+<p>If <span class="math inline">\(\{W_t\}\)</span> is iid (independent and identically distributed) and <span class="math inline">\(\rho(k) = 1\)</span> (when k=0) and <span class="math inline">\(\rho(k) = 0\)</span> (otherwise, aka for any other values of k), then <span class="math inline">\(\{W_t\}\)</span> is a white noise.</p>
 <p>Therefore, as <span class="math inline">\(n \rightarrow \infty\)</span>, we can say that <span class="math inline">\(\frac{1}{n} (X_1 + \dots + X_n) = E[X_t] = \mu\)</span></p>
+<p>A random walk is mean stationary: <span class="math inline">\(E(X_t) = E(X_0)\)</span>. However, the random walk is NOT variance stationary: <span class="math inline">\(Var(X_t) = Var(X_{t-1}) + \sigma_w^2 \gt Var(X_{t-1})\)</span>.</p>
 <p>We can generate white-noise in R using the arima.sim() function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
@@ -382,11 +392,117 @@ Autocorrelations of series 'milk$milk_prod_per_cow_kg', by lag
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<section id="statistical-test-to-check-white-noise." class="level2">
+<h2 class="anchored" data-anchor-id="statistical-test-to-check-white-noise.">Statistical test to check white-noise.</h2>
+<p>In R we can use the Ljung-Box test (Portmanteau ‘Q’ test).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Box.test</span>(wn, <span class="at">type =</span> <span class="st">'Ljung-Box'</span>, <span class="at">lag =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Box-Ljung test
+
+data:  wn
+X-squared = 4.8374, df = 1, p-value = 0.02785</code></pre>
+</div>
+</div>
 </section>
-<section id="python-code" class="level1">
-<h1>Python code</h1>
+</section>
+<section id="pacf" class="level1">
+<h1>PACF</h1>
+<p>The Partial Autocorrelation measures the correlation between <span class="math inline">\(\{X_{t-k} \}\)</span> and <span class="math inline">\(\{ X_t \}\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(milk<span class="sc">$</span>milk_prod_per_cow_kg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="application-to-a-financial-asset" class="level2">
+<h2 class="anchored" data-anchor-id="application-to-a-financial-asset">Application to a financial asset</h2>
+<p>We know that most financial assets prices are not stationary. Let’s take <em>SBUX</em> for instance. That being said, the log difference of their prices is stationary. Note how <span class="math inline">\(log(P_t) - log(P{t-1}) = log( \frac{P_t}{P_{t-1} )\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/SBUX.csv'</span>) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, adjClose) <span class="sc">|&gt;</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ret_1d =</span> <span class="fu">log</span>(adjClose <span class="sc">/</span> <span class="fu">lag</span>(adjClose)), </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">ret_5d =</span> <span class="fu">log</span>(adjClose <span class="sc">/</span> <span class="fu">lag</span>(adjClose, <span class="at">n =</span> <span class="dv">5</span>)), </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">y_t =</span> <span class="fu">log</span>(adjClose) <span class="sc">-</span> <span class="fu">log</span>(<span class="fu">lag</span>(adjClose)), </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">day_of_week =</span> <span class="fu">weekdays</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2018-01-01'</span> <span class="sc">&amp;</span> day_of_week <span class="sc">==</span> <span class="st">'Tuesday'</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggacf</span>(df<span class="sc">$</span>y_t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="python-code" class="level3">
+<h3 class="anchored" data-anchor-id="python-code">Python code</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> acf</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> acorr_ljungbox</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.graphics.tsaplots <span class="im">import</span> plot_acf, plot_pacf</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>py_df <span class="op">=</span> pd.read_csv(<span class="st">'../../raw_data/SBUX.csv'</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>py_df.index <span class="op">=</span> py_df[<span class="st">'date'</span>]</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>py_df_ts <span class="op">=</span> pd.Series(py_df[<span class="st">'adjClose'</span>])</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>log_ret <span class="op">=</span> np.log(<span class="dv">1</span> <span class="op">+</span> py_df_ts.pct_change())</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>log_ret <span class="op">=</span> log_ret.dropna()</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>r, q, p <span class="op">=</span> acf(log_ret, nlags <span class="op">=</span> <span class="dv">25</span>, qstat <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>plot_acf(log_ret, lags<span class="op">=</span><span class="dv">25</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/python_pacf_plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>array([26.3136516 , 26.316042  , 26.4475469 , 27.2734633 , 28.00235211,
+       28.69472715, 28.70545674, 35.25084316, 39.48634821, 39.62923899,
+       40.19059746, 40.26948906, 40.2707996 , 40.27868851, 44.51737182,
+       44.57802557, 45.63422739, 45.70863764, 46.1791967 , 46.4744188 ,
+       47.53325326, 48.52664511, 49.81175008, 50.99884363, 54.25246436])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>array([2.90229916e-07, 1.92994124e-06, 7.68595886e-06, 1.75019647e-05,
+       3.63602517e-05, 6.94858936e-05, 1.63715557e-04, 2.40667022e-05,
+       9.41189824e-06, 1.96904817e-05, 3.31867363e-05, 6.48649190e-05,
+       1.25022094e-04, 2.30799458e-04, 9.12196699e-05, 1.61044765e-04,
+       1.95803242e-04, 3.27130628e-04, 4.67495545e-04, 6.93532977e-04,
+       7.95682642e-04, 9.24023511e-04, 9.75159499e-04, 1.05482880e-03,
+       6.16160760e-04])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>q1, p1 <span class="op">=</span> acorr_ljungbox(log_ret, lags <span class="op">=</span><span class="dv">25</span>, return_df <span class="op">=</span> <span class="va">False</span>, boxpierce <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'lb_pvalue'</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plot_pacf(log_ret, lags<span class="op">=</span><span class="dv">25</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

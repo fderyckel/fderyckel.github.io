@@ -135,7 +135,6 @@ A random walk is mean stationary: $E(X_t) = E(X_0)$.  However, the random walk i
 We can generate white-noise in R using the arima.sim() function.  
 
 ```{r}
-
 set.seed(1234)
 
 # Generate a white noise in R
@@ -158,10 +157,100 @@ acf(wn, lag.max = 20)
 We could also use a ggplot function to plot the auto-correlation of our time-series. 
 
 ```{r}
-
 ggacf(wn)
+```
+
+## Statistical test to check white-noise. 
+
+In R we can use the Ljung-Box test (Portmanteau 'Q' test).  
+
+```{r}
+Box.test(wn, type = 'Ljung-Box', lag = 1)
+```
+
+
+# PACF 
+
+The Partial Autocorrelation measures the correlation between $\{X_{t-k} \}$ and $\{ X_t \}$. 
+
+```{r}
+pacf(milk$milk_prod_per_cow_kg)
 ```
 
 
 
-# Python code 
+
+## Application to a financial asset 
+
+We know that most financial assets prices are not stationary.  Let's take *SBUX* for instance. 
+That being said, the log difference of their prices is stationary.  Note how $log(P_t) - log(P{t-1}) = log( \frac{P_t}{P_{t-1} )$
+
+```{r}
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(lubridate)
+
+df <- read_csv('../../raw_data/SBUX.csv') |> arrange(date) |> 
+  select(date, adjClose) |> 
+  mutate(ret_1d = log(adjClose / lag(adjClose)), 
+         ret_5d = log(adjClose / lag(adjClose, n = 5)), 
+         y_t = log(adjClose) - log(lag(adjClose)), 
+         day_of_week = weekdays(date)) |> 
+  filter(date > '2018-01-01' & day_of_week == 'Tuesday')
+
+ggacf(df$y_t)
+```
+
+
+### Python code 
+
+```{python}
+#| label: python_pacf_plot
+
+from statsmodels.tsa.stattools import acf
+from statsmodels.stats.diagnostic import acorr_ljungbox
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+py_df = pd.read_csv('../../raw_data/SBUX.csv')
+
+py_df.index = py_df['date']
+py_df_ts = pd.Series(py_df['adjClose'])
+log_ret = np.log(1 + py_df_ts.pct_change())
+log_ret = log_ret.dropna()
+
+r, q, p = acf(log_ret, nlags = 25, qstat = True)
+
+fig = plt.figure()
+plot_acf(log_ret, lags=25)
+plt.show()
+```
+
+```{python}
+
+# q is for the Ljung-Box test statistics
+q
+```
+
+```{python}
+
+# p is for the p-value of the Ljung-Box statistics. 
+p
+```
+
+```{python}
+q1, p1 = acorr_ljungbox(log_ret, lags =25, return_df = False, boxpierce = False)
+p1
+```
+
+
+```{python}
+fig = plt.figure()
+plot_pacf(log_ret, lags=25)
+plt.show()
+```
+
