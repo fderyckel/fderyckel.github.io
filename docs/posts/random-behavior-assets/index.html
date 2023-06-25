@@ -218,7 +218,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#considering-randomness" id="toc-considering-randomness" class="nav-link" data-scroll-target="#considering-randomness">Considering randomness</a></li>
   <li><a href="#going-to-continuous-time" id="toc-going-to-continuous-time" class="nav-link" data-scroll-target="#going-to-continuous-time">Going to continuous time</a></li>
   </ul></li>
-  <li><a href="#practice-in-r" id="toc-practice-in-r" class="nav-link" data-scroll-target="#practice-in-r">Practice in R</a></li>
+  <li><a href="#practice-in-r" id="toc-practice-in-r" class="nav-link" data-scroll-target="#practice-in-r">Practice in R</a>
+  <ul class="collapse">
+  <li><a href="#the-euler-maruyana-method-to-compute-the-sde" id="toc-the-euler-maruyana-method-to-compute-the-sde" class="nav-link" data-scroll-target="#the-euler-maruyana-method-to-compute-the-sde">The Euler-Maruyana Method to compute the SDE</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -285,7 +288,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<p><span id="eq-asset-price3"><span class="math display">\[S_{i+1} = S_i \cdot (1 +  \mu \delta t) + S_i \sigma \phi \delta t^{1/2} \tag{6}\]</span></span></p>
+<p><span id="eq-asset-price3"><span class="math display">\[S_{i+1} = S_i \cdot (1 +  \mu \delta t +  \sigma \phi \sqrt{\delta t}) \tag{6}\]</span></span></p>
 <p>This last <a href="#eq-asset-price3">Equation&nbsp;6</a> is the basis for Monte-Carlo simulation.</p>
 <ul>
 <li>Notice the standard deviation of return: <span class="math inline">\(\sigma \sqrt{\delta t}\)</span></li>
@@ -336,25 +339,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../raw_data/SBUX.csv'</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, adjClose) <span class="sc">|&gt;</span> </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2019-10-01'</span>) <span class="sc">|&gt;</span> <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;</span> <span class="st">'2019-07-01'</span>) <span class="sc">|&gt;</span> <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ret =</span> (adjClose <span class="sc">-</span> <span class="fu">lag</span>(adjClose)) <span class="sc">/</span> <span class="fu">lag</span>(adjClose))</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>r_bar <span class="ot">=</span> <span class="fu">mean</span>(df<span class="sc">$</span>ret, <span class="at">na.rm =</span> T)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>stdev <span class="ot">=</span> <span class="fu">sd</span>(df<span class="sc">$</span>ret, <span class="at">na.rm =</span> T)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> r_bar <span class="sc">/</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> stdev <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">252</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>r_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>delta_t <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">252</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> r_bar <span class="sc">/</span> delta_t</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> stdev <span class="sc">/</span> <span class="fu">sqrt</span>(delta_t)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>r_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.0001341147</code></pre>
+<pre><code>[1] -1.073652e-06</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>stdev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.02133465</code></pre>
+<pre><code>[1] 0.02092624</code></pre>
 </div>
 </div>
-<p>Knowing the average daily return of SBUX over the last 3-ish year and using <span class="math inline">\(\bar{R} = \mu \delta t\)</span> , or <span class="math inline">\(\mu = \frac{\bar{R}}{\delta t}\)</span> and in our case <span class="math inline">\(\delta t = \frac{1}{252}\)</span>; we find the average annualized returns <span class="math inline">\(\mu\)</span> is: -3.38 % with standard deviation <span class="math inline">\(\sigma\)</span> of 33.9 % annualized.</p>
+<p>Knowing the average daily return of SBUX over the last 3-ish year and using <span class="math inline">\(\bar{R} = \mu \delta t\)</span> , or <span class="math inline">\(\mu = \frac{\bar{R}}{\delta t}\)</span> and in our case <span class="math inline">\(\delta t = \frac{1}{252}\)</span>; we find the average annualized returns <span class="math inline">\(\mu\)</span> is: -0.027 % with standard deviation <span class="math inline">\(\sigma\)</span> of 33.2 % annualized.</p>
 <p>We could plot the returns and the std of returns</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
@@ -387,8 +392,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>This graph exemplifies what is very common with asset returns: fat tail, and under representation of returns just outside the mean. We discuss this further in our post: <a href="../../posts/normality-returns/index.html">The normality of asset returns</a></p>
+<section id="the-euler-maruyana-method-to-compute-the-sde" class="level2">
+<h2 class="anchored" data-anchor-id="the-euler-maruyana-method-to-compute-the-sde">The Euler-Maruyana Method to compute the SDE</h2>
+<p>We start with <a href="#eq-asset-price3">Equation&nbsp;6</a> : <span class="math inline">\(S_{i+1} = S_i \cdot (1 + \mu \delta t + \sigma \phi \sqrt{\delta t})\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create one simulation for price </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ndays <span class="ot">&lt;-</span> <span class="dv">252</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>price <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>price[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">last</span>(df<span class="sc">$</span>adjClose)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>phi <span class="ot">=</span> <span class="fu">rnorm</span>(ndays, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ndays){ </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  price[i] <span class="ot">=</span> price[i<span class="dv">-1</span>] <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> mu <span class="sc">*</span> delta_t <span class="sc">+</span> sigma <span class="sc">*</span> phi[i] <span class="sc">*</span> <span class="fu">sqrt</span>(delta_t))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>yo <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span>ndays, <span class="at">price =</span> price)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(yo, <span class="fu">aes</span>(x, price)) <span class="sc">+</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can now create 100’s such simulations re-using previous code in a function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>create_price_simul <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  price <span class="ot">&lt;-</span> <span class="fu">c</span>() </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  price[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">last</span>(df<span class="sc">$</span>adjClose) </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="fu">rnorm</span>(ndays, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>) </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ndays){ </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    price[i] <span class="ot">=</span> price[i<span class="dv">-1</span>] <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> mu <span class="sc">*</span> delta_t <span class="sc">+</span> sigma <span class="sc">*</span> phi[i] <span class="sc">*</span> <span class="fu">sqrt</span>(delta_t)) </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  yo <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span>ndays, <span class="at">price =</span> price)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(yo)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)      <span class="co"># map()</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>num_of_simul <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">simul_num =</span> <span class="dv">1</span><span class="sc">:</span>num_of_simul) <span class="sc">|&gt;</span> </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prices =</span> <span class="fu">map</span>(simul_num, create_price_simul))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>yo <span class="ot">&lt;-</span> df1 <span class="sc">|&gt;</span> <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">c</span>(prices))</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>getPalette <span class="ot">=</span> <span class="fu">colorRampPalette</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">"Set1"</span>))</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>colourCount <span class="ot">=</span> num_of_simul</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(yo, <span class="fu">aes</span>(x, price, <span class="at">group =</span> simul_num)) <span class="sc">+</span> </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">colorRampPalette</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">"Accent"</span>))(colourCount)) <span class="sc">+</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> simul_num)) <span class="sc">+</span> </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in brewer.pal(9, "Accent"): n too large, allowed maximum for palette Accent is 8
+Returning the palette you asked for with that many colors</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
