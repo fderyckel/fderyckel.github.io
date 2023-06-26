@@ -10,7 +10,7 @@ get_fmpr_prices <- function(ticker, from = "2001-01-02", to = today()) {
   endpoint <- 'historical-price-full/'
   headers = c(`Upgrade-Insecure-Requests` = '1')
   params = list(`datatype` = 'json', `from` = from, `to` = to, 
-                `apikey` = fmpr_api_keys)
+                `apikey` = "085072758657f1c6e9f7d0acb8014d5b")
   res <- httr::GET(url = glue(base_url, endpoint, ticker), 
                    httr::add_headers(.headers = headers), query = params)
   return_json <- httr::content(res, as = "text")

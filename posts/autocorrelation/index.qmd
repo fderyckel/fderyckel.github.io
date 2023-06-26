@@ -180,10 +180,12 @@ pacf(milk$milk_prod_per_cow_kg)
 
 
 
-## Application to a financial asset 
+# Application to a financial asset 
 
 We know that most financial assets prices are not stationary.  Let's take *SBUX* for instance. 
 That being said, the log difference of their prices is stationary.  Note how $log(P_t) - log(P{t-1}) = log( \frac{P_t}{P_{t-1} )$
+
+## Using R
 
 ```{r}
 #| warning: false
@@ -204,7 +206,7 @@ ggacf(df$y_t)
 ```
 
 
-### Python code 
+## Python code 
 
 ```{python}
 #| label: python_pacf_plot
@@ -217,8 +219,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 py_df = pd.read_csv('../../raw_data/SBUX.csv')
-
 py_df.index = py_df['date']
+py_df = py_df.sort_index()
+
 py_df_ts = pd.Series(py_df['adjClose'])
 log_ret = np.log(1 + py_df_ts.pct_change())
 log_ret = log_ret.dropna()
@@ -253,4 +256,44 @@ fig = plt.figure()
 plot_pacf(log_ret, lags=25)
 plt.show()
 ```
+
+```{python}
+log_ret.describe()
+
+log_ret.plot()
+plt.show()
+
+pd.Series.idxmax(log_ret)
+pd.Series.idxmin(log_ret)
+```
+
+# Time-series composition 
+
+## Compose deterministic time-series (with trend and seasonality) with stochastic component 
+
+```{r}
+#| label: time_series_composition
+
+df <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> 
+  mutate(y = 0.07 * x + 0.03 + phi)
+
+ggplot(df, aes(x, y)) + 
+  geom_line() + 
+  ggtitle(label = 'Compose a linear trend with a stochastic component')
+
+  
+```
+
+We can also create a seasonality with a stochastic component 
+
+```{r}
+df <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> 
+  mutate(y = 1.7 * sin((2 * pi * x / 50) + 0.3 * pi ) + phi)
+         
+ggplot(df, aes(x, y)) + 
+  geom_line() + 
+  ggtitle(label = 'Compose a seasonal trend with a stochastic component')
+```
+
+
 

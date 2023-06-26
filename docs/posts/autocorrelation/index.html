@@ -223,12 +223,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#statistical-test-to-check-white-noise." id="toc-statistical-test-to-check-white-noise." class="nav-link" data-scroll-target="#statistical-test-to-check-white-noise.">Statistical test to check white-noise.</a></li>
   </ul></li>
-  <li><a href="#pacf" id="toc-pacf" class="nav-link" data-scroll-target="#pacf">PACF</a>
-  <ul class="collapse">
+  <li><a href="#pacf" id="toc-pacf" class="nav-link" data-scroll-target="#pacf">PACF</a></li>
   <li><a href="#application-to-a-financial-asset" id="toc-application-to-a-financial-asset" class="nav-link" data-scroll-target="#application-to-a-financial-asset">Application to a financial asset</a>
   <ul class="collapse">
+  <li><a href="#using-r-1" id="toc-using-r-1" class="nav-link" data-scroll-target="#using-r-1">Using R</a></li>
   <li><a href="#python-code" id="toc-python-code" class="nav-link" data-scroll-target="#python-code">Python code</a></li>
   </ul></li>
+  <li><a href="#time-series-composition" id="toc-time-series-composition" class="nav-link" data-scroll-target="#time-series-composition">Time-series composition</a>
+  <ul class="collapse">
+  <li><a href="#compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component" id="toc-compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component" class="nav-link" data-scroll-target="#compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component">Compose deterministic time-series (with trend and seasonality) with stochastic component</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -416,9 +419,12 @@ X-squared = 4.8374, df = 1, p-value = 0.02785</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<section id="application-to-a-financial-asset" class="level2">
-<h2 class="anchored" data-anchor-id="application-to-a-financial-asset">Application to a financial asset</h2>
+</section>
+<section id="application-to-a-financial-asset" class="level1">
+<h1>Application to a financial asset</h1>
 <p>We know that most financial assets prices are not stationary. Let’s take <em>SBUX</em> for instance. That being said, the log difference of their prices is stationary. Note how <span class="math inline">\(log(P_t) - log(P{t-1}) = log( \frac{P_t}{P_{t-1} )\)</span></p>
+<section id="using-r-1" class="level2">
+<h2 class="anchored" data-anchor-id="using-r-1">Using R</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
@@ -436,8 +442,9 @@ X-squared = 4.8374, df = 1, p-value = 0.02785</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<section id="python-code" class="level3">
-<h3 class="anchored" data-anchor-id="python-code">Python code</h3>
+</section>
+<section id="python-code" class="level2">
+<h2 class="anchored" data-anchor-id="python-code">Python code</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> acf</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> acorr_ljungbox</span>
@@ -447,23 +454,25 @@ X-squared = 4.8374, df = 1, p-value = 0.02785</code></pre>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>py_df <span class="op">=</span> pd.read_csv(<span class="st">'../../raw_data/SBUX.csv'</span>)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>py_df.index <span class="op">=</span> py_df[<span class="st">'date'</span>]</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>py_df_ts <span class="op">=</span> pd.Series(py_df[<span class="st">'adjClose'</span>])</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>log_ret <span class="op">=</span> np.log(<span class="dv">1</span> <span class="op">+</span> py_df_ts.pct_change())</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>log_ret <span class="op">=</span> log_ret.dropna()</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>r, q, p <span class="op">=</span> acf(log_ret, nlags <span class="op">=</span> <span class="dv">25</span>, qstat <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>plot_acf(log_ret, lags<span class="op">=</span><span class="dv">25</span>)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>py_df.index <span class="op">=</span> py_df[<span class="st">'date'</span>]</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>py_df <span class="op">=</span> py_df.sort_index()</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>py_df_ts <span class="op">=</span> pd.Series(py_df[<span class="st">'adjClose'</span>])</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>log_ret <span class="op">=</span> np.log(<span class="dv">1</span> <span class="op">+</span> py_df_ts.pct_change())</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>log_ret <span class="op">=</span> log_ret.dropna()</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>r, q, p <span class="op">=</span> acf(log_ret, nlags <span class="op">=</span> <span class="dv">25</span>, qstat <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>plot_acf(log_ret, lags<span class="op">=</span><span class="dv">25</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/python_pacf_plot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># q is for the Ljung-Box test statistics</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>array([26.3136516 , 26.316042  , 26.4475469 , 27.2734633 , 28.00235211,
        28.69472715, 28.70545674, 35.25084316, 39.48634821, 39.62923899,
@@ -473,7 +482,8 @@ X-squared = 4.8374, df = 1, p-value = 0.02785</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># p is for the p-value of the Ljung-Box statistics. </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>array([2.90229916e-07, 1.92994124e-06, 7.68595886e-06, 1.75019647e-05,
        3.63602517e-05, 6.94858936e-05, 1.63715557e-04, 2.40667022e-05,
@@ -499,9 +509,64 @@ X-squared = 4.8374, df = 1, p-value = 0.02785</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-16-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-
-
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>log_ret.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>count    5653.000000
+mean        0.000559
+std         0.019890
+min        -0.176788
+25%        -0.008773
+50%         0.000345
+75%         0.009802
+max         0.168728
+Name: adjClose, dtype: float64</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>log_ret.plot()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pd.Series.idxmax(log_ret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'2009-07-22'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pd.Series.idxmin(log_ret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'2020-03-16'</code></pre>
+</div>
+</div>
 </section>
+</section>
+<section id="time-series-composition" class="level1">
+<h1>Time-series composition</h1>
+<section id="compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component" class="level2">
+<h2 class="anchored" data-anchor-id="compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component">Compose deterministic time-series (with trend and seasonality) with stochastic component</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">252</span>, <span class="at">phi =</span> <span class="fu">rnorm</span>(<span class="dv">252</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fl">0.07</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">+</span> phi)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">'Compose a linear trend with a stochastic component'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/time_series_composition-7.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can also create a seasonality with a stochastic component</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">252</span>, <span class="at">phi =</span> <span class="fu">rnorm</span>(<span class="dv">252</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fl">1.7</span> <span class="sc">*</span> <span class="fu">sin</span>((<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> x <span class="sc">/</span> <span class="dv">50</span>) <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> pi ) <span class="sc">+</span> phi)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">'Compose a seasonal trend with a stochastic component'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
 </section>
 </section>
 
