@@ -197,8 +197,8 @@ library(ggplot2)    # ggplot()
 A discrete random variable (DRV) $y$ can either go up with a probability of $\alpha$ or down with a probability of $\alpha$ or stay the same with a probability of $1 - 2\alpha$.  
 
 ```{mermaid}
-flowchart LR
-  y' -- alpha --> y'+delta_y
+flowchart RL
+  y' -- alpha --> 'y'+delta_y
   y' -- 1 - 2*alpha --> y
   y' -- alpha --> y'-delta_y
 ```

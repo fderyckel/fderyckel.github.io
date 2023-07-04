@@ -1,0 +1,60 @@
+---
+title: "Stochastic Calculus - Part 3"
+author: "Francois de Ryckel"
+date: '2023-07-03'
+categories: [time-series]
+date-modified: '2023-07-03'
+---
+
+
+# Product rule within Stochastic Calculus 
+
+When dealing with Stochastic Differential Equations, we can adapt some of the rules of classical calculus such as the product rule: $d(xy) = xdy + ydx$
+
+Let's say we have 2 stochastic processes: 
+$$d(X(t)) = \mu_1 X(t) dt + \sigma_1 X(t)  dW_t$$
+$$d(Y(t)) = \mu_2 Y(t) dt + \sigma_2 Y(t) dW_t$$
+
+And we define a function $F$ which is a product of these 2 stochastic processes such that $F = F(X,Y) = XY$.  
+
+Using a Taylor Series Expansion, we can write: 
+$$F(X + dX, Y + dY) \approx F(X,Y) + \frac{\partial F}{\partial X} dX + \frac{\partial F}{\partial Y} dY + \frac{1}{2} \frac{\partial^2F}{\partial X^2} dX^2 + \frac{1}{2} \frac{\partial^2F}{\partial Y^2} dY^2 + \frac{\partial^2F}{\partial X \partial Y} dXdY + \dots$$ 
+
+Hence, 
+$$dF = \frac{\partial F}{\partial X} dX + \frac{\partial F}{\partial Y} dY + \frac{1}{2} \frac{\partial^2F}{\partial X^2} dX^2 + \frac{1}{2} \frac{\partial^2F}{\partial Y^2} dY^2 + \frac{\partial^2F}{\partial X \partial Y} dXdY + \dots$$ {#eq-product-TS-expan}
+
+Now, we can calculate all these partial derivatives and plugged them back in the above equation. 
+$\frac{\partial F}{\partial X} = Y$ and $\frac{\partial^2 F}{\partial X^2} = 0$. 
+
+Similarly $\frac{\partial F}{\partial Y} = X$ and $\frac{\partial^2 F}{\partial Y^2} = 0$.
+
+Finally: $\frac{\partial^2F}{\partial X \partial Y} = 1$
+
+Plugging it all back in @eq-product-TS-expan: 
+$$dF = Y dX + X dY + dXdY$$ {#eq-product-rule}
+
+# Integral by parts 
+
+In classical calculus, we re-use the product rule to come up with the integration by part: $d(xy) = xdy + ydx$. 
+That is $xdy = d(xy) - ydx$ which we can integrate for and get: $\int xdy = \int d(xy) - \int y dx$ which is the same as $\int x dy = xy - \int y dx$.  
+
+Let's bring this to stochastic calculus. Again $F$ is a function of the product of 2 stochastic processes: $F = F(X,Y) = XY$
+Using the same logic and our previous result @eq-product-rule, we write 
+$$d(XY) = Y dX + X dY + dXdY$$ 
+$$X dY = d(XY) - Y dX - dXdY $$
+$$\int_0^t X_s dY_s = \int_0^t d(X_sY_s) - \int_0^t Y_s dX_s - \int_0^t dX_sdY_s$$
+$$\int_0^t X_s dY_s = X_tY_t - X_0Y_0 - \int_0^t Y_s dX_s - \int_o^t dX_sdY_s$$
+
+# Quotient Rule within Stochastic Calculus 
+
+We will re-use the Taylor Series Expansion (@eq-product-TS-expan) except this time the function $F$ is a function of the quotient of 2 stochastic processes: $F = F(X, Y) = \frac{X}{Y}$.  Calculating all the partial derivatives: 
+$\frac{\partial F}{\partial X} = \frac{1}{Y}$ and $\frac{\partial^2 F}{\partial X^2} = 0$. 
+
+Similarly $\frac{\partial F}{\partial Y} = \frac{-X}{Y^2}$ and $\frac{\partial^2 F}{\partial Y^2} = \frac{2X}{Y^3}$.
+
+Finally: $\frac{\partial^2F}{\partial X \partial Y} = \frac{-1}{Y^2}$
+
+Putting it all back together: 
+$$dF = \frac{1}{Y} dX + \frac{-X}{Y^2} dY + \frac{1}{2} \frac{2X}{Y^3} dY^2+ \frac{-1}{Y^2} dXdY$$
+Which we can re-write as: 
+$$dF = d \left( \frac{X}{Y} \right) = \frac{X}{Y} \cdot \left( \frac{1}{X} dX - \frac{1}{Y} dY - \frac{1}{XY} dXdY + \frac{1}{Y^2} dY^2\right)$$ {#eq-quotient-rule}

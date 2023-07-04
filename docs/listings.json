@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/stochastic-calculus-part3/index.html",
       "/posts/quant-puzzle-01/index.html",
       "/posts/binomials_models/index.html",
       "/posts/naives-bayes-intro/index.html",
