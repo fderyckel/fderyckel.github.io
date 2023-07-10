@@ -8,6 +8,7 @@
 
 <meta name="author" content="Francois de Ryckel">
 <meta name="dcterms.date" content="2022-11-02">
+<meta name="description" content="Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts.">
 
 <title>QUANT dira-t-on? - Statistical Moments</title>
 <style>
@@ -170,7 +171,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Statistical Moments</h1>
-                                <div class="quarto-categories">
+                  <div>
+        <div class="description">
+          Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts.
+        </div>
+      </div>
+                          <div class="quarto-categories">
                 <div class="quarto-category">statistics</div>
                 <div class="quarto-category">code</div>
                 <div class="quarto-category">analysis</div>
@@ -395,7 +401,7 @@ Kurtosis
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x7ff03ab44370&gt;, &lt;matplotlib.lines.Line2D object at 0x7ff03ab44730&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x7ff03ab449a0&gt;, &lt;matplotlib.lines.Line2D object at 0x7ff03ab44a60&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x7ff03ab441c0&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x7ff03ab44eb0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x7ff03ab45330&gt;], 'means': []}</code></pre>
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x7fe94921c430&gt;, &lt;matplotlib.lines.Line2D object at 0x7fe94921c790&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x7fe94921ca60&gt;, &lt;matplotlib.lines.Line2D object at 0x7fe94921cbe0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x7fe94921c2b0&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x7fe94921cfa0&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x7fe94921d240&gt;], 'means': []}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
