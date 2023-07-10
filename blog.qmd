@@ -1,0 +1,20 @@
+---
+listing:
+  contents: posts/**/*.qmd
+  sort: "date-modified desc"
+  type: default
+  categories: true
+  sort-ui: true
+  fields: [date, title, reading-time, description, categories]
+  filter-ui: true
+page-layout: full
+title-block-banner: false
+---
+
+# Series 
+
+### [Time-series](time-series.html)
+A series of posts related to the analysis of time-series.
+
+### [Quant - Part 1](quant-part1.html)
+A series of posts when starting quant finance.  Basic mathematical concepts and related code in R and Python when starting quantitative finance.  

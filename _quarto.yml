@@ -1,12 +1,13 @@
 project:
   type: website 
-  output-dir: docs
 
 website:
   title: "QUANT dira-t-on?"
+  description: 'Curating notes from a Quant learning journey.'
   navbar:
     right:
-      - about.qmd
+      - text: Blog
+        href: blog.qmd
       - icon: github
         href: https://github.com/fderyckel/blog
       - icon: twitter

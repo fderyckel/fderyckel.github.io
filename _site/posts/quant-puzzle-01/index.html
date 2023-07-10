@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Francois de Ryckel">
+<meta name="dcterms.date" content="2023-06-13">
+
+<title>QUANT dira-t-on? - Quant Puzzle #01</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">QUANT dira-t-on?</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/fderyckel/blog"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/Read_the_Dung"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Quant Puzzle #01</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R-code</div>
+                <div class="quarto-category">quant-finance</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Francois de Ryckel </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 13, 2023</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">June 20, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#puzzle-1" id="toc-puzzle-1" class="nav-link active" data-scroll-target="#puzzle-1">Puzzle 1</a>
+  <ul class="collapse">
+  <li><a href="#solving-using-r" id="toc-solving-using-r" class="nav-link" data-scroll-target="#solving-using-r">Solving using R</a>
+  <ul class="collapse">
+  <li><a href="#using-the-mean-annualized-returns" id="toc-using-the-mean-annualized-returns" class="nav-link" data-scroll-target="#using-the-mean-annualized-returns">Using the mean annualized returns</a></li>
+  </ul></li>
+  <li><a href="#solving-using-python" id="toc-solving-using-python" class="nav-link" data-scroll-target="#solving-using-python">Solving Using Python</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>This is attempt to start a series of puzzles for quant. The source for these puzzles is <a href="https://ntquant.substack.com/p/quant-puzzles-week-1-portfolio-theory">this noteworthy substack on quant finance</a></p>
+<section id="puzzle-1" class="level1">
+<h1>Puzzle 1</h1>
+<blockquote class="blockquote">
+<p>An investment strategy has an annualized expected return of 3% and an annualized volatility of 10%. Assume returns are normally distributed and independent from one year to the next. After how many years will the mean annualized returns of a portfolio be positive with at least 91.3% probability? What about the compounded returns?</p>
+</blockquote>
+<p>Our previous post on the <a href="../../posts/quant-part1/random-behavior-assets/index.html">random behavior of assets</a> is a good start.</p>
+<p>To calculate the mean annualized returns, we will use <span class="math display">\[Ret = \frac {\sum_{i=1}^{n} R_i}{n}\]</span></p>
+<ul>
+<li><span class="math inline">\(R_i\)</span> is the annual return for the year i</li>
+<li><span class="math inline">\(n\)</span> is the number of year.</li>
+</ul>
+<section id="solving-using-r" class="level2">
+<h2 class="anchored" data-anchor-id="solving-using-r">Solving using R</h2>
+<section id="using-the-mean-annualized-returns" class="level3">
+<h3 class="anchored" data-anchor-id="using-the-mean-annualized-returns">Using the mean annualized returns</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)  <span class="co"># mutate(), tibble(), if_else(), group_by(), summarize()</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)  <span class="co"># pmap()</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)  <span class="co"># unnest()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>num_sim <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a function to get yearly return (both average and compounded)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>create_simul_ret <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, sigma, num_year) { </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">year_num =</span> <span class="dv">1</span><span class="sc">:</span>num_year, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">ret =</span> <span class="fu">rnorm</span>(num_year, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ann_ret =</span> <span class="dv">1</span> <span class="sc">+</span> ret, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">cum_ret =</span> <span class="fu">cumsum</span>(ann_ret) <span class="sc">/</span> year_num,           <span class="co"># Function for mean annualized returns </span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">compounded_ret =</span> <span class="fu">cumprod</span>(ann_ret)<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span>year_num), <span class="co"># Function to get compounded returns</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">posit_cum_ret =</span> <span class="fu">if_else</span>(cum_ret <span class="sc">&gt;</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>), </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>           <span class="at">posit_comp_ret =</span> <span class="fu">if_else</span>(compounded_ret <span class="sc">&gt;</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># To get all different random return numbers, I need to fetch the data from the row</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim_num =</span> <span class="dv">1</span><span class="sc">:</span>num_sim, <span class="at">mu =</span> <span class="fl">0.03</span>, <span class="at">sigma =</span> <span class="fl">0.1</span>, <span class="at">num_year =</span> <span class="dv">30</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sim_ret =</span> <span class="fu">pmap</span>(<span class="fu">list</span>(mu, sigma, num_year), create_simul_ret)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">c</span>(sim_ret)) <span class="sc">|&gt;</span>      <span class="co"># large df with 30 rows/year per simulation</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year_num) <span class="sc">|&gt;</span>             <span class="co"># group by year to calculate average returns</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_num_pos_ret =</span> <span class="fu">mean</span>(posit_cum_ret), </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">avg_num_comp_pos_ret =</span> <span class="fu">mean</span>(posit_comp_ret))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="nagbzeudmx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nagbzeudmx table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nagbzeudmx thead, #nagbzeudmx tbody, #nagbzeudmx tfoot, #nagbzeudmx tr, #nagbzeudmx td, #nagbzeudmx th {
+  border-style: none;
+}
+
+#nagbzeudmx p {
+  margin: 0;
+  padding: 0;
+}
+
+#nagbzeudmx .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nagbzeudmx .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nagbzeudmx .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nagbzeudmx .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nagbzeudmx .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nagbzeudmx .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nagbzeudmx .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nagbzeudmx .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nagbzeudmx .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nagbzeudmx .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nagbzeudmx .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#nagbzeudmx .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nagbzeudmx .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nagbzeudmx .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nagbzeudmx .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nagbzeudmx .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nagbzeudmx .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nagbzeudmx .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nagbzeudmx .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nagbzeudmx .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nagbzeudmx .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nagbzeudmx .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#nagbzeudmx .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nagbzeudmx .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nagbzeudmx .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nagbzeudmx .gt_left {
+  text-align: left;
+}
+
+#nagbzeudmx .gt_center {
+  text-align: center;
+}
+
+#nagbzeudmx .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nagbzeudmx .gt_font_normal {
+  font-weight: normal;
+}
+
+#nagbzeudmx .gt_font_bold {
+  font-weight: bold;
+}
+
+#nagbzeudmx .gt_font_italic {
+  font-style: italic;
+}
+
+#nagbzeudmx .gt_super {
+  font-size: 65%;
+}
+
+#nagbzeudmx .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nagbzeudmx .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nagbzeudmx .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nagbzeudmx .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nagbzeudmx .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nagbzeudmx .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nagbzeudmx .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year_num">year_num</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="avg_num_pos_ret">avg_num_pos_ret</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="avg_num_comp_pos_ret">avg_num_comp_pos_ret</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="year_num" class="gt_row gt_right">1</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.6091</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.6091</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">2</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.6605</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.6475</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">3</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.6962</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.6759</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">4</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.7210</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.6948</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">5</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.7429</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7126</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">6</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.7660</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7332</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">7</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.7830</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7481</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">8</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.7982</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7581</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">9</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8114</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7733</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">10</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8254</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7828</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">11</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8374</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.7974</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">12</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8489</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8077</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">13</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8613</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8188</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">14</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8680</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8257</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">15</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8742</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8334</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">16</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8803</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8410</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">17</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8896</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8484</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">18</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8950</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8540</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">19</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.8990</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8601</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">20</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9083</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8662</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right" style="background-color: rgba(128,188,216,0.8); color: #000000; font-weight: normal;">21</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right" style="background-color: rgba(128,188,216,0.8); color: #000000; font-weight: normal;">0.9109</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right" style="background-color: rgba(128,188,216,0.8); color: #000000; font-weight: normal;">0.8700</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">22</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9156</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8758</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">23</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9201</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8809</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">24</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9295</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8872</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">25</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9325</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8939</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">26</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9355</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.8997</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">27</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9400</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.9036</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">28</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9431</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.9062</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right">29</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right">0.9447</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right">0.9110</td></tr>
+    <tr><td headers="year_num" class="gt_row gt_right" style="background-color: rgba(128,188,216,0.8); color: #000000; font-weight: normal;">30</td>
+<td headers="avg_num_pos_ret" class="gt_row gt_right" style="background-color: rgba(128,188,216,0.8); color: #000000; font-weight: normal;">0.9464</td>
+<td headers="avg_num_comp_pos_ret" class="gt_row gt_right" style="background-color: rgba(128,188,216,0.8); color: #000000; font-weight: normal;">0.9136</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="solving-using-python" class="level2">
+<h2 class="anchored" data-anchor-id="solving-using-python">Solving Using Python</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Computes a moving average from a gaussian sample over n trials</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gauss_moving_average(mu,sigma,n):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    moving_average_list <span class="op">=</span> []</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            moving_average_list.append(random.gauss(mu,sigma))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            moving_average_list.append((moving_average_list[i<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>i<span class="op">+</span>random.gauss(mu,sigma))<span class="op">/</span>(i<span class="op">+</span><span class="dv">1</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> moving_average_list</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#Outputs a list of guassian moving average time series</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_sims(mu, sigma, n, years):</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    sims <span class="op">=</span> []</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        sims.append(gauss_moving_average(mu,sigma,years))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sims</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#Outputs the percentage of positive entries in a column of a matrix</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> percent_positive_column(matrix,column):</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(matrix)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    percent_positive <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> matrix[i][column] <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            percent_positive<span class="op">+=</span>(<span class="dv">1</span><span class="op">/</span>n) </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> percent_positive<span class="op">*</span><span class="dv">100</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#Runs the simulation and checks for our confidence level</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">=</span> run_sims(<span class="dv">3</span>,<span class="dv">10</span>,<span class="dv">100000</span>, <span class="dv">100</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    conf <span class="op">=</span> percent_positive_column(matrix, i)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(conf)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>  conf <span class="op">&gt;=</span> <span class="fl">91.3</span>:</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Year"</span>,i<span class="op">+</span><span class="dv">1</span>, <span class="st">"has positive returns with probability"</span>, conf)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>61.93999999998159
+66.66699999996007
+70.11999999994435
+72.92899999993158
+75.1649999999214
+77.24099999991195
+79.06299999990367
+80.68199999989629
+81.95799999989049
+83.17599999988494
+84.27499999987994
+85.2739999998754
+86.20499999987116
+87.1399999998669
+87.92999999986331
+88.63799999986009
+89.30399999985706
+90.13199999985329
+90.65399999985091
+91.18599999984849
+91.68499999984621
+Year 21 has positive returns with probability 91.68499999984621</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="fderyckel/fderyckel.github.io" data-repo-id="R_kgDOIWAxjA" data-category="General" data-category-id="DIC_kwDOIWAxjM4CWAZU" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
