@@ -2,7 +2,7 @@
 title: "Series: Quant - Part 1"
 listing:
   contents: posts/quant-part1
-  sort: "date desc"
+  sort: "date-modified desc"
   type: default
   categories: false
   sort-ui: false
