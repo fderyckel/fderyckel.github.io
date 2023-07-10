@@ -2,6 +2,7 @@
 title: "AutoCorrelation, Stationarity and Random-Walk - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
+description: 'A dive into the concepts of autocorrelation and stationarity of time-series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise. Finally, we check how to compose and decompose time-series into their various components (trend, seasonanilty)'
 categories: [time-series]
 date-modified: '2022-09-09'
 ---
@@ -45,7 +46,7 @@ In R the standard function to plot a correlogram is the *acf()* function
 
 library(readr)
 
-milk <- read_csv('../../raw_data/milk.csv')
+milk <- read_csv('../../../raw_data/milk.csv')
 acf(milk$milk_prod_per_cow_kg)
 ```
 
@@ -97,7 +98,7 @@ from pandas import read_csv
 import matplotlib.pyplot as plt
 from statsmodels.graphics.tsaplots import plot_acf
 
-df = read_csv('../../raw_data/milk.csv', index_col=0)
+df = read_csv('../../../raw_data/milk.csv', index_col=0)
 plot_acf(df)
 plt.show()
 ```
@@ -194,7 +195,7 @@ That being said, the log difference of their prices is stationary.  Note how $lo
 library(dplyr)
 library(lubridate)
 
-df <- read_csv('../../raw_data/SBUX.csv') |> arrange(date) |> 
+df <- read_csv('../../../raw_data/SBUX.csv') |> arrange(date) |> 
   select(date, adjClose) |> 
   mutate(ret_1d = log(adjClose / lag(adjClose)), 
          ret_5d = log(adjClose / lag(adjClose, n = 5)), 
@@ -218,7 +219,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-py_df = pd.read_csv('../../raw_data/SBUX.csv')
+py_df = pd.read_csv('../../../raw_data/SBUX.csv')
 py_df.index = py_df['date']
 py_df = py_df.sort_index()
 

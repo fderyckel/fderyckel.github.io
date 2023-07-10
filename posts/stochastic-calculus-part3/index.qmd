@@ -58,3 +58,16 @@ Putting it all back together:
 $$dF = \frac{1}{Y} dX + \frac{-X}{Y^2} dY + \frac{1}{2} \frac{2X}{Y^3} dY^2+ \frac{-1}{Y^2} dXdY$$
 Which we can re-write as: 
 $$dF = d \left( \frac{X}{Y} \right) = \frac{X}{Y} \cdot \left( \frac{1}{X} dX - \frac{1}{Y} dY - \frac{1}{XY} dXdY + \frac{1}{Y^2} dY^2\right)$$ {#eq-quotient-rule}
+
+::: {.callout-tip}
+
+## In the quant world. 
+
+we can word these results in the following way - taken from [here](https://fermatslastspreadsheet.com/2011/12/28/itos-product-and-quotient-rules-as-described-by-a-trader/): 
+
+* **Ito product rule:** we buy correlation when we have a product 
+* **Ito quotient rule:** we sell correlation when we have a ratio, and we are long vol of the denominator.
+:::
+
+
+

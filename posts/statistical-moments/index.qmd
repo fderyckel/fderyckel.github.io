@@ -7,7 +7,7 @@ editor: source
 date-modified: "2023-04-22"
 ---
 
-This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 
+This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../quant-part1/normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 
 
 We'll show these parameters using both R and python.  
 

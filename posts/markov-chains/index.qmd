@@ -95,7 +95,7 @@ sbux.tail()
 
 # get the daily returns and then filter on the last 2 years of trading. 
 # calculate volatiliy on these last years (not realistic of course)
-daily_returns = sbux['Adj Close'].pct_change()
+daily_returns = sbux['adjClose'].pct_change()
 #sbux = sbux.tail(505)
 daily_volat = daily_returns.std()
 
@@ -115,7 +115,7 @@ import matplotlib.pyplot as plt
 look_back = 252 
 count = 0
 price_list = []
-last_price = sbux['Adj Close'].iloc[-1]
+last_price = sbux['adjClose'].iloc[-1]
 
 price = last_price * (1 + np.random.normal(0, daily_volat)) 
 price_list.append(price)
@@ -142,7 +142,7 @@ An here would be another single simulation.  It will of course look vastly diffe
 look_back = 252 
 count = 0
 price_list = []
-last_price = sbux.iloc[-1]['Adj Close']
+last_price = sbux.iloc[-1]['adjClose']
 
 price = last_price * (1 + np.random.normal(0, daily_volat)) 
 price_list.append(price)
@@ -172,7 +172,7 @@ last_price_list = []
 for x in range(num_of_simulations): 
   count = 0
   price_list = []
-  last_price = sbux.iloc[-1]['Adj Close'] 
+  last_price = sbux.iloc[-1]['adjClose'] 
   price = last_price * (1 + np.random.normal(0, daily_volat)) 
   price_list.append(price) 
   

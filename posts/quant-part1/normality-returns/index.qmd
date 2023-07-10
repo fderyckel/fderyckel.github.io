@@ -2,6 +2,7 @@
 title: "Normality of asset returns"
 author: "Francois de Ryckel"
 date: "2023-04-19"
+description: 'Checking the normality of asset returns visually and quantitatively.'
 categories: [quant-finance, normal-distribution, qq-plot, kurtosis]
 editor: source
 image: 'qqplot-spy.png'
@@ -44,7 +45,7 @@ Let's make some assumptions on how to get the drift rate and volatility of SPY. 
 #| warning: false
 #| message: false
 
-df_spy <- read_csv('../../raw_data/SPY.csv') |> 
+df_spy <- read_csv('../../../raw_data/SPY.csv') |> 
   select(date, adjClose) |> 
   arrange(date) |> 
   mutate(return = log(adjClose / lag(adjClose))) |> 

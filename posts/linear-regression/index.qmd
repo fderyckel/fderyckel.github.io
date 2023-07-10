@@ -2,6 +2,7 @@
 title: "Linear Regression "
 author: "Francois de Ryckel"
 date: "2023-04-14"
+description: 'A dive into the math behind the linear regression algorithm.'
 categories: [R-code, linear-regression]
 editor: source
 date-modified: "2023-04-24"
