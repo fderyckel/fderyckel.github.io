@@ -3,6 +3,7 @@ title: "Naive-Bayes - Part 1"
 author: "Francois de Ryckel"
 date: "2023-05-16"
 categories: [ML, Naive-Bayes, sentiment analysis]
+description: 'Making Naive-Bayes work in R'
 editor: source
 date-modified: "2023-05-16"
 ---
@@ -16,7 +17,7 @@ Some very basic ML using Naive-Bayes and the tidymodel framework.
 library(readr)
 library(dplyr)  # mutate(), row_number()
 
-df <- read_csv('../../raw_data/financial_news.csv', col_names = c('sentiment', 'text')) |> 
+df <- read_csv('../../../raw_data/financial_news.csv', col_names = c('sentiment', 'text')) |> 
   mutate(sentiment = factor(sentiment))
 
 ```

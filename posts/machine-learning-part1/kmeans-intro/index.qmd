@@ -3,11 +3,12 @@ title: "Intro to Kmeans"
 author: "Francois de Ryckel"
 date: '2022-10-31'
 categories: [kmeans, code, analysis, model]
+descritpion: 'An introduction on the Kmeans algorithms.'
 editor: source
 date-modified: '2022-10-31'
 ---
 
-The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use [the post](../kmeans-regime-change/index.qmd) on kmeans and regime change. 
+The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use [the post](../../kmeans-regime-change/index.qmd) on kmeans and regime change. 
 
 As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of all the points belonging to that centroid.  All the points belonging to a centroid makes a cluster: all the observations belonging to the k-centroid makes the k-cluster. 
 
