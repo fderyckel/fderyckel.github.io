@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/quant-part1/trinomial-model/index.html",
       "/posts/stochastic-calculus-part3/index.html",
       "/posts/quant-puzzle-01/index.html",
       "/posts/quant-part1/binomials_models/index.html",
@@ -43,6 +44,7 @@
   {
     "listing": "/quant-part1.html",
     "items": [
+      "/posts/quant-part1/trinomial-model/index.html",
       "/posts/quant-part1/binomials_models/index.html",
       "/posts/quant-part1/normality-returns/index.html",
       "/posts/quant-part1/random-behavior-assets/index.html"

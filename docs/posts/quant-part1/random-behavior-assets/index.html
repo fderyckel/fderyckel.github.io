@@ -217,7 +217,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#discrete-approach" id="toc-discrete-approach" class="nav-link active" data-scroll-target="#discrete-approach">Discrete approach</a></li>
+  <li><a href="#the-probabilty-of-brownian-motions" id="toc-the-probabilty-of-brownian-motions" class="nav-link active" data-scroll-target="#the-probabilty-of-brownian-motions">The probabilty of Brownian motions</a></li>
+  <li><a href="#discrete-approach" id="toc-discrete-approach" class="nav-link" data-scroll-target="#discrete-approach">Discrete approach</a></li>
   <li><a href="#continuous-approach" id="toc-continuous-approach" class="nav-link" data-scroll-target="#continuous-approach">Continuous approach</a>
   <ul class="collapse">
   <li><a href="#ignoring-randomness" id="toc-ignoring-randomness" class="nav-link" data-scroll-target="#ignoring-randomness">Ignoring randomness</a></li>
@@ -241,6 +242,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <p>One of the main pillar of quantitative finance is the assumption that assets’ returns behave in a random manner. Assets returns are normally distributed. It is a poor assumption as asset’s return are usually not normally distributed (fat tails, skewness, etc.), but it is one that is considered when approaching finance with a quantitative finance. Check <a href="../../../posts/quant-part1/normality-returns/index.html">this post</a> on the normality of assets returns for a deeper dive into how random (or not) are assets returns.</p>
+<section id="the-probabilty-of-brownian-motions" class="level1">
+<h1>The probabilty of Brownian motions</h1>
+<p>Under a discrete environment, asset’s returns are thought as random. The easiest way to model this is to consider a <em>symmetric random walk</em> - a head/tail type of example. So let’s define a Discrete Random Variable <span class="math inline">\(R_i\)</span> as the i-th toss of a coin.</p>
+<p>The expectation of <span class="math inline">\(R_i\)</span> is then: <span class="math inline">\(\mathbb{E}[R_i] = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot -1 = 0\)</span></p>
+<p>The variance of <span class="math inline">\(R_i\)</span> is then: <span class="math inline">\(\mathbb{V}ar[R_i] = \mathbb{E}[R_i^2] - \mathbb{E}[R_i]^2 = \left( \frac{1}{2} \cdot (1)^2 + \frac{1}{2} \cdot (-1)^2 \right) - 0^2 = 1\)</span></p>
+<p>Let’s now define another Discrete Random Variable <span class="math inline">\(S_i\)</span> which is the sum of the returns after n toss. Hence, <span class="math inline">\(\sum_{i=1}^{n} R_i\)</span> with an initial condition that <span class="math inline">\(S_0=0\)</span></p>
+<p>The expectation of <span class="math inline">\(S_i\)</span> is then: <span class="math display">\[\mathbb{E}[S_i] = \mathbb{E} \left[ \sum_{i=0}^{n} R_i \right] = \mathbb{E} \left[ R_0 + R_1 + \dots + R_n \right] = \mathbb{E}[R_0] + \mathbb{E}[R_1] + \dots + \mathbb{E}[R_n] = 0 + 0 + \dots + 0 = 0 \]</span></p>
+<p>And the variance of <span class="math inline">\(S_i\)</span> is then: <span class="math display">\[\mathbb{V}ar[S_i] = \mathbb{E}[S_i^2] - \mathbb{E}[S_i]^2 = \mathbb{E} \left[ \sum_{i=0}^{n} R_i^2 \right] = \mathbb{E} \left[ R_0^2 + R_1^2 + \dots + R_n^2 \right] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}[R_n^2] = 1 + 1 + \dots + 1 = n \cdot 1 = n\]</span></p>
+<p>Note how the second term <span class="math inline">\(\mathbb{E}[S_i]^2 = 0\)</span></p>
+</section>
 <section id="discrete-approach" class="level1">
 <h1>Discrete approach</h1>
 <p><span id="eq-ret1"><span class="math display">\[R_i = \frac{S_{i+1}-S_i}{S_i} \tag{1}\]</span></span> <span class="math display">\[\bar{R} = \frac{\sum_{i=1}^{n} R_i}{n}\]</span></p>

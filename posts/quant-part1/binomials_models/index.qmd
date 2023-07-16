@@ -20,10 +20,13 @@ The idea is to develop an intuition for delta hedging and risk-neutrality when v
 * $v$ is the factor when stock price fall 
     * $0<v<1<u$
 * $V$ is the option value at time $t=0$
-* $V^+$ is the option value at expiration when stock is ITM
-* $V^-$ is the option value at expiration when stock is OTM
+* $V^+$ is the option value at expiration when stock is ITM (case of a call option)
+* $V^-$ is the option value at expiration when stock is OTM (case of a call option)
 
-Now we are going to introduce $\Delta$ as the amount of stock to hedge (a percentage of a stock) to be risk-neutral.  At this stage, we are assuming that the probability to go up or down is the same (it's basically irrelevant in this case).  
+Now we are going to introduce $\Delta$ as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. 
+We can model our stock and option as part of a portfolio (we call it $\Pi$). Hence, 
+$$\Pi = V - \Delta \cdot S$$
+At this stage, we are assuming that the probability to go up or down is the same (it's basically irrelevant in this case).  
 
 ![Option value with hedging](draw2.jpg)
 
@@ -41,7 +44,7 @@ $$V - \Delta S = V^- - \Delta vS$$ or
 $$V - \Delta S = V^+ - \Delta uS$$ which ever is easier to calculate.  
 
 Now, of course, cash is not free and there is a time value associated to it. In that sense, today's value for the trade should be equal a discounted value of tomorrow's trade value (at expiration).  
-$$V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$
+$$\Pi = V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$
 
 * $r$ is the value of the risk-free asset 
 * we are dealing with annualized values, if assets expires in one month and risk-free asset is let's say 3%, we would multiply 3% by 21 days or $0.03 \cdot \frac{21}{252}$
@@ -86,7 +89,9 @@ $$S = p'uS + (1-p')vS$$
 Or in the presence of a risk free asset, 
 $$S = \frac{1}{1+r \delta t} \left(p' uS + (1-p')vS \right)$$ 
 
-We could isolate $p'$ in this last equation to get: 
+We could isolate $p'$ in this last equation: 
+$$s + s r \delta t = p' u s + vs - p'v s$$
+$$p' = \frac{s + s r \delta t - vs}{us - vs}$$
 $$p' = \frac{1+r \delta t - v}{u-v}$$ {#eq-pprime1}
 
 ```{mermaid}
@@ -100,18 +105,21 @@ $$V = p' V^+ + (1-p') V^-$$
 
 Interesting to note that the option price $V$ is like an expectation (the sum of the probability) and $p'$ is from @eq-pprime1
 
+Actually, we should also include the discounted factor (V is the present value of the expectation): 
+$$V = \frac{1}{1 + r \delta t} \cdot \left( p' V^+ + (1-p') V^- \right)$$
+
 ## Mixing real-world and risk-free world 
 
 Now if we collide both world: the real-world with drift and volatility and the risk-free world with $p'$: we can set up this 2 equations: 
 One for the expected mean rate of change of prices and another for the variance of these rate of change. 
 
 $$
-
-\left\{ \begin{aligned} 
-  \mu S \delta t = puS+(1-p)vS-S \\
-  \sigma^2S^2dt = S^2()^2
-\end{aligned} \right.
-
+\begin{equation} 
+  \begin{cases}
+    \mu S \delta t = puS+(1-p)vS-S \\
+    \sigma^2S^2dt = S^2 (p \cdot [u-1-(pu + (1-p)v-1)]^2 + (1-p) \cdot [v-1-(pu + (1-p)v-1)]^2)
+  \end{cases}
+\end{equation} 
 $$
 
 (TODO re-write these 2 equations) 
@@ -243,7 +251,7 @@ $$P(y, t; y', t'-\delta t)  \approx P(y,t;y',t') - \delta t \frac{\partial P}{\p
 
 $$P(y, t; y'- \delta y, t'-\delta t)  \approx P(y,t;y',t') - \delta y \frac{\partial P}{\partial y'} - \delta t \frac{\partial P}{\partial t'} + \frac{1}{2} \delta y^2 \frac{\partial^2 P}{\partial y'^2} + \dots$$
 
-We have ignored all the less than $\delta t$.
+We have ignored all the terms less than $\delta t$.
 
 Adding the 3 equations above with their coefficients, we end up with 
 

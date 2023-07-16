@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "A quantitative Finance Learning Journey"
 image: avatar.png
 about:
   template: solana
@@ -15,7 +15,9 @@ about:
       href: https://github.com
 ---
 
+This [blog](blog.qmd) / Github website is mostly to keep track of quantitative finance concepts I am going through with the CQF and beyond. 
 
+# About
 
 My name is François de Ryckel. I have grown up in Belgium then I emigrated from there to finish up my study and start working. I lived in several places over the last 20 years. I’m a math / philosophy teacher with some stunts at business. I created 2 companies in Zambia: a fruits farm and a fresh produce trading company.  
 

@@ -261,10 +261,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="math inline">\(0&lt;v&lt;1&lt;u\)</span></li>
 </ul></li>
 <li><span class="math inline">\(V\)</span> is the option value at time <span class="math inline">\(t=0\)</span></li>
-<li><span class="math inline">\(V^+\)</span> is the option value at expiration when stock is ITM</li>
-<li><span class="math inline">\(V^-\)</span> is the option value at expiration when stock is OTM</li>
+<li><span class="math inline">\(V^+\)</span> is the option value at expiration when stock is ITM (case of a call option)</li>
+<li><span class="math inline">\(V^-\)</span> is the option value at expiration when stock is OTM (case of a call option)</li>
 </ul>
-<p>Now we are going to introduce <span class="math inline">\(\Delta\)</span> as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. At this stage, we are assuming that the probability to go up or down is the same (it’s basically irrelevant in this case).</p>
+<p>Now we are going to introduce <span class="math inline">\(\Delta\)</span> as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. We can model our stock and option as part of a portfolio (we call it <span class="math inline">\(\Pi\)</span>). Hence, <span class="math display">\[\Pi = V - \Delta \cdot S\]</span> At this stage, we are assuming that the probability to go up or down is the same (it’s basically irrelevant in this case).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="draw2.jpg" class="img-fluid figure-img"></p>
@@ -277,7 +277,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In other words we could see <span class="math inline">\(\Delta\)</span> as the rate of change of the option price in function of the stock price. <span class="math inline">\(\Delta = \frac{\partial{V}}{\partial{S}}\)</span></p>
 <p>Once we found <span class="math inline">\(\Delta\)</span>, we could find <span class="math inline">\(V\)</span> by just making today’s value of the trade = tomorrow’s value of the trade (at expiration). Just solve for <span class="math inline">\(V\)</span> <span class="math display">\[V - \Delta S = V^- - \Delta vS\]</span> or <span class="math display">\[V - \Delta S = V^+ - \Delta uS\]</span> which ever is easier to calculate.</p>
 <p>Now, of course, cash is not free and there is a time value associated to it. In that sense, today’s value for the trade should be equal a discounted value of tomorrow’s trade value (at expiration).<br>
-<span class="math display">\[V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)\]</span></p>
+<span class="math display">\[\Pi = V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)\]</span></p>
 <ul>
 <li><span class="math inline">\(r\)</span> is the value of the risk-free asset</li>
 <li>we are dealing with annualized values, if assets expires in one month and risk-free asset is let’s say 3%, we would multiply 3% by 21 days or <span class="math inline">\(0.03 \cdot \frac{21}{252}\)</span></li>
@@ -336,7 +336,7 @@ Example
 </div>
 </div>
 <p>From a probabilistic perspective we could write: <span class="math display">\[S = p'uS + (1-p')vS\]</span> Or in the presence of a risk free asset, <span class="math display">\[S = \frac{1}{1+r \delta t} \left(p' uS + (1-p')vS \right)\]</span></p>
-<p>We could isolate <span class="math inline">\(p'\)</span> in this last equation to get: <span id="eq-pprime1"><span class="math display">\[p' = \frac{1+r \delta t - v}{u-v} \tag{3}\]</span></span></p>
+<p>We could isolate <span class="math inline">\(p'\)</span> in this last equation: <span class="math display">\[s + s r \delta t = p' u s + vs - p'v s\]</span> <span class="math display">\[p' = \frac{s + s r \delta t - vs}{us - vs}\]</span> <span id="eq-pprime1"><span class="math display">\[p' = \frac{1+r \delta t - v}{u-v} \tag{3}\]</span></span></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -354,18 +354,19 @@ Example
 </div>
 <p>To find <span class="math inline">\(V\)</span>: <span class="math display">\[V = p' V^+ + (1-p') V^-\]</span></p>
 <p>Interesting to note that the option price <span class="math inline">\(V\)</span> is like an expectation (the sum of the probability) and <span class="math inline">\(p'\)</span> is from <a href="#eq-pprime1">Equation&nbsp;3</a></p>
+<p>Actually, we should also include the discounted factor (V is the present value of the expectation): <span class="math display">\[V = \frac{1}{1 + r \delta t} \cdot \left( p' V^+ + (1-p') V^- \right)\]</span></p>
 </section>
 <section id="mixing-real-world-and-risk-free-world" class="level2">
 <h2 class="anchored" data-anchor-id="mixing-real-world-and-risk-free-world">Mixing real-world and risk-free world</h2>
 <p>Now if we collide both world: the real-world with drift and volatility and the risk-free world with <span class="math inline">\(p'\)</span>: we can set up this 2 equations: One for the expected mean rate of change of prices and another for the variance of these rate of change.</p>
-<p>$$</p>
-{
-<span class="math display">\[\begin{aligned}
-  \mu S \delta t = puS+(1-p)vS-S \\
-  \sigma^2S^2dt = S^2()^2
-\end{aligned}\]</span>
-<p>.</p>
-<p>$$</p>
+<p><span class="math display">\[
+\begin{equation}
+  \begin{cases}
+    \mu S \delta t = puS+(1-p)vS-S \\
+    \sigma^2S^2dt = S^2 (p \cdot [u-1-(pu + (1-p)v-1)]^2 + (1-p) \cdot [v-1-(pu + (1-p)v-1)]^2)
+  \end{cases}
+\end{equation}
+\]</span></p>
 <p>(TODO re-write these 2 equations)</p>
 <p>2 equations and 3 unknowns, we can choose a solution (the prettiest one!) among the infinitely many:</p>
 <ul>
@@ -488,7 +489,7 @@ Example
 <p>Each terms in the sum of (<a href="#eq-tran-prob-fct2">Equation&nbsp;5</a>) could be evaluated using a <em>Taylor Series Expansion</em>. Note that <span class="math inline">\(\delta t^2 &lt;&lt; \delta t\)</span> as <span class="math inline">\(\delta t\)</span> is already quite small.</p>
 <p><span class="math display">\[P(y, t; y' + \delta y, t'-\delta t)  \approx P(y,t;y',t') + \delta y \frac{\partial P}{\partial y'} - \delta t \frac{\partial P}{\partial t'} + \frac{1}{2} \delta y^2 \frac{\partial^2 P}{\partial y'^2} + \dots\]</span> <span class="math display">\[P(y, t; y', t'-\delta t)  \approx P(y,t;y',t') - \delta t \frac{\partial P}{\partial t'} + \dots\]</span></p>
 <p><span class="math display">\[P(y, t; y'- \delta y, t'-\delta t)  \approx P(y,t;y',t') - \delta y \frac{\partial P}{\partial y'} - \delta t \frac{\partial P}{\partial t'} + \frac{1}{2} \delta y^2 \frac{\partial^2 P}{\partial y'^2} + \dots\]</span></p>
-<p>We have ignored all the less than <span class="math inline">\(\delta t\)</span>.</p>
+<p>We have ignored all the terms less than <span class="math inline">\(\delta t\)</span>.</p>
 <p>Adding the 3 equations above with their coefficients, we end up with</p>
 <p><span class="math display">\[\delta t \frac{\partial P}{\partial t'} = \alpha \delta y^2 \frac{\partial^2 P}{\partial y'^2}\]</span> <span class="math display">\[\frac{\partial P}{\partial t'} = \alpha \frac{\delta y^2}{\delta t} \frac{\partial^2 P}{\partial y'^2}\]</span></p>
 <p>Note how <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta t\)</span> and <span class="math inline">\(\delta y\)</span> are all positive values. Hence, we can let <span class="math inline">\(C^2 = \alpha \frac{\delta y^2}{\delta t}\)</span>, and we get: <span id="eq-FKE"><span class="math display">\[\frac{\partial P}{\partial t'} = C^2 \frac{\partial^2 P}{\partial y'^2} \tag{6}\]</span></span></p>
