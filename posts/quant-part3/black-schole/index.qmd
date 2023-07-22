@@ -1,0 +1,176 @@
+---
+title: "Black-Schole Equation"
+author: "Francois de Ryckel"
+date: "2023-07-18"
+description: 'Deriving the Black-Schole Equation and finding its solutions. Application with R and Python'
+categories: [quant-finance, Black-Schole]
+editor: source
+date-modified: "2023-07-23"
+---
+
+
+# Deriving the Black-Schole Equation
+
+# Solving the Black-Schole Equation 
+
+# The Greeks 
+
+| Greek   |   Description                                          | Formula                                 | Call Option  | Put Option  | 
+|---------|--------------------------------------------------------|-----------------------------------------|--------------| ------------|
+| Delta   |  Sensitivity of option value to changes in asset price |  $\frac{\partial V}{\partial S}$        | $N(d_1)$     |  $-N(-d_!)$ |
+| Gamma   |  Sensitivity of Delta to changes in asset price        |  $\frac{\partial^2 V}{\partial S^2}$    | $\frac{N(d_1)}{S \sigma \sqrt{t}}$ | |
+| Vega    |  Sensitivity of option value to changes in volatility  |  $\frac{\partial V}{\partial \sigma}$   | $S N(d_1) \sqrt{t}$| |
+| Theta   |  Sensitivity of option value to changes in time        |  $\frac{\partial V}{\partial t}$        |  | |
+| Rho     |  Sensitivity of option value to change in risk-free rate |  $\frac{\partial V}{\partial r}$      | $Kte^{-rt} N(d_2)$ | $-Kte^{-rt} N(-d_2)$|
+
+: {tbl-colwidths="[15,60,10, 10]"}
+
+# Create a function for numerical computation  
+
+Recall from above
+
+$$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - rV = 0$$
+
+* V is the option price at the time $t$. So $V = V(S, t)$  
+* S is the asset spot price
+* t is the time to expiry (in years)
+* $\sigma$ is the asset diffusion term (its stochastic element) 
+* $r$ is the annualized continuously compounded risk-free rate (imaginary friend)
+
+In the case of a **European Call Option with no-dividend**, the BSE has solution: 
+
+$$C = S N(d_1) - K e^{-rt} N(d_2)$$
+
+And in the case of a **European Put Option with no-dividend**, the BSE has solution: 
+$$P = K e^{-rt}N(-d_2) - SN(-d_1)$$
+
+where, 
+$$d_1 = \frac{1}{\sigma \sqrt{t}} \left[ ln \left( \frac{S}{K} \right) + \left( r + \frac{\sigma^2}{2} \right) t \right]$$
+$$d_2 = d1 - \sigma \sqrt{t}$$
+
+$$N(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} e^{\frac{-1}{2} x^2} dx$$ 
+
+* K is the strike price 
+
+## Using Python 
+
+```{python}
+import numpy as np
+import pandas as pd
+from scipy.stats import norm
+import matplotlib.pyplot as plt 
+
+
+class option_pricing: 
+  
+  """
+  To price European Style options without dividends
+  """
+  
+  def __init__(self, spot, strike, rate, dte, sigma): 
+    
+    # assign our variables
+    self.spot = spot
+    self.strike = strike
+    self.rate = rate
+    self.dte = dte    # days to expiration (in years)
+    self.sigma = sigma
+    
+    # to avoid zero division, let not allow strike of 0
+    if self.strike == 0: 
+      raise ZeroDivisionError('The Strike Price cannot be 0')
+    else: 
+      self._d1_ = (np.log(self.spot / self.strike) + (self.rate + (self.sigma**2 / 2)) * dte) / (self.sigma * self.dte**0.5)
+      self._d2_ = self._d1_ - (self.sigma * self.dte**0.5) 
+    
+    for i in ['callPrice', 'putPrice', 'callDelta', 'putDelta', 'gamma']: 
+      self.__dict__[i] = None
+      
+    [self.callPrice, self.putPrice] = self._price() 
+    [self.callDelta, self.putDelta] = self._delta()
+    self.gamma = self._gamma()
+    
+  def _price(self): 
+      if self.sigma == 0 or self.dte == 0: 
+        call = maximum(0.0, self.spot - self.strike)
+        put = maximum(0.0, self.strike - self.spot) 
+      else: 
+        call = (self.spot * norm.cdf(self._d1_)) - (self.strike * np.e**(- self.rate * self.dte) * norm.cdf(self._d2_))
+        put = (self.strike * np.e**(- self.rate * self.dte) * norm.cdf(-self._d2_)) - (self.spot * norm.cdf(-self._d1_))
+      return [call, put] 
+    
+  def _delta(self): 
+    if self.sigma == 0 or self.dte == 0: 
+      call = 1.0 if self.spot > self.strike else 0.0
+      put = -1.0 if self.spot < self.strike else 0.0
+    else: 
+      call = norm.cdf(self._d1_)
+      put = -norm.cdf(-self._d1_)
+    return [call, put]
+  
+  def _gamma(self): 
+    return norm.cdf(self._d1_) / (self.spot * self.sigma * self.dte**0.5)
+    
+
+
+
+
+```
+
+
+```{python}
+from tabulate import tabulate
+
+option = option_pricing(100, 100, 0, 1, 0.2)
+
+header = ['Call Price', 'Put Price', 'Call Delta', 'Gamma']
+table = [[option.callPrice, option.putPrice, option.callDelta, option.gamma]]
+print(tabulate(table, header))
+```
+
+## Retrieving option data using Yahoo finance 
+
+```{python}
+import yfinance as yf 
+
+amd = yf.Ticker('AMD')
+amd_hist = amd.history(start = '2022-01-01')
+options = amd.option_chain('2023-12-15')
+
+from datetime import datetime
+dte = (datetime(2023, 12, 15) - datetime.today()).days 
+
+log_returns = np.log(amd_hist['Close'] / amd_hist['Close'].shift(1)).dropna()
+historical_vol = log_returns.std() * np.sqrt(dte)
+
+spot = 116; strike = 120; rate = 0.05
+
+amd_opt = option_pricing(spot=spot, strike=strike, rate=rate, dte=dte/365, sigma=historical_vol)
+
+print(f'The BS model for AMD 147 days ahead is {amd_opt.callPrice:0.4f}')
+```
+
+```{python}
+#| eval: false
+
+df = options.calls[(options.calls['strike'] >= 90) & (options.calls['strike'] < 150)]
+df.reset_index(drop = True, inplace = True)
+
+df1 = pd.DataFrame({'strike': df['strike'], 'price': df['lastPrice'], 'impl_vol': df['impliedVolatility']})
+df1['delta'] = df1['gamma'] = 0.
+
+for i in range(len(df1)): 
+  df['delta'].iloc[i] = option_pricing(spot=spot, strike=df['strike'].iloc[i], rate, dte=dte, sigma = df1['impl_vol'].iloc[i]).callDelta
+  
+```
+
+```{python}
+#| eval: false
+
+
+for i in range(len(df1)):
+    
+    df1['Delta'].iloc[i] = option_pricing(spot,df1['strike'].iloc[i],rate,dte,df1['impl_vol'].iloc[i]).callDelta
+    df1['Gamma'].iloc[i] = option_pricing(spot,df1['strike'].iloc[i],rate,dte,df1['impl_vol'].iloc[i]).gamma
+```
+

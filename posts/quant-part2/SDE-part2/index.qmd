@@ -1,0 +1,56 @@
+---
+title: "Stochastic Differential Equation - Part II"
+author: "Francois de Ryckel"
+date: "2023-07-22"
+description: 'Some more examples of ito integrals.'
+categories: [R-code, quant-finance, trinomial_models]
+editor: source
+date-modified: "2023-07-23"
+---
+
+
+# $V(S)$ when S is a SDE
+
+Let $V$ be a function of $S$ where $S$ satisfies the stochastic differential equation $dS = \mu S \space dt + \sigma S \space dX(t)$ 
+
+Using a one-dimension Taylor Series expansion, we can write $$V(S + dS) \approx V(S) + \frac{dV}{dS} \space dS + \frac{1}{2} \frac{d^2V}{dS^2} \space dS^2$$ 
+
+To express $dS^2$? 
+$$dS^2 = (dS)^2 = \mu^2 S^2 \space dt^2 + 2 \mu \sigma S^2  \space dt dX(t) + \sigma^2 S^2 \space dX(t)^2$$ 
+
+$$dS^2 = \sigma^2 S^2 \space dX(t)^2 = \sigma^2 S^2 \space dt$$ {#eq-ds-squared}
+
+Going back to our expansion and considering $dV = V(S+dS) - V(S)$: 
+$$dV = \frac{dV}{dS} \space (\mu S \space dt + \sigma S \space dX(t)) + \frac{1}{2} \frac{d^2V}{dS^2} \space (\sigma^2 S^2 \space dt)$$
+$$dV = \left( \mu S \frac{dV}{dS} + \frac{1}{2} \sigma^2 S^2 \frac{d^2V}{dS^2} \right) \cdot dt + \left( \sigma S \frac{dV}{dS} \right) \cdot dX(t)$$ {#eq-ito3}
+
+::: {.callout-note}
+
+# Example 
+
+Let $V(S) = log(S)$ with S satisfies the usual SDE. We can then use the above SDE form. 
+
+$$\frac{dV}{dS} = \frac{1}{S}$$
+$$\frac{d^2V}{dS^2} = - \frac{1}{S^2}$$
+
+Using above @eq-ito3: 
+$$dV = \left( \mu S \frac{1}{S} + \frac{1}{2} \sigma^2 S^2 \frac{-1}{S^2} \right) \cdot dt + \left( \sigma S \frac{1}{S} \right) \cdot dX(t)$$
+$$dV = \left( \mu - \frac{1}{2} \sigma^2  \right) \cdot dt + \sigma  \cdot dX(t)$$
+Using the integral form: 
+
+$$\int_0^t d(log \space S) = \int_0^t \mu - \frac{1}{2} \sigma^2 \space d\tau + \int_0^t \sigma \space dX(\tau)$$ 
+$$log(S_t) - log(S_0) = \mu t - \frac{1}{2} \sigma^2 t + \sigma (X_t - X_0)$$ 
+$$log \left( \frac{S_t}{S_0} \right) = \mu t - \frac{1}{2} \sigma^2 t + \sigma (X_t - X_0)$$ 
+$$S_t = S_0 \cdot e^{\mu t - \frac{1}{2} \sigma^2 t + \sigma (X_t - X_0)}$$ 
+
+Using $X_0 = 0$ and $X_t = \phi \sqrt{t}$: 
+$$S_t = S_0 \cdot e^{\mu t - \frac{1}{2} \sigma^2 t + \sigma \phi \sqrt{t}}$$
+
+:::
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+---
+title: "Martingales"
+author: "Francois de Ryckel"
+date: "2023-07-20"
+description: 'Digging into Martingales. Making connections between martingales and ito integrals.'
+categories: [R-code, quant-finance, trinomial_models]
+editor: source
+date-modified: "2023-07-23"
+---
+
+This post is a collection of notes about Martingales
+
+# A continuous time stochastic process is a martingale 
+
+$Y(t)$ is a stochastic process that satisfies the following Stochastic Differential Equation
+$$dY(t) = f(Y_t, t) \space dt + g(Y_t, t) \space dX(t)$$ {#eq-dy1} with initial condition $Y(0) = 0$. 
+
+How to tell if $Y(t)$ is martingale? 
+We will use the fact, from above, that *ito integrals* are martingales.
+For this, by definition, we need $$\mathbb{E}_s[Y_t | \mathcal{F}_s] = Y_s \space, \space 0 \leq s \leq t$$
+
+Integrating @eq-dy1 both side, we can get an exact form for $Y(t)$ 
+$$Y(t) = Y(s) + \int_s^t f(Y_u, u) \space du + \int_s^t g(Y_u, u) \space dX(u)$$
+
+Taking the expectation on both side: 
+$$\mathbb{E}(Y_t | \mathcal{F}_s)= \mathbb{E} \left[Y(s) + \int_s^t f(Y_u, u) \space du + \int_s^t g(Y_u, u) \space dX(u) \space | \mathcal{F} \right]$$
+
+$$\mathbb{E}(Y_t | \mathcal{F}_s) = Y(s) + \mathbb{E} \left[\int_s^t f(Y_u, u) \space du \space | \mathcal{F_s} \right]$$
+
+This is because, see above, ito integrals are martingales and $\int_s^t g(Y_u, u) \space dX(u)$ is an ito integral.  Hence, its expectation is 0 ==> $\mathbb{E} \left[ \int_s^t g(Y_u, u) \space dX(u) \right] = 0$
+
+In order for $\mathbb{E}(Y_t | \mathcal{F}_s) = Y(s)$, we now need $\mathbb{E} \left[\int_s^t f(Y_u, u) \space du \space | \mathcal{F}_s \right] = 0$.  This means that $f(Y_t, t) = 0, \space \forall t$. 
+
+Going back to the SDE, we can say that $dY(t)$ is a martingale iff $$dY(t) = g(Y_t, t) \space dX(t)$$
+
+# Exponential martingales 
+
+LEt's consider a stochastic process $Y(t)$ that satisfies the following Stochastic Differential Equation: 
+$$dY(t) = f(t) \space dt + g(t) \space dX(t)$$ with initial condition $Y(0) = 0$.  $X(t)$ is a Brownian Motion, $f(t)$ and $g(t)$ are time-dependent functions. 
+
+We can now define a new process such that $$Z(t) = e^{Y(t)}$$
+
+How can we ensure $Z(t)$ is a martingale?  How should we choose $f(t)$ such that $Z(t)$ is a martingale? 
+

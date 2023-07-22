@@ -1,2 +1,2 @@
-GITHUB_PAT="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"
-#RETICULATE_PYTHON=fdr/.virtualenvs/my-env/bin/python
+GITHUB_PATH="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"
+RETICULATE_PYTHON=/home/fdr/.virtualenvs/my-env/bin/python

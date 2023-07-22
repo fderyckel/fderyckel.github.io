@@ -17,7 +17,7 @@ Under a discrete environment, asset's returns are thought as random.  The easies
 
 ## Returns 
 
-So let's define a Discrete Random Variable $R_i$ as the i-th toss of a coin.  
+So let's define a Discrete Random Variable $R_i$ as the i-th toss of a coin.  And $R$ takes the value $1$ if it's a tail and $-1$ if it's a head.
 
 The expectation of $R_i$ is then: $\mathbb{E}[R_i] = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot -1 = 0$  
 
@@ -30,9 +30,15 @@ Let's now define another Discrete Random Variable $S_i$ which is the sum of the 
 The expectation of $S_i$ is then: $$\mathbb{E}[S_i] = \mathbb{E} \left[ \sum_{i=0}^{n} R_i \right] = \mathbb{E} \left[ R_0 + R_1 + \dots + R_n \right] = \mathbb{E}[R_0] + \mathbb{E}[R_1] + \dots + \mathbb{E}[R_n] = 0 + 0 + \dots + 0 = 0 $$
 
 And the variance of $S_i$ is then: 
-$$\mathbb{V}ar[S_i] = \mathbb{E}[S_i^2] - \mathbb{E}[S_i]^2 = \mathbb{E} \left[ \sum_{i=0}^{n} R_i^2 \right] = \mathbb{E} \left[ R_0^2 + R_1^2 + \dots + R_n^2 \right] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}[R_n^2] = 1 + 1 + \dots + 1 = n \cdot 1 = n$$
+$$\mathbb{V}ar[S_i] = \mathbb{E}[S_i^2] - \mathbb{E}[S_i]^2$$ 
 
 Note how the second term $\mathbb{E}[S_i]^2 = 0$
+
+$$\mathbb{V}ar[S_i] = \mathbb{E} \left[ \left( \sum_{i=0}^{n} R_i \right)^2 \right] = \mathbb{E} \left[ R_0^2 + R_1^2 + \dots + R_n^2 + 2R_1R_2 + 2R_1R_3 + \cdots \right]$$ 
+
+Because the events are independents, $\mathbb{E}[R_i R_j] = 0$.  Hence all the double terms in R above are equals to 0 and 
+$$\mathbb{V}ar[S_i] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}[R_n^2] = 1 + 1 + \dots + 1 = n \cdot 1 = n$$
+
 
 
 # Discrete approach  
