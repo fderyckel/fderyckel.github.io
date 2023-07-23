@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2023-07-20">
 <meta name="description" content="RW (discrete) and BM (continuous) constitute the way assets returns are modelled.">
 
-<title>QUANT dira-t-on? - Random Walk &amp; Brownian Motions</title>
+<title>QUANT dira-t-on? - 03 - Random Walk &amp; Brownian Motions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -107,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Random Walk &amp; Brownian Motions</h1>
+      <h1 class="title">03 - Random Walk &amp; Brownian Motions</h1>
                   <div>
         <div class="description">
           RW (discrete) and BM (continuous) constitute the way assets returns are modelled.
@@ -180,6 +180,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>This post is a collection of notes about Random Walk and Brownian Motions as well as their properties.</p>
+<p>This <a href="../../../posts/quant-part1/random-behavior-assets/index.html">post on the random behavior of financial assets</a> might be of interest before to go through this.</p>
 <section id="the-probabilty-of-random-walk" class="level1">
 <h1>The probabilty of Random Walk</h1>
 <p>In the context of quantitative finance, the easiest way to model a random walk is to consider a head/tail type of example which constitutes a <strong>symmetric random walk</strong>.</p>
@@ -232,9 +233,9 @@ Notes
 <ul>
 <li>as n increases, the time decreases by a factor of <span class="math inline">\(\frac{1}{n}\)</span></li>
 <li>as n increases, the bet size decreases by a factor of <span class="math inline">\(\sqrt{\frac{1}{n}}\)</span></li>
-<li>as n increases to <span class="math inline">\(/ifty\)</span>, both the time and the bets size will decrease to <span class="math inline">\(0\)</span> but not in the same way (by the same order)</li>
-<li>as n increases to <span class="math inline">\(inty\)</span>, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere</li>
-<li>the limiting process as n tends to <span class="math inline">\(infty\)</span> and time tends to <span class="math inline">\(0\)</span> (think <span class="math inline">\(dt\)</span>) creates a Brownian Motion (the Continuous random variable is called <span class="math inline">\(B_t\)</span>) or Wiener process (variable valled <span class="math inline">\(W_t\)</span>)</li>
+<li>as n increases to <span class="math inline">\(\infty\)</span>, both the time and the bets size will decrease to <span class="math inline">\(0\)</span> but not in the same way (by the same order)</li>
+<li>as n increases to <span class="math inline">\(\infty\)</span>, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere</li>
+<li>the limiting process as n tends to <span class="math inline">\(\infty\)</span> and time tends to <span class="math inline">\(0\)</span> (think <span class="math inline">\(dt\)</span>) creates a Brownian Motion (the Continuous random variable is called <span class="math inline">\(B_t\)</span>) or Wiener process (variable valled <span class="math inline">\(W_t\)</span>)</li>
 </ul>
 </div>
 </div>

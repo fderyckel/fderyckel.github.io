@@ -1,5 +1,5 @@
 ---
-title: "Random Behavior of Financial Assets"
+title: "01 - Random Behavior of Financial Assets"
 author: "Francois de Ryckel"
 date: "2023-04-18"
 description: 'We explore one of the main assumption of quantitative finance: assets returns are random.'
@@ -10,35 +10,6 @@ date-modified: "2023-04-20"
 ---
 
 One of the main pillar of quantitative finance is the assumption that assets' returns behave in a random manner.  Assets returns are normally distributed.  It is a poor assumption as asset's return are usually not normally distributed (fat tails, skewness, etc.), but it is one that is considered when approaching finance with a quantitative finance. Check [this post](../normality-returns/index.qmd) on the normality of assets returns for a deeper dive into how random (or not) are assets returns. 
-
-# The probabilty of Brownian motions
-
-Under a discrete environment, asset's returns are thought as random.  The easiest way to model this is to consider a **symmetric random walk** - a head/tail type of example. 
-
-## Returns 
-
-So let's define a Discrete Random Variable $R_i$ as the i-th toss of a coin.  And $R$ takes the value $1$ if it's a tail and $-1$ if it's a head.
-
-The expectation of $R_i$ is then: $\mathbb{E}[R_i] = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot -1 = 0$  
-
-The variance of $R_i$ is then: $\mathbb{V}ar[R_i] = \mathbb{E}[R_i^2] - \mathbb{E}[R_i]^2 = \left( \frac{1}{2} \cdot (1)^2 + \frac{1}{2} \cdot (-1)^2 \right) - 0^2 = 1$
-
-## Sum of returns 
-
-Let's now define another Discrete Random Variable $S_i$ which is the sum of the returns after n toss.  Hence, $\sum_{i=1}^{n} R_i$ with an initial condition that $S_0=0$
-
-The expectation of $S_i$ is then: $$\mathbb{E}[S_i] = \mathbb{E} \left[ \sum_{i=0}^{n} R_i \right] = \mathbb{E} \left[ R_0 + R_1 + \dots + R_n \right] = \mathbb{E}[R_0] + \mathbb{E}[R_1] + \dots + \mathbb{E}[R_n] = 0 + 0 + \dots + 0 = 0 $$
-
-And the variance of $S_i$ is then: 
-$$\mathbb{V}ar[S_i] = \mathbb{E}[S_i^2] - \mathbb{E}[S_i]^2$$ 
-
-Note how the second term $\mathbb{E}[S_i]^2 = 0$
-
-$$\mathbb{V}ar[S_i] = \mathbb{E} \left[ \left( \sum_{i=0}^{n} R_i \right)^2 \right] = \mathbb{E} \left[ R_0^2 + R_1^2 + \dots + R_n^2 + 2R_1R_2 + 2R_1R_3 + \cdots \right]$$ 
-
-Because the events are independents, $\mathbb{E}[R_i R_j] = 0$.  Hence all the double terms in R above are equals to 0 and 
-$$\mathbb{V}ar[S_i] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}[R_n^2] = 1 + 1 + \dots + 1 = n \cdot 1 = n$$
-
 
 
 # Discrete approach  

@@ -1,5 +1,5 @@
 ---
-title: "Binomials models for Quantitative Finance"
+title: "04 - Binomials models for Quantitative Finance"
 author: "Francois de Ryckel"
 date: "2023-04-06"
 description: 'Creating a basic or binomial model on pricing an option.'

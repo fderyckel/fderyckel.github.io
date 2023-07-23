@@ -49,11 +49,11 @@
   {
     "listing": "/quant-part1.html",
     "items": [
-      "/posts/quant-part1/trinomial-model/index.html",
+      "/posts/quant-part1/random-behavior-assets/index.html",
+      "/posts/quant-part1/normality-returns/index.html",
       "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part1/binomials_models/index.html",
-      "/posts/quant-part1/normality-returns/index.html",
-      "/posts/quant-part1/random-behavior-assets/index.html"
+      "/posts/quant-part1/trinomial-model/index.html"
     ]
   },
   {

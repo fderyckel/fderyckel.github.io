@@ -1,5 +1,5 @@
 ---
-title: "Random Walk & Brownian Motions"
+title: "03 - Random Walk & Brownian Motions"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'RW (discrete) and BM (continuous) constitute the way assets returns are modelled. '
@@ -9,6 +9,8 @@ date-modified: "2023-07-23"
 ---
 
 This post is a collection of notes about Random Walk and Brownian Motions as well as their properties.  
+
+This [post on the random behavior of financial assets](../random-behavior-assets/index.qmd) might be of interest before to go through this.  
 
 # The probabilty of Random Walk 
 
@@ -78,9 +80,9 @@ Note that:
 
 * as n increases, the time decreases by a factor of $\frac{1}{n}$
 * as n increases, the bet size decreases by a factor of $\sqrt{\frac{1}{n}}$
-* as n increases to $/ifty$, both the time and the bets size will decrease to $0$ but not in the same way (by the same order)
-* as n increases to $inty$, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere 
-* the limiting process as n tends to $infty$ and time tends to $0$ (think $dt$) creates a Brownian Motion (the Continuous random variable is called $B_t$) or Wiener process (variable valled $W_t$)
+* as n increases to $\infty$, both the time and the bets size will decrease to $0$ but not in the same way (by the same order)
+* as n increases to $\infty$, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere 
+* the limiting process as n tends to $\infty$ and time tends to $0$ (think $dt$) creates a Brownian Motion (the Continuous random variable is called $B_t$) or Wiener process (variable valled $W_t$)
 
 :::
 
