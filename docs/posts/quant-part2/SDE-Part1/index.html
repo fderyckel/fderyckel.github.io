@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Francois de Ryckel">
+<meta name="dcterms.date" content="2023-07-22">
+<meta name="description" content="Introducing itô integrals.">
 
-<title>QUANT dira-t-on? - Series: Quant - Part 1</title>
+<title>QUANT dira-t-on? - Stochastic Differential Equation - Part I</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +26,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -60,49 +61,20 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-reading-time','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">QUANT dira-t-on?</span>
     </a>
   </div>
@@ -112,7 +84,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./blog.html">
+    <a class="nav-link" href="../../../blog.html">
  <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item compact">
@@ -132,168 +104,97 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Series: Quant - Part 1</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Stochastic Differential Equation - Part I</h1>
+                  <div>
+        <div class="description">
+          Introducing itô integrals.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">quant-finance</div>
+                <div class="quarto-category">stochastic-integrals</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Francois de Ryckel </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 22, 2023</p>
+      </div>
+    </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">July 23, 2023</p>
+      </div>
+    </div>
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#function-of-a-stochastic-process-x_t" id="toc-function-of-a-stochastic-process-x_t" class="nav-link active" data-scroll-target="#function-of-a-stochastic-process-x_t">Function of a stochastic process <span class="math inline">\(X_t\)</span></a></li>
+  </ul>
+</nav>
+</nav>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
+<section id="function-of-a-stochastic-process-x_t" class="level1">
+<h1>Function of a stochastic process <span class="math inline">\(X_t\)</span></h1>
+<p>Let <span class="math inline">\(F\)</span> be a function of a stochastic random variable <span class="math inline">\(X_t\)</span>. So <span class="math inline">\(F = F(X_t)\)</span>.</p>
+<p>Using a Taylor expansion: <span class="math display">\[F(X + dX) \approx F(X) + \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2\]</span> Using <span class="math inline">\(F(x+dX) - F(X) = dF\)</span>: <span class="math display">\[dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2\]</span></p>
+<p>Now, recall <span class="math inline">\(dX\)</span> is a random variable with mean 0 and standard deviation <span class="math inline">\(\sqrt{t}\)</span>. Also, for small values of <span class="math inline">\(t\)</span>, we have <span class="math inline">\(\sqrt{dt} \gt dt\)</span>, hence it is of higher order than dt. Hence, we re-write the previous equation as</p>
+<p><span class="math display">\[dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dt\]</span> Usually, we write the deterministic part of the equation first.<br>
+<span id="eq-ito1"><span class="math display">\[dF = \frac{1}{2} \frac{d^2F}{dX^2} \space dt + \frac{dF}{dX} \space dX \tag{1}\]</span></span></p>
+<p>All our <strong>Stochastic Differential Equations</strong> will have in them these 2 different time steps: <span class="math inline">\(dt\)</span> and <span class="math inline">\(\sqrt{dt}\)</span>. <span class="math display">\[dF = \underbrace {\dots \space dt}_{deterministic-drift} + \underbrace{\dots \space dX}_{random-diffusion}\]</span></p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Example 1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(F(X_t) = X^2\)</span>, where <span class="math inline">\(X_t\)</span> is stochastic random variable. <span class="math display">\[\frac{dF}{dX} = 2X\]</span> <span class="math display">\[\frac{d^2F}{dX^2} = 2\]</span></p>
+<p>Hence, using the previous <a href="#eq-ito1">Equation&nbsp;1</a> (aka itô I): <span class="math display">\[dF = \frac{1}{2} \cdot 2 \space dt + 2X \space dX\]</span> <span class="math display">\[dF = dt + 2X \space dX\]</span> <strong>Using integral form</strong></p>
+<p>We could integrate both side of the previous equation. <span class="math display">\[\int_0^t dF = \int_0^t d\tau + \int_0^t 2X(\tau) d{\tau}\]</span> <span class="math display">\[F(t) - F(0) = t - 0 + 2 \int_0^t X(\tau) d{\tau}\]</span> And assuming F(0) = 0: <span class="math display">\[F(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}\]</span> <span class="math display">\[X^2(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}\]</span></p>
+</div>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R-code,quant-finance,trinomial_models" data-listing-date-sort="1680886800000" data-listing-file-modified-sort="1689500218681" data-listing-reading-time-sort="7.305">
-<div class="body">
-<a href="./posts/quant-part1/trinomial-model/index.html">
-<h3 class="no-anchor listing-title">
-Trinomials models for Quantitative Finance
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>Creating a trinomial model and deriving the Forward Kolmogorov Equation.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/trinomial-model/index.html">
-<div class="listing-date">
-Apr 8, 2023
-</div>
-<div class="listing-reading-time">
-7 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="R-code,quant-finance,brownian-motion." data-listing-date-sort="1689786000000" data-listing-file-modified-sort="1690107920665" data-listing-reading-time-sort="4.065">
-<div class="body">
-<a href="./posts/quant-part1/brownian-motion/index.html">
-<h3 class="no-anchor listing-title">
-Random Walk &amp; Brownian Motions
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>RW (discrete) and BM (continuous) constitute the way assets returns are modelled.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/brownian-motion/index.html">
-<div class="listing-date">
-Jul 20, 2023
-</div>
-<div class="listing-reading-time">
-4 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="R-code,quant-finance,binomial_models" data-listing-date-sort="1680714000000" data-listing-file-modified-sort="1689496597875" data-listing-reading-time-sort="5.98">
-<div class="body">
-<a href="./posts/quant-part1/binomials_models/index.html">
-<h3 class="no-anchor listing-title">
-Binomials models for Quantitative Finance
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>Creating a basic or binomial model on pricing an option.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/binomials_models/index.html">
-<div class="listing-date">
-Apr 6, 2023
-</div>
-<div class="listing-reading-time">
-5 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="quant-finance,normal-distribution,qq-plot,kurtosis" data-listing-date-sort="1681837200000" data-listing-file-modified-sort="1688799893275" data-listing-reading-time-sort="5.88">
-<div class="body">
-<a href="./posts/quant-part1/normality-returns/index.html">
-<h3 class="no-anchor listing-title">
-Normality of asset returns
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>Checking the normality of asset returns visually and quantitatively.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/normality-returns/index.html">
-<div class="listing-date">
-Apr 19, 2023
-</div>
-<div class="listing-reading-time">
-5 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="R-code,quant-finance" data-listing-date-sort="1681750800000" data-listing-file-modified-sort="1689498296271" data-listing-reading-time-sort="7.22">
-<div class="body">
-<a href="./posts/quant-part1/random-behavior-assets/index.html">
-<h3 class="no-anchor listing-title">
-Random Behavior of Financial Assets
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>We explore one of the main assumption of quantitative finance: assets returns are random.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/random-behavior-assets/index.html">
-<div class="listing-date">
-Apr 18, 2023
-</div>
-<div class="listing-reading-time">
-7 min
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -426,6 +327,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="https://giscus.app/client.js" data-repo="fderyckel/fderyckel.github.io" data-repo-id="R_kgDOIWAxjA" data-category="General" data-category-id="DIC_kwDOIWAxjM4CWAZU" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 

@@ -8,9 +8,9 @@
 
 <meta name="author" content="Francois de Ryckel">
 <meta name="dcterms.date" content="2023-07-20">
-<meta name="description" content="Digging into Martingales. Making connections between martingales and itô integrals.">
+<meta name="description" content="RW (discrete) and BM (continuous) constitute the way assets returns are modelled.">
 
-<title>QUANT dira-t-on? - Martingales</title>
+<title>QUANT dira-t-on? - Random Walk &amp; Brownian Motions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -107,16 +107,16 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Martingales</h1>
+      <h1 class="title">Random Walk &amp; Brownian Motions</h1>
                   <div>
         <div class="description">
-          Digging into Martingales. Making connections between martingales and itô integrals.
+          RW (discrete) and BM (continuous) constitute the way assets returns are modelled.
         </div>
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">R-code</div>
                 <div class="quarto-category">quant-finance</div>
-                <div class="quarto-category">trinomial_models</div>
+                <div class="quarto-category">brownian-motion.</div>
               </div>
                   </div>
   </div>
@@ -155,8 +155,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#a-continuous-time-stochastic-process-is-a-martingale" id="toc-a-continuous-time-stochastic-process-is-a-martingale" class="nav-link active" data-scroll-target="#a-continuous-time-stochastic-process-is-a-martingale">A continuous time stochastic process is a martingale</a></li>
-  <li><a href="#exponential-martingales" id="toc-exponential-martingales" class="nav-link" data-scroll-target="#exponential-martingales">Exponential martingales</a></li>
+  <li><a href="#the-probabilty-of-random-walk" id="toc-the-probabilty-of-random-walk" class="nav-link active" data-scroll-target="#the-probabilty-of-random-walk">The probabilty of Random Walk</a>
+  <ul class="collapse">
+  <li><a href="#expected-returns" id="toc-expected-returns" class="nav-link" data-scroll-target="#expected-returns">Expected Returns</a></li>
+  <li><a href="#expected-sum-of-returns" id="toc-expected-sum-of-returns" class="nav-link" data-scroll-target="#expected-sum-of-returns">Expected Sum of Returns</a></li>
+  <li><a href="#the-markov-property" id="toc-the-markov-property" class="nav-link" data-scroll-target="#the-markov-property">The Markov Property</a></li>
+  <li><a href="#the-quadratic-variation" id="toc-the-quadratic-variation" class="nav-link" data-scroll-target="#the-quadratic-variation">The Quadratic Variation</a></li>
+  </ul></li>
+  <li><a href="#quadratic-variation-and-transition-to-continuous-time" id="toc-quadratic-variation-and-transition-to-continuous-time" class="nav-link" data-scroll-target="#quadratic-variation-and-transition-to-continuous-time">Quadratic variation and transition to continuous time</a></li>
+  <li><a href="#the-probability-of-wiener-processes-or-brownian-motions" id="toc-the-probability-of-wiener-processes-or-brownian-motions" class="nav-link" data-scroll-target="#the-probability-of-wiener-processes-or-brownian-motions">The probability of Wiener Processes or Brownian Motions</a>
+  <ul class="collapse">
+  <li><a href="#expectation-of-w_t" id="toc-expectation-of-w_t" class="nav-link" data-scroll-target="#expectation-of-w_t">Expectation of <span class="math inline">\(W_t\)</span></a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -169,26 +179,74 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This post is a collection of notes about Martingales.</p>
-<p>A Martingales is a stochastic process that is driftless (aka it is pure randomness or just volatility).</p>
-<section id="a-continuous-time-stochastic-process-is-a-martingale" class="level1">
-<h1>A continuous time stochastic process is a martingale</h1>
-<p><span class="math inline">\(Y(t)\)</span> is a stochastic process that satisfies the following Stochastic Differential Equation <span id="eq-dy1"><span class="math display">\[dY(t) = f(Y_t, t) \space dt + g(Y_t, t) \space dX(t) \tag{1}\]</span></span> with initial condition <span class="math inline">\(Y(0) = 0\)</span>.</p>
-<p>How to tell if <span class="math inline">\(Y(t)\)</span> is martingale? We will use the fact, from above, that <em>Itô integrals</em> are martingales. For this, by definition, we need <span class="math display">\[\mathbb{E}_s[Y_t | \mathcal{F}_s] = Y_s \space, \space 0 \leq s \leq t\]</span></p>
-<p>Integrating <a href="#eq-dy1">Equation&nbsp;1</a> both side, we can get an exact form for <span class="math inline">\(Y(t)\)</span> <span class="math display">\[Y(t) = Y(s) + \int_s^t f(Y_u, u) \space du + \int_s^t g(Y_u, u) \space dX(u)\]</span></p>
-<p>Taking the expectation on both side: <span class="math display">\[\mathbb{E}(Y_t | \mathcal{F}_s)= \mathbb{E} \left[Y(s) + \int_s^t f(Y_u, u) \space du + \int_s^t g(Y_u, u) \space dX(u) \space | \mathcal{F} \right]\]</span></p>
-<p><span class="math display">\[\mathbb{E}(Y_t | \mathcal{F}_s) = Y(s) + \mathbb{E} \left[\int_s^t f(Y_u, u) \space du \space | \mathcal{F_s} \right]\]</span></p>
-<p>This is because, see above, ito integrals are martingales and <span class="math inline">\(\int_s^t g(Y_u, u) \space dX(u)\)</span> is an ito integral. Hence, its expectation is 0 ==&gt; <span class="math inline">\(\mathbb{E} \left[ \int_s^t g(Y_u, u) \space dX(u) \right] = 0\)</span></p>
-<p>In order for <span class="math inline">\(\mathbb{E}(Y_t | \mathcal{F}_s) = Y(s)\)</span>, we now need <span class="math inline">\(\mathbb{E} \left[\int_s^t f(Y_u, u) \space du \space | \mathcal{F}_s \right] = 0\)</span>. This means that <span class="math inline">\(f(Y_t, t) = 0, \space \forall t\)</span>.</p>
-<p>Going back to the SDE, we can say that <span class="math inline">\(dY(t)\)</span> is a martingale iff <span class="math display">\[dY(t) = g(Y_t, t) \space dX(t)\]</span></p>
+<p>This post is a collection of notes about Random Walk and Brownian Motions as well as their properties.</p>
+<section id="the-probabilty-of-random-walk" class="level1">
+<h1>The probabilty of Random Walk</h1>
+<p>In the context of quantitative finance, the easiest way to model a random walk is to consider a head/tail type of example which constitutes a <strong>symmetric random walk</strong>.</p>
+<section id="expected-returns" class="level2">
+<h2 class="anchored" data-anchor-id="expected-returns">Expected Returns</h2>
+<p>So let’s define a Discrete Random Variable <span class="math inline">\(R_i\)</span> as the i-th toss of a coin. And <span class="math inline">\(R\)</span> takes the value <span class="math inline">\(1\)</span> if it’s a tail and <span class="math inline">\(-1\)</span> if it’s a head.</p>
+<p>The expectation of <span class="math inline">\(R_i\)</span> is then: <span class="math inline">\(\mathbb{E}[R_i] = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot -1 = 0\)</span></p>
+<p>The variance of <span class="math inline">\(R_i\)</span> is then: <span class="math inline">\(\mathbb{V}ar[R_i] = \mathbb{E}[R_i^2] - \mathbb{E}[R_i]^2 = \left( \frac{1}{2} \cdot (1)^2 + \frac{1}{2} \cdot (-1)^2 \right) - 0^2 = 1\)</span></p>
 </section>
-<section id="exponential-martingales" class="level1">
-<h1>Exponential martingales</h1>
-<p>LEt’s consider a stochastic process <span class="math inline">\(Y(t)\)</span> that satisfies the following Stochastic Differential Equation: <span class="math display">\[dY(t) = f(t) \space dt + g(t) \space dX(t)\]</span> with initial condition <span class="math inline">\(Y(0) = 0\)</span>. <span class="math inline">\(X(t)\)</span> is a Brownian Motion, <span class="math inline">\(f(t)\)</span> and <span class="math inline">\(g(t)\)</span> are time-dependent functions.</p>
-<p>We can now define a new process such that <span class="math display">\[Z(t) = e^{Y(t)}\]</span></p>
-<p>How can we ensure <span class="math inline">\(Z(t)\)</span> is a martingale? How should we choose <span class="math inline">\(f(t)\)</span> such that <span class="math inline">\(Z(t)\)</span> is a martingale?</p>
+<section id="expected-sum-of-returns" class="level2">
+<h2 class="anchored" data-anchor-id="expected-sum-of-returns">Expected Sum of Returns</h2>
+<p>Let’s now define another Discrete Random Variable <span class="math inline">\(S_i\)</span> which is the sum of the returns after n toss. Hence, <span class="math inline">\(S_i = \sum_{i=1}^{n} R_i\)</span> with an initial condition that <span class="math inline">\(S_0=0\)</span>. This initial condition not only makes sense (we did not win any money before to start the game) but it will also constitutes an important initial condition in the definition of Brownian Motion (or Wiener Process)</p>
+<p>The expectation of <span class="math inline">\(S_i\)</span> is then: <span class="math display">\[\mathbb{E}[S_i] = \mathbb{E} \left[ \sum_{i=0}^{n} R_i \right] = \mathbb{E} \left[ R_0 + R_1 + \dots + R_n \right] = \mathbb{E}[R_0] + \mathbb{E}[R_1] + \dots + \mathbb{E}[R_n] = 0 + 0 + \dots + 0 = 0 \]</span></p>
+<p>And the variance of <span class="math inline">\(S_i\)</span> is then: <span class="math display">\[\mathbb{V}ar[S_i] = \mathbb{E}[S_i^2] - \mathbb{E}[S_i]^2\]</span></p>
+<p>Note how the second term <span class="math inline">\(\mathbb{E}[S_i]^2 = 0\)</span></p>
+<p><span id="eq-var1"><span class="math display">\[\mathbb{V}ar[S_i] = \mathbb{E} \left[ \left( \sum_{i=0}^{n} R_i \right)^2 \right] = \mathbb{E} \left[ R_0^2 + R_1^2 + \dots + R_n^2 + 2R_1R_2 + 2R_1R_3 + \cdots \right] \tag{1}\]</span></span></p>
+<p>Because the events are independents, <span class="math inline">\(\mathbb{E}[R_i R_j] = 0\)</span>. Hence all the double terms in <a href="#eq-var1">Equation&nbsp;1</a> above are equals to 0 and <span id="eq-var2"><span class="math display">\[\mathbb{V}ar[S_i] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}[R_n^2] = 1 + 1 + \dots + 1 = n \cdot 1 = n \tag{2}\]</span></span></p>
+</section>
+<section id="the-markov-property" class="level2">
+<h2 class="anchored" data-anchor-id="the-markov-property">The Markov Property</h2>
+<p>Imagine, we already threw the coin a few times, let’s say 10 times. Now, we have some additional information as we know <span class="math inline">\(S_{10}\)</span>. We could ask ourselves the question what is the expectation for the next toss considering that additional information. It would make sense to say that we will get no more no less that what we already have since <span class="math inline">\(\mathbb{E}[R_i] = 0\)</span>. Mathematically, we can write this: <span class="math display">\[\mathbb{E}\left[ S_{i+1} | R_1, R_2, \dots, R_i \right] = S_i\]</span> And actually, we can generalize this further and state that: <span class="math display">\[\mathbb{E}\left[ S_i | R_1, R_2, \dots, R_j \space \forall i&lt;j \right] = S_i\]</span></p>
+<p>The idea of the <em>Markov Property</em> is to say that the Random Walk Stochastic Process has no memory beyond the point where it (the walker) is now.</p>
+</section>
+<section id="the-quadratic-variation" class="level2">
+<h2 class="anchored" data-anchor-id="the-quadratic-variation">The Quadratic Variation</h2>
+<p>The quadratic variation of a random walk is defined as <span class="math display">\[\sum_{i=1}^n (S_i - S_{i-1})^2\]</span></p>
+<p>The quadratic variation will be an extremely important concept as we extend the random-walk from a discrete time model to a continuous time model (aka to a Brownian Motion or Wiener process).</p>
+<p>Intuitively, it makes sense to say that <span class="math display">\[(S_i - S_{i-1}) = \pm 1\]</span> Hence <span class="math display">\[(S_i - S_{i-1})^2 = 1\]</span> Hence <span class="math display">\[\sum_{i=1}^n (S_i - S_{i-1})^2 = n\]</span></p>
+</section>
+</section>
+<section id="quadratic-variation-and-transition-to-continuous-time" class="level1">
+<h1>Quadratic variation and transition to continuous time</h1>
+<p>In the previous setting, each unit of time was 1 unit and bet sizes were <span class="math inline">\(\pm 1\)</span>. We are making 2 changes to this situation.</p>
+<ul>
+<li>Now, we think of a time as <em>a certain amount of time</em> that we call <span class="math inline">\(t\)</span>. That ‘certain amount of time’ is continuous and we can chunk it down into <span class="math inline">\(n\)</span> pieces. In this context, each piece of time is <span class="math inline">\(\frac{t}{n}\)</span> long. The goal will be to increase the size of <span class="math inline">\(n\)</span> until <span class="math inline">\(n \arrow \infty\)</span></li>
+<li>the bet size are now <span class="math inline">\(\sqrt \frac{t}{n}\)</span></li>
+</ul>
+<p>To feel why are we making these changes, let’s revisit the quadratic variation on these new units of time and bet sizes. <span class="math display">\[S_{i+1} - S_i = \pm \sqrt{\frac{t}{n}}\]</span> Quadratic variation is now <span class="math display">\[\sum_{i=1}^n \left( \pm \sqrt{\frac{t}{n}} \right)^2 = n \cdot \frac{t}{n} = t\]</span></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Notes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that:</p>
+<ul>
+<li>as n increases, the time decreases by a factor of <span class="math inline">\(\frac{1}{n}\)</span></li>
+<li>as n increases, the bet size decreases by a factor of <span class="math inline">\(\sqrt{\frac{1}{n}}\)</span></li>
+<li>as n increases to <span class="math inline">\(/ifty\)</span>, both the time and the bets size will decrease to <span class="math inline">\(0\)</span> but not in the same way (by the same order)</li>
+<li>as n increases to <span class="math inline">\(inty\)</span>, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere</li>
+<li>the limiting process as n tends to <span class="math inline">\(infty\)</span> and time tends to <span class="math inline">\(0\)</span> (think <span class="math inline">\(dt\)</span>) creates a Brownian Motion (the Continuous random variable is called <span class="math inline">\(B_t\)</span>) or Wiener process (variable valled <span class="math inline">\(W_t\)</span>)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="the-probability-of-wiener-processes-or-brownian-motions" class="level1">
+<h1>The probability of Wiener Processes or Brownian Motions</h1>
+<p>We denotes a Wiener Process as <span class="math inline">\(W_t\)</span> with initial condition that <span class="math inline">\(W_0 = 0\)</span></p>
+<section id="expectation-of-w_t" class="level2">
+<h2 class="anchored" data-anchor-id="expectation-of-w_t">Expectation of <span class="math inline">\(W_t\)</span></h2>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

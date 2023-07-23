@@ -19,6 +19,9 @@ A series of posts related to the analysis of time-series.
 ### [Quant - Part 1](quant-part1.html)
 A series of posts when starting quant finance.  Basic mathematical concepts and related code in R and Python when starting quantitative finance.  
 
+### [Quant - Part 2](quant-part2.html)
+A series of posts on some introductory concepts of stochastic calculus.  
+
 ### [Quant - Part 3](quant-part3.html)
 A series of posts on the Black-Schole Equation and derivative pricing.
 

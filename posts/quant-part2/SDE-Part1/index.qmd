@@ -1,0 +1,53 @@
+---
+title: "Stochastic Differential Equation - Part I"
+author: "Francois de Ryckel"
+date: "2023-07-22"
+description: 'Introducing itô integrals.'
+categories: [quant-finance, stochastic-integrals]
+editor: source
+date-modified: "2023-07-23"
+---
+
+
+# Function of a stochastic process $X_t$ 
+
+Let $F$ be a function of a stochastic random variable $X_t$.  So $F = F(X_t)$. 
+
+Using a Taylor expansion: 
+$$F(X + dX) \approx F(X) + \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2$$ 
+Using $F(x+dX) - F(X) = dF$: 
+$$dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2$$
+
+Now, recall $dX$ is a random variable with mean 0 and standard deviation $\sqrt{t}$.  Also, for small values of $t$, we have $\sqrt{dt} \gt dt$, hence it is of higher order than dt.  Hence, we re-write the previous equation as 
+
+$$dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dt$$ 
+Usually, we write the deterministic part of the equation first.  
+$$dF = \frac{1}{2} \frac{d^2F}{dX^2} \space dt + \frac{dF}{dX} \space dX$$ {#eq-ito1}
+
+All our **Stochastic Differential Equations** will have in them these 2 different time steps: $dt$ and $\sqrt{dt}$. 
+$$dF = \underbrace {\dots \space dt}_{deterministic-drift} + \underbrace{\dots \space dX}_{random-diffusion}$$
+
+::: {.callout-note}
+
+# Example 1 
+
+$F(X_t) = X^2$, where $X_t$ is stochastic random variable. 
+$$\frac{dF}{dX} = 2X$$
+$$\frac{d^2F}{dX^2} = 2$$
+
+Hence, using the previous @eq-ito1 (aka itô I): 
+$$dF = \frac{1}{2} \cdot 2 \space dt + 2X \space dX$$
+$$dF = dt + 2X \space dX$$
+**Using integral form** 
+
+We could integrate both side of the previous equation. 
+$$\int_0^t dF = \int_0^t d\tau + \int_0^t 2X(\tau) d{\tau}$$ 
+$$F(t) - F(0) = t - 0 + 2 \int_0^t X(\tau) d{\tau}$$ And assuming F(0) = 0: 
+$$F(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}$$
+$$X^2(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}$$
+:::
+
+
+
+
+

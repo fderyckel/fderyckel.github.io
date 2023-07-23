@@ -48,7 +48,7 @@ $$S_t = S_0 \cdot e^{\mu t - \frac{1}{2} \sigma^2 t + \sigma \phi \sqrt{t}}$$
 
 :::
 
-
+Itô
 
 
 

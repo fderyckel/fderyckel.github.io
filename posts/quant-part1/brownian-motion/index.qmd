@@ -1,0 +1,92 @@
+---
+title: "Random Walk & Brownian Motions"
+author: "Francois de Ryckel"
+date: "2023-07-20"
+description: 'RW (discrete) and BM (continuous) constitute the way assets returns are modelled. '
+categories: [R-code, quant-finance, brownian-motion. ]
+editor: source
+date-modified: "2023-07-23"
+---
+
+This post is a collection of notes about Random Walk and Brownian Motions as well as their properties.  
+
+# The probabilty of Random Walk 
+
+In the context of quantitative finance, the easiest way to model a random walk is to consider a head/tail type of example which constitutes a **symmetric random walk**. 
+
+## Expected Returns 
+
+So let's define a Discrete Random Variable $R_i$ as the i-th toss of a coin.  And $R$ takes the value $1$ if it's a tail and $-1$ if it's a head.
+
+The expectation of $R_i$ is then: $\mathbb{E}[R_i] = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot -1 = 0$  
+
+The variance of $R_i$ is then: $\mathbb{V}ar[R_i] = \mathbb{E}[R_i^2] - \mathbb{E}[R_i]^2 = \left( \frac{1}{2} \cdot (1)^2 + \frac{1}{2} \cdot (-1)^2 \right) - 0^2 = 1$
+
+## Expected Sum of Returns 
+
+Let's now define another Discrete Random Variable $S_i$ which is the sum of the returns after n toss.  Hence, $S_i = \sum_{i=1}^{n} R_i$ with an initial condition that $S_0=0$.  This initial condition not only makes sense (we did not win any money before to start the game) but it will also constitutes an important initial condition in the definition of Brownian Motion (or Wiener Process)
+
+The expectation of $S_i$ is then: $$\mathbb{E}[S_i] = \mathbb{E} \left[ \sum_{i=0}^{n} R_i \right] = \mathbb{E} \left[ R_0 + R_1 + \dots + R_n \right] = \mathbb{E}[R_0] + \mathbb{E}[R_1] + \dots + \mathbb{E}[R_n] = 0 + 0 + \dots + 0 = 0 $$ 
+
+And the variance of $S_i$ is then: 
+$$\mathbb{V}ar[S_i] = \mathbb{E}[S_i^2] - \mathbb{E}[S_i]^2$$ 
+
+Note how the second term $\mathbb{E}[S_i]^2 = 0$
+
+$$\mathbb{V}ar[S_i] = \mathbb{E} \left[ \left( \sum_{i=0}^{n} R_i \right)^2 \right] = \mathbb{E} \left[ R_0^2 + R_1^2 + \dots + R_n^2 + 2R_1R_2 + 2R_1R_3 + \cdots \right]$$ {#eq-var1} 
+
+Because the events are independents, $\mathbb{E}[R_i R_j] = 0$.  Hence all the double terms in @eq-var1 above are equals to 0 and 
+$$\mathbb{V}ar[S_i] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}[R_n^2] = 1 + 1 + \dots + 1 = n \cdot 1 = n$$ {#eq-var2}
+
+## The Markov Property 
+
+Imagine, we already threw the coin a few times, let's say 10 times.  Now, we have some additional information as we know $S_{10}$.  We could ask ourselves the question what is the expectation for the next toss considering that additional information. It would make sense to say that we will get no more no less that what we already have since $\mathbb{E}[R_i] = 0$.   Mathematically, we can write this: 
+$$\mathbb{E}\left[ S_{i+1} | R_1, R_2, \dots, R_i \right] = S_i$$
+And actually, we can generalize this further and state that: 
+$$\mathbb{E}\left[ S_i | R_1, R_2, \dots, R_j \space \forall i<j \right] = S_i$$
+
+The idea of the *Markov Property* is to say that the Random Walk Stochastic Process has no memory beyond the point where it (the walker) is now.  
+
+
+## The Quadratic Variation 
+
+The quadratic variation of a random walk is defined as $$\sum_{i=1}^n (S_i - S_{i-1})^2$$
+
+The quadratic variation will be an extremely important concept as we extend the random-walk from a discrete time model to a continuous time model (aka to a Brownian Motion or Wiener process).  
+
+Intuitively, it makes sense to say that $$(S_i - S_{i-1}) = \pm 1$$
+Hence $$(S_i - S_{i-1})^2 = 1$$
+Hence $$\sum_{i=1}^n (S_i - S_{i-1})^2 = n$$ 
+
+# Quadratic variation and transition to continuous time 
+
+In the previous setting, each unit of time was 1 unit and bet sizes were $\pm 1$.  We are making 2 changes to this situation. 
+
+* Now, we think of a time as *a certain amount of time* that we call $t$.  That 'certain amount of time' is continuous and we can chunk it down into $n$ pieces.  In this context, each piece of time is $\frac{t}{n}$ long.  The goal will be to increase the size of $n$ until $n \arrow \infty$ 
+* the bet size are now $\sqrt \frac{t}{n}$
+
+To feel why are we making these changes, let's revisit the quadratic variation on these new units of time and bet sizes. 
+$$S_{i+1} - S_i = \pm \sqrt{\frac{t}{n}}$$
+Quadratic variation is now 
+$$\sum_{i=1}^n \left( \pm \sqrt{\frac{t}{n}} \right)^2 = n \cdot \frac{t}{n} = t$$
+
+::: {.callout-tip}
+
+# Notes 
+
+Note that: 
+
+* as n increases, the time decreases by a factor of $\frac{1}{n}$
+* as n increases, the bet size decreases by a factor of $\sqrt{\frac{1}{n}}$
+* as n increases to $/ifty$, both the time and the bets size will decrease to $0$ but not in the same way (by the same order)
+* as n increases to $inty$, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere 
+* the limiting process as n tends to $infty$ and time tends to $0$ (think $dt$) creates a Brownian Motion (the Continuous random variable is called $B_t$) or Wiener process (variable valled $W_t$)
+
+:::
+
+# The probability of Wiener Processes or Brownian Motions 
+
+We denotes a Wiener Process as $W_t$ with initial condition that $W_0 = 0$
+
+## Expectation of $W_t$ 
+

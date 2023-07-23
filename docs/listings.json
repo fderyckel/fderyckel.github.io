@@ -2,7 +2,9 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part1/trinomial-model/index.html",
+      "/posts/quant-part2/SDE-Part1/index.html",
       "/posts/quant-part2/SDE-part2/index.html",
       "/posts/quant-part2/martingales/index.html",
       "/posts/quant-part3/black-schole/index.html",
@@ -48,6 +50,7 @@
     "listing": "/quant-part1.html",
     "items": [
       "/posts/quant-part1/trinomial-model/index.html",
+      "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part1/binomials_models/index.html",
       "/posts/quant-part1/normality-returns/index.html",
       "/posts/quant-part1/random-behavior-assets/index.html"
@@ -70,6 +73,7 @@
   {
     "listing": "/quant-part2.html",
     "items": [
+      "/posts/quant-part2/SDE-Part1/index.html",
       "/posts/quant-part2/SDE-part2/index.html",
       "/posts/quant-part2/martingales/index.html"
     ]
