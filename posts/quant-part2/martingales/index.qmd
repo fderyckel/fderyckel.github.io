@@ -3,22 +3,48 @@ title: "Martingales"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'Digging into Martingales. Making connections between martingales and itô integrals.'
-categories: [R-code, quant-finance, trinomial_models]
+categories: [quant-finance, stochastic-calculus, martingales]
 editor: source
 date-modified: "2023-07-23"
 ---
 
 This post is a collection of notes about Martingales.  
 
-A Martingales is a stochastic process that is driftless (aka it is pure randomness or just volatility). 
+A Martingales is a stochastic process that is driftless (aka it is pure randomness or just volatility). We also say that martingales are constant mean stochastic process. 
+
+# Continuous time martingales 
+
+A continuous time stochastic process $\{ M_t: t \in \mathbb{R}^+  \}$ such that $M_t$ is adapted to $\mathcal{F}_t$ (or is $\mathcal{F}_t$ measurable) is a martingale if: 
+
+* integrability condition: $\mathbb{E}[M_t] \lt \infty$
+* conditional expectation condition: $\mathbb{E}_s[M_{t}|\mathcal{F}_s] = M_s, \space 0 \leq s \leq t$
+
 
 # Link between itô integrales and martingales 
 
+::: {.callout-note}
 
+# Intuitive & Motivating example
+
+Let $X$ be a stochastic process and $F = X^2(t)$.  [Recall](../SDE-part1/index.qmd) then 
+$$F(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}$$
+$$X^2(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}$$
+Taking expectation on both side
+$$\mathbb{E} \left[ X^2(t) \right] = t + \mathbb{E} \left[ 2 \int_0^t X_{\tau} \space d{\tau} \right]$$
+With the [quadratic variation](../../quant-part1/brownian-motion/index.qmd) We already know that 
+$$\mathbb{E} \left[ X^2(t) \right] = t$$ 
+Which means that $$\mathbb{E} \left[ 2 \int_0^t X_{\tau} \space d{\tau} \right]$$ should be equal to 0. 
+Which means that the itô integral $$\mathbb{E} \left[ 2 \int_0^t X_{\tau} \space d{\tau} \right]$$ is a martingale. 
+
+:::
+
+Itô integrals are martingales. 
+
+Let $g(t, X_t)$ be a function of a stochastic process, then $\mathbb{E} \left[ \int_0^t g(\tau, x_\tau) \space dX_\tau \right] = 0$
 
 # A continuous time stochastic process is a martingale 
 
-$Y(t)$ is a stochastic process that satisfies the following Stochastic Differential Equation
+$Yt)$ is a stochastic process that satisfies the following Stochastic Differential Equation
 $$dY(t) = f(Y_t, t) \space dt + g(Y_t, t) \space dX(t)$$ {#eq-dy1} with initial condition $Y(0) = 0$. 
 
 How to tell if $Y(t)$ is martingale? 

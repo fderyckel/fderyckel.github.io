@@ -114,9 +114,9 @@ ul.task-list li input[type="checkbox"] {
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">R-code</div>
                 <div class="quarto-category">quant-finance</div>
-                <div class="quarto-category">trinomial_models</div>
+                <div class="quarto-category">stochastic-calculus</div>
+                <div class="quarto-category">martingales</div>
               </div>
                   </div>
   </div>
@@ -155,7 +155,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#link-between-itô-integrales-and-martingales" id="toc-link-between-itô-integrales-and-martingales" class="nav-link active" data-scroll-target="#link-between-itô-integrales-and-martingales">Link between itô integrales and martingales</a></li>
+  <li><a href="#continuous-time-martingales" id="toc-continuous-time-martingales" class="nav-link active" data-scroll-target="#continuous-time-martingales">Continuous time martingales</a></li>
+  <li><a href="#link-between-itô-integrales-and-martingales" id="toc-link-between-itô-integrales-and-martingales" class="nav-link" data-scroll-target="#link-between-itô-integrales-and-martingales">Link between itô integrales and martingales</a></li>
   <li><a href="#a-continuous-time-stochastic-process-is-a-martingale" id="toc-a-continuous-time-stochastic-process-is-a-martingale" class="nav-link" data-scroll-target="#a-continuous-time-stochastic-process-is-a-martingale">A continuous time stochastic process is a martingale</a></li>
   <li><a href="#exponential-martingales" id="toc-exponential-martingales" class="nav-link" data-scroll-target="#exponential-martingales">Exponential martingales</a></li>
   </ul>
@@ -171,13 +172,36 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>This post is a collection of notes about Martingales.</p>
-<p>A Martingales is a stochastic process that is driftless (aka it is pure randomness or just volatility).</p>
+<p>A Martingales is a stochastic process that is driftless (aka it is pure randomness or just volatility). We also say that martingales are constant mean stochastic process.</p>
+<section id="continuous-time-martingales" class="level1">
+<h1>Continuous time martingales</h1>
+<p>A continuous time stochastic process <span class="math inline">\(\{ M_t: t \in \mathbb{R}^+ \}\)</span> such that <span class="math inline">\(M_t\)</span> is adapted to <span class="math inline">\(\mathcal{F}_t\)</span> (or is <span class="math inline">\(\mathcal{F}_t\)</span> measurable) is a martingale if:</p>
+<ul>
+<li>integrability condition: <span class="math inline">\(\mathbb{E}[M_t] \lt \infty\)</span></li>
+<li>conditional expectation condition: <span class="math inline">\(\mathbb{E}_s[M_{t}|\mathcal{F}_s] = M_s, \space 0 \leq s \leq t\)</span></li>
+</ul>
+</section>
 <section id="link-between-itô-integrales-and-martingales" class="level1">
 <h1>Link between itô integrales and martingales</h1>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Intuitive &amp; Motivating example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(X\)</span> be a stochastic process and <span class="math inline">\(F = X^2(t)\)</span>. <a href="../SDE-part1/index.qmd">Recall</a> then <span class="math display">\[F(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}\]</span> <span class="math display">\[X^2(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}\]</span> Taking expectation on both side <span class="math display">\[\mathbb{E} \left[ X^2(t) \right] = t + \mathbb{E} \left[ 2 \int_0^t X_{\tau} \space d{\tau} \right]\]</span> With the <a href="../../../posts/quant-part1/brownian-motion/index.html">quadratic variation</a> We already know that <span class="math display">\[\mathbb{E} \left[ X^2(t) \right] = t\]</span> Which means that <span class="math display">\[\mathbb{E} \left[ 2 \int_0^t X_{\tau} \space d{\tau} \right]\]</span> should be equal to 0. Which means that the itô integral <span class="math display">\[\mathbb{E} \left[ 2 \int_0^t X_{\tau} \space d{\tau} \right]\]</span> is a martingale.</p>
+</div>
+</div>
+<p>Itô integrals are martingales.</p>
+<p>Let <span class="math inline">\(g(t, X_t)\)</span> be a function of a stochastic process, then <span class="math inline">\(\mathbb{E} \left[ \int_0^t g(\tau, x_\tau) \space dX_\tau \right] = 0\)</span></p>
 </section>
 <section id="a-continuous-time-stochastic-process-is-a-martingale" class="level1">
 <h1>A continuous time stochastic process is a martingale</h1>
-<p><span class="math inline">\(Y(t)\)</span> is a stochastic process that satisfies the following Stochastic Differential Equation <span id="eq-dy1"><span class="math display">\[dY(t) = f(Y_t, t) \space dt + g(Y_t, t) \space dX(t) \tag{1}\]</span></span> with initial condition <span class="math inline">\(Y(0) = 0\)</span>.</p>
+<p><span class="math inline">\(Yt)\)</span> is a stochastic process that satisfies the following Stochastic Differential Equation <span id="eq-dy1"><span class="math display">\[dY(t) = f(Y_t, t) \space dt + g(Y_t, t) \space dX(t) \tag{1}\]</span></span> with initial condition <span class="math inline">\(Y(0) = 0\)</span>.</p>
 <p>How to tell if <span class="math inline">\(Y(t)\)</span> is martingale? We will use the fact, from above, that <em>Itô integrals</em> are martingales. For this, by definition, we need <span class="math display">\[\mathbb{E}_s[Y_t | \mathcal{F}_s] = Y_s \space, \space 0 \leq s \leq t\]</span></p>
 <p>Integrating <a href="#eq-dy1">Equation&nbsp;1</a> both side, we can get an exact form for <span class="math inline">\(Y(t)\)</span> <span class="math display">\[Y(t) = Y(s) + \int_s^t f(Y_u, u) \space du + \int_s^t g(Y_u, u) \space dX(u)\]</span></p>
 <p>Taking the expectation on both side: <span class="math display">\[\mathbb{E}(Y_t | \mathcal{F}_s)= \mathbb{E} \left[Y(s) + \int_s^t f(Y_u, u) \space du + \int_s^t g(Y_u, u) \space dX(u) \space | \mathcal{F} \right]\]</span></p>

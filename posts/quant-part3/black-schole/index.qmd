@@ -13,6 +13,46 @@ date-modified: "2023-07-23"
 
 # Solving the Black-Schole Equation 
 
+# Recap 
+
+## European Vanilla 
+
+$$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - rV = 0$$
+
+* V is the option price at the time $t$. So $V = V(S, t)$  
+* S is the asset spot price
+* t is the time to expiry (in years)
+* $\sigma$ is the asset diffusion term (its stochastic element) 
+* $r$ is the annualized continuously compounded risk-free rate (imaginary friend)
+
+In the case of a **European Call Option with no-dividend**, the BSE has solution: 
+
+$$C = S N(d_1) - K e^{-r(T-t)} N(d_2)$$
+
+And in the case of a **European Put Option with no-dividend**, the BSE has solution: 
+$$P = K e^{-r(T-t)}N(-d_2) - SN(-d_1)$$
+
+where, 
+$$d_1 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r + \frac{\sigma^2}{2} \right) (T-t) \right]$$
+
+$$d_2 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r - \frac{\sigma^2}{2} \right) (T-t) \right] = d1 - \sigma \sqrt{T-t}$$
+
+$$N(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} e^{\frac{-1}{2} x^2} dx$$ 
+
+* K is the strike price 
+
+## European Vanilla with Dividends 
+
+And in the case of a dividend (ok ... assuming continuous dividend yield): 
+
+$$C = S e^{-D(T-t)} N(d_1) - K e^{-r(T-t)} N(d_2)$$
+
+$$P = K e^{-r(T-t)}N(-d_2) - Se^{-D(T-t)}N(-d_1)$$
+
+$$d_1 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r - D + \frac{\sigma^2}{2} \right) (T-t) \right]$$ 
+
+$$d_2 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r - D - \frac{\sigma^2}{2} \right) (T-t) \right] = d1 - \sigma \sqrt{T-t}$$
+
 # The Greeks 
 
 | Greek   |   Description                                          | Formula                                 | Call Option  | Put Option  | 
@@ -27,30 +67,6 @@ date-modified: "2023-07-23"
 
 # Create a function for numerical computation  
 
-Recall from above
-
-$$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - rV = 0$$
-
-* V is the option price at the time $t$. So $V = V(S, t)$  
-* S is the asset spot price
-* t is the time to expiry (in years)
-* $\sigma$ is the asset diffusion term (its stochastic element) 
-* $r$ is the annualized continuously compounded risk-free rate (imaginary friend)
-
-In the case of a **European Call Option with no-dividend**, the BSE has solution: 
-
-$$C = S N(d_1) - K e^{-rt} N(d_2)$$
-
-And in the case of a **European Put Option with no-dividend**, the BSE has solution: 
-$$P = K e^{-rt}N(-d_2) - SN(-d_1)$$
-
-where, 
-$$d_1 = \frac{1}{\sigma \sqrt{t}} \left[ ln \left( \frac{S}{K} \right) + \left( r + \frac{\sigma^2}{2} \right) t \right]$$
-$$d_2 = d1 - \sigma \sqrt{t}$$
-
-$$N(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} e^{\frac{-1}{2} x^2} dx$$ 
-
-* K is the strike price 
 
 ## Using Python 
 

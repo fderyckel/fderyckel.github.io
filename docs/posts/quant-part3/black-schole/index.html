@@ -219,6 +219,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#deriving-the-black-schole-equation" id="toc-deriving-the-black-schole-equation" class="nav-link active" data-scroll-target="#deriving-the-black-schole-equation">Deriving the Black-Schole Equation</a></li>
   <li><a href="#solving-the-black-schole-equation" id="toc-solving-the-black-schole-equation" class="nav-link" data-scroll-target="#solving-the-black-schole-equation">Solving the Black-Schole Equation</a></li>
+  <li><a href="#recap" id="toc-recap" class="nav-link" data-scroll-target="#recap">Recap</a>
+  <ul class="collapse">
+  <li><a href="#european-vanilla" id="toc-european-vanilla" class="nav-link" data-scroll-target="#european-vanilla">European Vanilla</a></li>
+  <li><a href="#european-vanilla-with-dividends" id="toc-european-vanilla-with-dividends" class="nav-link" data-scroll-target="#european-vanilla-with-dividends">European Vanilla with Dividends</a></li>
+  </ul></li>
   <li><a href="#the-greeks" id="toc-the-greeks" class="nav-link" data-scroll-target="#the-greeks">The Greeks</a></li>
   <li><a href="#create-a-function-for-numerical-computation" id="toc-create-a-function-for-numerical-computation" class="nav-link" data-scroll-target="#create-a-function-for-numerical-computation">Create a function for numerical computation</a>
   <ul class="collapse">
@@ -242,6 +247,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="solving-the-black-schole-equation" class="level1">
 <h1>Solving the Black-Schole Equation</h1>
+</section>
+<section id="recap" class="level1">
+<h1>Recap</h1>
+<section id="european-vanilla" class="level2">
+<h2 class="anchored" data-anchor-id="european-vanilla">European Vanilla</h2>
+<p><span class="math display">\[\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - rV = 0\]</span></p>
+<ul>
+<li>V is the option price at the time <span class="math inline">\(t\)</span>. So <span class="math inline">\(V = V(S, t)\)</span><br>
+</li>
+<li>S is the asset spot price</li>
+<li>t is the time to expiry (in years)</li>
+<li><span class="math inline">\(\sigma\)</span> is the asset diffusion term (its stochastic element)</li>
+<li><span class="math inline">\(r\)</span> is the annualized continuously compounded risk-free rate (imaginary friend)</li>
+</ul>
+<p>In the case of a <strong>European Call Option with no-dividend</strong>, the BSE has solution:</p>
+<p><span class="math display">\[C = S N(d_1) - K e^{-r(T-t)} N(d_2)\]</span></p>
+<p>And in the case of a <strong>European Put Option with no-dividend</strong>, the BSE has solution: <span class="math display">\[P = K e^{-r(T-t)}N(-d_2) - SN(-d_1)\]</span></p>
+<p>where, <span class="math display">\[d_1 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r + \frac{\sigma^2}{2} \right) (T-t) \right]\]</span></p>
+<p><span class="math display">\[d_2 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r - \frac{\sigma^2}{2} \right) (T-t) \right] = d1 - \sigma \sqrt{T-t}\]</span></p>
+<p><span class="math display">\[N(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} e^{\frac{-1}{2} x^2} dx\]</span></p>
+<ul>
+<li>K is the strike price</li>
+</ul>
+</section>
+<section id="european-vanilla-with-dividends" class="level2">
+<h2 class="anchored" data-anchor-id="european-vanilla-with-dividends">European Vanilla with Dividends</h2>
+<p>And in the case of a dividend (ok … assuming continuous dividend yield):</p>
+<p><span class="math display">\[C = S e^{-D(T-t)} N(d_1) - K e^{-r(T-t)} N(d_2)\]</span></p>
+<p><span class="math display">\[P = K e^{-r(T-t)}N(-d_2) - Se^{-D(T-t)}N(-d_1)\]</span></p>
+<p><span class="math display">\[d_1 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r - D + \frac{\sigma^2}{2} \right) (T-t) \right]\]</span></p>
+<p><span class="math display">\[d_2 = \frac{1}{\sigma \sqrt{T-t}} \left[ ln \left( \frac{S}{K} \right) + \left( r - D - \frac{\sigma^2}{2} \right) (T-t) \right] = d1 - \sigma \sqrt{T-t}\]</span></p>
+</section>
 </section>
 <section id="the-greeks" class="level1">
 <h1>The Greeks</h1>
@@ -303,24 +340,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="create-a-function-for-numerical-computation" class="level1">
 <h1>Create a function for numerical computation</h1>
-<p>Recall from above</p>
-<p><span class="math display">\[\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - rV = 0\]</span></p>
-<ul>
-<li>V is the option price at the time <span class="math inline">\(t\)</span>. So <span class="math inline">\(V = V(S, t)\)</span><br>
-</li>
-<li>S is the asset spot price</li>
-<li>t is the time to expiry (in years)</li>
-<li><span class="math inline">\(\sigma\)</span> is the asset diffusion term (its stochastic element)</li>
-<li><span class="math inline">\(r\)</span> is the annualized continuously compounded risk-free rate (imaginary friend)</li>
-</ul>
-<p>In the case of a <strong>European Call Option with no-dividend</strong>, the BSE has solution:</p>
-<p><span class="math display">\[C = S N(d_1) - K e^{-rt} N(d_2)\]</span></p>
-<p>And in the case of a <strong>European Put Option with no-dividend</strong>, the BSE has solution: <span class="math display">\[P = K e^{-rt}N(-d_2) - SN(-d_1)\]</span></p>
-<p>where, <span class="math display">\[d_1 = \frac{1}{\sigma \sqrt{t}} \left[ ln \left( \frac{S}{K} \right) + \left( r + \frac{\sigma^2}{2} \right) t \right]\]</span> <span class="math display">\[d_2 = d1 - \sigma \sqrt{t}\]</span></p>
-<p><span class="math display">\[N(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} e^{\frac{-1}{2} x^2} dx\]</span></p>
-<ul>
-<li>K is the strike price</li>
-</ul>
 <section id="using-python" class="level2">
 <h2 class="anchored" data-anchor-id="using-python">Using Python</h2>
 <div class="cell" data-execution_count="1">
@@ -416,7 +435,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'The BS model for AMD 147 days ahead is </span><span class="sc">{</span>amd_opt<span class="sc">.</span>callPrice<span class="sc">:0.4f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The BS model for AMD 147 days ahead is 12.1762</code></pre>
+<pre><code>The BS model for AMD 147 days ahead is 11.6921</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="4">

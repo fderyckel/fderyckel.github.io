@@ -3,7 +3,7 @@ title: "Stochastic Differential Equation - Part II"
 author: "Francois de Ryckel"
 date: "2023-07-22"
 description: 'Some more examples of ito integrals.'
-categories: [R-code, quant-finance, trinomial_models]
+categories: [quant-finance, ito-integral, stochastic-calculus]
 editor: source
 date-modified: "2023-07-23"
 ---
@@ -11,7 +11,7 @@ date-modified: "2023-07-23"
 
 # $V(S)$ when S is a SDE
 
-Let $V$ be a function of $S$ where $S$ satisfies the stochastic differential equation $dS = \mu S \space dt + \sigma S \space dX(t)$ 
+Let $V$ be a function of $S$ where $S$ satisfies the stochastic differential equation $dS = \mu S \space dt + \sigma S \space dX(t)$ Note how in this case $\mu$ and $\sigma$ are constants.  In more elaborate models, both can be time-dependent variables and be stochastic themselves. 
 
 Using a one-dimension Taylor Series expansion, we can write $$V(S + dS) \approx V(S) + \frac{dV}{dS} \space dS + \frac{1}{2} \frac{d^2V}{dS^2} \space dS^2$$ 
 

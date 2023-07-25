@@ -160,12 +160,15 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#expected-returns" id="toc-expected-returns" class="nav-link" data-scroll-target="#expected-returns">Expected Returns</a></li>
   <li><a href="#expected-sum-of-returns" id="toc-expected-sum-of-returns" class="nav-link" data-scroll-target="#expected-sum-of-returns">Expected Sum of Returns</a></li>
   <li><a href="#the-markov-property" id="toc-the-markov-property" class="nav-link" data-scroll-target="#the-markov-property">The Markov Property</a></li>
+  <li><a href="#the-martingale-property" id="toc-the-martingale-property" class="nav-link" data-scroll-target="#the-martingale-property">The Martingale Property</a></li>
   <li><a href="#the-quadratic-variation" id="toc-the-quadratic-variation" class="nav-link" data-scroll-target="#the-quadratic-variation">The Quadratic Variation</a></li>
   </ul></li>
   <li><a href="#quadratic-variation-and-transition-to-continuous-time" id="toc-quadratic-variation-and-transition-to-continuous-time" class="nav-link" data-scroll-target="#quadratic-variation-and-transition-to-continuous-time">Quadratic variation and transition to continuous time</a></li>
   <li><a href="#the-probability-of-wiener-processes-or-brownian-motions" id="toc-the-probability-of-wiener-processes-or-brownian-motions" class="nav-link" data-scroll-target="#the-probability-of-wiener-processes-or-brownian-motions">The probability of Wiener Processes or Brownian Motions</a>
   <ul class="collapse">
+  <li><a href="#properties-of-brownian-motion" id="toc-properties-of-brownian-motion" class="nav-link" data-scroll-target="#properties-of-brownian-motion">Properties of Brownian motion</a></li>
   <li><a href="#expectation-of-w_t" id="toc-expectation-of-w_t" class="nav-link" data-scroll-target="#expectation-of-w_t">Expectation of <span class="math inline">\(W_t\)</span></a></li>
+  <li><a href="#variance-of-w_t" id="toc-variance-of-w_t" class="nav-link" data-scroll-target="#variance-of-w_t">Variance of <span class="math inline">\(W_t\)</span></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -201,8 +204,15 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="the-markov-property" class="level2">
 <h2 class="anchored" data-anchor-id="the-markov-property">The Markov Property</h2>
-<p>Imagine, we already threw the coin a few times, let’s say 10 times. Now, we have some additional information as we know <span class="math inline">\(S_{10}\)</span>. We could ask ourselves the question what is the expectation for the next toss considering that additional information. It would make sense to say that we will get no more no less that what we already have since <span class="math inline">\(\mathbb{E}[R_i] = 0\)</span>. Mathematically, we can write this: <span class="math display">\[\mathbb{E}\left[ S_{i+1} | R_1, R_2, \dots, R_i \right] = S_i\]</span> And actually, we can generalize this further and state that: <span class="math display">\[\mathbb{E}\left[ S_i | R_1, R_2, \dots, R_j \space \forall i&lt;j \right] = S_i\]</span></p>
+<p>Imagine, we already threw the coin a few times, let’s say 10 times. Now, we have some additional information as we know <span class="math inline">\(S_{10}\)</span>. We could ask ourselves the question what is the expectation for the next toss considering that additional information. It would make sense to say that we will get no more no less that what we already have since <span class="math inline">\(\mathbb{E}[R_i] = 0\)</span>. Mathematically, we can write this: <span class="math display">\[\mathbb{E}\left[ S_{i+1} | R_1, R_2, \dots, R_i \right] = S_i\]</span></p>
+<p>The expected value of <span class="math inline">\(S_i\)</span> is only dependent of the previous value <span class="math inline">\(s_{i-1}\)</span> and not of any previous values (no memory beyond the one prior value)</p>
 <p>The idea of the <em>Markov Property</em> is to say that the Random Walk Stochastic Process has no memory beyond the point where it (the walker) is now.</p>
+</section>
+<section id="the-martingale-property" class="level2">
+<h2 class="anchored" data-anchor-id="the-martingale-property">The Martingale Property</h2>
+<p>The conditional probability of any point in the future is what you already have.</p>
+<p>And actually, we can generalize this further and state that: <span class="math display">\[\mathbb{E}\left[ S_i | S_j \space \forall i \gt j \right] = S_j\]</span></p>
+<p>In a ‘fair game’, knowledge of the past will be of no value in predicting future events.</p>
 </section>
 <section id="the-quadratic-variation" class="level2">
 <h2 class="anchored" data-anchor-id="the-quadratic-variation">The Quadratic Variation</h2>
@@ -215,10 +225,12 @@ ul.task-list li input[type="checkbox"] {
 <h1>Quadratic variation and transition to continuous time</h1>
 <p>In the previous setting, each unit of time was 1 unit and bet sizes were <span class="math inline">\(\pm 1\)</span>. We are making 2 changes to this situation.</p>
 <ul>
-<li>Now, we think of a time as <em>a certain amount of time</em> that we call <span class="math inline">\(t\)</span>. That ‘certain amount of time’ is continuous and we can chunk it down into <span class="math inline">\(n\)</span> pieces. In this context, each piece of time is <span class="math inline">\(\frac{t}{n}\)</span> long. The goal will be to increase the size of <span class="math inline">\(n\)</span> until <span class="math inline">\(n \arrow \infty\)</span></li>
+<li>Now, we think of a time as <em>a certain amount of time</em> that we call <span class="math inline">\(t\)</span>. That ‘certain amount of time’ is continuous and we can chunk it down into <span class="math inline">\(n\)</span> pieces. In this context, each piece of time is <span class="math inline">\(\frac{t}{n}\)</span> long. The goal will be to increase the size of <span class="math inline">\(n\)</span> until <span class="math inline">\(n \Rightarrow \infty\)</span></li>
 <li>the bet size are now <span class="math inline">\(\sqrt \frac{t}{n}\)</span></li>
 </ul>
-<p>To feel why are we making these changes, let’s revisit the quadratic variation on these new units of time and bet sizes. <span class="math display">\[S_{i+1} - S_i = \pm \sqrt{\frac{t}{n}}\]</span> Quadratic variation is now <span class="math display">\[\sum_{i=1}^n \left( \pm \sqrt{\frac{t}{n}} \right)^2 = n \cdot \frac{t}{n} = t\]</span></p>
+<p>To feel why are we making these changes, let’s revisit the quadratic variation on these new units of time and bet sizes. <span class="math display">\[S_{i+1} - S_i = \pm \sqrt{\frac{t}{n}}\]</span> Quadratic variation is now <span id="eq-quad-variation"><span class="math display">\[\sum_{i=1}^n \left( \pm \sqrt{\frac{t}{n}} \right)^2 = n \cdot \frac{t}{n} = t \tag{3}\]</span></span></p>
+<p>In this way, the quadratic variation is the total time of the coin tossing. This time is still finite.</p>
+<p>In this experiment, both the markov and martingale properties are still valid.</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -235,16 +247,36 @@ Notes
 <li>as n increases, the bet size decreases by a factor of <span class="math inline">\(\sqrt{\frac{1}{n}}\)</span></li>
 <li>as n increases to <span class="math inline">\(\infty\)</span>, both the time and the bets size will decrease to <span class="math inline">\(0\)</span> but not in the same way (by the same order)</li>
 <li>as n increases to <span class="math inline">\(\infty\)</span>, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere</li>
-<li>the limiting process as n tends to <span class="math inline">\(\infty\)</span> and time tends to <span class="math inline">\(0\)</span> (think <span class="math inline">\(dt\)</span>) creates a Brownian Motion (the Continuous random variable is called <span class="math inline">\(B_t\)</span>) or Wiener process (variable valled <span class="math inline">\(W_t\)</span>)</li>
+<li>the limiting process as n tends to <span class="math inline">\(\infty\)</span> and time tends to <span class="math inline">\(0\)</span> (think <span class="math inline">\(dt\)</span>) creates a Brownian Motion (the Continuous random variable is called <span class="math inline">\(B_t\)</span>) or Wiener process (variable called <span class="math inline">\(W_t\)</span>)</li>
 </ul>
 </div>
 </div>
+<p>Why does it matter that the time-step is <span class="math inline">\(\frac{t}{n}\)</span> and the bet-size is <span class="math inline">\(\sqrt{\frac{1}{n}}\)</span>? Any other choice would have not made the random-walk finite (it could have gone to infinity into a finite time or not move at all)</p>
 </section>
 <section id="the-probability-of-wiener-processes-or-brownian-motions" class="level1">
 <h1>The probability of Wiener Processes or Brownian Motions</h1>
-<p>We denotes a Wiener Process as <span class="math inline">\(W_t\)</span> with initial condition that <span class="math inline">\(W_0 = 0\)</span></p>
+<p>We denotes a Wiener Process as <span class="math inline">\(W_t\)</span> or <span class="math inline">\(W(t)\)</span> with initial condition that <span class="math inline">\(W_0 = 0\)</span> or <span class="math inline">\(W(0) = 0\)</span></p>
+<section id="properties-of-brownian-motion" class="level2">
+<h2 class="anchored" data-anchor-id="properties-of-brownian-motion">Properties of Brownian motion</h2>
+<ul>
+<li>They are <strong>finite</strong> - thanks to the increment (y-axis) scale with the square root of the time-steps</li>
+<li>they are <strong>continuous</strong> - limit when time-steps are infinity small and the random-walk is becoming continuous</li>
+<li>follow <strong>Markov property</strong></li>
+<li>follow <strong>Martingale property</strong></li>
+<li>the quadratic variation from 0 to t is <span class="math inline">\(t\)</span> itself - see <a href="#eq-quad-variation">Equation&nbsp;3</a></li>
+<li><strong>normality</strong>. <span class="math inline">\(W(t_i) - W(t_{i-1})\)</span> is normally distributed with mean 0 and variance <span class="math inline">\(t_i - t_{i-1}\)</span></li>
+</ul>
+</section>
 <section id="expectation-of-w_t" class="level2">
 <h2 class="anchored" data-anchor-id="expectation-of-w_t">Expectation of <span class="math inline">\(W_t\)</span></h2>
+<p>Expectation is the same as in the random-walk except this time we are using the limit when <span class="math inline">\(n \to 0\)</span>. <span id="eq-exp-bm"><span class="math display">\[\mathbb{E}[W_t] = \mathbb{E} \left[\lim_{n \to \infty} \sum_{i=1}^n R_i\right] = \lim_{n \to \infty} \sum_{i=1}^n \mathbb{E}[R_i] = n \cdot 0 = 0 \tag{4}\]</span></span></p>
+<p>In this sense, the mean of <span class="math inline">\(W_t = 0\)</span>.</p>
+</section>
+<section id="variance-of-w_t" class="level2">
+<h2 class="anchored" data-anchor-id="variance-of-w_t">Variance of <span class="math inline">\(W_t\)</span></h2>
+<p><span class="math display">\[\mathbb{V}ar[W_t] = \mathbb{E[W_t^2]} - \mathbb{E}[W_t]^2\]</span></p>
+<p>From <a href="#eq-exp-bm">Equation&nbsp;4</a>, we already know that <span class="math inline">\(\mathbb{E}[W_t] = 0\)</span>; hence <span class="math inline">\(\left( \mathbb{E}[W_t] \right)^2\)</span> is also <span class="math inline">\(0\)</span></p>
+<p><span class="math display">\[\mathbb{E}[W_t^2] = \mathbb{E}\left[\lim_{n \to \infty} \sum_{i=1}^n R_i^2 \right] = \lim_{n \to \infty} \sum_{i=1}^n \mathbb{E}[R_i^2] = \lim_{n \to \infty} n \cdot \left( \sqrt{\frac{t}{n}} \right)^2 = t\]</span></p>
 
 
 </section>

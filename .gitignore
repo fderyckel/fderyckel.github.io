@@ -10,4 +10,6 @@ api_keys
 /env/
 /.quarto/
 /my-env/
+/renv/
+renv.lock
 

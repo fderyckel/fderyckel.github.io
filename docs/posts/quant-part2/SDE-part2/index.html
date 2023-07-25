@@ -114,9 +114,9 @@ ul.task-list li input[type="checkbox"] {
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">R-code</div>
                 <div class="quarto-category">quant-finance</div>
-                <div class="quarto-category">trinomial_models</div>
+                <div class="quarto-category">ito-integral</div>
+                <div class="quarto-category">stochastic-calculus</div>
               </div>
                   </div>
   </div>
@@ -170,7 +170,7 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="vs-when-s-is-a-sde" class="level1">
 <h1><span class="math inline">\(V(S)\)</span> when S is a SDE</h1>
-<p>Let <span class="math inline">\(V\)</span> be a function of <span class="math inline">\(S\)</span> where <span class="math inline">\(S\)</span> satisfies the stochastic differential equation <span class="math inline">\(dS = \mu S \space dt + \sigma S \space dX(t)\)</span></p>
+<p>Let <span class="math inline">\(V\)</span> be a function of <span class="math inline">\(S\)</span> where <span class="math inline">\(S\)</span> satisfies the stochastic differential equation <span class="math inline">\(dS = \mu S \space dt + \sigma S \space dX(t)\)</span> Note how in this case <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are constants. In more elaborate models, both can be time-dependent variables and be stochastic themselves.</p>
 <p>Using a one-dimension Taylor Series expansion, we can write <span class="math display">\[V(S + dS) \approx V(S) + \frac{dV}{dS} \space dS + \frac{1}{2} \frac{d^2V}{dS^2} \space dS^2\]</span></p>
 <p>To express <span class="math inline">\(dS^2\)</span>? <span class="math display">\[dS^2 = (dS)^2 = \mu^2 S^2 \space dt^2 + 2 \mu \sigma S^2  \space dt dX(t) + \sigma^2 S^2 \space dX(t)^2\]</span></p>
 <p><span id="eq-ds-squared"><span class="math display">\[dS^2 = \sigma^2 S^2 \space dX(t)^2 = \sigma^2 S^2 \space dt \tag{1}\]</span></span></p>

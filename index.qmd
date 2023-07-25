@@ -15,7 +15,7 @@ about:
       href: https://github.com
 ---
 
-This [blog](blog.qmd) / Github website is mostly to keep track of quantitative finance concepts I am going through with the CQF and beyond. 
+This [blog](blog.qmd) / [Github website](https://github.com/fderyckel/fderyckel.github.io) is mostly to keep track of quantitative finance concepts I am going through with the CQF and beyond. 
 
 # About
 
@@ -45,7 +45,7 @@ Paris I - Pantheon Sorbonne
 
 # Interests
 
-* Modeling and machine learning 
+* Forecasting, modeling and machine learning 
 * Math education 
 * Outdoor Living and active lifestyle (Swimming, Cycling, Running)
 

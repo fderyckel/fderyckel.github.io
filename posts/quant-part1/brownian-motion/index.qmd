@@ -44,11 +44,19 @@ $$\mathbb{V}ar[S_i] = \mathbb{E}[R_0^2] + \mathbb{E}[R_1^2] + \dots + \mathbb{E}
 
 Imagine, we already threw the coin a few times, let's say 10 times.  Now, we have some additional information as we know $S_{10}$.  We could ask ourselves the question what is the expectation for the next toss considering that additional information. It would make sense to say that we will get no more no less that what we already have since $\mathbb{E}[R_i] = 0$.   Mathematically, we can write this: 
 $$\mathbb{E}\left[ S_{i+1} | R_1, R_2, \dots, R_i \right] = S_i$$
-And actually, we can generalize this further and state that: 
-$$\mathbb{E}\left[ S_i | R_1, R_2, \dots, R_j \space \forall i<j \right] = S_i$$
+
+The expected value of $S_i$ is only dependent of the previous value $s_{i-1}$ and not of any previous values (no memory beyond the one prior value)
 
 The idea of the *Markov Property* is to say that the Random Walk Stochastic Process has no memory beyond the point where it (the walker) is now.  
 
+## The Martingale Property 
+
+The conditional probability of any point in the future is what you already have. 
+
+And actually, we can generalize this further and state that: 
+$$\mathbb{E}\left[ S_i | S_j \space \forall i \gt j \right] = S_j$$
+
+In a 'fair game', knowledge of the past will be of no value in predicting future events. 
 
 ## The Quadratic Variation 
 
@@ -64,13 +72,17 @@ Hence $$\sum_{i=1}^n (S_i - S_{i-1})^2 = n$$
 
 In the previous setting, each unit of time was 1 unit and bet sizes were $\pm 1$.  We are making 2 changes to this situation. 
 
-* Now, we think of a time as *a certain amount of time* that we call $t$.  That 'certain amount of time' is continuous and we can chunk it down into $n$ pieces.  In this context, each piece of time is $\frac{t}{n}$ long.  The goal will be to increase the size of $n$ until $n \arrow \infty$ 
+* Now, we think of a time as *a certain amount of time* that we call $t$.  That 'certain amount of time' is continuous and we can chunk it down into $n$ pieces.  In this context, each piece of time is $\frac{t}{n}$ long.  The goal will be to increase the size of $n$ until $n \Rightarrow \infty$ 
 * the bet size are now $\sqrt \frac{t}{n}$
 
 To feel why are we making these changes, let's revisit the quadratic variation on these new units of time and bet sizes. 
 $$S_{i+1} - S_i = \pm \sqrt{\frac{t}{n}}$$
 Quadratic variation is now 
-$$\sum_{i=1}^n \left( \pm \sqrt{\frac{t}{n}} \right)^2 = n \cdot \frac{t}{n} = t$$
+$$\sum_{i=1}^n \left( \pm \sqrt{\frac{t}{n}} \right)^2 = n \cdot \frac{t}{n} = t$$ {#eq-quad-variation}
+
+In this way, the quadratic variation is the total time of the coin tossing.  This time is still finite. 
+
+In this experiment, both the markov and martingale properties are still valid. 
 
 ::: {.callout-tip}
 
@@ -82,13 +94,36 @@ Note that:
 * as n increases, the bet size decreases by a factor of $\sqrt{\frac{1}{n}}$
 * as n increases to $\infty$, both the time and the bets size will decrease to $0$ but not in the same way (by the same order)
 * as n increases to $\infty$, the random walk stays finite! The random-walk stays continuous everywhere but differentiable nowhere 
-* the limiting process as n tends to $\infty$ and time tends to $0$ (think $dt$) creates a Brownian Motion (the Continuous random variable is called $B_t$) or Wiener process (variable valled $W_t$)
+* the limiting process as n tends to $\infty$ and time tends to $0$ (think $dt$) creates a Brownian Motion (the Continuous random variable is called $B_t$) or Wiener process (variable called $W_t$)
 
 :::
 
+Why does it matter that the time-step is $\frac{t}{n}$ and the bet-size is $\sqrt{\frac{1}{n}}$?  Any other choice would have not made the random-walk finite (it could have gone to infinity into a finite time or not move at all)
+
 # The probability of Wiener Processes or Brownian Motions 
 
-We denotes a Wiener Process as $W_t$ with initial condition that $W_0 = 0$
+We denotes a Wiener Process as $W_t$ or $W(t)$ with initial condition that $W_0 = 0$ or $W(0) = 0$ 
+
+## Properties of Brownian motion 
+
+* They are **finite** - thanks to the increment (y-axis) scale with the square root of the time-steps 
+* they are **continuous** - limit when time-steps are infinity small and the random-walk is becoming continuous
+* follow **Markov property** 
+* follow **Martingale property**
+* the quadratic variation from 0 to t is $t$ itself - see @eq-quad-variation 
+* **normality**.  $W(t_i) - W(t_{i-1})$ is normally distributed with mean 0 and variance $t_i - t_{i-1}$
 
 ## Expectation of $W_t$ 
 
+Expectation is the same as in the random-walk except this time we are using the limit when $n \to 0$. 
+$$\mathbb{E}[W_t] = \mathbb{E} \left[\lim_{n \to \infty} \sum_{i=1}^n R_i\right] = \lim_{n \to \infty} \sum_{i=1}^n \mathbb{E}[R_i] = n \cdot 0 = 0$$ {#eq-exp-bm}
+
+In this sense, the mean of $W_t = 0$. 
+
+## Variance of $W_t$ 
+
+$$\mathbb{V}ar[W_t] = \mathbb{E[W_t^2]} - \mathbb{E}[W_t]^2$$ 
+
+From @eq-exp-bm, we already know that $\mathbb{E}[W_t] = 0$; hence $\left( \mathbb{E}[W_t] \right)^2$ is also $0$
+
+$$\mathbb{E}[W_t^2] = \mathbb{E}\left[\lim_{n \to \infty} \sum_{i=1}^n R_i^2 \right] = \lim_{n \to \infty} \sum_{i=1}^n \mathbb{E}[R_i^2] = \lim_{n \to \infty} n \cdot \left( \sqrt{\frac{t}{n}} \right)^2 = t$$
