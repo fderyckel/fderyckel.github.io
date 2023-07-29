@@ -1,5 +1,5 @@
 ---
-title: "03 - Random Walk & Brownian Motions"
+title: "03 - Random-walks & Brownian Motions"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'RW (discrete) and BM (continuous) constitute the way assets returns are modelled. '
@@ -104,7 +104,33 @@ Why does it matter that the time-step is $\frac{t}{n}$ and the bet-size is $\sqr
 
 We denotes a Wiener Process as $W_t$ or $W(t)$ with initial condition that $W_0 = 0$ or $W(0) = 0$ 
 
-## Properties of Brownian motion 
+::: {.callout-tip}
+
+## definition of Brownian Motion
+
+* $W_0 = 0$
+* $W_t$ is a continuous path (continuous everywhere, differentiable nowhere)
+* independent increments.  For $t_1 < t_2 < t_3 < t_4 < \cdots$, $W_{t_4} - W_{t_3}$ and $W_{t_2} - W_{t_1}$ are independent
+* normally distributed increments.  $|W_t - W_s| \sim N(0, |t-s|)$
+
+:::
+
+
+::: {.callout-note}
+
+# Example.  Show that $\mathbb{E}_s \left[ W_t | \mathcal{F_s} \right] = W_s$ 
+
+In other words, let's show that the expectation of the stochastic process $W_t$ upon the condition that we know everything up to the point $s$ [$W_t$ is $\mathcal{F}_s$ measurable] is $W_s$
+
+$$\mathbb{E}_s \left[ W_t | \mathcal{F_s} \right] = \mathbb{E}_s \left[ W_t - W_s + W_S | \mathcal{F_s} \right] = \mathbb{E}_s \left[ W_t -W_s| \mathcal{F_s} \right] + \mathbb{E}_s \left[ W_s | \mathcal{F_s} \right]$$
+Because (bullet point #4) increments of a Brownian motion are normally distributed with mean 0:  $|W_t - W_s| \sim N(0, |t-s|)$, we can establish that $\mathbb{E}_s \left[ W_t -W_s| \mathcal{F_s} \right] = 0$
+
+Hence: 
+$$\mathbb{E}_s \left[ W_t | \mathcal{F_s} \right]  = \mathbb{E}_s \left[ W_s | \mathcal{F_s} \right] = W_s$$
+
+:::
+
+## Properties of Brownian Motions 
 
 * They are **finite** - thanks to the increment (y-axis) scale with the square root of the time-steps 
 * they are **continuous** - limit when time-steps are infinity small and the random-walk is becoming continuous

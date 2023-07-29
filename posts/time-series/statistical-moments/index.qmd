@@ -8,7 +8,7 @@ editor: source
 date-modified: "2023-04-22"
 ---
 
-This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../quant-part1/normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 
+This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../../quant-part1/normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 
 
 We'll show these parameters using both R and python.  
 
@@ -25,13 +25,13 @@ library(dplyr)    # mutate(), filter()
 library(lubridate)
 library(ggplot2)
 
-df_spy <- read_csv('../../raw_data/SPY.csv') |> 
+df_spy <- read_csv('../../../raw_data/SPY.csv') |> 
   select(date, adjClose) |> 
   arrange(date) |> 
   mutate(return = log(adjClose / lag(adjClose))) |> 
   filter(date > '2018-01-01')
 
-df_amd <- read_csv('../../raw_data/AMD.csv') |> 
+df_amd <- read_csv('../../../raw_data/AMD.csv') |> 
   select(date, adjClose) |> 
   arrange(date) |> 
   mutate(return = log(adjClose / lag(adjClose))) |> 
@@ -143,7 +143,7 @@ Most equities display a leptokurtic behavior (skinny at the mean - most returns 
 import numpy as np
 import pandas as pd
 
-amd = pd.read_csv('../../raw_data/AMD.csv')
+amd = pd.read_csv('../../../raw_data/AMD.csv')
 
 x = amd['adjClose']
 

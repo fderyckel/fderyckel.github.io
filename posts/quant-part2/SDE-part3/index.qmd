@@ -1,11 +1,27 @@
 ---
-title: "Stochastic Calculus - Part 3"
+title: "Stochastic Calculus - Part III"
 author: "Francois de Ryckel"
 date: '2023-07-03'
 categories: [time-series]
 date-modified: '2023-07-03'
 ---
 
+# Recall 
+
+| Function     | Itô Lemma                                                                  | 
+|----------    |----------------------------------------------------------------------------|
+| $F(X_t)$     | $dF = \frac{1}{2} \frac{d^2F}{dX^2} \space dt + \frac{dF}{dX} \space dx$   |
+| $F(t, X_t)$  | $dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2} \frac{\partial^2 F}{\partial X^2} \right) dt + \frac{\partial F}{\partial X} dX$ |
+| $V(S)$ when $dS = \mu S dt + \sigma S dX$ | $dV = \left( \mu S \frac{dV}{dS} + \frac{1}{2} \sigma^2 S^2 \frac{d^2V}{dS^2} \right)dt + \left( \sigma S \frac{dV}{dS}\right) dX$ | 
+
+# Itô Integrals as non-anticipatory 
+
+Let's consider the stochastic integral of the form $$\int_0^T f(t, X(t)) dX(t)$$ where $X_t$ is a Brownian motion.  We'll shorten this form to $\int_0^T f(t, X) dX$ 
+
+We define this integral as 
+$$\int_0^T f(t, X) dX = \lim_{N \to \infty} \sum_{i=0}^{N-1} f(t_i, X_i) \cdot \underbrace{ (X_{i+1} - X_i) }_{dX}$$ 
+
+It's important to define it this way in order for the itô integral to stay **non-anticipatory**.  We know everything up to time $t_i$ and so the only uncertainties left is $X_{i+1} - X_i$ which is $dX$
 
 # Product rule within Stochastic Calculus 
 
@@ -65,8 +81,8 @@ $$dF = d \left( \frac{X}{Y} \right) = \frac{X}{Y} \cdot \left( \frac{1}{X} dX - 
 
 we can word these results in the following way - taken from [here](https://fermatslastspreadsheet.com/2011/12/28/itos-product-and-quotient-rules-as-described-by-a-trader/): 
 
-* **Ito product rule:** we buy correlation when we have a product 
-* **Ito quotient rule:** we sell correlation when we have a ratio, and we are long vol of the denominator.
+* **Itô product rule:** we buy correlation when we have a product 
+* **Itô quotient rule:** we sell correlation when we have a ratio, and we are long vol of the denominator.
 :::
 
 

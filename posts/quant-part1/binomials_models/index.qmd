@@ -23,12 +23,14 @@ The idea is to develop an intuition for delta hedging and risk-neutrality when v
 * $V^+$ is the option value at expiration when stock is ITM (case of a call option)
 * $V^-$ is the option value at expiration when stock is OTM (case of a call option)
 
+## Delta hedging 
+
 Now we are going to introduce $\Delta$ as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. 
 We can model our stock and option as part of a portfolio (we call it $\Pi$). Hence, 
 $$\Pi = V - \Delta \cdot S$$
 At this stage, we are assuming that the probability to go up or down is the same (it's basically irrelevant in this case).  
 
-![Option value with hedging](draw2.jpg)
+![Option value with delta hedging](draw2.jpg)
 
 If we want to hedge the stock to be risk-neutral, then at expiration we should have this equation 
 
@@ -50,7 +52,9 @@ $$\Pi = V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$
 * we are dealing with annualized values, if assets expires in one month and risk-free asset is let's say 3%, we would multiply 3% by 21 days or $0.03 \cdot \frac{21}{252}$
 
 Using our value of $\Delta$ from @eq-delta1, we can isolate $V$ as 
-$$V = \left(\frac{V^+-V^-}{u-v} \right) + \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$ {#eq-optionvalue1}
+$$V = \left(\frac{V^+-V^-}{u-v} \right) + \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$ {#eq-delta-hedging} 
+
+With delta-hedging, we say that the portfolio is deterministic (aka risk-free)
 
 ::: {.callout-note} 
 
@@ -73,10 +77,9 @@ flowchart LR
 :::
 
 
+## The Risk-Neutralld
 
-## The Risk-free World
-
-Using the same idea as earlier and introducing some probabilities. 
+Using the same idea as earlier and introducing some probabilities. $p'$ is the risk-neutral probability. 
 
 ```{mermaid}
 flowchart LR
@@ -106,11 +109,11 @@ $$V = p' V^+ + (1-p') V^-$$
 Interesting to note that the option price $V$ is like an expectation (the sum of the probability) and $p'$ is from @eq-pprime1
 
 Actually, we should also include the discounted factor (V is the present value of the expectation): 
-$$V = \frac{1}{1 + r \delta t} \cdot \left( p' V^+ + (1-p') V^- \right)$$
+$$V = \frac{1}{1 + r \delta t} \cdot \left( p' V^+ + (1-p') V^- \right)$$ {#eq-risk-neutral}
 
 ## Mixing real-world and risk-free world 
 
-Now if we collide both world: the real-world with drift and volatility and the risk-free world with $p'$: we can set up this 2 equations: 
+Now if we collide both world: the real-world with drift and volatility (@eq-delta-hedging) and the risk-free world (@eq-risk-neutral) with $p'$: we can set up this 2 equations: 
 One for the expected mean rate of change of prices and another for the variance of these rate of change. 
 
 $$

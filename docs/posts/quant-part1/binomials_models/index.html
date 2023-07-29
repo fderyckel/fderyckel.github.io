@@ -223,7 +223,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#binomial-models" id="toc-binomial-models" class="nav-link active" data-scroll-target="#binomial-models">Binomial models</a>
   <ul class="collapse">
-  <li><a href="#the-risk-free-world" id="toc-the-risk-free-world" class="nav-link" data-scroll-target="#the-risk-free-world">The Risk-free World</a></li>
+  <li><a href="#delta-hedging" id="toc-delta-hedging" class="nav-link" data-scroll-target="#delta-hedging">Delta hedging</a></li>
+  <li><a href="#the-risk-neutralld" id="toc-the-risk-neutralld" class="nav-link" data-scroll-target="#the-risk-neutralld">The Risk-Neutralld</a></li>
   <li><a href="#mixing-real-world-and-risk-free-world" id="toc-mixing-real-world-and-risk-free-world" class="nav-link" data-scroll-target="#mixing-real-world-and-risk-free-world">Mixing real-world and risk-free world</a></li>
   <li><a href="#the-binomial-tree" id="toc-the-binomial-tree" class="nav-link" data-scroll-target="#the-binomial-tree">The binomial tree</a></li>
   </ul></li>
@@ -260,11 +261,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="math inline">\(V^+\)</span> is the option value at expiration when stock is ITM (case of a call option)</li>
 <li><span class="math inline">\(V^-\)</span> is the option value at expiration when stock is OTM (case of a call option)</li>
 </ul>
+<section id="delta-hedging" class="level2">
+<h2 class="anchored" data-anchor-id="delta-hedging">Delta hedging</h2>
 <p>Now we are going to introduce <span class="math inline">\(\Delta\)</span> as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. We can model our stock and option as part of a portfolio (we call it <span class="math inline">\(\Pi\)</span>). Hence, <span class="math display">\[\Pi = V - \Delta \cdot S\]</span> At this stage, we are assuming that the probability to go up or down is the same (it’s basically irrelevant in this case).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="draw2.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Option value with hedging</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Option value with delta hedging</figcaption><p></p>
 </figure>
 </div>
 <p>If we want to hedge the stock to be risk-neutral, then at expiration we should have this equation</p>
@@ -278,7 +281,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="math inline">\(r\)</span> is the value of the risk-free asset</li>
 <li>we are dealing with annualized values, if assets expires in one month and risk-free asset is let’s say 3%, we would multiply 3% by 21 days or <span class="math inline">\(0.03 \cdot \frac{21}{252}\)</span></li>
 </ul>
-<p>Using our value of <span class="math inline">\(\Delta\)</span> from <a href="#eq-delta1">Equation&nbsp;1</a>, we can isolate <span class="math inline">\(V\)</span> as <span id="eq-optionvalue1"><span class="math display">\[V = \left(\frac{V^+-V^-}{u-v} \right) + \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right) \tag{2}\]</span></span></p>
+<p>Using our value of <span class="math inline">\(\Delta\)</span> from <a href="#eq-delta1">Equation&nbsp;1</a>, we can isolate <span class="math inline">\(V\)</span> as <span id="eq-delta-hedging"><span class="math display">\[V = \left(\frac{V^+-V^-}{u-v} \right) + \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right) \tag{2}\]</span></span></p>
+<p>With delta-hedging, we say that the portfolio is deterministic (aka risk-free)</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -313,9 +317,10 @@ Example
 </ul>
 </div>
 </div>
-<section id="the-risk-free-world" class="level2">
-<h2 class="anchored" data-anchor-id="the-risk-free-world">The Risk-free World</h2>
-<p>Using the same idea as earlier and introducing some probabilities.</p>
+</section>
+<section id="the-risk-neutralld" class="level2">
+<h2 class="anchored" data-anchor-id="the-risk-neutralld">The Risk-Neutralld</h2>
+<p>Using the same idea as earlier and introducing some probabilities. <span class="math inline">\(p'\)</span> is the risk-neutral probability.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -350,11 +355,11 @@ Example
 </div>
 <p>To find <span class="math inline">\(V\)</span>: <span class="math display">\[V = p' V^+ + (1-p') V^-\]</span></p>
 <p>Interesting to note that the option price <span class="math inline">\(V\)</span> is like an expectation (the sum of the probability) and <span class="math inline">\(p'\)</span> is from <a href="#eq-pprime1">Equation&nbsp;3</a></p>
-<p>Actually, we should also include the discounted factor (V is the present value of the expectation): <span class="math display">\[V = \frac{1}{1 + r \delta t} \cdot \left( p' V^+ + (1-p') V^- \right)\]</span></p>
+<p>Actually, we should also include the discounted factor (V is the present value of the expectation): <span id="eq-risk-neutral"><span class="math display">\[V = \frac{1}{1 + r \delta t} \cdot \left( p' V^+ + (1-p') V^- \right) \tag{4}\]</span></span></p>
 </section>
 <section id="mixing-real-world-and-risk-free-world" class="level2">
 <h2 class="anchored" data-anchor-id="mixing-real-world-and-risk-free-world">Mixing real-world and risk-free world</h2>
-<p>Now if we collide both world: the real-world with drift and volatility and the risk-free world with <span class="math inline">\(p'\)</span>: we can set up this 2 equations: One for the expected mean rate of change of prices and another for the variance of these rate of change.</p>
+<p>Now if we collide both world: the real-world with drift and volatility (<a href="#eq-delta-hedging">Equation&nbsp;2</a>) and the risk-free world (<a href="#eq-risk-neutral">Equation&nbsp;4</a>) with <span class="math inline">\(p'\)</span>: we can set up this 2 equations: One for the expected mean rate of change of prices and another for the variance of these rate of change.</p>
 <p><span class="math display">\[
 \begin{equation}
   \begin{cases}
