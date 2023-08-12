@@ -154,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#function-of-a-stochastic-process-x_t" id="toc-function-of-a-stochastic-process-x_t" class="nav-link active" data-scroll-target="#function-of-a-stochastic-process-x_t">Function of a stochastic process <span class="math inline">\(X_t\)</span></a></li>
+  <li><a href="#function-of-a-stochastic-process-x_t---itô-i" id="toc-function-of-a-stochastic-process-x_t---itô-i" class="nav-link active" data-scroll-target="#function-of-a-stochastic-process-x_t---itô-i">Function of a stochastic process <span class="math inline">\(X_t\)</span> - Itô I</a></li>
   <li><a href="#function-of-a-stochastic-process-t-xt---itô-ii" id="toc-function-of-a-stochastic-process-t-xt---itô-ii" class="nav-link" data-scroll-target="#function-of-a-stochastic-process-t-xt---itô-ii">Function of a stochastic process <span class="math inline">\((t, X(t))\)</span> - Itô II</a></li>
   </ul>
 </nav>
@@ -168,8 +168,8 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="function-of-a-stochastic-process-x_t" class="level1">
-<h1>Function of a stochastic process <span class="math inline">\(X_t\)</span></h1>
+<section id="function-of-a-stochastic-process-x_t---itô-i" class="level1">
+<h1>Function of a stochastic process <span class="math inline">\(X_t\)</span> - Itô I</h1>
 <p>Let <span class="math inline">\(F\)</span> be a function of a stochastic random variable <span class="math inline">\(X_t\)</span>. So <span class="math inline">\(F = F(X_t)\)</span>.</p>
 <p>Using a Taylor expansion: <span class="math display">\[F(X + dX) \approx F(X) + \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2\]</span> Using <span class="math inline">\(F(X+dX) - F(X) = dF\)</span>: <span class="math display">\[dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2\]</span></p>
 <p>Now, recall <span class="math inline">\(dX\)</span> is a random variable with mean 0 and standard deviation <span class="math inline">\(\sqrt{t}\)</span>. Also, for small values of <span class="math inline">\(t\)</span>, we have <span class="math inline">\(\sqrt{dt} \gt dt\)</span>, hence it is of higher order than dt. Hence, we re-write the previous equation as</p>
@@ -209,7 +209,7 @@ example 2
 </section>
 <section id="function-of-a-stochastic-process-t-xt---itô-ii" class="level1">
 <h1>Function of a stochastic process <span class="math inline">\((t, X(t))\)</span> - Itô II</h1>
-<p>Let <span class="math inline">\(F\)</span> be a function of a stochastic random variable <span class="math inline">\(t, X_t\)</span>. So <span class="math inline">\(F = F(t, X_t)\)</span>.</p>
+<p>Let <span class="math inline">\(F\)</span> be a function of both time <span class="math inline">\(t\)</span> and a stochastic random variable <span class="math inline">\(X_t\)</span>. So <span class="math inline">\(F = F(t, X_t)\)</span>.</p>
 <p>Using a Taylor expansion: <span class="math display">\[F(t + dt, X + dX) \approx F(t, X) + \frac{\partial F}{\partial t} \space dt + \frac{\partial F}{\partial X} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2\]</span> Using <span class="math inline">\(F(t + dt, X+dX) - F(t, X) = dF\)</span> and factoring the <span class="math inline">\(dt\)</span> and recall <span class="math inline">\(dX^2=dt\)</span>:</p>
 <p><span id="eq-ito2sde"><span class="math display">\[dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2} \frac{\partial ^2F}{\partial X^2} \right) dt + \frac{\partial F}{\partial X} dX \tag{2}\]</span></span></p>
 <p>We can transform this Stochastic Differential Equation (SDE) into an itô integral.</p>

@@ -9,7 +9,7 @@ date-modified: "2023-07-23"
 ---
 
 
-# Function of a stochastic process $X_t$ 
+# Function of a stochastic process $X_t$ - Itô I
 
 Let $F$ be a function of a stochastic random variable $X_t$.  So $F = F(X_t)$. 
 
@@ -64,7 +64,7 @@ $$dF = - \frac{1}{2}(sin \space W_t + cos \space W_t) \space dt + (cos \space W_
 
 # Function of a stochastic process $(t, X(t))$ - Itô II
 
-Let $F$ be a function of a stochastic random variable $t, X_t$.  So $F = F(t, X_t)$. 
+Let $F$ be a function of both time $t$ and a stochastic random variable $X_t$.  So $F = F(t, X_t)$. 
 
 Using a Taylor expansion: 
 $$F(t + dt, X + dX) \approx F(t, X) + \frac{\partial F}{\partial t} \space dt + \frac{\partial F}{\partial X} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2$$ 
