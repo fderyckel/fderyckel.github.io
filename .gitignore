@@ -6,6 +6,8 @@
 .Renviron
 .httr-oauth
 .DS_Store
+.codes
+requirements.txt
 api_keys
 
 /env/

@@ -23,16 +23,17 @@ The idea is to develop an intuition for delta hedging and risk-neutrality when v
 * $V^+$ is the option value at expiration when stock is ITM (case of a call option)
 * $V^-$ is the option value at expiration when stock is OTM (case of a call option)
 
-## Delta hedging 
+## Delta hedging and no-arbitrage 
 
-Now we are going to introduce $\Delta$ as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. 
+Now we are going to introduce $\Delta$ as the amount of stock to hedge (a percentage of a stock) to be risk-free. Because the portfolio is risk-free it must return the risk-free rate to prevent arbitrage. 
+
 We can model our stock and option as part of a portfolio (we call it $\Pi$). Hence, 
 $$\Pi = V - \Delta \cdot S$$
 At this stage, we are assuming that the probability to go up or down is the same (it's basically irrelevant in this case).  
 
 ![Option value with delta hedging](draw2.jpg)
 
-If we want to hedge the stock to be risk-neutral, then at expiration we should have this equation 
+If we want to hedge the stock to be risk-free, then at expiration we should have this equation 
 
 $$V^+ - \Delta us = V^--\Delta vs$$
 Solving for $\Delta$, we get: 
@@ -46,6 +47,7 @@ $$V - \Delta S = V^- - \Delta vS$$ or
 $$V - \Delta S = V^+ - \Delta uS$$ which ever is easier to calculate.  
 
 Now, of course, cash is not free and there is a time value associated to it. In that sense, today's value for the trade should be equal a discounted value of tomorrow's trade value (at expiration).  
+The thinking is that if we want to hedge to be risk-free, it should return the risk-free rate otherwise there is an arbitrate opportunity. 
 $$\Pi = V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)$$
 
 * $r$ is the value of the risk-free asset 
@@ -77,7 +79,7 @@ flowchart LR
 :::
 
 
-## The Risk-Neutralld
+## The Risk-Neutral 
 
 Using the same idea as earlier and introducing some probabilities. $p'$ is the risk-neutral probability. 
 
@@ -134,7 +136,7 @@ $$
 * $p = \frac{1}{2} + \frac{\mu \sqrt{\delta t}}{2 \sigma}$
 * $p' = \frac{1}{2} + \frac{r \sqrt{\delta t}}{2 \sigma}$   $p'$ is the risk-neutral probability. 
 
-## The binomial tree 
+# The binomial tree 
 
 * After one time step $\delta t$ our stock, initially at $S$ will either be at $uS$ or $vS$.  
 * After two time steps, the stock will either be at $u^2S$ or $uvS$ or $v^2S$

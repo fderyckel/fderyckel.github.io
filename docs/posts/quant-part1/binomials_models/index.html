@@ -223,11 +223,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#binomial-models" id="toc-binomial-models" class="nav-link active" data-scroll-target="#binomial-models">Binomial models</a>
   <ul class="collapse">
-  <li><a href="#delta-hedging" id="toc-delta-hedging" class="nav-link" data-scroll-target="#delta-hedging">Delta hedging</a></li>
-  <li><a href="#the-risk-neutralld" id="toc-the-risk-neutralld" class="nav-link" data-scroll-target="#the-risk-neutralld">The Risk-Neutralld</a></li>
+  <li><a href="#delta-hedging-and-no-arbitrage" id="toc-delta-hedging-and-no-arbitrage" class="nav-link" data-scroll-target="#delta-hedging-and-no-arbitrage">Delta hedging and no-arbitrage</a></li>
+  <li><a href="#the-risk-neutral" id="toc-the-risk-neutral" class="nav-link" data-scroll-target="#the-risk-neutral">The Risk-Neutral</a></li>
   <li><a href="#mixing-real-world-and-risk-free-world" id="toc-mixing-real-world-and-risk-free-world" class="nav-link" data-scroll-target="#mixing-real-world-and-risk-free-world">Mixing real-world and risk-free world</a></li>
-  <li><a href="#the-binomial-tree" id="toc-the-binomial-tree" class="nav-link" data-scroll-target="#the-binomial-tree">The binomial tree</a></li>
   </ul></li>
+  <li><a href="#the-binomial-tree" id="toc-the-binomial-tree" class="nav-link" data-scroll-target="#the-binomial-tree">The binomial tree</a></li>
   </ul>
 </nav>
 </nav>
@@ -261,22 +261,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="math inline">\(V^+\)</span> is the option value at expiration when stock is ITM (case of a call option)</li>
 <li><span class="math inline">\(V^-\)</span> is the option value at expiration when stock is OTM (case of a call option)</li>
 </ul>
-<section id="delta-hedging" class="level2">
-<h2 class="anchored" data-anchor-id="delta-hedging">Delta hedging</h2>
-<p>Now we are going to introduce <span class="math inline">\(\Delta\)</span> as the amount of stock to hedge (a percentage of a stock) to be risk-neutral. We can model our stock and option as part of a portfolio (we call it <span class="math inline">\(\Pi\)</span>). Hence, <span class="math display">\[\Pi = V - \Delta \cdot S\]</span> At this stage, we are assuming that the probability to go up or down is the same (it’s basically irrelevant in this case).</p>
+<section id="delta-hedging-and-no-arbitrage" class="level2">
+<h2 class="anchored" data-anchor-id="delta-hedging-and-no-arbitrage">Delta hedging and no-arbitrage</h2>
+<p>Now we are going to introduce <span class="math inline">\(\Delta\)</span> as the amount of stock to hedge (a percentage of a stock) to be risk-free. Because the portfolio is risk-free it must return the risk-free rate to prevent arbitrage.</p>
+<p>We can model our stock and option as part of a portfolio (we call it <span class="math inline">\(\Pi\)</span>). Hence, <span class="math display">\[\Pi = V - \Delta \cdot S\]</span> At this stage, we are assuming that the probability to go up or down is the same (it’s basically irrelevant in this case).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="draw2.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Option value with delta hedging</figcaption><p></p>
 </figure>
 </div>
-<p>If we want to hedge the stock to be risk-neutral, then at expiration we should have this equation</p>
+<p>If we want to hedge the stock to be risk-free, then at expiration we should have this equation</p>
 <p><span class="math display">\[V^+ - \Delta us = V^--\Delta vs\]</span> Solving for <span class="math inline">\(\Delta\)</span>, we get:</p>
 <p><span id="eq-delta1"><span class="math display">\[\Delta = \frac{V^+-V^-}{(u-v)S} = \frac{\text{range of options payoff}}{\text{range of asset prices}} \tag{1}\]</span></span></p>
 <p>In other words, we could see <span class="math inline">\(\Delta\)</span> as the rate of change of the option price in function of the stock price. <span class="math inline">\(\Delta = \frac{\partial{V}}{\partial{S}}\)</span></p>
 <p>Once we found <span class="math inline">\(\Delta\)</span>, we could find <span class="math inline">\(V\)</span> by just making today’s value of the trade = tomorrow’s value of the trade (at expiration). Just solve for <span class="math inline">\(V\)</span> <span class="math display">\[V - \Delta S = V^- - \Delta vS\]</span> or <span class="math display">\[V - \Delta S = V^+ - \Delta uS\]</span> which ever is easier to calculate.</p>
 <p>Now, of course, cash is not free and there is a time value associated to it. In that sense, today’s value for the trade should be equal a discounted value of tomorrow’s trade value (at expiration).<br>
-<span class="math display">\[\Pi = V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)\]</span></p>
+The thinking is that if we want to hedge to be risk-free, it should return the risk-free rate otherwise there is an arbitrate opportunity. <span class="math display">\[\Pi = V - \Delta S = \frac{1}{1+r \delta t} \left(V^- - \Delta vS \right)\]</span></p>
 <ul>
 <li><span class="math inline">\(r\)</span> is the value of the risk-free asset</li>
 <li>we are dealing with annualized values, if assets expires in one month and risk-free asset is let’s say 3%, we would multiply 3% by 21 days or <span class="math inline">\(0.03 \cdot \frac{21}{252}\)</span></li>
@@ -318,8 +319,8 @@ Example
 </div>
 </div>
 </section>
-<section id="the-risk-neutralld" class="level2">
-<h2 class="anchored" data-anchor-id="the-risk-neutralld">The Risk-Neutralld</h2>
+<section id="the-risk-neutral" class="level2">
+<h2 class="anchored" data-anchor-id="the-risk-neutral">The Risk-Neutral</h2>
 <p>Using the same idea as earlier and introducing some probabilities. <span class="math inline">\(p'\)</span> is the risk-neutral probability.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -377,8 +378,9 @@ Example
 <li><span class="math inline">\(p' = \frac{1}{2} + \frac{r \sqrt{\delta t}}{2 \sigma}\)</span> <span class="math inline">\(p'\)</span> is the risk-neutral probability.</li>
 </ul>
 </section>
-<section id="the-binomial-tree" class="level2">
-<h2 class="anchored" data-anchor-id="the-binomial-tree">The binomial tree</h2>
+</section>
+<section id="the-binomial-tree" class="level1">
+<h1>The binomial tree</h1>
 <ul>
 <li>After one time step <span class="math inline">\(\delta t\)</span> our stock, initially at <span class="math inline">\(S\)</span> will either be at <span class="math inline">\(uS\)</span> or <span class="math inline">\(vS\)</span>.<br>
 </li>
@@ -437,7 +439,6 @@ Example
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
