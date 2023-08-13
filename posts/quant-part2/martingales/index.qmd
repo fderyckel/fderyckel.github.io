@@ -1,5 +1,5 @@
 ---
-title: "Martingales"
+title: "04 -Martingales"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'Digging into Martingales. Making connections between martingales and itô integrals.'

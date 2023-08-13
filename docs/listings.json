@@ -2,10 +2,10 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/quant-part2/SDE-part2/index.html",
       "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part1/trinomial-model/index.html",
       "/posts/quant-part2/SDE-Part1/index.html",
-      "/posts/quant-part2/SDE-part2/index.html",
       "/posts/quant-part2/martingales/index.html",
       "/posts/quant-part3/black-schole/index.html",
       "/posts/quant-part2/SDE-part3/index.html",
@@ -76,8 +76,8 @@
     "items": [
       "/posts/quant-part2/SDE-Part1/index.html",
       "/posts/quant-part2/SDE-part2/index.html",
-      "/posts/quant-part2/martingales/index.html",
-      "/posts/quant-part2/SDE-part3/index.html"
+      "/posts/quant-part2/SDE-part3/index.html",
+      "/posts/quant-part2/martingales/index.html"
     ]
   }
 ]

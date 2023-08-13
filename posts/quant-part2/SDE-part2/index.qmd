@@ -1,15 +1,15 @@
 ---
-title: "Stochastic Differential Equation - Part II"
+title: "02 - Stochastic Differential Equation - Part II"
 author: "Francois de Ryckel"
 date: "2023-07-22"
 description: 'Some more examples of ito integrals.'
 categories: [quant-finance, ito-integral, stochastic-calculus]
 editor: source
-date-modified: "2023-07-23"
+date-modified: "2023-08-12"
 ---
 
 
-# $V(S)$ when S is a SDE
+# $V(S)$ when S is a SDE - Itô III 
 
 Let $V$ be a function of $S$ where $S$ satisfies the stochastic differential equation $dS = \mu S \space dt + \sigma S \space dX(t)$ Note how in this case $\mu$ and $\sigma$ are constants.  In more elaborate models, both can be time-dependent variables and be stochastic themselves. 
 
@@ -20,6 +20,22 @@ $$dS^2 = (dS)^2 = \mu^2 S^2 \space dt^2 + 2 \mu \sigma S^2  \space dt dX(t) + \s
 
 $$dS^2 = \sigma^2 S^2 \space dX(t)^2 = \sigma^2 S^2 \space dt$$ {#eq-ds-squared}
 
+::: {.callout-tip}
+We could generalize this a bit further
+Let's have a function $$dG_t = A(t, X_t) \space dt + B(t, X_t) \space dW_t$$ 
+
+Then $$\mathbb{E}[dG_t] = \mathbb{E}[A \space dt] + \mathbb{E}[B \space dW_t] = A \space \mathbb{E}[dt] + B \space \mathbb{E}[dW_t]$$ 
+
+Recall that $\mathbb{E}[dW_t] = 0$, hence
+$$\mathbb{E}[dG_t] = A \space \mathbb{E}[dt]$$ 
+Considering the variance, we can write 
+$$\mathbb{V}ar[dG_t] = \mathbb{V}ar[A \space dt] + \mathbb{V}ar[B \space dW_t] = A^2 \space \mathbb{V}ar[dt] + B^2 \space \mathbb{V}ar[dW_t] = B^2 \space dt$$ 
+Recall that $\mathbb{V}ar[dt] = 0$, hence
+$$\mathbb{V}ar[dG_t] = B^2 \space \mathbb{V}ar[dW_t]$$ 
+
+
+:::
+
 Going back to our expansion and considering $dV = V(S+dS) - V(S)$: 
 $$dV = \frac{dV}{dS} \space (\mu S \space dt + \sigma S \space dX(t)) + \frac{1}{2} \frac{d^2V}{dS^2} \space (\sigma^2 S^2 \space dt)$$
 $$dV = \left( \mu S \frac{dV}{dS} + \frac{1}{2} \sigma^2 S^2 \frac{d^2V}{dS^2} \right) \cdot dt + \left( \sigma S \frac{dV}{dS} \right) \cdot dX(t)$$ {#eq-ito3}
@@ -28,7 +44,7 @@ $$dV = \left( \mu S \frac{dV}{dS} + \frac{1}{2} \sigma^2 S^2 \frac{d^2V}{dS^2} \
 
 # Example 
 
-Let $V(S) = log(S)$ with S satisfies the usual SDE. We can then use the above SDE form. 
+Let $V(S) = log(S)$ with S satisfies the usual SDE: $dS = \mu S dt + \sigma S dX_t$. We can then use the above SDE form. 
 
 $$\frac{dV}{dS} = \frac{1}{S}$$
 $$\frac{d^2V}{dS^2} = - \frac{1}{S^2}$$
@@ -47,6 +63,52 @@ Using $X_0 = 0$ and $X_t = \phi \sqrt{t}$:
 $$S_t = S_0 \cdot e^{\mu t - \frac{1}{2} \sigma^2 t + \sigma \phi \sqrt{t}}$$
 
 :::
+
+Another example with interest rate 
+
+::: {.callout-note}
+
+# Vasicek model 
+
+This model developed in 1978 by Vasicek is about interest rate. 
+
+The basic SDE takes this form $$dr = (\eta - \gamma r) dt + \sigma dX$$ {#eq-vasicek1}.  In this model, $\eta$, $\gamma$ and $\sigma$ are all constant.  
+
+* $\gamma$ is the speed of reversion to the (long term) mean rate.  It's the rate of reversion. 
+* we demote $\bar{r}$ the mean interest rate such that $\bar{r} = \frac{\eta}{\gamma}$
+
+$$dr = \gamma (\bar{r} - r) \space dt + \sigma \space dX$$ {#eq-vasicek2}
+
+If we let $u = r - \bar{r}$, then $du = dr$ because we consider $\bar{r}$ as a constant. Hence 
+$$du = - \gamma u \space dt + \sigma dX$$
+$$du + \gamma u dt = \sigma dX$$  
+$$e^{\gamma t} du + \gamma u e^{\gamma t} dt = e^{\gamma t} \sigma dX$$
+$$d(u e^{\gamma t}) = \sigma e^{\gamma t} dX$$
+$$\int_0^t d(u_s e^{\gamma s}) = \sigma \int_0^t e^{\gamma s} dX_s$$ 
+$$u(t) e^{\gamma t} - u(0) = $$
+
+:::
+
+# $V(S, t)$ when S is a SDE - Itô IV 
+
+This time $V$ is a function of both time $t$ and $S$ which satisfies the usual SDE: $dS = \mu S dt + \sigma S dX_t$
+
+We can also do a Taylor Series expansion on this.  And recall @eq-ds-squared when dealing with $dS^2$
+
+$$V(S + dS, t + dt) \approx V(S, t) + \frac{\partial V}{\partial S} dS + \frac{\partial V}{\partial t} dt + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} dS^2$$
+$$V(S + dS, t + dt) - V(S, t) \approx \frac{\partial V}{\partial S} dS + \frac{\partial V}{\partial t} dt + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 dt$$
+
+$$dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} dS$$
+
+$$dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} (\mu S dt + \sigma S dX_t)$$
+$$dV = \left( \frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \sigma S \frac{\partial V}{\partial S} dX_t$$ {#eq-ito4}
+
+
+
+$$$$
+
+
+
 
 Itô
 
