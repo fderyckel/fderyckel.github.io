@@ -159,7 +159,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#vs-when-s-is-a-sde---itô-iii" id="toc-vs-when-s-is-a-sde---itô-iii" class="nav-link active" data-scroll-target="#vs-when-s-is-a-sde---itô-iii"><span class="math inline">\(V(S)\)</span> when S is a SDE - Itô III</a></li>
-  <li><a href="#vs-t-when-s-is-a-sde---itô-iv" id="toc-vs-t-when-s-is-a-sde---itô-iv" class="nav-link" data-scroll-target="#vs-t-when-s-is-a-sde---itô-iv"><span class="math inline">\(V(S, t)\)</span> when S is a SDE - Itô IV</a></li>
+  <li><a href="#vt-s-when-s-is-a-sde---itô-iv" id="toc-vt-s-when-s-is-a-sde---itô-iv" class="nav-link" data-scroll-target="#vt-s-when-s-is-a-sde---itô-iv"><span class="math inline">\(V(t, S)\)</span> when S is a SDE - Itô IV</a></li>
+  <li><a href="#vt-s_1-s_2-modeling-correlated-random-walks" id="toc-vt-s_1-s_2-modeling-correlated-random-walks" class="nav-link" data-scroll-target="#vt-s_1-s_2-modeling-correlated-random-walks"><span class="math inline">\(V(t, S_1, S_2)\)</span> Modeling correlated random walks</a></li>
   </ul>
 </nav>
 </nav>
@@ -224,25 +225,58 @@ Vasicek model
 </div>
 <div class="callout-body-container callout-body">
 <p>This model developed in 1978 by Vasicek is about interest rate.</p>
-<p>The basic SDE takes this form <span class="math display">\[dr = (\eta - \gamma r) dt + \sigma dX\]</span> {#eq-vasicek1}. In this model, <span class="math inline">\(\eta\)</span>, <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\sigma\)</span> are all constant.</p>
+<p>The basic SDE takes this form <span id="eq-vasicek1"><span class="math display">\[dr = (\eta - \gamma r) dt + \sigma dX \tag{3}\]</span></span> In this model, <span class="math inline">\(\eta\)</span>, <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\sigma\)</span> are all constant.</p>
 <ul>
 <li><span class="math inline">\(\gamma\)</span> is the speed of reversion to the (long term) mean rate. It’s the rate of reversion.</li>
 <li>we demote <span class="math inline">\(\bar{r}\)</span> the mean interest rate such that <span class="math inline">\(\bar{r} = \frac{\eta}{\gamma}\)</span></li>
 </ul>
-<p><span id="eq-vasicek2"><span class="math display">\[dr = \gamma (\bar{r} - r) \space dt + \sigma \space dX \tag{3}\]</span></span></p>
+<p><span id="eq-vasicek2"><span class="math display">\[dr = \gamma (\bar{r} - r) \space dt + \sigma \space dX \tag{4}\]</span></span></p>
 <p>If we let <span class="math inline">\(u = r - \bar{r}\)</span>, then <span class="math inline">\(du = dr\)</span> because we consider <span class="math inline">\(\bar{r}\)</span> as a constant. Hence <span class="math display">\[du = - \gamma u \space dt + \sigma dX\]</span> <span class="math display">\[du + \gamma u dt = \sigma dX\]</span><br>
-<span class="math display">\[e^{\gamma t} du + \gamma u e^{\gamma t} dt = e^{\gamma t} \sigma dX\]</span> <span class="math display">\[d(u e^{\gamma t}) = \sigma e^{\gamma t} dX\]</span> <span class="math display">\[\int_0^t d(u_s e^{\gamma s}) = \sigma \int_0^t e^{\gamma s} dX_s\]</span> <span class="math display">\[u(t) e^{\gamma t} - u(0) = \]</span></p>
+<span class="math display">\[e^{\gamma t} du + \gamma u e^{\gamma t} dt = e^{\gamma t} \sigma dX\]</span> <span class="math display">\[d(u e^{\gamma t}) = \sigma e^{\gamma t} dX\]</span> <span class="math display">\[\int_0^t d(u_s e^{\gamma s}) = \sigma \int_0^t e^{\gamma s} dX_s\]</span> <span class="math display">\[u(t) e^{\gamma t} - u(0) = \sigma \int_0^t e^{\gamma s} dX_s\]</span> <span class="math display">\[u(t) = u(0) e^{-\gamma t} +  \sigma \int_0^t e^{\gamma (s - t)} dX_s\]</span></p>
 </div>
 </div>
 </section>
-<section id="vs-t-when-s-is-a-sde---itô-iv" class="level1">
-<h1><span class="math inline">\(V(S, t)\)</span> when S is a SDE - Itô IV</h1>
+<section id="vt-s-when-s-is-a-sde---itô-iv" class="level1">
+<h1><span class="math inline">\(V(t, S)\)</span> when S is a SDE - Itô IV</h1>
 <p>This time <span class="math inline">\(V\)</span> is a function of both time <span class="math inline">\(t\)</span> and <span class="math inline">\(S\)</span> which satisfies the usual SDE: <span class="math inline">\(dS = \mu S dt + \sigma S dX_t\)</span></p>
 <p>We can also do a Taylor Series expansion on this. And recall <a href="#eq-ds-squared">Equation&nbsp;1</a> when dealing with <span class="math inline">\(dS^2\)</span></p>
 <p><span class="math display">\[V(S + dS, t + dt) \approx V(S, t) + \frac{\partial V}{\partial S} dS + \frac{\partial V}{\partial t} dt + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} dS^2\]</span> <span class="math display">\[V(S + dS, t + dt) - V(S, t) \approx \frac{\partial V}{\partial S} dS + \frac{\partial V}{\partial t} dt + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 dt\]</span></p>
 <p><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} dS\]</span></p>
-<p><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} (\mu S dt + \sigma S dX_t)\]</span> <span id="eq-ito4"><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \sigma S \frac{\partial V}{\partial S} dX_t \tag{4}\]</span></span></p>
-<p>$$$$</p>
+<p><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} (\mu S dt + \sigma S dX_t)\]</span> <span id="eq-ito4"><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 + \mu S \frac{\partial V}{\partial S}  \right) dt + \sigma S \frac{\partial V}{\partial S} dX_t \tag{5}\]</span></span></p>
+</section>
+<section id="vt-s_1-s_2-modeling-correlated-random-walks" class="level1">
+<h1><span class="math inline">\(V(t, S_1, S_2)\)</span> Modeling correlated random walks</h1>
+<p>We have now 2 assets</p>
+<p><span class="math display">\[\begin{equation}
+  \begin{cases}
+    dS_1 = \mu_1 S_1 \space dt + \sigma_1 S_1 \space dX_1 \\
+    dS_2 = \mu_2 S_2 \space dt + \sigma_2 S_2 \space dX_2
+  \end{cases}
+\end{equation} \]</span></p>
+<p>Using a Taylor series expansion <span class="math display">\[V(t+dt, S_1+dS_1, S_2+dS_2) \approx V(t, S1, S2) +
+          \frac{\partial V}{\partial t} dt +
+          \frac{\partial V}{\partial S_1} dS_1 +
+          \frac{\partial V}{\partial S_2} dS_2 +
+          \frac{1}{2} \frac{\partial^2 V}{\partial S_1^2} dS_1^2 +
+           \frac{1}{2} \frac{\partial^2 V}{\partial S_2^2} dS_2^2 +
+           \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2\]</span> <span id="eq-dv1"><span class="math display">\[dV = \frac{\partial V}{\partial t} dt +
+    \frac{\partial V}{\partial S_1} dS_1 + \frac{\partial V}{\partial S_2} dS_2 +
+     \frac{1}{2} \frac{\partial^2 V}{\partial S_1^2} dS_1^2 +
+     \frac{1}{2} \frac{\partial^2 V}{\partial S_2^2} dS_2^2 +
+     \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2 \tag{6}\]</span></span></p>
+<p>Now we can write down some results we’ll plug into that expansion</p>
+<ul>
+<li><span class="math inline">\(dS_i = \mu_i S_i \space dt + \sigma_i S_i \space dX_i\)</span></li>
+<li>Using <a href="#eq-ds-squared">Equation&nbsp;1</a>, we write <span class="math inline">\(dS_i^2 = \sigma_i^2 S_i^2 dt\)</span></li>
+<li>Letting <span class="math inline">\(\mathbb{E}[\phi_1 \phi_2] = \rho\)</span>, we write <span class="math inline">\(\mathbb{E}[dX_1 dX_2] = \mathbb{E}[\phi_1 \sqrt{dt} \phi_2 \sqrt{dt}] = \rho \space dt\)</span></li>
+<li>Recall that all terms less than dt = 0. Hence in the product <span class="math inline">\(dS_1 dS_2 = (\mu_1 S_1 \space dt + \sigma_1 S_1 \space dX_1)(\mu_2 S_2 \space dt + \sigma_2 S_2 \space dX_2)\)</span>, the only term that we are considering is the outter product <span class="math inline">\(\sigma_1 S_1 \space dX_1 \sigma_2 S_2 \space dX_2\)</span>. Finally, re-using above result, <span class="math inline">\(dS_1 dS_2 = \rho \sigma_1 \sigma_2 S_1 S_2 dt\)</span>.</li>
+</ul>
+<p>Re-writing <a href="#eq-dv1">Equation&nbsp;6</a> and factoring the terms in dt and those in <span class="math inline">\(dX_t\)</span>, we get: <span class="math display">\[dV = \left( \frac{\partial V}{\partial t} +
+              \mu_1 S_1\frac{\partial V}{\partial S_1} +
+              \mu_2 S_2 \frac{\partial V}{\partial S_2} +
+              \sigma_1^2 S_1^2 \frac{\partial^2 V}{\partial S_1^2} +
+              \sigma_2^2 S_2^2 \frac{\partial^2 V}{\partial S_2^2} +
+              \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2 \right) dt + \left( \sigma_1 S_1\frac{\partial V}{\partial S_1} dX_1 + \sigma_2 S_2\frac{\partial V}{\partial S_2} dX_2 \right)\]</span></p>
 <p>Itô</p>
 
 

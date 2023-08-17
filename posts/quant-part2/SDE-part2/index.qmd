@@ -72,7 +72,7 @@ Another example with interest rate
 
 This model developed in 1978 by Vasicek is about interest rate. 
 
-The basic SDE takes this form $$dr = (\eta - \gamma r) dt + \sigma dX$$ {#eq-vasicek1}.  In this model, $\eta$, $\gamma$ and $\sigma$ are all constant.  
+The basic SDE takes this form $$dr = (\eta - \gamma r) dt + \sigma dX$$ {#eq-vasicek1}  In this model, $\eta$, $\gamma$ and $\sigma$ are all constant.  
 
 * $\gamma$ is the speed of reversion to the (long term) mean rate.  It's the rate of reversion. 
 * we demote $\bar{r}$ the mean interest rate such that $\bar{r} = \frac{\eta}{\gamma}$
@@ -85,11 +85,12 @@ $$du + \gamma u dt = \sigma dX$$
 $$e^{\gamma t} du + \gamma u e^{\gamma t} dt = e^{\gamma t} \sigma dX$$
 $$d(u e^{\gamma t}) = \sigma e^{\gamma t} dX$$
 $$\int_0^t d(u_s e^{\gamma s}) = \sigma \int_0^t e^{\gamma s} dX_s$$ 
-$$u(t) e^{\gamma t} - u(0) = $$
+$$u(t) e^{\gamma t} - u(0) = \sigma \int_0^t e^{\gamma s} dX_s$$ 
+$$u(t) = u(0) e^{-\gamma t} +  \sigma \int_0^t e^{\gamma (s - t)} dX_s$$
 
 :::
 
-# $V(S, t)$ when S is a SDE - Itô IV 
+# $V(t, S)$ when S is a SDE - Itô IV 
 
 This time $V$ is a function of both time $t$ and $S$ which satisfies the usual SDE: $dS = \mu S dt + \sigma S dX_t$
 
@@ -101,11 +102,47 @@ $$V(S + dS, t + dt) - V(S, t) \approx \frac{\partial V}{\partial S} dS + \frac{\
 $$dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} dS$$
 
 $$dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} (\mu S dt + \sigma S dX_t)$$
-$$dV = \left( \frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \sigma S \frac{\partial V}{\partial S} dX_t$$ {#eq-ito4}
+$$dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 + \mu S \frac{\partial V}{\partial S}  \right) dt + \sigma S \frac{\partial V}{\partial S} dX_t$$ {#eq-ito4}
 
+# $V(t, S_1, S_2)$ Modeling correlated random walks 
 
+We have now 2 assets 
 
-$$$$
+$$\begin{equation} 
+  \begin{cases}
+    dS_1 = \mu_1 S_1 \space dt + \sigma_1 S_1 \space dX_1 \\
+    dS_2 = \mu_2 S_2 \space dt + \sigma_2 S_2 \space dX_2
+  \end{cases}
+\end{equation} $$
+
+Using a Taylor series expansion 
+$$V(t+dt, S_1+dS_1, S_2+dS_2) \approx V(t, S1, S2) + 
+          \frac{\partial V}{\partial t} dt + 
+          \frac{\partial V}{\partial S_1} dS_1 + 
+          \frac{\partial V}{\partial S_2} dS_2 + 
+          \frac{1}{2} \frac{\partial^2 V}{\partial S_1^2} dS_1^2 + 
+           \frac{1}{2} \frac{\partial^2 V}{\partial S_2^2} dS_2^2 + 
+           \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2$$
+$$dV = \frac{\partial V}{\partial t} dt + 
+    \frac{\partial V}{\partial S_1} dS_1 + \frac{\partial V}{\partial S_2} dS_2 + 
+     \frac{1}{2} \frac{\partial^2 V}{\partial S_1^2} dS_1^2 + 
+     \frac{1}{2} \frac{\partial^2 V}{\partial S_2^2} dS_2^2 + 
+     \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2$$ {#eq-dv1}
+
+Now we can write down some results we'll plug into that expansion 
+
+* $dS_i = \mu_i S_i \space dt + \sigma_i S_i \space dX_i$ 
+* Using @eq-ds-squared, we write $dS_i^2 = \sigma_i^2 S_i^2 dt$
+* Letting $\mathbb{E}[\phi_1 \phi_2] = \rho$, we write $\mathbb{E}[dX_1 dX_2] = \mathbb{E}[\phi_1 \sqrt{dt} \phi_2 \sqrt{dt}] = \rho \space dt$ 
+* Recall that all terms less than dt = 0.  Hence in the product $dS_1 dS_2 = (\mu_1 S_1 \space dt + \sigma_1 S_1 \space dX_1)(\mu_2 S_2 \space dt + \sigma_2 S_2 \space dX_2)$, the only term that we are considering is the outter product $\sigma_1 S_1 \space dX_1 \sigma_2 S_2 \space dX_2$.  Finally, re-using above result, $dS_1 dS_2 = \rho \sigma_1 \sigma_2 S_1 S_2 dt$.  
+
+Re-writing @eq-dv1 and factoring the terms in dt and those in $dX_t$, we get: 
+$$dV = \left( \frac{\partial V}{\partial t} + 
+              \mu_1 S_1\frac{\partial V}{\partial S_1} + 
+              \mu_2 S_2 \frac{\partial V}{\partial S_2} + 
+              \sigma_1^2 S_1^2 \frac{\partial^2 V}{\partial S_1^2} + 
+              \sigma_2^2 S_2^2 \frac{\partial^2 V}{\partial S_2^2} + 
+              \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2 \right) dt + \left( \sigma_1 S_1\frac{\partial V}{\partial S_1} dX_1 + \sigma_2 S_2\frac{\partial V}{\partial S_2} dX_2 \right)$$
 
 
 
