@@ -1,5 +1,5 @@
 ---
-title: "Stochastic Differential Equation - Part I"
+title: "01 - Stochastic Differential Equation - Part I"
 author: "Francois de Ryckel"
 date: "2023-07-22"
 description: 'Introducing itô integrals.'

@@ -160,6 +160,10 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#vs-when-s-is-a-sde---itô-iii" id="toc-vs-when-s-is-a-sde---itô-iii" class="nav-link active" data-scroll-target="#vs-when-s-is-a-sde---itô-iii"><span class="math inline">\(V(S)\)</span> when S is a SDE - Itô III</a></li>
   <li><a href="#vt-s-when-s-is-a-sde---itô-iv" id="toc-vt-s-when-s-is-a-sde---itô-iv" class="nav-link" data-scroll-target="#vt-s-when-s-is-a-sde---itô-iv"><span class="math inline">\(V(t, S)\)</span> when S is a SDE - Itô IV</a></li>
+  <li><a href="#transition-probabilty-function-as-ode" id="toc-transition-probabilty-function-as-ode" class="nav-link" data-scroll-target="#transition-probabilty-function-as-ode">Transition probabilty function as ODE</a>
+  <ul class="collapse">
+  <li><a href="#steady-state" id="toc-steady-state" class="nav-link" data-scroll-target="#steady-state">Steady-state</a></li>
+  </ul></li>
   <li><a href="#vt-s_1-s_2-modeling-correlated-random-walks" id="toc-vt-s_1-s_2-modeling-correlated-random-walks" class="nav-link" data-scroll-target="#vt-s_1-s_2-modeling-correlated-random-walks"><span class="math inline">\(V(t, S_1, S_2)\)</span> Modeling correlated random walks</a></li>
   </ul>
 </nav>
@@ -244,6 +248,38 @@ Vasicek model
 <p><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} dS\]</span></p>
 <p><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial V}{\partial S} (\mu S dt + \sigma S dX_t)\]</span> <span id="eq-ito4"><span class="math display">\[dV = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma^2 S^2 + \mu S \frac{\partial V}{\partial S}  \right) dt + \sigma S \frac{\partial V}{\partial S} dX_t \tag{5}\]</span></span></p>
 </section>
+<section id="transition-probabilty-function-as-ode" class="level1">
+<h1>Transition probabilty function as ODE</h1>
+<p>For background on the transition probability function, check <a href="../../../posts/quant-part1/trinomial-model/index.html">this post</a></p>
+<p>Recall from the above linked post that <span class="math inline">\(y, t\)</span> are current state and <span class="math inline">\(y', t'\)</span> are future values.<br>
+The transition probabilty function was expressed as a partial differential equation of the form <span class="math inline">\(\frac{\partial P}{\partial t'} = C^2 \frac{\partial^2 P}{\partial y'^2}\)</span> which was the FKE.</p>
+<p>In the case of our usual Stochastic Differential Equation, which we write under a more general form like <span class="math display">\[dY = A(y, t) \space dt + B(y, t) \space dW_t\]</span> We can find that the transition probability function satisfies the following Partial differential equation: <span id="eq-FKE1"><span class="math display">\[\frac{\partial P}{\partial t'} = \frac{1}{2} \frac{\partial^2 \left(B(y', t')^2 p \right)}{\partial y'^2} - \frac{\partial \left( A(y', t') p \right)}{\partial y'} \tag{6}\]</span></span></p>
+<p>In our financial model, we’ll apply <a href="#eq-FKE1">Equation&nbsp;6</a> with the usual SDE <span class="math inline">\(dS=\mu S \space dt+\sigma S \space dW_t\)</span>. Remember that <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are constant here.</p>
+<p><span class="math display">\[\frac{\partial P}{\partial t'} = \frac{1}{2} \frac{\partial^2 (\sigma^2 S'^2 p)}{\partial S'^2} - \frac{\partial (\mu S' p)}{\partial S'}\]</span></p>
+<p>The solution to this partial differential equation has been developed <a href="../../../posts/quant-part1/trinomial-model/index.html">in the trinomial post</a>:</p>
+<p><span id="eq-FKE1b"><span class="math display">\[p(S, t; S', t') = \frac{1}{\sigma S' \sqrt{2 \pi (t'-t)}} e^{\frac{-log\left( \frac{S}{S'} \right) + (\mu + \frac{1}{2} \sigma^2)}{2 \sigma^2(t'-t)}} \tag{7}\]</span></span></p>
+<section id="steady-state" class="level2">
+<h2 class="anchored" data-anchor-id="steady-state">Steady-state</h2>
+<p>In some case, there are situation (random-walk) with a long term mean reversal - we say that they have a <strong>steady state distribution</strong>. This means that in the long run, the <span class="math inline">\(p(y, t; y', t')\)</span> doesn’t depend of the starting point <span class="math inline">\(y, t\)</span>; the probability becomes time independent. Think of situations such as interest rate and volatility.</p>
+<p>In the case of a steady state situation, <span class="math inline">\(\frac{\partial P}{\partial t'} = 0\)</span> since the process becomes time independent in the long run. And the probability (now written $p_{} (y’) $) satisfies the ordinary differential equation: <span id="eq-FKE2"><span class="math display">\[\frac{1}{2} \frac{d \left(B(y')^2 p_{\infty} \right)}{d y'^2} - \frac{d \left( A(y') p_{\infty} \right)}{d y'} = 0 \tag{8}\]</span></span> It isn’t anymore a partial differential equation as the time component vanishes (aka steady-state, long-term reversal)</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Vasicek revisited
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recall from above the Vasicek model <span class="math display">\[dr = \gamma (\bar{r} - r) \space dt + \sigma \space dW_t\]</span> Using <a href="#eq-FKE2">Equation&nbsp;8</a>, we can write the steady state distribution <span class="math inline">\(p_{\infty} r'\)</span> following ordinary differential equation. <span class="math display">\[\frac{1}{2} \sigma^2 \frac{d^2  p_{\infty} }{d r'^2} - \gamma \frac{d( \left(\bar{r} - r) p_{\infty} \right)}{d r'} = 0\]</span> Integrating both sides, we get: <span class="math display">\[\frac{1}{2} \sigma^2 \frac{d  p_{\infty} }{d r'} + \gamma (r - \bar{r}) p_{\infty} = K\]</span> K being a constant. <span class="math display">\[\frac{1}{2} \sigma^2 \frac{d  p_{\infty} }{d r'} = - \gamma (r - \bar{r}) p_{\infty} + K\]</span> Letting the constant be 0 (need explanation here) Letting the <span class="math inline">\({\infty}\)</span> just for convenience purposes.</p>
+<p><span class="math display">\[\frac{1}{p} dp = \frac{-2 \gamma}{\sigma^2} (r - \bar{r}) \space dr'\]</span> Integrating both sides, <span class="math display">\[\int \frac{1}{p} dp = \frac{-2 \gamma}{\sigma^2} \int (r - \bar{r}) \space dr'\]</span> <span class="math display">\[log(p) = \frac{-2 \gamma}{\sigma^2} \frac{1}{2} (r - \bar{r})^2 + K\]</span> Using a normalizing constant, as we inverse the log <span id="eq-vasicek2"><span class="math display">\[p(r) = A \cdot e^{- \frac{\gamma}{\sigma^2} (r - \bar{r})^2} \tag{9}\]</span></span></p>
+<p>We know that <span class="math inline">\(\int_{\mathbb{R}} p(r) dr= 1\)</span>, hence <span class="math display">\[A \int_{-\infty}^{\infty} e^{- \frac{\gamma}{\sigma^2} (r - \bar{r})^2} dr = 1\]</span> We can integrate this using substitution <span class="math inline">\(u = \frac{\sqrt{\gamma} \space (r - \bar{r})}{\sigma}\)</span> with <span class="math inline">\(\frac{du}{dr} = \frac{\sqrt{\gamma}}{\sigma}\)</span> <span class="math display">\[A \int_{-\infty}^{\infty} e^{-u^2} \frac{\sigma}{\sqrt{\gamma}} du = 1\]</span> <span class="math display">\[A \frac{\sigma}{\sqrt{\gamma}} \int_{-\infty}^{\infty} e^{-u^2} du = 1\]</span> <span class="math display">\[A \frac{\sigma}{\sqrt{\gamma}} \sqrt{\pi}  = 1\]</span> <span class="math display">\[A = \frac{\sqrt{\gamma}}{\sigma \sqrt{\pi}} = \frac{1}{\sigma} \sqrt{\frac{\gamma}{\pi}}\]</span></p>
+<p>Putting it all back together in <a href="#eq-vasicek2">Equation&nbsp;9</a>: <span class="math display">\[p_{\infty}(r) = A \cdot e^{- \frac{\gamma}{\sigma^2} (r - \bar{r})^2} = \frac{1}{\sigma} \sqrt{\frac{\gamma}{\pi}} e^{- \frac{\gamma}{\sigma^2} (r - \bar{r})^2}\]</span> This means: in our case of a steady state stochastic process, the variable <span class="math inline">\(r\)</span> follows a normal distribution with mean <span class="math inline">\(\bar{r}}\)</span> and standard deviation <span class="math inline">\(\frac{\sigma}{\sqrt{2 \cdot \gamma}}\)</span></p>
+</div>
+</div>
+</section>
+</section>
 <section id="vt-s_1-s_2-modeling-correlated-random-walks" class="level1">
 <h1><span class="math inline">\(V(t, S_1, S_2)\)</span> Modeling correlated random walks</h1>
 <p>We have now 2 assets</p>
@@ -263,7 +299,7 @@ Vasicek model
     \frac{\partial V}{\partial S_1} dS_1 + \frac{\partial V}{\partial S_2} dS_2 +
      \frac{1}{2} \frac{\partial^2 V}{\partial S_1^2} dS_1^2 +
      \frac{1}{2} \frac{\partial^2 V}{\partial S_2^2} dS_2^2 +
-     \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2 \tag{6}\]</span></span></p>
+     \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2 \tag{10}\]</span></span></p>
 <p>Now we can write down some results we’ll plug into that expansion</p>
 <ul>
 <li><span class="math inline">\(dS_i = \mu_i S_i \space dt + \sigma_i S_i \space dX_i\)</span></li>
@@ -271,12 +307,14 @@ Vasicek model
 <li>Letting <span class="math inline">\(\mathbb{E}[\phi_1 \phi_2] = \rho\)</span>, we write <span class="math inline">\(\mathbb{E}[dX_1 dX_2] = \mathbb{E}[\phi_1 \sqrt{dt} \phi_2 \sqrt{dt}] = \rho \space dt\)</span></li>
 <li>Recall that all terms less than dt = 0. Hence in the product <span class="math inline">\(dS_1 dS_2 = (\mu_1 S_1 \space dt + \sigma_1 S_1 \space dX_1)(\mu_2 S_2 \space dt + \sigma_2 S_2 \space dX_2)\)</span>, the only term that we are considering is the outter product <span class="math inline">\(\sigma_1 S_1 \space dX_1 \sigma_2 S_2 \space dX_2\)</span>. Finally, re-using above result, <span class="math inline">\(dS_1 dS_2 = \rho \sigma_1 \sigma_2 S_1 S_2 dt\)</span>.</li>
 </ul>
-<p>Re-writing <a href="#eq-dv1">Equation&nbsp;6</a> and factoring the terms in dt and those in <span class="math inline">\(dX_t\)</span>, we get: <span class="math display">\[dV = \left( \frac{\partial V}{\partial t} +
+<p>Re-writing <a href="#eq-dv1">Equation&nbsp;10</a> by substituting <span class="math inline">\(dS_1\)</span> and <span class="math inline">\(dS_2\)</span>, and factoring the terms in dt and those in <span class="math inline">\(dX_t\)</span>, we get: <span class="math display">\[dV = \left( \frac{\partial V}{\partial t} +
               \mu_1 S_1\frac{\partial V}{\partial S_1} +
               \mu_2 S_2 \frac{\partial V}{\partial S_2} +
               \sigma_1^2 S_1^2 \frac{\partial^2 V}{\partial S_1^2} +
               \sigma_2^2 S_2^2 \frac{\partial^2 V}{\partial S_2^2} +
-              \frac{\partial^2 V}{\partial S_1 \partial S_2} dS_1 dS_2 \right) dt + \left( \sigma_1 S_1\frac{\partial V}{\partial S_1} dX_1 + \sigma_2 S_2\frac{\partial V}{\partial S_2} dX_2 \right)\]</span></p>
+              \rho \sigma_1 \sigma_2 S_1 S_2 \frac{\partial^2 V}{\partial S_1 \partial S_2}  \right) dt +
+              \left( \sigma_1 S_1\frac{\partial V}{\partial S_1} dX_1 +
+              \sigma_2 S_2\frac{\partial V}{\partial S_2} dX_2 \right)\]</span></p>
 <p>Itô</p>
 
 
