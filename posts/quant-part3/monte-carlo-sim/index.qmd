@@ -1,0 +1,93 @@
+---
+title: "Modeling Option prices using Monte-Carlo simulations"
+author: "Francois de Ryckel"
+date: "2023-08-27"
+description: 'Using the BSE and Monte-Carlo Methods to value option prices'
+categories: [quant-finance, Black-Schole]
+editor: source
+date-modified: "2023-07-23"
+---
+
+Recall Monte-Carlo method exploits the relationship between options prices and expectation under a risk-neutral measure. It is the present value of the expectation (under a risk-neutral measure) of the payoff.  In this sense $$V(S, t) = \text{PV} \space \space \mathbb{E}^\mathbb{Q} (Payoff)$$
+
+We start with the usual SDE (except we use $r$ instead of $\mu$ as we are under the risk-neutral framework). 
+$$dS_t = r S_t dt + \sigma S_t dW_t$$
+Using the Euler discretization 
+$$S_{t + \delta t} = S_t \cdot (1 + r \delta t + \sigma \sqrt{\delta t} \phi)$$
+
+
+## Using Python 
+
+```{python}
+import pandas as pd
+import numpy as np
+
+def simulate_path(s0, mu, sigma, Time, num_timestep, n_sim): 
+  
+  np.random.seed(2023)
+  
+  S0 = s0
+  r = mu
+  T = Time
+  t = num_timestep 
+  n = n_sim 
+  
+  #defining dt
+  dt = T/t
+  
+  S = np.zeros((t, n))
+  S[0] = S0
+  
+  for i in range(0, t-1): 
+    w = np.random.standard_normal(n)
+    S[i+1] = S[i] * (1 + r * dt + sigma * np.sqrt(dt) * w)
+  
+  return S
+  
+```
+
+
+```{python}
+simulate_path(s0=100, mu=0.045, sigma=0.17, Time=0.25, num_timestep=63, n_sim=100)
+```
+
+Let's put that into a dataframe for further plotting and manipulation
+
+Note each column of the data frame is a simulation.  The number of rows is the number of time steps. 
+
+```{python}
+simulated_paths = pd.DataFrame(simulate_path(s0=100, mu=0.045, sigma=0.17, Time=0.25, num_timestep=63, n_sim=100))
+```
+
+```{python}
+simulated_paths.iloc[-1].hist()
+```
+
+
+```{python}
+
+```
+
+
+```{python}
+
+```
+
+## Retrieving option data using Yahoo finance 
+
+```{python}
+
+```
+
+```{python}
+#| eval: false
+
+  
+```
+
+```{python}
+#| eval: false
+
+
+```
+
