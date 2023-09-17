@@ -24,7 +24,7 @@ import numpy as np
 
 def simulate_path(s0, mu, sigma, Time, num_timestep, n_sim): 
   
-  np.random.seed(2023)
+  np.random.seed(20230902)
   
   S0 = s0
   r = mu
@@ -46,12 +46,13 @@ def simulate_path(s0, mu, sigma, Time, num_timestep, n_sim):
   
 ```
 
+Let's create a simulation for a quarter of a year (3 months or 63 trading days). 
 
 ```{python}
 simulate_path(s0=100, mu=0.045, sigma=0.17, Time=0.25, num_timestep=63, n_sim=100)
 ```
 
-Let's put that into a dataframe for further plotting and manipulation
+Let's put that into a data frame for further plotting and manipulation
 
 Note each column of the data frame is a simulation.  The number of rows is the number of time steps. 
 
@@ -60,34 +61,149 @@ simulated_paths = pd.DataFrame(simulate_path(s0=100, mu=0.045, sigma=0.17, Time=
 ```
 
 ```{python}
-simulated_paths.iloc[-1].hist()
-```
 
-
-```{python}
+simulated_paths.iloc[-1].hist(bins = 100)
 
 ```
 
 
 ```{python}
-
+import matplotlib.pyplot as plt
+plt.plot(simulated_paths)  #plot the first 100 paths
+plt.xlabel('time steps')
+plt.xlim(0, 64)
+plt.ylim(75, 135)
+plt.ylabel('Pries')
+plt.title('Monte-Carlo Simulation of an Asset Price')
+plt.show()
 ```
 
-## Retrieving option data using Yahoo finance 
+Under the risk-neutral measure, the value of the option is the discounted value of the expected payoff. 
+$$C = e^{rT} \cdot \mathbb{E}[max(S_T - K, 0)]$$
+
+* $K$ is the strike price
+
+For this simulation, we let $K=100$ as well! 
 
 ```{python}
+K = 100
+r = 0.045
+T = 0.25 
 
+S = simulate_path(s0=100, mu=0.045, sigma=0.17, Time=0.25, num_timestep=63, n_sim=10000)
+
+## calculate payoff for call options 
+Co = np.exp(-r*T) * np.mean(np.maximum(0, S[-1]-K))
+## calculate payoff for put options 
+Po = np.exp(-r*T) * np.mean(np.maximum(0, K - S[-1]))
+
+print(f"European Call Option value is {Co: 0.4f}")
+print(f"European Put Option value is {Po: 0.4f}")
 ```
+
+
+
+```{python}
+import matplotlib.pyplot as plt
+
+sT= np.linspace(50,150,100)
+
+figure, axes = plt.subplots(1, 2, figsize=(20, 6), sharey = True)
+title = ['Call payoff', 'Put payoff']
+payoff = [np.maximum(0, sT-K), np.maximum(0, K-sT)] 
+color = ['green', 'red'] 
+label = ['Call', 'Put']
+
+for i in range(2): 
+  axes[i].plot(sT, payoff[i], color = color[i], label = label[i])
+  axes[i].set_title(title[i])
+  axes[i].legend()
+
+figure.suptitle('Option Payoff at Maturity')
+
+plt.show()
+```
+
+# Asian Options
+
+We are taking the averages of a given asset prices. 
 
 ```{python}
 #| eval: false
+A = np.mean(S, axis = 0)    # axis = 0, mean is over the columns ==> results is 1000 means. We had a 1000 simulations of 63 steps. 
+B = np.mean(S, axis = 1)    # axis = 1, mean is row by row  ==> results is 63 means
 
-  
+K = 100
+r = 0.045
+T = 0.25 
+S = simulate_path(s0=100, mu=0.045, sigma=0.17, Time=0.25, num_timestep=63, n_sim=10000)
+
+# do not use S[-1] anymore (the last prices), but the average instead (here it is A)
+Co = np.exp(-r * T) * np.mean(np.maximum(0, A - K))
+Po = np.exp(-r * T) * np.mean(np.maximum(0, K - A))
+
+print(f"Asian Call Option value is: {Co: 0.4f}")
+print(f'Asian Put Option Value is: {Po:0.4f}')
+```
+
+# Barrier options.  
+Barrier options are path dependent.  They'll need another argument 
+
+::: {.callout-note}
+In a paper titled A Continuity Correction for Discrete Barrier Option, Mark Broadie, Paul Glasser- man and Steven Kou have shown us that the discrete barrier options can be priced using continuous barrier formulas by applying a simple continuity correction to the barrier. The correction shifts the barrier away from the underlying by a factor of
+$$exp(\beta \sigma \sqrt{\delta_t})$$
+where $\beta \approx 0.5826$
+:::
+
+```{python}
+K = 100
+r = 0.045
+sigma = 0.17
+T = 0.25 
+num_timestep = 63
+num_sim = 10000
+S = simulate_path(s0=100, mu=0.045, sigma=sigma, Time=T, num_timestep=num_timestep, n_sim=num_sim)
+
+# Let's put the barrier at 117 !  we call it B
+B = 117
+delta_t = T / num_timestep
+rebate = 10
+value = 0
+beta = 0.5826
+
+# Barrier shift - continuity correction for discrete monitoring
+B_shift = B * np.exp(beta * sigma * np.sqrt(delta_t))
+print(B_shift)
+
+# finding discounted value of expected payoff
+for i in range(num_sim): 
+  # if final price of one simulation is less that the Barrier shift
+  if S[:,i].max() < B_shift: 
+    value += np.maximum(0, S[-1, i] - K)
+  else: 
+    value += rebate
+    
+Co = np.exp(-r * T) * (value/num_sim)
+print(f'The up-and-out Barrier Option value is {Co:04f}')
+
+
+
+
+
+
 ```
 
 ```{python}
-#| eval: false
-
-
+figure, axes = plt.subplots(1,3, figsize=(20,6), constrained_layout=True)
+title = ['Visualising the Barrier Condition', 'Spot Touched Barrier', 'Spot Below Barrier']
+axes[0].plot(S[:,:200])
+for i in range(200):
+    axes[1].plot(S[:,i]) if S[:,i].max() > B_shift else axes[2].plot(S[:,i])
+for i in range(3):
+    axes[i].set_title(title[i])
+    axes[i].hlines(B_shift, 0, 65, colors='k', linestyles='dashed')
+figure.supxlabel('time steps')
+figure.supylabel('index levels')
+plt.show()
 ```
 
