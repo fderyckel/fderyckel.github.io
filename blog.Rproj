@@ -12,6 +12,6 @@ Encoding: UTF-8
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
-PythonType: virtualenv
-PythonVersion: 3.10.6
-PythonPath: ~/.virtualenvs/my-env/bin/python
+PythonType: conda
+PythonVersion: 3.11.5
+PythonPath: ~/anaconda3/bin/python3.11
