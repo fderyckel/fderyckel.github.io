@@ -1,0 +1,8 @@
+{
+  "listing": "/time-series.html",
+  "items": [
+    "/posts/time-series/ts-decomposition/index.html",
+    "/posts/time-series/statistical-moments/index.html",
+    "/posts/time-series/autocorrelation/index.html"
+  ]
+}
