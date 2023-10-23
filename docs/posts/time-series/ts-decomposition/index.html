@@ -6,10 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Francois de Ryckel">
-<meta name="dcterms.date" content="2023-07-03">
+<meta name="author" content="François de Ryckel">
+<meta name="dcterms.date" content="2022-10-21">
+<meta name="description" content="Introducing time-series decomposition. We first show how to compose time-series using linear trend, seasonality and then white nosie.">
 
-<title>QUANT dira-t-on? - 03 - Stochastic Calculus - Part III</title>
+<title>QUANT dira-t-on? - Time-series decomposition</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -61,8 +96,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../../styles.css">
 </head>
@@ -109,9 +142,16 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">03 - Stochastic Calculus - Part III</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">time-series</div>
+      <h1 class="title">Time-series decomposition</h1>
+                  <div>
+        <div class="description">
+          Introducing time-series decomposition. We first show how to compose time-series using linear trend, seasonality and then white nosie.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">statistics</div>
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">analysis</div>
               </div>
                   </div>
   </div>
@@ -122,21 +162,21 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Francois de Ryckel </p>
+               <p>François de Ryckel </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 3, 2023</p>
+        <p class="date">October 21, 2022</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 3, 2023</p>
+        <p class="date-modified">October 22, 2023</p>
       </div>
     </div>
       
@@ -150,11 +190,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#recall" id="toc-recall" class="nav-link active" data-scroll-target="#recall">Recall</a></li>
-  <li><a href="#itô-integrals-as-non-anticipatory" id="toc-itô-integrals-as-non-anticipatory" class="nav-link" data-scroll-target="#itô-integrals-as-non-anticipatory">Itô Integrals as non-anticipatory</a></li>
-  <li><a href="#product-rule-within-stochastic-calculus" id="toc-product-rule-within-stochastic-calculus" class="nav-link" data-scroll-target="#product-rule-within-stochastic-calculus">Product rule within Stochastic Calculus</a></li>
-  <li><a href="#integral-by-parts" id="toc-integral-by-parts" class="nav-link" data-scroll-target="#integral-by-parts">Integral by parts</a></li>
-  <li><a href="#quotient-rule-within-stochastic-calculus" id="toc-quotient-rule-within-stochastic-calculus" class="nav-link" data-scroll-target="#quotient-rule-within-stochastic-calculus">Quotient Rule within Stochastic Calculus</a></li>
+  <li><a href="#time-series-composition" id="toc-time-series-composition" class="nav-link active" data-scroll-target="#time-series-composition">Time-series composition</a>
+  <ul class="collapse">
+  <li><a href="#compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component" id="toc-compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component" class="nav-link" data-scroll-target="#compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component">Compose deterministic time-series (with trend and seasonality) with stochastic component</a></li>
+  <li><a href="#decomposing-a-time-series." id="toc-decomposing-a-time-series." class="nav-link" data-scroll-target="#decomposing-a-time-series.">Decomposing a time-series.</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -168,83 +208,43 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="recall" class="level1">
-<h1>Recall</h1>
-<table class="table">
-<colgroup>
-<col style="width: 11%">
-<col style="width: 88%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>Itô Lemma</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(F(X_t)\)</span></td>
-<td><span class="math inline">\(dF = \frac{1}{2} \frac{d^2F}{dX^2} \space dt + \frac{dF}{dX} \space dx\)</span></td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(F(t, X_t)\)</span></td>
-<td><span class="math inline">\(dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2} \frac{\partial^2 F}{\partial X^2} \right) dt + \frac{\partial F}{\partial X} dX\)</span></td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(V(S)\)</span> when <span class="math inline">\(dS = \mu S dt + \sigma S dX\)</span></td>
-<td><span class="math inline">\(dV = \left( \mu S \frac{dV}{dS} + \frac{1}{2} \sigma^2 S^2 \frac{d^2V}{dS^2} \right)dt + \left( \sigma S \frac{dV}{dS}\right) dX\)</span></td>
-</tr>
-</tbody>
-</table>
+<section id="time-series-composition" class="level1">
+<h1>Time-series composition</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component" class="level2">
+<h2 class="anchored" data-anchor-id="compose-deterministic-time-series-with-trend-and-seasonality-with-stochastic-component">Compose deterministic time-series (with trend and seasonality) with stochastic component</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">252</span>, <span class="at">phi =</span> <span class="fu">rnorm</span>(<span class="dv">252</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fl">0.07</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">+</span> phi)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">'Compose a linear trend with a stochastic component'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/time_series_composition-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can also create a seasonality with a stochastic component</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">252</span>, <span class="at">phi =</span> <span class="fu">rnorm</span>(<span class="dv">252</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fl">1.7</span> <span class="sc">*</span> <span class="fu">sin</span>((<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> x <span class="sc">/</span> <span class="dv">50</span>) <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> pi ) <span class="sc">+</span> phi)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">'Compose a seasonal trend with a stochastic component'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
-<section id="itô-integrals-as-non-anticipatory" class="level1">
-<h1>Itô Integrals as non-anticipatory</h1>
-<p>Let’s consider the stochastic integral of the form <span class="math display">\[\int_0^T f(t, X(t)) dX(t)\]</span> where <span class="math inline">\(X_t\)</span> is a Brownian motion. We’ll shorten this form to <span class="math inline">\(\int_0^T f(t, X) dX\)</span></p>
-<p>We define this integral as <span class="math display">\[\int_0^T f(t, X) dX = \lim_{N \to \infty} \sum_{i=0}^{N-1} f(t_i, X_i) \cdot \underbrace{ (X_{i+1} - X_i) }_{dX}\]</span></p>
-<p>It’s important to define it this way in order for the itô integral to stay <strong>non-anticipatory</strong>. We know everything up to time <span class="math inline">\(t_i\)</span> and so the only uncertainties left is <span class="math inline">\(X_{i+1} - X_i\)</span> which is <span class="math inline">\(dX\)</span></p>
-</section>
-<section id="product-rule-within-stochastic-calculus" class="level1">
-<h1>Product rule within Stochastic Calculus</h1>
-<p>When dealing with Stochastic Differential Equations, we can adapt some of the rules of classical calculus such as the product rule: <span class="math inline">\(d(xy) = xdy + ydx\)</span></p>
-<p>Let’s say we have 2 stochastic processes: <span class="math display">\[d(X(t)) = \mu_1 X(t) dt + \sigma_1 X(t)  dW_t\]</span> <span class="math display">\[d(Y(t)) = \mu_2 Y(t) dt + \sigma_2 Y(t) dW_t\]</span></p>
-<p>And we define a function <span class="math inline">\(F\)</span> which is a product of these 2 stochastic processes such that <span class="math inline">\(F = F(X,Y) = XY\)</span>.</p>
-<p>Using a Taylor Series Expansion, we can write: <span class="math display">\[F(X + dX, Y + dY) \approx F(X,Y) + \frac{\partial F}{\partial X} dX + \frac{\partial F}{\partial Y} dY + \frac{1}{2} \frac{\partial^2F}{\partial X^2} dX^2 + \frac{1}{2} \frac{\partial^2F}{\partial Y^2} dY^2 + \frac{\partial^2F}{\partial X \partial Y} dXdY + \dots\]</span></p>
-<p>Hence, <span id="eq-product-TS-expan"><span class="math display">\[dF = \frac{\partial F}{\partial X} dX + \frac{\partial F}{\partial Y} dY + \frac{1}{2} \frac{\partial^2F}{\partial X^2} dX^2 + \frac{1}{2} \frac{\partial^2F}{\partial Y^2} dY^2 + \frac{\partial^2F}{\partial X \partial Y} dXdY + \dots \tag{1}\]</span></span></p>
-<p>Now, we can calculate all these partial derivatives and plugged them back in the above equation. <span class="math inline">\(\frac{\partial F}{\partial X} = Y\)</span> and <span class="math inline">\(\frac{\partial^2 F}{\partial X^2} = 0\)</span>.</p>
-<p>Similarly <span class="math inline">\(\frac{\partial F}{\partial Y} = X\)</span> and <span class="math inline">\(\frac{\partial^2 F}{\partial Y^2} = 0\)</span>.</p>
-<p>Finally: <span class="math inline">\(\frac{\partial^2F}{\partial X \partial Y} = 1\)</span></p>
-<p>Plugging it all back in <a href="#eq-product-TS-expan">Equation&nbsp;1</a>: <span id="eq-product-rule"><span class="math display">\[dF = Y dX + X dY + dXdY \tag{2}\]</span></span></p>
-</section>
-<section id="integral-by-parts" class="level1">
-<h1>Integral by parts</h1>
-<p>In classical calculus, we re-use the product rule to come up with the integration by part: <span class="math inline">\(d(xy) = xdy + ydx\)</span>. That is <span class="math inline">\(xdy = d(xy) - ydx\)</span> which we can integrate for and get: <span class="math inline">\(\int xdy = \int d(xy) - \int y dx\)</span> which is the same as <span class="math inline">\(\int x dy = xy - \int y dx\)</span>.</p>
-<p>Let’s bring this to stochastic calculus. Again <span class="math inline">\(F\)</span> is a function of the product of 2 stochastic processes: <span class="math inline">\(F = F(X,Y) = XY\)</span> Using the same logic and our previous result <a href="#eq-product-rule">Equation&nbsp;2</a>, we write <span class="math display">\[d(XY) = Y dX + X dY + dXdY\]</span> <span class="math display">\[X dY = d(XY) - Y dX - dXdY \]</span> <span class="math display">\[\int_0^t X_s dY_s = \int_0^t d(X_sY_s) - \int_0^t Y_s dX_s - \int_0^t dX_sdY_s\]</span> <span class="math display">\[\int_0^t X_s dY_s = X_tY_t - X_0Y_0 - \int_0^t Y_s dX_s - \int_o^t dX_sdY_s\]</span></p>
-</section>
-<section id="quotient-rule-within-stochastic-calculus" class="level1">
-<h1>Quotient Rule within Stochastic Calculus</h1>
-<p>We will re-use the Taylor Series Expansion (<a href="#eq-product-TS-expan">Equation&nbsp;1</a>) except this time the function <span class="math inline">\(F\)</span> is a function of the quotient of 2 stochastic processes: <span class="math inline">\(F = F(X, Y) = \frac{X}{Y}\)</span>. Calculating all the partial derivatives: <span class="math inline">\(\frac{\partial F}{\partial X} = \frac{1}{Y}\)</span> and <span class="math inline">\(\frac{\partial^2 F}{\partial X^2} = 0\)</span>.</p>
-<p>Similarly <span class="math inline">\(\frac{\partial F}{\partial Y} = \frac{-X}{Y^2}\)</span> and <span class="math inline">\(\frac{\partial^2 F}{\partial Y^2} = \frac{2X}{Y^3}\)</span>.</p>
-<p>Finally: <span class="math inline">\(\frac{\partial^2F}{\partial X \partial Y} = \frac{-1}{Y^2}\)</span></p>
-<p>Putting it all back together: <span class="math display">\[dF = \frac{1}{Y} dX + \frac{-X}{Y^2} dY + \frac{1}{2} \frac{2X}{Y^3} dY^2+ \frac{-1}{Y^2} dXdY\]</span> Which we can re-write as: <span id="eq-quotient-rule"><span class="math display">\[dF = d \left( \frac{X}{Y} \right) = \frac{X}{Y} \cdot \left( \frac{1}{X} dX - \frac{1}{Y} dY - \frac{1}{XY} dXdY + \frac{1}{Y^2} dY^2\right) \tag{3}\]</span></span></p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-In the quant world.
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>we can word these results in the following way - taken from <a href="https://fermatslastspreadsheet.com/2011/12/28/itos-product-and-quotient-rules-as-described-by-a-trader/">here</a>:</p>
-<ul>
-<li><strong>Itô product rule:</strong> we buy correlation when we have a product</li>
-<li><strong>Itô quotient rule:</strong> we sell correlation when we have a ratio, and we are long vol of the denominator.</li>
-</ul>
-</div>
-</div>
+<section id="decomposing-a-time-series." class="level2">
+<h2 class="anchored" data-anchor-id="decomposing-a-time-series.">Decomposing a time-series.</h2>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

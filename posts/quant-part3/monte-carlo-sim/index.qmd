@@ -207,3 +207,41 @@ figure.supylabel('index levels')
 plt.show()
 ```
 
+
+
+
+
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def create_price_path(S0, rfr, sigma, time_horizon, num_steps, num_sim): 
+  
+  np.random.seed(18092023)
+
+  dt = time_horizon / num_steps
+
+  S = np.zeros((num_steps, num_sim))
+  S[0] = S0
+
+  for i in range(0,num_steps-1): 
+    phi = np.random.standard_normal(num_sim)
+    S[i+1] = S[i] * (1 + rfr * dt + phi * sigma * np.sqrt(dt))
+  
+  return S
+
+S = create_price_path(100, 0.045, 0.17, 1, 252, 10000)
+
+# for a european option.  
+
+K = 100
+r = 0.05
+T = 0.55
+
+C0 = np.exp(-r*T) * np.mean(np.maximum(0, S[-1]-K))
+
+C0
+```
+

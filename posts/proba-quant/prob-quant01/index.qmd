@@ -1,0 +1,25 @@
+---
+title: "Probability For Quant 01"
+author: "Francois de Ryckel"
+date: "2022-09-30"
+categories: [Probability]
+editor: source
+date-modified: "2022-09-30"
+---
+
+I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar [page on Algebra](../algebra-quant/index.qmd).
+
+# Poisson distribution
+
+Let's $X$ be a Discrete Random Variable (DRV) such that $X \sim Po(\lambda)$. Then $P(X = x) = \frac{e^{-\lambda} \lambda^x}{x!}$.  Let's calculate the expectation of X.  
+
+$$E[X]=\sum_{x=1}^{\infty} x P(X=x)=\sum_{x=1}^{\infty} x \frac{e^{-\lambda} \lambda^x}{x!} = e^{-\lambda} \sum_{x=1}^{\infty} \frac{\lambda^x}{(x-1)!}$$
+
+$$E[X]= e^{-\lambda} \lambda \sum_{x=1}^{\infty} \frac{\lambda^{x-1}}{(x-1)!} = e^{-\lambda} \lambda \sum_{x=0}^{\infty} \frac{\lambda^{x}}{(x)!}= e^{-\lambda} \lambda e^{\lambda} = \lambda$$
+
+The second to last step is just the [McLaurin expansion](../algebra-quant/index.qmd#$e^x$ as an infinite serie) of $e^x$.  
+
+
+
+
+

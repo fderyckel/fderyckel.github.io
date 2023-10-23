@@ -2,7 +2,7 @@
 title: "AutoCorrelation, Stationarity and Random-Walk - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
-description: 'A dive into the concepts of autocorrelation and stationarity of time-series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise. Finally, we check how to compose and decompose time-series into their various components (trend, seasonanilty)'
+description: 'A dive into the concepts of autocorrelation and stationarity of time-series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise.'
 categories: [time-series]
 date-modified: '2022-09-09'
 ---
@@ -266,34 +266,6 @@ plt.show()
 
 pd.Series.idxmax(log_ret)
 pd.Series.idxmin(log_ret)
-```
-
-# Time-series composition 
-
-## Compose deterministic time-series (with trend and seasonality) with stochastic component 
-
-```{r}
-#| label: time_series_composition
-
-df <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> 
-  mutate(y = 0.07 * x + 0.03 + phi)
-
-ggplot(df, aes(x, y)) + 
-  geom_line() + 
-  ggtitle(label = 'Compose a linear trend with a stochastic component')
-
-  
-```
-
-We can also create a seasonality with a stochastic component 
-
-```{r}
-df <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> 
-  mutate(y = 1.7 * sin((2 * pi * x / 50) + 0.3 * pi ) + phi)
-         
-ggplot(df, aes(x, y)) + 
-  geom_line() + 
-  ggtitle(label = 'Compose a seasonal trend with a stochastic component')
 ```
 
 

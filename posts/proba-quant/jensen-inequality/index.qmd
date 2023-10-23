@@ -1,0 +1,44 @@
+---
+title: "Jensen Inequality"
+author: "Francois de Ryckel"
+date: "2023-10-21"
+categories: [Probability]
+editor: source
+date-modified: "2023-10-22"
+---
+
+Jensen's inequality has popped up several times through my quantitative finance journey. As I never explicitly dealt with it, I thought I'll make a post about it.  
+
+The mean of a linear transformation of random variables are scaled accordingly; however that doesn't hold anymore for non-linear transformation.  
+
+**mean(f(x)) == f(mean(x))** as long as *f* is linear. 
+
+Let's use an easy & simple example.  A fair dice is thrown.  The payoff is a linear function.  Let's say, the payoff is $2 * \text{(face of the die)} + 3$.  
+
+In this case $X$ is a discrete random variable that can take the values ${1, 2, 3, 4, 5, 6}$.  
+
+```{python}
+import numpy as np
+
+# function to define the payoff
+def payoff(x): 
+  return 2*x+3
+
+# let's define the outcome of our discrete random variable. 
+outcomes = [1, 2, 3, 4, 5, 6]
+
+# let's calculate the payoff for each outcome
+payoffs = [payoff(outcome) for outcome in outcomes]
+```
+
+With linear transformations and in this example, we have **the mean of the payoff that is equal to the payoff of the mean**. 
+
+```{python}
+print(f"The mean of the outcomes [1, 2, 3, 4, 5, 6] is {np.mean(outcomes)}")
+print(f"The payoff of the mean is {payoff(np.mean(outcomes))}")
+print(f"The payoffs are {payoffs} and the mean of the payoffs is {np.mean(payoffs)}")
+```
+
+Now this equality doesn't hold anymore when it comes to non-linear function.  
+
+The Jensen's inequality is in regards to **convex** functions (aka its second derivative is positive on an interval)
