@@ -1,0 +1,95 @@
+---
+title: "01 - Stochastic Differential Equation - Part I"
+author: "Francois de Ryckel"
+date: "2023-07-22"
+description: 'Introducing itô integrals.'
+categories: [quant-finance, stochastic-integrals]
+editor: source
+date-modified: "2023-07-23"
+---
+
+
+# Function of a stochastic process $X_t$ - Itô I
+
+Let $F$ be a function of a stochastic random variable $X_t$.  So $F = F(X_t)$. 
+
+Using a Taylor expansion: 
+$$F(X + dX) \approx F(X) + \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2$$ 
+Using $F(X+dX) - F(X) = dF$: 
+$$dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2$$
+
+Now, recall $dX$ is a random variable with mean 0 and standard deviation $\sqrt{t}$.  Also, for small values of $t$, we have $\sqrt{dt} \gt dt$, hence it is of higher order than dt.  Hence, we re-write the previous equation as 
+
+$$dF = \frac{dF}{dX} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dt$$ 
+Usually, we write the deterministic part of the equation first.  
+$$dF = \frac{1}{2} \frac{d^2F}{dX^2} \space dt + \frac{dF}{dX} \space dX$$ {#eq-ito1}
+
+All our **Stochastic Differential Equations** will have in them these 2 different time steps: $dt$ and $\sqrt{dt}$. 
+$$dF = \underbrace {\dots \space dt}_{deterministic-drift} + \underbrace{\dots \space dX}_{random-diffusion}$$
+
+The integral form of this Stochastic Differential Equation is 
+$$\int_0^t \frac{dF}{dX_\tau} \space dX_\tau = \int_0^t dF - \frac{1}{2} \int_0^t \frac{d^2F}{dX_\tau^2} \space d\tau$$
+
+::: {.callout-note}
+
+# Example 1 
+
+$F(X_t) = X^2$, where $X_t$ is stochastic random variable. 
+$$\frac{dF}{dX} = 2X$$
+$$\frac{d^2F}{dX^2} = 2$$
+
+Hence, using the previous @eq-ito1 (aka itô I): 
+$$dF = \frac{1}{2} \cdot 2 \space dt + 2X \space dX$$
+$$dF = dt + 2X \space dX$$
+**Using integral form** 
+
+We could integrate both side of the previous equation. 
+$$\int_0^t dF = \int_0^t d\tau + \int_0^t 2X(\tau) d{\tau}$$ 
+$$F(t) - F(0) = t - 0 + 2 \int_0^t X(\tau) d{\tau}$$ And assuming F(0) = 0: 
+$$F(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}$$
+$$X^2(t) = t + 2 \int_0^t X_{\tau} \space d{\tau}$$
+:::
+
+::: {.callout-note}
+
+# example 2 
+
+$F(W_t) = sin \space W_t + cos \space W_t$, where $X_t$ is stochastic random variable. 
+$$\frac{dF}{dW_t} = cos \space W_t - sin \space W_t$$
+$$\frac{d^2F}{dW_t^2} = -(sin \space W_t + cos \space W_t)$$
+Hence, we can now write 
+
+$$dF = - \frac{1}{2}(sin \space W_t + cos \space W_t) \space dt + (cos \space W_t - sin \space W_t) \space dW_t$$
+:::
+
+# Function of a stochastic process $(t, X(t))$ - Itô II
+
+Let $F$ be a function of both time $t$ and a stochastic random variable $X_t$.  So $F = F(t, X_t)$. 
+
+Using a Taylor expansion: 
+$$F(t + dt, X + dX) \approx F(t, X) + \frac{\partial F}{\partial t} \space dt + \frac{\partial F}{\partial X} \space dX + \frac{1}{2} \frac{d^2F}{dX^2} dX^2$$ 
+Using $F(t + dt, X+dX) - F(t, X) = dF$ and factoring the $dt$ and recall $dX^2=dt$: 
+
+$$dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2} \frac{\partial ^2F}{\partial X^2} \right) dt + \frac{\partial F}{\partial X} dX$$ {#eq-ito2sde}
+
+We can transform this Stochastic Differential Equation (SDE) into an itô integral. 
+
+$$\int_0^t  \frac{\partial F}{\partial X_\tau} dX_\tau = \int_0^t dF - \int_0^t \left( \frac{\partial F}{\partial \tau} + \frac{1}{2} \frac{\partial ^2F}{\partial X_\tau^2} \right) d\tau$$ 
+$$\int_0^t  \frac{\partial F}{\partial X_\tau} dX_\tau = F(t, X_t) - F(0, X_0) - \int_0^t \left( \frac{\partial F}{\partial \tau} + \frac{1}{2} \frac{\partial ^2F}{\partial X_\tau^2} \right) d\tau$$ {#eq-ito2-int}
+
+::: {.callout-note} 
+
+# Example 3
+
+Express $\int_0^t \left( \tau + W_\tau \right) dW_\tau$
+
+Using @eq-ito2-int, we establish that what is being integrated is $\frac{\partial F}{\partial W_\tau}$, hence $$\frac{\partial F}{\partial W_\tau} = \tau + W_\tau$$ {#eq-ex31}  
+This allows us to find $F$ by integrating both side in regards to $W_\tau$.  $$F = \tau W_\tau + \frac{1}{2} W_\tau^2$$ {#eq-ex32}
+and derving @eq-ex32 for $\tau$, $$\frac{\partial F}{\partial \tau} = W_\tau$$ {#eq-ex33}
+and deriving the first derivative @eq-ex31 one more time for $dW_\tau$, we get $$\frac{\partial ^2F}{\partial W_\tau^2} = 1$$
+Hence, we can re-write 
+$$\int_0^t \left( \tau + W_\tau \right) dW_\tau = \left( \tau W_\tau + \frac{1}{2} W_\tau^2 \right) - \int_0^t W_\tau + \frac{1}{2} \space d_\tau$$
+
+:::
+
+
