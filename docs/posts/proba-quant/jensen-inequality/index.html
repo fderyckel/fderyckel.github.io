@@ -188,6 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#convex-transformations-of-random-variables" id="toc-convex-transformations-of-random-variables" class="nav-link" data-scroll-target="#convex-transformations-of-random-variables">Convex transformations of Random Variables</a></li>
   </ul></li>
+  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a></li>
   </ul>
 </nav>
 </nav>
@@ -256,9 +257,30 @@ The payoffs are [5, 7, 9, 11, 13, 15] and the mean of the payoffs is 10.0</code>
 The transformed of the mean is 12.25</code></pre>
 </div>
 </div>
-
-
 </section>
+</section>
+<section id="simulation" class="level1">
+<h1>Simulation</h1>
+<p>We can now simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <span class="math inline">\(f(x)=X^2\)</span>.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> np.random.randint(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">50</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> x<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And let’s again compare the mean of the transformed vs the transformed of the mean.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The mean of the transformed outcomes is 15.1
+The transformed of the mean is 12.25</code></pre>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->

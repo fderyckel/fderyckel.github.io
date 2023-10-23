@@ -68,3 +68,23 @@ print(f"The mean of the transformed outcomes is {np.mean(payoffs)}")
 print(f"The transformed of the mean is {payoff(np.mean(outcomes))}")
 ```
 
+# Simulation 
+
+We can now simulate 50 roll of dice and check that the Jensen's inequality still hold. Our convex function is stil $f(x)=X^2$. 
+
+```{python}
+outcomes = np.random.randint(1, 7, 50)
+
+def payoff(x): 
+  return x**2
+
+payoffs = [payoff(outcome) for outcome in outcomes]
+```
+
+And let's again compare the mean of the transformed vs the transformed of the mean. 
+
+```{python}
+print(f"The mean of the transformed outcomes is {np.mean(payoffs)}")
+print(f"The transformed of the mean is {payoff(np.mean(outcomes))}")
+```
+
