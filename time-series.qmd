@@ -2,7 +2,7 @@
 title: "Series: Time-series"
 listing:
   contents: posts/time-series
-  sort: "date-modified desc"
+  sort: "title"
   type: default
   categories: false
   sort-ui: false

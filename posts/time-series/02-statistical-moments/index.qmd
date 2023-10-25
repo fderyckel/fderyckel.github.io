@@ -1,0 +1,192 @@
+---
+title: "02 - Statistical Moments"
+author: "Francois de Ryckel"
+date: "2022-11-02"
+categories: [statistics, code, analysis]
+description: 'Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis.  Showing how to use R and Python on these concepts.'
+editor: source
+date-modified: "2023-04-22"
+---
+
+This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../../quant-part1/normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 
+
+We'll show these parameters using both R and python.  
+
+We'll use the SPY as a low-ish vol asset and AMD as an equity with higher vol.  We only use the last 5 years of data (from 2018 and beyond)
+
+Let's first load our libraries and the 2 data frame worth of prices. 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(readr)    # read_csv()
+library(dplyr)    # mutate(), filter()
+library(lubridate)
+library(ggplot2)
+
+df_spy <- read_csv('../../../raw_data/SPY.csv') |> 
+  select(date, adjClose) |> 
+  arrange(date) |> 
+  mutate(return = log(adjClose / lag(adjClose))) |> 
+  filter(date > '2018-01-01')
+
+df_amd <- read_csv('../../../raw_data/AMD.csv') |> 
+  select(date, adjClose) |> 
+  arrange(date) |> 
+  mutate(return = log(adjClose / lag(adjClose))) |> 
+  filter(date > '2018-01-01')
+```
+
+
+# Mean 
+
+The mean is our first moment. We'll cons
+
+Mathematically speaking, we define the mean as $$\sum^{n}_{i=1} \frac{r_i}{n}$$
+
+* $r_i$ is the return of the i-th observation
+    * using log return 
+* $n$ is the number of observation
+
+# Standard Deviation 
+
+Standard deviation is the second moment.  
+
+$$\sigma = \sqrt{\frac{\sum(x_i - \mu)^2}{n}}$$
+In the case of a sample: $s = \sqrt{\frac{(x_i - \bar{x})^2}{n-1}}$
+
+The variance is the square of the standard deviation.  There is this neat little alternative expression of variance (I like the way it sounds). 
+
+> Variance is the difference between the mean of the square and the square of the mean.  
+
+Here is how it goes: 
+
+$$\sigma^2 = \frac{\sum(x_i-\mu)^2}{n} = \frac{\sum(x_i)^2}{n} - 2 \frac{\sum(x_i \mu)}{n} + \frac{\sum(\mu)^2}{n}$$
+
+Considering 
+
+* $\frac{\sum(x_i \mu)}{n} = \mu \frac{\sum(x_i)}{n} = \mu \mu=\mu^2$ 
+* and considering $\frac{\sum(\mu)^2}{n} = n \frac{\mu^2}{n} = \mu^2$, we can re-write our variance like this
+
+$$\sigma^2 = \frac{\sum(x_i)^2}{n} - 2 \mu^2 + \mu^2 = \frac{\sum(x_i)^2}{n} - \mu^2$$
+
+# Coefficient of variation 
+
+The coefficient of variation is not a statistical moment, but considering it is the ratio of the first 2 moments (ratio of sd to the mean), we include it here as well. 
+It allows to compare together 2 different distributions (that have different mean and sd).  
+
+$$CV = \frac{\sigma}{\mu}$$
+
+Or in the case of a sample $CV = \frac{s}{\bar{x}}$
+
+# Skewness 
+
+::: {.callout-tip} 
+
+# Skewness 
+
+Skewness is measure of asymmetry of a distribution (or actually lack of).  How symmetric around the mean is the distribution? 
+A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew. 
+
+In a zero skew distribution, the mean = the median and the distribution is symmetric. 
+
+:::
+
+In a sense, skewness is quantifying for us how far is the median from the mean.  
+
+Mathematically, we define skewness as 
+
+$$\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^3}}$$ {#eq-skewness-pop}
+
+In the case of a sample, we'll multiply @eq-skewness-pop by a factor of $\frac{\sqrt{n(n-1)}}{n-2}$
+
+* skenwess = 0 ==> normallly distributed
+* $ -0.5 \leq skewness \leq 0.5 $  ==> moderately skew
+* $$
+
+
+# Kurtosis 
+
+::: {.callout-tip} 
+
+# Kurtosis
+
+Kurtosis is a measure that describes the shape of a distribution's tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures "tailedness," not "peakedness." 
+
+:::
+
+Because, we raised the difference of a data point to its mean to the 4th power, it is really the data points far away from the mean that do participate to the kurtosis. 
+
+> "increasing kurtosis is associated with the “movement of probability mass from the shoulders of a distribution into its center and tails."  (Someone important who got published and knew his stuff!) 
+
+Mathematically, we define kurtosis as 
+
+$$\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2}$$ {#eq-skewness-pop}
+
+Some statistical packages are providing **excess kurtosis** by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0. 
+
+There are 3 categories of kurtosis: leptokurtic (positive excess kurtosis), mesokurtic (aka normal distribution), platykurtic. 
+![Type of Kurtosis](kurtosis.png)
+
+* A kurtosis greater than 3 => leptokurtic
+* A kurtosis around 3 => mesokurtic 
+* A kurtosis less than 3 => platykurtic
+
+A Student's T distribution with degree of freedom 4 has infinite kurtosis (huge peak and tails + narrow shoulders)
+
+Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.  
+
+# Using Python
+
+```{python}
+import numpy as np
+import pandas as pd
+
+amd = pd.read_csv('../../../raw_data/AMD.csv')
+
+x = amd['adjClose']
+
+returns_21d = np.log(x / x.shift(21)).dropna()
+
+mean_21dret = np.mean(returns_21d)
+std_21dret = np.std(returns_21d)
+
+print("The mean rolling 21 days return is: %s" % round(mean_21dret, 5))
+print("The standard deviation of the rolling 21 days return is: %s" %round(std_21dret, 5))
+```
+
+The standard deviation is quite bigger than the mean.  An histogram of the returns will confirm that. 
+
+```{python}
+import matplotlib.pyplot as plt
+
+plt.hist(returns_21d, bins = 'rice', label = 'Rolling 21-days return')
+plt.show()
+```
+
+We are seeing a larger left tail with indeed the mean looking around 0. 
+An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot. 
+
+```{python}
+plt.boxplot(returns_21d, labels = ['Rolling 21-days return'])
+plt.show()
+```
+
+
+
+```{python}
+from scipy.stats import skew, skewtest
+
+skew(returns_21d)
+```
+
+The skew value is quite large and negative which confirms the fat left tail we saw on the histogram 
+
+```{python}
+skewtest(returns_21d)
+```
+
+Very small p-value.  We reject the null-hypothesis.  The distribution is not symetrical. 
+
+

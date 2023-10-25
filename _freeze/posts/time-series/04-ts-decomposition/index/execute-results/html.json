@@ -1,0 +1,16 @@
+{
+  "hash": "b063f537b662997dd07ebd825b385394",
+  "result": {
+    "markdown": "---\ntitle: \"04 - Time-series decomposition\"\nauthor: \"François de Ryckel\"\ndate: \"2022-10-21\"\ncategories: [statistics, code, analysis]\ndescription: 'Introducing time-series decomposition. We first show how to compose time-series using linear trend, seasonality and then white nosie.'\neditor: source\ndate-modified: \"2023-10-22\"\n---\n\n\n# Time-series composition \n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(dplyr)\nlibrary(ggplot2)\n```\n:::\n\n\n\n## Compose deterministic time-series (with trend and seasonality) with stochastic component \n\n\n::: {.cell}\n\n```{.r .cell-code}\ndf <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> \n  mutate(y = 0.07 * x + 0.03 + phi)\n\nggplot(df, aes(x, y)) + \n  geom_line() + \n  ggtitle(label = 'Compose a linear trend with a stochastic component')\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/time_series_composition-1.png){width=672}\n:::\n:::\n\n\nWe can also create a seasonality with a stochastic component \n\n\n::: {.cell}\n\n```{.r .cell-code}\ndf <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> \n  mutate(y = 1.7 * sin((2 * pi * x / 50) + 0.3 * pi ) + phi)\n         \nggplot(df, aes(x, y)) + \n  geom_line() + \n  ggtitle(label = 'Compose a seasonal trend with a stochastic component')\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n\n## Decomposing a time-series. \n\n\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -2,7 +2,7 @@
 title: "Jensen Inequality"
 author: "Francois de Ryckel"
 date: "2023-10-21"
-categories: [Probability]
+categories: [Probability, arithmetic mean, geometric mean]
 editor: source
 date-modified: "2023-10-22"
 ---
@@ -88,3 +88,14 @@ print(f"The mean of the transformed outcomes is {np.mean(payoffs)}")
 print(f"The transformed of the mean is {payoff(np.mean(outcomes))}")
 ```
 
+# Arithmetic mean vs Geometric mean
+
+Let's say, we have a data set with n observations. Then we define, the arithmetic mean as 
+$$AM = \frac{1}{n} \sum_{i=1}^n i$$ 
+and the geometric mean as 
+$$GM = \left( \prod_{i=1}^n i \right)^{\frac{1}{n}}$$ 
+But another way to write this using logarithms
+$$log (GM) = log \left( \prod_{i=1}^n i \right)^{\frac{1}{n}} = \frac{1}{n} \sum_{i=1}^n i$$
+Hence, 
+$$GM = exp \left( \frac{1}{n} \sum_{i=1}^n i \right)$$
+In this sense, the geometric mean is the exponential of the arithmetic mean. 
