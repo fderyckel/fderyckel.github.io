@@ -2,7 +2,7 @@
 title: "Jensen Inequality"
 author: "Francois de Ryckel"
 date: "2023-10-21"
-categories: [Probability, arithmetic mean, geometric mean]
+categories: [Probability, jensen inequality, arithmetic mean, geometric mean]
 editor: source
 date-modified: "2023-10-22"
 ---
@@ -95,7 +95,43 @@ $$AM = \frac{1}{n} \sum_{i=1}^n i$$
 and the geometric mean as 
 $$GM = \left( \prod_{i=1}^n i \right)^{\frac{1}{n}}$$ 
 But another way to write this using logarithms
-$$log (GM) = log \left( \prod_{i=1}^n i \right)^{\frac{1}{n}} = \frac{1}{n} \sum_{i=1}^n i$$
+
+Starting with arithmetic mean, 
+$$log(AM) = log \left( \frac{1}{n} \sum_{i=1}^n i \right)$$
+
+$$log (GM) = log \left( \prod_{i=1}^n i \right)^{\frac{1}{n}} = \frac{1}{n} log \left( \prod_{i=1}^n i \right) = \frac{1}{n} \sum_{i=1}^n log(i)$$ 
+
 Hence, 
 $$GM = exp \left( \frac{1}{n} \sum_{i=1}^n i \right)$$
 In this sense, the geometric mean is the exponential of the arithmetic mean. 
+
+Back to Jensens's inequality.  
+The log function is a concave function.  So in this sense, *the mean of the transformation is less or equal to the transformation of the mean*
+$$log(GM) = \text{mean of the transformation (log)}$$
+$$log(AM) = \text{transformation (log) of the mean}$$ 
+
+If we go back to our dice throwing example, we should see that the $log(GM) <= log(AM)$.  Let's model that
+
+```{python}
+outcomes = [1, 2, 3, 4, 5, 6]
+mean_outcomes = np.mean(outcomes)
+
+def payoff(x): 
+  return np.log(x)
+
+payoffs = [payoff(outcome) for outcome in outcomes]
+
+```
+
+```{python}
+print(f"Log(GM) - The mean of the transformed (log) is {np.mean(payoffs)}")
+print(f"Log(AM) - The transformed (log) of the mean is {np.log(np.mean(outcomes))}")
+```
+
+This match our initial statement.  mean of the transformed being smaller than the transformed of the mean as the transformation is concave! 
+
+And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM < AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the coumpounding effect of the returns. 
+
+
+
+

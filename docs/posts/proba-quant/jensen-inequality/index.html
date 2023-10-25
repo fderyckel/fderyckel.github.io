@@ -146,6 +146,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <h1 class="title">Jensen Inequality</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Probability</div>
+                <div class="quarto-category">jensen inequality</div>
+                <div class="quarto-category">arithmetic mean</div>
+                <div class="quarto-category">geometric mean</div>
               </div>
                   </div>
   </div>
@@ -189,6 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#convex-transformations-of-random-variables" id="toc-convex-transformations-of-random-variables" class="nav-link" data-scroll-target="#convex-transformations-of-random-variables">Convex transformations of Random Variables</a></li>
   </ul></li>
   <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a></li>
+  <li><a href="#arithmetic-mean-vs-geometric-mean" id="toc-arithmetic-mean-vs-geometric-mean" class="nav-link" data-scroll-target="#arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</a></li>
   </ul>
 </nav>
 </nav>
@@ -275,10 +279,39 @@ The transformed of the mean is 12.25</code></pre>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 15.1
-The transformed of the mean is 12.25</code></pre>
+<pre><code>The mean of the transformed outcomes is 16.9
+The transformed of the mean is 13.987600000000002</code></pre>
 </div>
 </div>
+</section>
+<section id="arithmetic-mean-vs-geometric-mean" class="level1">
+<h1>Arithmetic mean vs Geometric mean</h1>
+<p>Let’s say, we have a data set with n observations. Then we define, the arithmetic mean as <span class="math display">\[AM = \frac{1}{n} \sum_{i=1}^n i\]</span> and the geometric mean as <span class="math display">\[GM = \left( \prod_{i=1}^n i \right)^{\frac{1}{n}}\]</span> But another way to write this using logarithms</p>
+<p>Starting with arithmetic mean, <span class="math display">\[log(AM) = log \left( \frac{1}{n} \sum_{i=1}^n i \right)\]</span></p>
+<p><span class="math display">\[log (GM) = log \left( \prod_{i=1}^n i \right)^{\frac{1}{n}} = \frac{1}{n} log \left( \prod_{i=1}^n i \right) = \frac{1}{n} \sum_{i=1}^n log(i)\]</span></p>
+<p>Hence, <span class="math display">\[GM = exp \left( \frac{1}{n} \sum_{i=1}^n i \right)\]</span> In this sense, the geometric mean is the exponential of the arithmetic mean.</p>
+<p>Back to Jensens’s inequality.<br>
+The log function is a concave function. So in this sense, <em>the mean of the transformation is less or equal to the transformation of the mean</em> <span class="math display">\[log(GM) = \text{mean of the transformation (log)}\]</span> <span class="math display">\[log(AM) = \text{transformation (log) of the mean}\]</span></p>
+<p>If we go back to our dice throwing example, we should see that the <span class="math inline">\(log(GM) &lt;= log(AM)\)</span>. Let’s model that</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mean_outcomes <span class="op">=</span> np.mean(outcomes)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> np.log(x)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log(GM) - The mean of the transformed (log) is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log(AM) - The transformed (log) of the mean is </span><span class="sc">{</span>np<span class="sc">.</span>log(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Log(GM) - The mean of the transformed (log) is 1.0965418686683501
+Log(AM) - The transformed (log) of the mean is 1.252762968495368</code></pre>
+</div>
+</div>
+<p>This match our initial statement. mean of the transformed being smaller than the transformed of the mean as the transformation is concave!</p>
+<p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the coumpounding effect of the returns.</p>
 
 
 </section>
