@@ -3,7 +3,8 @@ title: "Black-Schole Equation"
 author: "Francois de Ryckel"
 date: "2023-07-18"
 description: 'Deriving the Black-Schole Equation and finding its solutions. Application with R and Python'
-categories: [quant-finance, Black-Schole]
+categories: [Black-Schole, Risk Neutrality, Greeks]
+image: 'blacl-scholes.jpeg'
 editor: source
 date-modified: "2023-07-23"
 ---

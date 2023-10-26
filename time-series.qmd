@@ -5,8 +5,8 @@ listing:
   sort: "title"
   type: default
   categories: false
-  sort-ui: false
-  filter-ui: false
+  sort-ui: true
+  filter-ui: true
   fields: [date, title, reading-time, description]
 page-layout: full
 title-block-banner: true

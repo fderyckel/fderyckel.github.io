@@ -5,7 +5,7 @@ date: "2023-04-18"
 description: 'We explore one of the main assumption of quantitative finance: assets returns are random.'
 categories: [R-code, quant-finance]
 editor: source
-image: 'histogram-of-returns.png'
+image: histogram-of-returns.png
 date-modified: "2023-04-20"
 ---
 

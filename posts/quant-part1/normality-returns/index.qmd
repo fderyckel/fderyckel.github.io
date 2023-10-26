@@ -3,9 +3,9 @@ title: "02 - Normality of asset returns"
 author: "Francois de Ryckel"
 date: "2023-04-19"
 description: 'Checking the normality of asset returns visually and quantitatively.'
-categories: [quant-finance, normal-distribution, qq-plot, kurtosis, skewness]
+categories: [Normal Distribution, qq-plot, Kurtosis, Skewness]
 editor: source
-image: 'qqplot-spy.png'
+image: qqplot-spy.png
 date-modified: '2023-04-25'
 ---
 

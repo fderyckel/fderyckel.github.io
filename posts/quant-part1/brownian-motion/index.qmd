@@ -3,7 +3,8 @@ title: "03 - Random-walks & Brownian Motions"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'RW (discrete) and BM (continuous) constitute the way assets returns are modelled. '
-categories: [R-code, quant-finance, brownian-motion. ]
+categories: [Random-Walk, Brownian-Motion, Quadratic-Variation]
+image: random-walk.png
 editor: source
 date-modified: "2023-07-23"
 ---

@@ -2,9 +2,10 @@
 title: "02 - Statistical Moments"
 author: "Francois de Ryckel"
 date: "2022-11-02"
-categories: [statistics, code, analysis]
+categories: [statistics, Mean, Skewness, Kurtosis]
 description: 'Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis.  Showing how to use R and Python on these concepts.'
 editor: source
+image: kurtosis.png
 date-modified: "2023-04-22"
 ---
 

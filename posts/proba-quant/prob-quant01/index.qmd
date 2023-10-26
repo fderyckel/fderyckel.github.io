@@ -2,12 +2,12 @@
 title: "Probability For Quant 01"
 author: "Francois de Ryckel"
 date: "2022-09-30"
-categories: [Probability]
+categories: [Probability Distribution]
 editor: source
 date-modified: "2022-09-30"
 ---
 
-I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar [page on Algebra](../algebra-quant/index.qmd).
+I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar [page on Algebra](../../algebra-quant/index.qmd).
 
 # Poisson distribution
 

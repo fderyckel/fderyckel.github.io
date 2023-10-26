@@ -3,7 +3,7 @@ title: "03 - AutoCorrelation, Stationarity and Random-Walk - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
 description: 'A dive into the concepts of autocorrelation and stationarity of time-series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise.'
-categories: [time-series]
+categories: [Time-series, Stationarity, Random-Walk, Autocorrelation]
 date-modified: '2022-09-09'
 ---
 

@@ -1,8 +1,8 @@
 ---
-title: "Jensen Inequality"
+title: "Jensen's Inequality"
 author: "Francois de Ryckel"
 date: "2023-10-21"
-categories: [Probability, jensen inequality, arithmetic mean, geometric mean]
+categories: [Probability, Jensen's inequality, arithmetic mean, geometric mean]
 editor: source
 date-modified: "2023-10-22"
 ---

@@ -1,12 +1,13 @@
 ---
 listing:
-  contents: posts/**/*.qmd
+  contents: posts
   sort: "date-modified desc"
   type: default
   categories: true
   sort-ui: true
   fields: [date, title, reading-time, description, categories]
   filter-ui: true
+  feed: true
 page-layout: full
 title-block-banner: false
 ---

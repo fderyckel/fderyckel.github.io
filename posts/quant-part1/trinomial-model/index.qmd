@@ -3,7 +3,7 @@ title: "05 - Trinomials models for Quantitative Finance"
 author: "Francois de Ryckel"
 date: "2023-04-08"
 description: 'Creating a trinomial model and deriving the Forward Kolmogorov Equation.'
-categories: [R-code, quant-finance, trinomial_models]
+categories: [Probability, Probability Density Function]
 editor: source
 date-modified: "2023-07-23"
 ---
