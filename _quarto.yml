@@ -4,7 +4,8 @@ project:
 
 website:
   title: "QUANT dira-t-on?"
-  description: 'Curating notes from a Quant learning journey.'
+  description: 'Curating notes from a Quant learning journey.' 
+  site-url: "https://fderyckel.github.io/blog.html"
   navbar:
     right:
       - text: Blog
@@ -15,7 +16,7 @@ website:
         href: https://twitter.com/Read_the_Dung
 format:
   html:
-    theme: journal
+    theme: flatly
     css: styles.css
 
 editor: source

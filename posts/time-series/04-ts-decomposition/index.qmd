@@ -2,7 +2,7 @@
 title: "04 - Time-series decomposition"
 author: "François de Ryckel"
 date: "2022-10-21"
-categories: [statistics, code, analysis]
+categories: [Time-Series]
 description: 'Introducing time-series decomposition. We first show how to compose time-series using linear trend, seasonality and then white nosie.'
 editor: source
 date-modified: "2023-10-22"
