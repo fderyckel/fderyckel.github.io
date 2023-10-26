@@ -188,12 +188,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#linear-transformations-of-random-variables" id="toc-linear-transformations-of-random-variables" class="nav-link active" data-scroll-target="#linear-transformations-of-random-variables">Linear transformations of Random Variables</a>
+  <li><a href="#linear-transformations-of-random-variables" id="toc-linear-transformations-of-random-variables" class="nav-link active" data-scroll-target="#linear-transformations-of-random-variables">Linear transformations of Random Variables</a></li>
+  <li><a href="#convex-transformations-of-random-variables" id="toc-convex-transformations-of-random-variables" class="nav-link" data-scroll-target="#convex-transformations-of-random-variables">Convex transformations of Random Variables</a>
   <ul class="collapse">
-  <li><a href="#convex-transformations-of-random-variables" id="toc-convex-transformations-of-random-variables" class="nav-link" data-scroll-target="#convex-transformations-of-random-variables">Convex transformations of Random Variables</a></li>
-  </ul></li>
   <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a></li>
   <li><a href="#arithmetic-mean-vs-geometric-mean" id="toc-arithmetic-mean-vs-geometric-mean" class="nav-link" data-scroll-target="#arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -208,11 +208,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Jensen’s inequality from <a href="https://en.wikipedia.org/wiki/Johan_Jensen_(mathematician)">Johan Jensen</a>, Danish Mathematician, has popped up several times through my quantitative finance journey. As I never explicitly dealt with it, I thought I’ll make a post about it.</p>
+<p>The question Jensen’s inequality address is how does the mean of a function relate the function of the mean. First, we’ll check how in the case of linear functions, there are no difference there. Then we’ll go on more complex functions where their concavity (aka second derivative) matters.</p>
 <section id="linear-transformations-of-random-variables" class="level1">
 <h1>Linear transformations of Random Variables</h1>
-<p>The mean of a linear transformation of random variables are scaled accordingly; however that doesn’t hold anymore for non-linear transformation.</p>
-<p><strong>mean(f(x)) == f(mean(x))</strong> as long as <em>f</em> is linear.</p>
-<p>Let’s use an easy &amp; simple example. A fair dice is thrown. The payoff is a linear function. Let’s say, the payoff is <span class="math inline">\(2 * \text{(face of the die)} + 3\)</span>.</p>
+<p>What happen when we transform in a linear way a random variable?</p>
+<p>We claim that as long as <em>f</em> is linear: <strong>mean(f(x)) == f(mean(x))</strong></p>
+<p>Let’s use an easy &amp; simple example. A fair dice is thrown. Let’s imagine a payoff which is a linear function: say, the payoff is <span class="math inline">\(2 * \text{(face of the die)} + 3\)</span>.</p>
 <p>In this case <span class="math inline">\(X\)</span> is a discrete random variable that can take the values <span class="math inline">\({1, 2, 3, 4, 5, 6}\)</span>.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -239,11 +240,14 @@ The payoffs are [5, 7, 9, 11, 13, 15] and the mean of the payoffs is 10.0</code>
 </div>
 </div>
 <p>Now this equality doesn’t hold anymore when it comes to non-linear function.</p>
-<section id="convex-transformations-of-random-variables" class="level2">
-<h2 class="anchored" data-anchor-id="convex-transformations-of-random-variables">Convex transformations of Random Variables</h2>
+</section>
+<section id="convex-transformations-of-random-variables" class="level1">
+<h1>Convex transformations of Random Variables</h1>
 <p>The <strong>Jensen’s inequality</strong> is in regards to <strong>convex</strong> functions (aka its second derivative is positive on an interval) and states that <em>the mean of the transformation is always greater or equal to the transformation of the mean</em>.</p>
+<p>Using the language of probability, we can write that for any convex functions <span id="eq-jensineq"><span class="math display">\[\mathbb{E}[f(X)] \geq f(\mathbb{E}[X]) \tag{1}\]</span></span></p>
 <p>Again let’s take an easy example with the convex function <span class="math inline">\(f(x) = X^2\)</span>. We will use the same inputs (the roll of a die) as the above example.</p>
 <p>The intuition is that the mean of squared numbers is greater than the square of the mean numbers. This is because bigger number squared will add extreme value (on the high side) to the mean.</p>
+<p>Using a small Python script.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -251,70 +255,76 @@ The payoffs are [5, 7, 9, 11, 13, 15] and the mean of the payoffs is 10.0</code>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> x<span class="op">**</span><span class="dv">2</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>payoffs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>[1, 4, 9, 16, 25, 36]</code></pre>
 </div>
-<p>Let’s now calculate the mean</p>
+</div>
+<p>Let’s now calculate both <span class="math inline">\(\mathbb{E}[f(X)]\)</span> and <span class="math inline">\(f(\mathbb{E}[X])\)</span></p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span><span class="bu">round</span>(np.mean(payoffs), <span class="dv">3</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 15.166666666666666
+<pre><code>The mean of the transformed outcomes is 15.167
 The transformed of the mean is 12.25</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="simulation" class="level1">
-<h1>Simulation</h1>
-<p>We can now simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <span class="math inline">\(f(x)=X^2\)</span>.</p>
+<p>When is it an equality then? When all the observations in the sets have the exact same values, then <span class="math inline">\(\mathbb{E}[f(X)] = f(\mathbb{E}[X])\)</span>.</p>
+<section id="simulation" class="level2">
+<h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
+<p>To make our experiment a bit more realistic, we could simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <span class="math inline">\(f(x)=X^2\)</span>.</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> np.random.randint(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">50</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> x<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> np.random.randint(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">50</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> x<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And let’s again compare the mean of the transformed vs the transformed of the mean.</p>
 <div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 11.92
-The transformed of the mean is 9.4864</code></pre>
+<pre><code>The mean of the transformed outcomes is 14.98
+The transformed of the mean is 12.8164</code></pre>
 </div>
 </div>
 </section>
-<section id="arithmetic-mean-vs-geometric-mean" class="level1">
-<h1>Arithmetic mean vs Geometric mean</h1>
-<p>Let’s say, we have a data set with n observations. Then we define, the arithmetic mean as <span class="math display">\[AM = \frac{1}{n} \sum_{i=1}^n i\]</span> and the geometric mean as <span class="math display">\[GM = \left( \prod_{i=1}^n i \right)^{\frac{1}{n}}\]</span> But another way to write this using logarithms</p>
-<p>Starting with arithmetic mean, <span class="math display">\[log(AM) = log \left( \frac{1}{n} \sum_{i=1}^n i \right)\]</span></p>
-<p><span class="math display">\[log (GM) = log \left( \prod_{i=1}^n i \right)^{\frac{1}{n}} = \frac{1}{n} log \left( \prod_{i=1}^n i \right) = \frac{1}{n} \sum_{i=1}^n log(i)\]</span></p>
-<p>Hence, <span class="math display">\[GM = exp \left( \frac{1}{n} \sum_{i=1}^n i \right)\]</span> In this sense, the geometric mean is the exponential of the arithmetic mean.</p>
+<section id="arithmetic-mean-vs-geometric-mean" class="level2">
+<h2 class="anchored" data-anchor-id="arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</h2>
+<p>One way, the Jensen’s inequality is used in finance is when it comes to returns. We can indeed compute the average returns as a arithmetic average or as a geometric average.</p>
+<p>Let’s say, we have a data set with n observations. Then we define, the arithmetic mean as <span class="math display">\[AM = \frac{1}{n} \sum_{i=1}^n i\]</span> and the geometric mean as <span class="math display">\[GM = \left( \prod_{i=1}^n i \right)^{\frac{1}{n}}\]</span></p>
+<p>Using logarithms, and starting with the arithmetic mean, we have: <span id="eq-logAM"><span class="math display">\[log(AM) = log \left( \frac{1}{n} \sum_{i=1}^n i \right) \tag{2}\]</span></span></p>
+<p>Continuing with the geometric mean, we have: <span id="eq-logGM"><span class="math display">\[log (GM) = log \left( \prod_{i=1}^n i \right)^{\frac{1}{n}} = \frac{1}{n} log \left( \prod_{i=1}^n i \right) = \frac{1}{n} \sum_{i=1}^n log(i) \tag{3}\]</span></span></p>
+<p>We could transform <a href="#eq-logGM">Equation&nbsp;3</a> saying that the geometric mean is the exponential of the arithmetic mean. <span id="eq-logGM2"><span class="math display">\[GM = exp \left( \frac{1}{n} \sum_{i=1}^n i \right) \tag{4}\]</span></span></p>
 <p>Back to Jensens’s inequality.<br>
-The log function is a concave function. So in this sense, <em>the mean of the transformation is less or equal to the transformation of the mean</em> <span class="math display">\[log(GM) = \text{mean of the transformation (log)}\]</span> <span class="math display">\[log(AM) = \text{transformation (log) of the mean}\]</span></p>
+The log function is a concave function. We just re-write <a href="#eq-jensineq">Equation&nbsp;1</a> changing the inequality sign: <em>the mean of the transformation is less or equal to the transformation of the mean</em>. On probabilistic terms, <span class="math display">\[\mathbb{E}[f(X)] \leq f(\mathbb{E}[X])\]</span></p>
+<p><span class="math display">\[log(GM) = \text{mean of the transformation (log)}\]</span> <span class="math display">\[log(AM) = \text{transformation (log) of the mean}\]</span></p>
 <p>If we go back to our dice throwing example, we should see that the <span class="math inline">\(log(GM) &lt;= log(AM)\)</span>. Let’s model that</p>
 <div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mean_outcomes <span class="op">=</span> np.mean(outcomes)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> np.log(x)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>outcomes <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mean_outcomes <span class="op">=</span> np.mean(outcomes)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> payoff(x): </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> np.log(x)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log(GM) - The mean of the transformed (log) is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log(AM) - The transformed (log) of the mean is </span><span class="sc">{</span>np<span class="sc">.</span>log(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log(GM) - The mean of the transformed (log) is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log(AM) - The transformed (log) of the mean is </span><span class="sc">{</span>np<span class="sc">.</span>log(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Log(GM) - The mean of the transformed (log) is 1.0965418686683501
 Log(AM) - The transformed (log) of the mean is 1.252762968495368</code></pre>
 </div>
 </div>
 <p>This match our initial statement. mean of the transformed being smaller than the transformed of the mean as the transformation is concave!</p>
-<p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the coumpounding effect of the returns.</p>
+<p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the compounding effect of the returns.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

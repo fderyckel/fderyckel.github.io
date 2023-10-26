@@ -21,11 +21,12 @@
 
 
 <p>Jensen’s inequality from <a href="https://en.wikipedia.org/wiki/Johan_Jensen_(mathematician)">Johan Jensen</a>, Danish Mathematician, has popped up several times through my quantitative finance journey. As I never explicitly dealt with it, I thought I’ll make a post about it.</p>
+<p>The question Jensen’s inequality address is how does the mean of a function relate the function of the mean. First, we’ll check how in the case of linear functions, there are no difference there. Then we’ll go on more complex functions where their concavity (aka second derivative) matters.</p>
 <section id="linear-transformations-of-random-variables" class="level1">
 <h1>Linear transformations of Random Variables</h1>
-<p>The mean of a linear transformation of random variables are scaled accordingly; however that doesn’t hold anymore for non-linear transformation.</p>
-<p><strong>mean(f(x)) == f(mean(x))</strong> as long as <em>f</em> is linear.</p>
-<p>Let’s use an easy &amp; simple example. A fair dice is thrown. The payoff is a linear function. Let’s say, the payoff is <img src="https://latex.codecogs.com/png.latex?2%20*%20%5Ctext%7B(face%20of%20the%20die)%7D%20+%203">.</p>
+<p>What happen when we transform in a linear way a random variable?</p>
+<p>We claim that as long as <em>f</em> is linear: <strong>mean(f(x)) == f(mean(x))</strong></p>
+<p>Let’s use an easy &amp; simple example. A fair dice is thrown. Let’s imagine a payoff which is a linear function: say, the payoff is <img src="https://latex.codecogs.com/png.latex?2%20*%20%5Ctext%7B(face%20of%20the%20die)%7D%20+%203">.</p>
 <p>In this case <img src="https://latex.codecogs.com/png.latex?X"> is a discrete random variable that can take the values <img src="https://latex.codecogs.com/png.latex?%7B1,%202,%203,%204,%205,%206%7D">.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -134,11 +135,14 @@ The payoffs are [5, 7, 9, 11, 13, 15] and the mean of the payoffs is 10.0</code>
 </div>
 </div>
 <p>Now this equality doesn’t hold anymore when it comes to non-linear function.</p>
-<section id="convex-transformations-of-random-variables" class="level2">
-<h2 class="anchored" data-anchor-id="convex-transformations-of-random-variables">Convex transformations of Random Variables</h2>
+</section>
+<section id="convex-transformations-of-random-variables" class="level1">
+<h1>Convex transformations of Random Variables</h1>
 <p>The <strong>Jensen’s inequality</strong> is in regards to <strong>convex</strong> functions (aka its second derivative is positive on an interval) and states that <em>the mean of the transformation is always greater or equal to the transformation of the mean</em>.</p>
+<p>Using the language of probability, we can write that for any convex functions <span id="eq-jensineq"><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D%5Bf(X)%5D%20%5Cgeq%20f(%5Cmathbb%7BE%7D%5BX%5D)%20%5Ctag%7B1%7D"></span></p>
 <p>Again let’s take an easy example with the convex function <img src="https://latex.codecogs.com/png.latex?f(x)%20=%20X%5E2">. We will use the same inputs (the roll of a die) as the above example.</p>
 <p>The intuition is that the mean of squared numbers is greater than the square of the mean numbers. This is because bigger number squared will add extreme value (on the high side) to the mean.</p>
+<p>Using a small Python script.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">outcomes <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -176,24 +180,30 @@ font-style: inherit;">=</span> [payoff(outcome) <span class="cf" style="color: #
 background-color: null;
 font-style: inherit;">for</span> outcome <span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">in</span> outcomes]</span></code></pre></div>
+font-style: inherit;">in</span> outcomes]</span>
+<span id="cb4-8">payoffs</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>[1, 4, 9, 16, 25, 36]</code></pre>
 </div>
-<p>Let’s now calculate the mean</p>
+</div>
+<p>Let’s now calculate both <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D%5Bf(X)%5D"> and <img src="https://latex.codecogs.com/png.latex?f(%5Cmathbb%7BE%7D%5BX%5D)"></p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="bu" style="color: null;
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"The mean of the transformed outcomes is </span><span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">{</span>np<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">{</span><span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">.</span>mean(payoffs)<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">round</span>(np.mean(payoffs), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb5-2"><span class="bu" style="color: null;
+<span id="cb6-2"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -205,17 +215,16 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 15.166666666666666
+<pre><code>The mean of the transformed outcomes is 15.167
 The transformed of the mean is 12.25</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="simulation" class="level1">
-<h1>Simulation</h1>
-<p>We can now simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <img src="https://latex.codecogs.com/png.latex?f(x)=X%5E2">.</p>
+<p>When is it an equality then? When all the observations in the sets have the exact same values, then <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D%5Bf(X)%5D%20=%20f(%5Cmathbb%7BE%7D%5BX%5D)">.</p>
+<section id="simulation" class="level2">
+<h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
+<p>To make our experiment a bit more realistic, we could simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <img src="https://latex.codecogs.com/png.latex?f(x)=X%5E2">.</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">outcomes <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">outcomes <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.random.randint(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -224,19 +233,19 @@ background-color: null;
 font-style: inherit;">7</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">50</span>)</span>
-<span id="cb7-2"></span>
-<span id="cb7-3"><span class="kw" style="color: #003B4F;
+<span id="cb8-2"></span>
+<span id="cb8-3"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> payoff(x): </span>
-<span id="cb7-4">  <span class="cf" style="color: #003B4F;
+<span id="cb8-4">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span> x<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span></span>
-<span id="cb7-5"></span>
-<span id="cb7-6">payoffs <span class="op" style="color: #5E5E5E;
+<span id="cb8-5"></span>
+<span id="cb8-6">payoffs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [payoff(outcome) <span class="cf" style="color: #003B4F;
 background-color: null;
@@ -246,7 +255,7 @@ font-style: inherit;">in</span> outcomes]</span></code></pre></div>
 </div>
 <p>And let’s again compare the mean of the transformed vs the transformed of the mean.</p>
 <div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="bu" style="color: null;
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -259,7 +268,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb8-2"><span class="bu" style="color: null;
+<span id="cb9-2"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -271,22 +280,24 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 11.92
-The transformed of the mean is 9.4864</code></pre>
+<pre><code>The mean of the transformed outcomes is 14.98
+The transformed of the mean is 12.8164</code></pre>
 </div>
 </div>
 </section>
-<section id="arithmetic-mean-vs-geometric-mean" class="level1">
-<h1>Arithmetic mean vs Geometric mean</h1>
-<p>Let’s say, we have a data set with n observations. Then we define, the arithmetic mean as <img src="https://latex.codecogs.com/png.latex?AM%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20i"> and the geometric mean as <img src="https://latex.codecogs.com/png.latex?GM%20=%20%5Cleft(%20%5Cprod_%7Bi=1%7D%5En%20i%20%5Cright)%5E%7B%5Cfrac%7B1%7D%7Bn%7D%7D"> But another way to write this using logarithms</p>
-<p>Starting with arithmetic mean, <img src="https://latex.codecogs.com/png.latex?log(AM)%20=%20log%20%5Cleft(%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20i%20%5Cright)"></p>
-<p><img src="https://latex.codecogs.com/png.latex?log%20(GM)%20=%20log%20%5Cleft(%20%5Cprod_%7Bi=1%7D%5En%20i%20%5Cright)%5E%7B%5Cfrac%7B1%7D%7Bn%7D%7D%20=%20%5Cfrac%7B1%7D%7Bn%7D%20log%20%5Cleft(%20%5Cprod_%7Bi=1%7D%5En%20i%20%5Cright)%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20log(i)"></p>
-<p>Hence, <img src="https://latex.codecogs.com/png.latex?GM%20=%20exp%20%5Cleft(%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20i%20%5Cright)"> In this sense, the geometric mean is the exponential of the arithmetic mean.</p>
+<section id="arithmetic-mean-vs-geometric-mean" class="level2">
+<h2 class="anchored" data-anchor-id="arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</h2>
+<p>One way, the Jensen’s inequality is used in finance is when it comes to returns. We can indeed compute the average returns as a arithmetic average or as a geometric average.</p>
+<p>Let’s say, we have a data set with n observations. Then we define, the arithmetic mean as <img src="https://latex.codecogs.com/png.latex?AM%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20i"> and the geometric mean as <img src="https://latex.codecogs.com/png.latex?GM%20=%20%5Cleft(%20%5Cprod_%7Bi=1%7D%5En%20i%20%5Cright)%5E%7B%5Cfrac%7B1%7D%7Bn%7D%7D"></p>
+<p>Using logarithms, and starting with the arithmetic mean, we have: <span id="eq-logAM"><img src="https://latex.codecogs.com/png.latex?log(AM)%20=%20log%20%5Cleft(%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20i%20%5Cright)%20%5Ctag%7B2%7D"></span></p>
+<p>Continuing with the geometric mean, we have: <span id="eq-logGM"><img src="https://latex.codecogs.com/png.latex?log%20(GM)%20=%20log%20%5Cleft(%20%5Cprod_%7Bi=1%7D%5En%20i%20%5Cright)%5E%7B%5Cfrac%7B1%7D%7Bn%7D%7D%20=%20%5Cfrac%7B1%7D%7Bn%7D%20log%20%5Cleft(%20%5Cprod_%7Bi=1%7D%5En%20i%20%5Cright)%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20log(i)%20%5Ctag%7B3%7D"></span></p>
+<p>We could transform Equation&nbsp;3 saying that the geometric mean is the exponential of the arithmetic mean. <span id="eq-logGM2"><img src="https://latex.codecogs.com/png.latex?GM%20=%20exp%20%5Cleft(%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20i%20%5Cright)%20%5Ctag%7B4%7D"></span></p>
 <p>Back to Jensens’s inequality.<br>
-The log function is a concave function. So in this sense, <em>the mean of the transformation is less or equal to the transformation of the mean</em> <img src="https://latex.codecogs.com/png.latex?log(GM)%20=%20%5Ctext%7Bmean%20of%20the%20transformation%20(log)%7D"> <img src="https://latex.codecogs.com/png.latex?log(AM)%20=%20%5Ctext%7Btransformation%20(log)%20of%20the%20mean%7D"></p>
+The log function is a concave function. We just re-write Equation&nbsp;1 changing the inequality sign: <em>the mean of the transformation is less or equal to the transformation of the mean</em>. On probabilistic terms, <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D%5Bf(X)%5D%20%5Cleq%20f(%5Cmathbb%7BE%7D%5BX%5D)"></p>
+<p><img src="https://latex.codecogs.com/png.latex?log(GM)%20=%20%5Ctext%7Bmean%20of%20the%20transformation%20(log)%7D"> <img src="https://latex.codecogs.com/png.latex?log(AM)%20=%20%5Ctext%7Btransformation%20(log)%20of%20the%20mean%7D"></p>
 <p>If we go back to our dice throwing example, we should see that the <img src="https://latex.codecogs.com/png.latex?log(GM)%20%3C=%20log(AM)">. Let’s model that</p>
 <div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">outcomes <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">outcomes <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -301,18 +312,18 @@ background-color: null;
 font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">6</span>]</span>
-<span id="cb10-2">mean_outcomes <span class="op" style="color: #5E5E5E;
+<span id="cb11-2">mean_outcomes <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.mean(outcomes)</span>
-<span id="cb10-3"></span>
-<span id="cb10-4"><span class="kw" style="color: #003B4F;
+<span id="cb11-3"></span>
+<span id="cb11-4"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> payoff(x): </span>
-<span id="cb10-5">  <span class="cf" style="color: #003B4F;
+<span id="cb11-5">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span> np.log(x)</span>
-<span id="cb10-6"></span>
-<span id="cb10-7">payoffs <span class="op" style="color: #5E5E5E;
+<span id="cb11-6"></span>
+<span id="cb11-7">payoffs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [payoff(outcome) <span class="cf" style="color: #003B4F;
 background-color: null;
@@ -321,7 +332,7 @@ background-color: null;
 font-style: inherit;">in</span> outcomes]</span></code></pre></div>
 </div>
 <div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="bu" style="color: null;
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -334,7 +345,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb11-2"><span class="bu" style="color: null;
+<span id="cb12-2"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -353,9 +364,10 @@ Log(AM) - The transformed (log) of the mean is 1.252762968495368</code></pre>
 </div>
 </div>
 <p>This match our initial statement. mean of the transformed being smaller than the transformed of the mean as the transformation is concave!</p>
-<p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the coumpounding effect of the returns.</p>
+<p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the compounding effect of the returns.</p>
 
 
+</section>
 </section>
 
  ]]></description>
