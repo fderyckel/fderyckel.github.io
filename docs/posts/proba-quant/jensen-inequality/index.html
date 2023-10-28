@@ -192,7 +192,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#convex-transformations-of-random-variables" id="toc-convex-transformations-of-random-variables" class="nav-link" data-scroll-target="#convex-transformations-of-random-variables">Convex transformations of Random Variables</a>
   <ul class="collapse">
   <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a></li>
+  </ul></li>
+  <li><a href="#jensens-inequality-in-finance" id="toc-jensens-inequality-in-finance" class="nav-link" data-scroll-target="#jensens-inequality-in-finance">Jensen’s inequality in finance</a>
+  <ul class="collapse">
   <li><a href="#arithmetic-mean-vs-geometric-mean" id="toc-arithmetic-mean-vs-geometric-mean" class="nav-link" data-scroll-target="#arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</a></li>
+  <li><a href="#options-convexity" id="toc-options-convexity" class="nav-link" data-scroll-target="#options-convexity">Options convexity</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -257,7 +261,7 @@ The payoffs are [5, 7, 9, 11, 13, 15] and the mean of the payoffs is 10.0</code>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>payoffs <span class="op">=</span> [payoff(outcome) <span class="cf">for</span> outcome <span class="kw">in</span> outcomes]</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>payoffs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="30">
 <pre><code>[1, 4, 9, 16, 25, 36]</code></pre>
 </div>
 </div>
@@ -271,6 +275,7 @@ The transformed of the mean is 12.25</code></pre>
 </div>
 </div>
 <p>When is it an equality then? When all the observations in the sets have the exact same values, then <span class="math inline">\(\mathbb{E}[f(X)] = f(\mathbb{E}[X])\)</span>.</p>
+<p>Visually, we could see this on the parabola. <img src="jensen-parabola.png" class="img-fluid" alt="The mean of the squares greater than the square of the mean"></p>
 <section id="simulation" class="level2">
 <h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
 <p>To make our experiment a bit more realistic, we could simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <span class="math inline">\(f(x)=X^2\)</span>.</p>
@@ -287,11 +292,14 @@ The transformed of the mean is 12.25</code></pre>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The mean of the transformed outcomes is </span><span class="sc">{</span>np<span class="sc">.</span>mean(payoffs)<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The transformed of the mean is </span><span class="sc">{</span>payoff(np.mean(outcomes))<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 14.98
-The transformed of the mean is 12.8164</code></pre>
+<pre><code>The mean of the transformed outcomes is 18.44
+The transformed of the mean is 15.6816</code></pre>
 </div>
 </div>
 </section>
+</section>
+<section id="jensens-inequality-in-finance" class="level1">
+<h1>Jensen’s inequality in finance</h1>
 <section id="arithmetic-mean-vs-geometric-mean" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</h2>
 <p>One way, the Jensen’s inequality is used in finance is when it comes to returns. We can indeed compute the average returns as a arithmetic average or as a geometric average.</p>
@@ -322,6 +330,53 @@ Log(AM) - The transformed (log) of the mean is 1.252762968495368</code></pre>
 </div>
 <p>This match our initial statement. mean of the transformed being smaller than the transformed of the mean as the transformation is concave!</p>
 <p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the compounding effect of the returns.</p>
+</section>
+<section id="options-convexity" class="level2">
+<h2 class="anchored" data-anchor-id="options-convexity">Options convexity</h2>
+<p>We are talking about the convexity of options to draw the attention on the non-linear relationship (in this case convex relationship … duh!) between the option’s price and the price of its underlying asset.<br>
+This comes from the second order derivative of the option’s price in regards to the price of the underlying. In the Black-Schole Merton equation, this can be seen as: <span class="math display">\[\frac{\partial{V}}{\partial{t}} + \color{blue}{\frac{1}{2} \sigma^2 S^2 \frac{\partial^2{V}}{\partial{S}^2}} + r S \frac{\partial{V}}{\partial{S}} - rV = 0\]</span></p>
+<p>Recall the value of a vanilla European call option at expiration is <span class="math inline">\(C(S) = max(S-K, 0)\)</span> where:</p>
+<ul>
+<li><span class="math inline">\(K\)</span> is the strike price</li>
+<li><span class="math inline">\(S\)</span> is the price of the underlying</li>
+<li><span class="math inline">\(C(S)\)</span> is the value of the option price at expiry</li>
+<li><span class="math inline">\(S-K\)</span> is a linear relationship</li>
+</ul>
+<p>But the rate of change of the option price in regards to its underlying is not linear.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> np.linspace(<span class="dv">80</span>, <span class="dv">120</span>, <span class="dv">100</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> np.maximum(S<span class="op">-</span>K, <span class="dv">0</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>delta <span class="op">=</span> np.gradient(S, C)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> np.gradient(delta, S)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">131</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>plt.plot(S, C, label <span class="op">=</span> <span class="st">'Option Price'</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Asset Price'</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Option Value'</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">132</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>plt.plot(S, delta, label <span class="op">=</span> <span class="st">'Delta'</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Asset Price'</span>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Delta'</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">133</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>plt.plot(S, gamma, label <span class="op">=</span> <span class="st">'Gamma'</span>)</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Asset Price'</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Gamma'</span>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-10-output-1.png" width="1141" height="566"></p>
+</div>
+</div>
 
 
 </section>

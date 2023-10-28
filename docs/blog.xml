@@ -182,7 +182,7 @@ font-style: inherit;">for</span> outcome <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> outcomes]</span>
 <span id="cb4-8">payoffs</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="30">
 <pre><code>[1, 4, 9, 16, 25, 36]</code></pre>
 </div>
 </div>
@@ -220,6 +220,7 @@ The transformed of the mean is 12.25</code></pre>
 </div>
 </div>
 <p>When is it an equality then? When all the observations in the sets have the exact same values, then <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D%5Bf(X)%5D%20=%20f(%5Cmathbb%7BE%7D%5BX%5D)">.</p>
+<p>Visually, we could see this on the parabola. <img src="https://fderyckel.github.io/blog.html/posts/proba-quant/jensen-inequality/jensen-parabola.png" class="img-fluid" alt="The mean of the squares greater than the square of the mean"></p>
 <section id="simulation" class="level2">
 <h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
 <p>To make our experiment a bit more realistic, we could simulate 50 roll of dice and check that the Jensen’s inequality still hold. Our convex function is stil <img src="https://latex.codecogs.com/png.latex?f(x)=X%5E2">.</p>
@@ -280,11 +281,14 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 14.98
-The transformed of the mean is 12.8164</code></pre>
+<pre><code>The mean of the transformed outcomes is 18.44
+The transformed of the mean is 15.6816</code></pre>
 </div>
 </div>
 </section>
+</section>
+<section id="jensens-inequality-in-finance" class="level1">
+<h1>Jensen’s inequality in finance</h1>
 <section id="arithmetic-mean-vs-geometric-mean" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-mean-vs-geometric-mean">Arithmetic mean vs Geometric mean</h2>
 <p>One way, the Jensen’s inequality is used in finance is when it comes to returns. We can indeed compute the average returns as a arithmetic average or as a geometric average.</p>
@@ -365,6 +369,115 @@ Log(AM) - The transformed (log) of the mean is 1.252762968495368</code></pre>
 </div>
 <p>This match our initial statement. mean of the transformed being smaller than the transformed of the mean as the transformation is concave!</p>
 <p>And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM &lt; AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the compounding effect of the returns.</p>
+</section>
+<section id="options-convexity" class="level2">
+<h2 class="anchored" data-anchor-id="options-convexity">Options convexity</h2>
+<p>We are talking about the convexity of options to draw the attention on the non-linear relationship (in this case convex relationship … duh!) between the option’s price and the price of its underlying asset.<br>
+This comes from the second order derivative of the option’s price in regards to the price of the underlying. In the Black-Schole Merton equation, this can be seen as: <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%7BV%7D%7D%7B%5Cpartial%7Bt%7D%7D%20+%20%5Ccolor%7Bblue%7D%7B%5Cfrac%7B1%7D%7B2%7D%20%5Csigma%5E2%20S%5E2%20%5Cfrac%7B%5Cpartial%5E2%7BV%7D%7D%7B%5Cpartial%7BS%7D%5E2%7D%7D%20+%20r%20S%20%5Cfrac%7B%5Cpartial%7BV%7D%7D%7B%5Cpartial%7BS%7D%7D%20-%20rV%20=%200"></p>
+<p>Recall the value of a vanilla European call option at expiration is <img src="https://latex.codecogs.com/png.latex?C(S)%20=%20max(S-K,%200)"> where:</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?K"> is the strike price</li>
+<li><img src="https://latex.codecogs.com/png.latex?S"> is the price of the underlying</li>
+<li><img src="https://latex.codecogs.com/png.latex?C(S)"> is the value of the option price at expiry</li>
+<li><img src="https://latex.codecogs.com/png.latex?S-K"> is a linear relationship</li>
+</ul>
+<p>But the rate of change of the option price in regards to its underlying is not linear.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb14-2"></span>
+<span id="cb14-3">K <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb14-4"></span>
+<span id="cb14-5">S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">80</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">120</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb14-6">C <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.maximum(S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>K, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb14-7"></span>
+<span id="cb14-8">delta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.gradient(S, C)</span>
+<span id="cb14-9">gamma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.gradient(delta, S)</span>
+<span id="cb14-10"></span>
+<span id="cb14-11">plt.figure(figsize <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb14-12"></span>
+<span id="cb14-13">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">131</span>)</span>
+<span id="cb14-14">plt.plot(S, C, label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Option Price'</span>)</span>
+<span id="cb14-15">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Asset Price'</span>)</span>
+<span id="cb14-16">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Option Value'</span>)</span>
+<span id="cb14-17"></span>
+<span id="cb14-18">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">132</span>)</span>
+<span id="cb14-19">plt.plot(S, delta, label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Delta'</span>)</span>
+<span id="cb14-20">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Asset Price'</span>)</span>
+<span id="cb14-21">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Delta'</span>)</span>
+<span id="cb14-22"></span>
+<span id="cb14-23">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">133</span>)</span>
+<span id="cb14-24">plt.plot(S, gamma, label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gamma'</span>)</span>
+<span id="cb14-25">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Asset Price'</span>)</span>
+<span id="cb14-26">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gamma'</span>)</span>
+<span id="cb14-27"></span>
+<span id="cb14-28">plt.tight_layout()</span>
+<span id="cb14-29">plt.show()</span></code></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/proba-quant/jensen-inequality/index_files/figure-html/cell-10-output-1.png" width="1141" height="566"></p>
+</div>
+</div>
 
 
 </section>
@@ -377,6 +490,7 @@ Log(AM) - The transformed (log) of the mean is 1.252762968495368</code></pre>
   <category>geometric mean</category>
   <guid>https://fderyckel.github.io/blog.html/posts/proba-quant/jensen-inequality/index.html</guid>
   <pubDate>Fri, 20 Oct 2023 17:00:00 GMT</pubDate>
+  <media:content url="https://fderyckel.github.io/blog.html/posts/proba-quant/jensen-inequality/jensen-parabola.png" medium="image" type="image/png" height="168" width="144"/>
 </item>
 <item>
   <title>Modeling Option prices using Monte-Carlo simulations</title>

@@ -3,7 +3,7 @@ title: "Jensen's Inequality"
 author: "Francois de Ryckel"
 date: "2023-10-21"
 categories: [Probability, Jensen's inequality, arithmetic mean, geometric mean]
-editor: source
+image: 'jensen-parabola.png'
 date-modified: "2023-10-22"
 ---
 
@@ -77,6 +77,9 @@ print(f"The transformed of the mean is {payoff(np.mean(outcomes))}")
 
 When is it an equality then?  When all the observations in the sets have the exact same values, then $\mathbb{E}[f(X)] = f(\mathbb{E}[X])$.  
 
+Visually, we could see this on the parabola. 
+![The mean of the squares greater than the square of the mean](jensen-parabola.png)
+
 ## Simulation 
 
 To make our experiment a bit more realistic, we could simulate 50 roll of dice and check that the Jensen's inequality still hold. Our convex function is stil $f(x)=X^2$. 
@@ -96,6 +99,8 @@ And let's again compare the mean of the transformed vs the transformed of the me
 print(f"The mean of the transformed outcomes is {np.mean(payoffs)}")
 print(f"The transformed of the mean is {payoff(np.mean(outcomes))}")
 ```
+
+# Jensen's inequality in finance 
 
 ## Arithmetic mean vs Geometric mean
 
@@ -144,6 +149,52 @@ This match our initial statement.  mean of the transformed being smaller than th
 
 And we can undo that log using an exponent (which will preserve the inequality sign). Hence GM < AM. In finance, especially portfolio management, GM means are preferred as it is taking into account the compounding effect of the returns. 
 
+## Options convexity 
+
+We are talking about the convexity of options to draw the attention on the non-linear relationship (in this case convex relationship ... duh!) between the option's price and the price of its underlying asset.  
+This comes from the second order derivative of the option's price in regards to the price of the underlying.  In the Black-Schole Merton equation, this can be seen as: 
+$$\frac{\partial{V}}{\partial{t}} + \color{blue}{\frac{1}{2} \sigma^2 S^2 \frac{\partial^2{V}}{\partial{S}^2}} + r S \frac{\partial{V}}{\partial{S}} - rV = 0$$
+
+Recall the value of a vanilla European call option at expiration is $C(S) = max(S-K, 0)$ where: 
+
+* $K$ is the strike price
+* $S$ is the price of the underlying 
+* $C(S)$ is the value of the option price at expiry
+* $S-K$ is a linear relationship 
+
+But the rate of change of the option price in regards to its underlying is not linear. 
+
+```{python}
+import matplotlib.pyplot as plt
+
+K = 100
+
+S = np.linspace(80, 120, 100)
+C = np.maximum(S-K, 0)
+
+delta = np.gradient(S, C)
+gamma = np.gradient(delta, S)
+
+plt.figure(figsize = (12, 6))
+
+plt.subplot(131)
+plt.plot(S, C, label = 'Option Price')
+plt.xlabel('Asset Price')
+plt.ylabel('Option Value')
+
+plt.subplot(132)
+plt.plot(S, delta, label = 'Delta')
+plt.xlabel('Asset Price')
+plt.ylabel('Delta')
+
+plt.subplot(133)
+plt.plot(S, gamma, label = 'Gamma')
+plt.xlabel('Asset Price')
+plt.ylabel('Gamma')
+
+plt.tight_layout()
+plt.show()
+```
 
 
 
