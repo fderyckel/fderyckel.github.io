@@ -1,0 +1,32 @@
+---
+title: "Discrete Probability Simulations in R"
+author: "Francois de Ryckel"
+date: "2023-11-14"
+categories: [statistics, code, analysis]
+editor: source
+date-modified: "2022-11-14"
+---
+
+The idea behind this post is to collect various numerical methods to simulate discrete probability problems. 
+
+# Expectation of a uniform variable. 
+
+Question: what is the expectation if one square a number that is picked at random out of a hat (with replacement) that contains the numbers 1 to 100.  
+
+```{r}
+expec <- mean(sample(1:100, size = 1000000, replace = TRUE)^2)
+print(expec)
+```
+
+The calculated expectation should be: $$\sum_{x=1}^{100} x^2 P(X=x) = \sum_{x=1}^{100} x^2 \frac{1}{n} = \frac{101 \cdot 201}{6} = 3383.5$$
+
+We could connect this to the [Jensen's inequality](../jensen-inequality/index.qmd) (as we are dealing with a convex function) and show that indeed the expectation of the function is greater than the function of the expectation: $\mathbb{E}[f(X)] \geq f(\mathbb{E}[X])$
+
+```{r}
+exp_square <- mean(sample(1:100, 1000000, replace = TRUE)^2)
+square_exp <- (mean(sample(1:100, 1000000, replace = TRUE)))^2
+
+print(exp_square)
+print(square_exp)
+```
+

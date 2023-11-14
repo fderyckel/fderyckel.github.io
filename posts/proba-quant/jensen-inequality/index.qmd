@@ -166,13 +166,23 @@ But the rate of change of the option price in regards to its underlying is not l
 
 ```{python}
 import matplotlib.pyplot as plt
+from scipy.stats import norm
 
-K = 100
+S0 = 100     # Initial stock price
+K = 100      # Strike price
+r = 0.05     # Risk-free rate
+T = 1.0      # Time to maturity
+sigma = 0.2  # Volatility
 
 S = np.linspace(80, 120, 100)
-C = np.maximum(S-K, 0)
 
-delta = np.gradient(S, C)
+# Black-Scholes call option price formula
+d1 = (np.log(S / K) + (r + (sigma**2) / 2) * T) / (sigma * np.sqrt(T))
+d2 = d1 - sigma * np.sqrt(T)
+
+C = S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+
+delta = np.gradient(C, S)
 gamma = np.gradient(delta, S)
 
 plt.figure(figsize = (12, 6))

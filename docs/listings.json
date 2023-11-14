@@ -21,6 +21,7 @@
       "/posts/quant-part1/random-behavior-assets/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",
+      "/posts/proba-quant/discrete-simulations/index.html",
       "/posts/stochastic-processes/index.html",
       "/posts/machine-learning-part1/kmeans-intro/index.html",
       "/posts/markov-chains/index.html",
@@ -51,6 +52,7 @@
   {
     "listing": "/probability.html",
     "items": [
+      "/posts/proba-quant/discrete-simulations/index.html",
       "/posts/proba-quant/jensen-inequality/index.html",
       "/posts/proba-quant/prob-quant01/index.html"
     ]

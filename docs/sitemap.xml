@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2023-10-28T10:58:58.808Z</lastmod>
+    <lastmod>2023-11-14T04:47:29.102Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -62,7 +62,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/jensen-inequality/index.html</loc>
-    <lastmod>2023-10-28T10:58:56.750Z</lastmod>
+    <lastmod>2023-11-14T04:43:01.030Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</loc>
@@ -78,7 +78,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/prob-quant01/index.html</loc>
-    <lastmod>2023-10-26T03:03:23.748Z</lastmod>
+    <lastmod>2023-11-14T04:47:20.418Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/xgboost-time-series/index.html</loc>
@@ -106,7 +106,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/algebra-quant/index.html</loc>
-    <lastmod>2023-10-26T03:03:41.591Z</lastmod>
+    <lastmod>2023-11-14T04:16:20.345Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/kmeans-regime-change/index.html</loc>
@@ -126,7 +126,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/probability.html</loc>
-    <lastmod>2023-10-28T10:58:57.046Z</lastmod>
+    <lastmod>2023-11-14T04:47:27.291Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
@@ -139,5 +139,9 @@
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
     <lastmod>2023-10-26T03:03:55.866Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
+    <lastmod>2023-11-14T04:47:26.958Z</lastmod>
   </url>
 </urlset>

@@ -151,7 +151,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#poisson-distribution" id="toc-poisson-distribution" class="nav-link active" data-scroll-target="#poisson-distribution">Poisson distribution</a></li>
+  <li><a href="#expectation-of-the-poisson-distribution" id="toc-expectation-of-the-poisson-distribution" class="nav-link active" data-scroll-target="#expectation-of-the-poisson-distribution">Expectation of the Poisson distribution</a></li>
+  <li><a href="#covariance-correlation" id="toc-covariance-correlation" class="nav-link" data-scroll-target="#covariance-correlation">Covariance &amp; correlation</a></li>
   </ul>
 </nav>
 </nav>
@@ -165,13 +166,22 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar <a href="../../../posts/algebra-quant/index.html">page on Algebra</a>.</p>
-<section id="poisson-distribution" class="level1">
-<h1>Poisson distribution</h1>
+<p>I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar <a href="../../../posts/algebra-quant/index.html">page on Algebra</a>. This first series is about discrete probability problems.</p>
+<section id="expectation-of-the-poisson-distribution" class="level1">
+<h1>Expectation of the Poisson distribution</h1>
 <p>Let’s <span class="math inline">\(X\)</span> be a Discrete Random Variable (DRV) such that <span class="math inline">\(X \sim Po(\lambda)\)</span>. Then <span class="math inline">\(P(X = x) = \frac{e^{-\lambda} \lambda^x}{x!}\)</span>. Let’s calculate the expectation of X.</p>
 <p><span class="math display">\[E[X]=\sum_{x=1}^{\infty} x P(X=x)=\sum_{x=1}^{\infty} x \frac{e^{-\lambda} \lambda^x}{x!} = e^{-\lambda} \sum_{x=1}^{\infty} \frac{\lambda^x}{(x-1)!}\]</span></p>
 <p><span class="math display">\[E[X]= e^{-\lambda} \lambda \sum_{x=1}^{\infty} \frac{\lambda^{x-1}}{(x-1)!} = e^{-\lambda} \lambda \sum_{x=0}^{\infty} \frac{\lambda^{x}}{(x)!}= e^{-\lambda} \lambda e^{\lambda} = \lambda\]</span></p>
-<p>The second to last step is just the <a href="../algebra-quant/index.qmd#$e^x$ as an infinite serie">McLaurin expansion</a> of <span class="math inline">\(e^x\)</span>.</p>
+<p>The second to last step is just the <a href="../../../posts/algebra-quant/index.html#$e^x$ as an infinite serie">McLaurin expansion</a> of <span class="math inline">\(e^x\)</span>.</p>
+</section>
+<section id="covariance-correlation" class="level1">
+<h1>Covariance &amp; correlation</h1>
+<p>Assuming <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables with mean <span class="math inline">\(\mu_x\)</span> and <span class="math inline">\(\mu_y\)</span>, by definition, we have <span id="eq-caovariance1"><span class="math display">\[Cov(X,Y) = \mathbb{E}[(X-\mu_x)(Y-\mu_y)] \tag{1}\]</span></span></p>
+<p>With some manipulations: <span class="math display">\[Cov(X,Y) = \mathbb{E}[XY - X \mu_y - Y \mu_x + \mu_x \mu_y] = \mathbb{E}[XY] - \mathbb{E}[X \mu_y] - \mathbb{E}[Y \mu_x] + \mathbb{E}[\mu_x \mu_y]\]</span></p>
+<p><span class="math inline">\(\mu_x\)</span> and <span class="math inline">\(\mu_y\)</span> are constant. So we can re-write above equation as</p>
+<p><span class="math display">\[Cov(X,Y) = \mathbb{E}[XY] - \mu_y \mathbb{E}[X] - \mu_x\mathbb{E}[Y] + \mathbb{E}[\mu_x \mu_y]\]</span></p>
+<p>Also, <span class="math inline">\(\mathbb{E}[\mu_x \mu_y] = \mu_x \mu_y\)</span> because the expectation of a constant is the constant itself. And <span class="math inline">\(\mathbb{E}[X] = \mu_x\)</span> and <span class="math inline">\(\mathbb{E}[Y] = \mu_y\)</span>. So let’s re-write</p>
+<p><span class="math display">\[Cov(X,Y) = \mathbb{E}[XY] - \mu_y \mu_x - \mu_x \mu_y + \mu_x \mu_y\]</span> <span id="eq-covariance2"><span class="math display">\[Cov(X,Y) = \mathbb{E}[XY] - \mu_y \mu_x \tag{2}\]</span></span></p>
 
 
 </section>

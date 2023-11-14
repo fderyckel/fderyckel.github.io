@@ -10,7 +10,127 @@
 <atom:link href="https://fderyckel.github.io/blog.html/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Curating notes from a Quant learning journey.</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Fri, 20 Oct 2023 17:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 13 Nov 2023 17:00:00 GMT</lastBuildDate>
+<item>
+  <title>Discrete Probability Simulations in R</title>
+  <dc:creator>Francois de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>The idea behind this post is to collect various numerical methods to simulate discrete probability problems.</p>
+<section id="expectation-of-a-uniform-variable." class="level1">
+<h1>Expectation of a uniform variable.</h1>
+<p>Question: what is the expectation if one square a number that is picked at random out of a hat (with replacement) that contains the numbers 1 to 100.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">expec <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(expec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3376.422</code></pre>
+</div>
+</div>
+<p>The calculated expectation should be: <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bx=1%7D%5E%7B100%7D%20x%5E2%20P(X=x)%20=%20%5Csum_%7Bx=1%7D%5E%7B100%7D%20x%5E2%20%5Cfrac%7B1%7D%7Bn%7D%20=%20%5Cfrac%7B101%20%5Ccdot%20201%7D%7B6%7D%20=%203383.5"></p>
+<p>We could connect this to the <a href="../../../posts/proba-quant/jensen-inequality/index.html">Jensen’s inequality</a> (as we are dealing with a convex function) and show that indeed the expectation of the function is greater than the function of the expectation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">exp_square <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb3-2">square_exp <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(exp_square)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3389.124</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(square_exp)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2550.72</code></pre>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>statistics</category>
+  <category>code</category>
+  <category>analysis</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</guid>
+  <pubDate>Mon, 13 Nov 2023 17:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Jensen’s Inequality</title>
   <dc:creator>Francois de Ryckel</dc:creator>
@@ -182,7 +302,7 @@ font-style: inherit;">for</span> outcome <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> outcomes]</span>
 <span id="cb4-8">payoffs</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>[1, 4, 9, 16, 25, 36]</code></pre>
 </div>
 </div>
@@ -281,8 +401,8 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean of the transformed outcomes is 18.44
-The transformed of the mean is 15.6816</code></pre>
+<pre><code>The mean of the transformed outcomes is 14.2
+The transformed of the mean is 11.0224</code></pre>
 </div>
 </div>
 </section>
@@ -388,14 +508,49 @@ background-color: null;
 font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> plt</span>
-<span id="cb14-2"></span>
-<span id="cb14-3">K <span class="op" style="color: #5E5E5E;
+<span id="cb14-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> scipy.stats <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> norm</span>
+<span id="cb14-3"></span>
+<span id="cb14-4">S0 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">100</span></span>
-<span id="cb14-4"></span>
-<span id="cb14-5">S <span class="op" style="color: #5E5E5E;
+font-style: inherit;">100</span>     <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initial stock price</span></span>
+<span id="cb14-5">K <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Strike price</span></span>
+<span id="cb14-6">r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>     <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Risk-free rate</span></span>
+<span id="cb14-7">T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Time to maturity</span></span>
+<span id="cb14-8">sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Volatility</span></span>
+<span id="cb14-9"></span>
+<span id="cb14-10">S <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -404,76 +559,119 @@ background-color: null;
 font-style: inherit;">120</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>)</span>
-<span id="cb14-6">C <span class="op" style="color: #5E5E5E;
+<span id="cb14-11"></span>
+<span id="cb14-12"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> np.maximum(S<span class="op" style="color: #5E5E5E;
+font-style: inherit;"># Black-Scholes call option price formula</span></span>
+<span id="cb14-13">d1 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-</span>K, <span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> (np.log(S <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">0</span>)</span>
-<span id="cb14-7"></span>
-<span id="cb14-8">delta <span class="op" style="color: #5E5E5E;
+font-style: inherit;">/</span> K) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> np.gradient(S, C)</span>
-<span id="cb14-9">gamma <span class="op" style="color: #5E5E5E;
+font-style: inherit;">+</span> (r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> T) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.sqrt(T))</span>
+<span id="cb14-14">d2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> d1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.sqrt(T)</span>
+<span id="cb14-15"></span>
+<span id="cb14-16">C <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> norm.cdf(d1) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> K <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> T) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> norm.cdf(d2)</span>
+<span id="cb14-17"></span>
+<span id="cb14-18">delta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.gradient(C, S)</span>
+<span id="cb14-19">gamma <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.gradient(delta, S)</span>
-<span id="cb14-10"></span>
-<span id="cb14-11">plt.figure(figsize <span class="op" style="color: #5E5E5E;
+<span id="cb14-20"></span>
+<span id="cb14-21">plt.figure(figsize <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">6</span>))</span>
-<span id="cb14-12"></span>
-<span id="cb14-13">plt.subplot(<span class="dv" style="color: #AD0000;
+<span id="cb14-22"></span>
+<span id="cb14-23">plt.subplot(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">131</span>)</span>
-<span id="cb14-14">plt.plot(S, C, label <span class="op" style="color: #5E5E5E;
+<span id="cb14-24">plt.plot(S, C, label <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Option Price'</span>)</span>
-<span id="cb14-15">plt.xlabel(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Asset Price'</span>)</span>
-<span id="cb14-16">plt.ylabel(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Option Value'</span>)</span>
-<span id="cb14-17"></span>
-<span id="cb14-18">plt.subplot(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">132</span>)</span>
-<span id="cb14-19">plt.plot(S, delta, label <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Delta'</span>)</span>
-<span id="cb14-20">plt.xlabel(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Asset Price'</span>)</span>
-<span id="cb14-21">plt.ylabel(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Delta'</span>)</span>
-<span id="cb14-22"></span>
-<span id="cb14-23">plt.subplot(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">133</span>)</span>
-<span id="cb14-24">plt.plot(S, gamma, label <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Gamma'</span>)</span>
 <span id="cb14-25">plt.xlabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Asset Price'</span>)</span>
 <span id="cb14-26">plt.ylabel(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Gamma'</span>)</span>
+font-style: inherit;">'Option Value'</span>)</span>
 <span id="cb14-27"></span>
-<span id="cb14-28">plt.tight_layout()</span>
-<span id="cb14-29">plt.show()</span></code></pre></div>
+<span id="cb14-28">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">132</span>)</span>
+<span id="cb14-29">plt.plot(S, delta, label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Delta'</span>)</span>
+<span id="cb14-30">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Asset Price'</span>)</span>
+<span id="cb14-31">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Delta'</span>)</span>
+<span id="cb14-32"></span>
+<span id="cb14-33">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">133</span>)</span>
+<span id="cb14-34">plt.plot(S, gamma, label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gamma'</span>)</span>
+<span id="cb14-35">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Asset Price'</span>)</span>
+<span id="cb14-36">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gamma'</span>)</span>
+<span id="cb14-37"></span>
+<span id="cb14-38">plt.tight_layout()</span>
+<span id="cb14-39">plt.show()</span></code></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="https://fderyckel.github.io/blog.html/posts/proba-quant/jensen-inequality/index_files/figure-html/cell-10-output-1.png" width="1141" height="566"></p>
 </div>
@@ -8007,680 +8205,6 @@ font-style: inherit;">import</span> skew, skewtest</span>
   <guid>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</guid>
   <pubDate>Tue, 01 Nov 2022 17:00:00 GMT</pubDate>
   <media:content url="https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/kurtosis.png" medium="image" type="image/png" height="70" width="144"/>
-</item>
-<item>
-  <title>Intro to Kmeans</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/kmeans-intro/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can use <a href="../../../posts/kmeans-regime-change/index.html">the post</a> on kmeans and regime change.</p>
-<p>As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of all the points belonging to that centroid. All the points belonging to a centroid makes a cluster: all the observations belonging to the k-centroid makes the k-cluster.</p>
-<p>The objective is, for a given number of centroids (i.e.&nbsp;k), to <strong>minimize the total within-cluster variation</strong> or intra cluster variation (distance from the observation to the centroid).</p>
-<p>The standard Kmeans algorithm aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids.</p>
-<p>First, we calculate the within-centroid sum of square: <span id="eq-sum-of-square-for-a-cluster"><img src="https://latex.codecogs.com/png.latex?W(C_k)%20=%20%5Csum_%7Bx_i%20%5Cin%20C_k%7D%20(x_i%20-%20%5Cmu_k)%5E2%20%5Ctag%7B1%7D"></span></p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?x_i"> is the ith-observation in our dataset</li>
-<li><img src="https://latex.codecogs.com/png.latex?k"> is the number of centroids and <img src="https://latex.codecogs.com/png.latex?C_k"> is the <img src="https://latex.codecogs.com/png.latex?k%5E%7Bth%7D"> centroid.</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cmu_k"> is the mean value of all the points assigned to the <img src="https://latex.codecogs.com/png.latex?C_k"> cluster. You get the mean of the centroid is a p-dimensional vector comprising the mean of each of the variables.</li>
-</ul>
-<p>The objective is to minimize the total within cluster variation, that is the total sum of the distance of each observations to its centroid and that for each of the k-centroids: <span id="eq-total-within-cluster-sum-of-square"><img src="https://latex.codecogs.com/png.latex?tot.withinss%20=%20%5Csum_%7Bk=1%7D%5Ek%20W(C_k)%20=%20%5Csum_%7Bk=1%7D%5Ek%20%5Csum_%7Bx_i%20%5Cin%20C_k%7D%20(x_i%20-%20%5Cmu_k)%5E2%20%20%20%5Ctag%7B2%7D"></span></p>
-<section id="the-kmeans-algorithms" class="level1">
-<h1>The Kmeans algorithms</h1>
-<p>Although there are 3 different ways to achieve the objective function, we’ll only explain the <em>Hartingan-Wonk algorithm</em> (1979).<br>
-It is noted that none of the algorithms guarantees a global minima. They all can be stuck into a local minima.</p>
-<ul>
-<li><strong>Step 1</strong> Choose the number of centroids</li>
-<li><strong>Step 2: Cluster assignment step</strong> All observations are randomly assigned a cluster (the first k centroids). Another way to start is to randomly pick k observations that will be used as first centroids in the given hyperspace.</li>
-<li><strong>Step 3: Calculate the centroid location</strong> Find the centroid location by calculating the mean value for each of the variables.</li>
-<li><strong>Step 4: Find distance to each centroids</strong> Find the distance between each observation and each centroid. Assign the centroid with minimum distance to that observation.</li>
-<li><strong>Step 5: Centroids update</strong> Recalculate the centroid location if there was a change of centroid mean. In other words: calculate a new mean for each centroids using all the <img src="https://latex.codecogs.com/png.latex?x_i%20%5Cin%20C_k">.</li>
-<li><strong>step 6: Reaching convergence</strong> Repeat step 4 and 5. Once the new mean is established, we calculate again, for each observations its closest centroid. Then calculate again a new mean. We reiterate this step this until each given centroids are not changing anymore (or the change is below a given threshold).</li>
-</ul>
-<p>Because of the initial random allocation of points to a cluster, results might differ. This is why in the <em>native</em> R <em>kmeans()</em> you can specify the <em>nstart</em> parameter and only the allocation providing the minimum distance will be kept.</p>
-<section id="kmean---hartingan-wonk-in-practice." class="level2">
-<h2 class="anchored" data-anchor-id="kmean---hartingan-wonk-in-practice.">Kmean - Hartingan-Wonk in practice.</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># setting up the problem </span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(tibble)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)</span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(glue)</span>
-<span id="cb1-6"></span>
-<span id="cb1-7">num_obs <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">50</span></span>
-<span id="cb1-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1234</span>)</span>
-<span id="cb1-9">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">runif</span>(num_obs, <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">runif</span>(num_obs, <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>))</span>
-<span id="cb1-10"></span>
-<span id="cb1-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Step 1: choose number of centroids</span></span>
-<span id="cb1-12">k <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span></span>
-<span id="cb1-13"></span>
-<span id="cb1-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">441</span>)</span>
-<span id="cb1-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># step 2: assign randomly each point to a cluster</span></span>
-<span id="cb1-16">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">centroid =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>k, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">n</span>(), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>))</span></code></pre></div>
-</div>
-<p>We are going to define a couple of function we will use more than once.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">calculate_centroid_mean <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(df) {</span>
-<span id="cb2-2">  yo <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(centroid) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-3">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean_x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mean</span>(x), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean_y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mean</span>(y)) </span>
-<span id="cb2-4">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#print(yo)</span></span>
-<span id="cb2-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">return</span>(yo)</span>
-<span id="cb2-6">}</span>
-<span id="cb2-7"></span>
-<span id="cb2-8">total_within_cluster_distance <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(df) {</span>
-<span id="cb2-9">  yo <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-10">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">distance =</span> (x <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> centroid_loc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>mean_x[centroid])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb2-11">                      (y <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> centroid_loc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>mean_y[centroid])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span>
-<span id="cb2-12">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">return</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(yo<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>distance))</span>
-<span id="cb2-13">}</span>
-<span id="cb2-14"></span>
-<span id="cb2-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># need to initialize an empty vector for the distance of the observation to a centroid</span></span>
-<span id="cb2-16">dist_centroid <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>()</span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Starting the iteration process </span></span>
-<span id="cb3-2"></span>
-<span id="cb3-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># step3: </span></span>
-<span id="cb3-4"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">## a: calculate mean of each centroids</span></span>
-<span id="cb3-5">centroid_loc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">calculate_centroid_mean</span>(df)</span>
-<span id="cb3-6"></span>
-<span id="cb3-7"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">## b: calculate sum of distance between each observation and its assigned cluster </span></span>
-<span id="cb3-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">print</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Initial sum of within-cluster distance is: '</span>, </span>
-<span id="cb3-9">           <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">total_within_cluster_distance</span>(df), <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Initial sum of within-cluster distance is: 3014.94</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">rd <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># to keep track on how many round / loops we are doing</span></span>
-<span id="cb5-2">i <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>     <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># to keep track on how many observations have not changed their centroids</span></span>
-<span id="cb5-3"></span>
-<span id="cb5-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># we shall be running the loop until we have no more change of centroids  </span></span>
-<span id="cb5-5"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">while</span> (i <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> num_obs) { </span>
-<span id="cb5-6">  </span>
-<span id="cb5-7">  i <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>   <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># we keep going with the process until no more change of centroids for all the observations</span></span>
-<span id="cb5-8">  </span>
-<span id="cb5-9">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Step 4: for each data point </span></span>
-<span id="cb5-10">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (obs <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>num_obs) { </span>
-<span id="cb5-11">    </span>
-<span id="cb5-12">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># for each centroid </span></span>
-<span id="cb5-13">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (centroid <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>k) { </span>
-<span id="cb5-14">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># find distance from the observation to the centroid </span></span>
-<span id="cb5-15">      dist_centroid[centroid] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sqrt</span>((df<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>x[obs] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> centroid_loc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>mean_x[centroid])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb5-16">                                     (df<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>y[obs] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> centroid_loc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>mean_y[centroid])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>) </span>
-<span id="cb5-17">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># print(glue('   The distance from point ', obs, ' to centroid ', centroid, ' is ', round(dist_centroid[centroid], 2))) </span></span>
-<span id="cb5-18">      } </span>
-<span id="cb5-19">    </span>
-<span id="cb5-20">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># assign the observation to its new centroid (based on min distance) </span></span>
-<span id="cb5-21">    prev_centroid <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> df<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>centroid[obs] </span>
-<span id="cb5-22">    post_centroid <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">which.min</span>(dist_centroid)  </span>
-<span id="cb5-23">    df<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>centroid[obs] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> post_centroid    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#assign the new centroid  </span></span>
-<span id="cb5-24">    </span>
-<span id="cb5-25">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (prev_centroid <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">!=</span> post_centroid) {  </span>
-<span id="cb5-26">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># we recaluate the centroid</span></span>
-<span id="cb5-27">      centroid_loc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">calculate_centroid_mean</span>(df)  </span>
-<span id="cb5-28">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">print</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'  The initial centroid for point '</span>, obs, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">' was '</span>, </span>
-<span id="cb5-29">                 prev_centroid, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'. It is now '</span>, post_centroid)) </span>
-<span id="cb5-30">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># print(centroid_loc) </span></span>
-<span id="cb5-31">    } <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span> {</span>
-<span id="cb5-32">      i <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> i <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb5-33">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#print('  No change in centroid')</span></span>
-<span id="cb5-34">    }</span>
-<span id="cb5-35">  }</span>
-<span id="cb5-36">  rd <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> rd <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb5-37">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">print</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Round '</span>, rd, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'  The new sum of within-cluster distance is: '</span>, </span>
-<span id="cb5-38">             <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">total_within_cluster_distance</span>(df), <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)))</span>
-<span id="cb5-39">}</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  The initial centroid for point 3 was 3. It is now 1
-  The initial centroid for point 5 was 2. It is now 3
-  The initial centroid for point 6 was 3. It is now 1
-  The initial centroid for point 8 was 1. It is now 2
-  The initial centroid for point 10 was 1. It is now 2
-  The initial centroid for point 11 was 1. It is now 2
-  The initial centroid for point 12 was 2. It is now 3
-  The initial centroid for point 13 was 2. It is now 3
-  The initial centroid for point 14 was 1. It is now 3
-  The initial centroid for point 15 was 2. It is now 3
-  The initial centroid for point 16 was 1. It is now 2
-  The initial centroid for point 19 was 1. It is now 3
-  The initial centroid for point 20 was 3. It is now 2
-  The initial centroid for point 21 was 1. It is now 3
-  The initial centroid for point 23 was 1. It is now 3
-  The initial centroid for point 24 was 1. It is now 2
-  The initial centroid for point 25 was 1. It is now 3
-  The initial centroid for point 26 was 2. It is now 1
-  The initial centroid for point 28 was 1. It is now 3
-  The initial centroid for point 30 was 3. It is now 2
-  The initial centroid for point 31 was 1. It is now 2
-  The initial centroid for point 32 was 1. It is now 2
-  The initial centroid for point 33 was 2. It is now 3
-  The initial centroid for point 34 was 1. It is now 2
-  The initial centroid for point 35 was 2. It is now 3
-  The initial centroid for point 37 was 3. It is now 2
-  The initial centroid for point 38 was 2. It is now 3
-  The initial centroid for point 39 was 3. It is now 1
-  The initial centroid for point 44 was 2. It is now 3
-  The initial centroid for point 45 was 2. It is now 3
-  The initial centroid for point 48 was 2. It is now 3
-  The initial centroid for point 49 was 2. It is now 3
-Round 2  The new sum of within-cluster distance is: 1594.37
-  The initial centroid for point 2 was 3. It is now 1
-  The initial centroid for point 3 was 1. It is now 2
-  The initial centroid for point 5 was 3. It is now 1
-  The initial centroid for point 9 was 3. It is now 1
-  The initial centroid for point 14 was 3. It is now 1
-  The initial centroid for point 17 was 1. It is now 3
-  The initial centroid for point 28 was 3. It is now 1
-  The initial centroid for point 37 was 2. It is now 3
-  The initial centroid for point 41 was 3. It is now 1
-  The initial centroid for point 44 was 3. It is now 1
-Round 3  The new sum of within-cluster distance is: 1146.17
-  The initial centroid for point 7 was 2. It is now 3
-  The initial centroid for point 12 was 3. It is now 1
-  The initial centroid for point 32 was 2. It is now 3
-Round 4  The new sum of within-cluster distance is: 1081.9
-  The initial centroid for point 18 was 2. It is now 3
-Round 5  The new sum of within-cluster distance is: 1071.19
-Round 6  The new sum of within-cluster distance is: 1071.19</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">print</span>(centroid_loc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  centroid  mean_x mean_y
-     &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1        1  4.41    -4.99
-2        2 -0.0601   5.27
-3        3 -5.04    -5.47</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(x, y)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb9-2">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(centroid))) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb9-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> centroid_loc, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> mean_x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> mean_y)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb9-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'none'</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/kmeans-intro/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">yoo <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">kmeans</span>(df[, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">centers =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>, </span>
-<span id="cb10-2">              <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">algorithm =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Hartigan-Wong'</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nstart =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>)</span>
-<span id="cb10-3">yoo<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>tot.withinss</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1017.417</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(broom)</span>
-<span id="cb12-2">df2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df</span>
-<span id="cb12-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">augment</span>(yoo, df2) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb12-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(x, y)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb12-5">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> .cluster)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb12-6">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as_tibble</span>(yoo<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>centers), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(x, y)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb12-7">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'none'</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/kmeans-intro/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-</section>
-<section id="the-parameters" class="level1">
-<h1>The parameters</h1>
-<p>While using K-means, there are 3 main parameters one can tune.</p>
-<ul>
-<li>the number of clusters: this is the main one to tune to avoid both under-fitting (too low of a K) or over-fitting (to high of a K). If K = equal number of observation, of course the total within cluster variation will be 0 and minimized!</li>
-<li>the number of iteration</li>
-<li>the number of start</li>
-</ul>
-<section id="number-of-clusters" class="level2">
-<h2 class="anchored" data-anchor-id="number-of-clusters">Number of clusters</h2>
-<section id="the-elbow-method" class="level3">
-<h3 class="anchored" data-anchor-id="the-elbow-method">The elbow method</h3>
-<p>The idea is to identify where does drop in the total within-cluster sum of square start to slowdown. Of course the total within-clusters sum of square decrease as the number of centroids increase. If we have n centroids (that is <img src="https://latex.codecogs.com/png.latex?n%20=%20k"> - as many centroids as observations), the total within-cluster sum of square will be 0. And if we have only one centroid, the total within-one-cluster sum of square will be the sum of square of the mean of each of the variables.<br>
-So when does adding a centroid does not significantly reduce the total within-cluster sum of square.</p>
-</section>
-<section id="the-silhouette-method" class="level3">
-<h3 class="anchored" data-anchor-id="the-silhouette-method">The silhouette method</h3>
-</section>
-</section>
-<section id="number-of-iterations" class="level2">
-<h2 class="anchored" data-anchor-id="number-of-iterations">Number of iterations</h2>
-</section>
-<section id="number-of-start" class="level2">
-<h2 class="anchored" data-anchor-id="number-of-start">Number of start</h2>
-</section>
-</section>
-<section id="vizualisation" class="level1">
-<h1>Vizualisation</h1>
-<p>A common trick is to use PCA and check the how well data are separated (in regards to their clusters) using the first 2 principal components dimensions.</p>
-</section>
-<section id="pro-con" class="level1">
-<h1>Pro &amp; Con</h1>
-<section id="con" class="level2">
-<h2 class="anchored" data-anchor-id="con">con</h2>
-<ul>
-<li>You don’t always know in advance thee number of centroids. You can use the <strong>elbow method</strong> or the <strong>silhouette method</strong> to determine the numbers of centroids you want.<br>
-</li>
-<li>because of the random initialization stage, results might not necessarily be reproducible. If results have to be reproduced, then you need to set a seed.</li>
-</ul>
-
-
-</section>
-</section>
-
- ]]></description>
-  <category>kmeans</category>
-  <category>code</category>
-  <category>analysis</category>
-  <category>model</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/kmeans-intro/index.html</guid>
-  <pubDate>Sun, 30 Oct 2022 17:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

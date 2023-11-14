@@ -7,9 +7,9 @@ editor: source
 date-modified: "2022-09-30"
 ---
 
-I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar [page on Algebra](../../algebra-quant/index.qmd).
+I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar [page on Algebra](../../algebra-quant/index.qmd).  This first series is about discrete probability problems.  
 
-# Poisson distribution
+# Expectation of the Poisson distribution
 
 Let's $X$ be a Discrete Random Variable (DRV) such that $X \sim Po(\lambda)$. Then $P(X = x) = \frac{e^{-\lambda} \lambda^x}{x!}$.  Let's calculate the expectation of X.  
 
@@ -17,9 +17,20 @@ $$E[X]=\sum_{x=1}^{\infty} x P(X=x)=\sum_{x=1}^{\infty} x \frac{e^{-\lambda} \la
 
 $$E[X]= e^{-\lambda} \lambda \sum_{x=1}^{\infty} \frac{\lambda^{x-1}}{(x-1)!} = e^{-\lambda} \lambda \sum_{x=0}^{\infty} \frac{\lambda^{x}}{(x)!}= e^{-\lambda} \lambda e^{\lambda} = \lambda$$
 
-The second to last step is just the [McLaurin expansion](../algebra-quant/index.qmd#$e^x$ as an infinite serie) of $e^x$.  
+The second to last step is just the [McLaurin expansion](../../algebra-quant/index.qmd#$e^x$ as an infinite serie) of $e^x$.  
 
+# Covariance & correlation 
 
+Assuming $X$ and $Y$ are random variables with mean $\mu_x$ and $\mu_y$, by definition, we have $$Cov(X,Y) = \mathbb{E}[(X-\mu_x)(Y-\mu_y)]$$ {#eq-caovariance1}  
 
+With some manipulations: 
+$$Cov(X,Y) = \mathbb{E}[XY - X \mu_y - Y \mu_x + \mu_x \mu_y] = \mathbb{E}[XY] - \mathbb{E}[X \mu_y] - \mathbb{E}[Y \mu_x] + \mathbb{E}[\mu_x \mu_y]$$
 
+$\mu_x$ and $\mu_y$ are constant.  So we can re-write above equation as 
 
+$$Cov(X,Y) = \mathbb{E}[XY] - \mu_y \mathbb{E}[X] - \mu_x\mathbb{E}[Y] + \mathbb{E}[\mu_x \mu_y]$$
+
+Also, $\mathbb{E}[\mu_x \mu_y] = \mu_x \mu_y$ because the expectation of a constant is the constant itself.  And $\mathbb{E}[X] = \mu_x$ and $\mathbb{E}[Y] = \mu_y$.  So let's re-write
+
+$$Cov(X,Y) = \mathbb{E}[XY] - \mu_y \mu_x - \mu_x \mu_y + \mu_x \mu_y$$
+$$Cov(X,Y) = \mathbb{E}[XY] - \mu_y \mu_x$$ {#eq-covariance2}
