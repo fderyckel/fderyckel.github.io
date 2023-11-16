@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2023-11-14T04:47:29.102Z</lastmod>
+    <lastmod>2023-11-16T05:33:44.248Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
-    <lastmod>2023-10-26T03:03:55.424Z</lastmod>
+    <lastmod>2023-11-14T06:17:03.901Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part3.html</loc>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/index.html</loc>
-    <lastmod>2023-10-26T03:03:53.892Z</lastmod>
+    <lastmod>2023-11-14T06:18:24.207Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-puzzle-01/index.html</loc>
@@ -22,11 +22,11 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/normality-returns/index.html</loc>
-    <lastmod>2023-10-26T03:03:50.898Z</lastmod>
+    <lastmod>2023-11-14T06:17:19.540Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/binomials_models/index.html</loc>
-    <lastmod>2023-10-26T03:03:47.993Z</lastmod>
+    <lastmod>2023-11-14T06:18:07.810Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/markov-chains/index.html</loc>
@@ -66,7 +66,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</loc>
-    <lastmod>2023-10-26T03:03:22.800Z</lastmod>
+    <lastmod>2023-11-16T05:33:41.960Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/03-autocorrelation/index.html</loc>
@@ -86,7 +86,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/kmeans-intro/index.html</loc>
-    <lastmod>2023-10-26T03:03:29.744Z</lastmod>
+    <lastmod>2023-11-14T05:52:28.767Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/linear-regression/index.html</loc>
@@ -106,7 +106,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/algebra-quant/index.html</loc>
-    <lastmod>2023-11-14T04:16:20.345Z</lastmod>
+    <lastmod>2023-11-14T05:44:28.074Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/kmeans-regime-change/index.html</loc>
@@ -118,19 +118,19 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/random-behavior-assets/index.html</loc>
-    <lastmod>2023-10-26T03:03:49.317Z</lastmod>
+    <lastmod>2023-11-14T06:17:08.913Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/brownian-motion/index.html</loc>
-    <lastmod>2023-10-26T03:03:52.045Z</lastmod>
+    <lastmod>2023-11-14T06:17:32.311Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/probability.html</loc>
-    <lastmod>2023-11-14T04:47:27.291Z</lastmod>
+    <lastmod>2023-11-14T05:52:24.348Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2023-10-26T03:03:54.262Z</lastmod>
+    <lastmod>2023-11-15T08:22:20.716Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -138,10 +138,14 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2023-10-26T03:03:55.866Z</lastmod>
+    <lastmod>2023-11-16T05:33:42.339Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
-    <lastmod>2023-11-14T04:47:26.958Z</lastmod>
+    <lastmod>2023-11-14T05:52:23.941Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</loc>
+    <lastmod>2023-11-15T08:22:20.334Z</lastmod>
   </url>
 </urlset>

@@ -12,6 +12,64 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Mon, 13 Nov 2023 17:00:00 GMT</lastBuildDate>
 <item>
+  <title>KNN</title>
+  <dc:creator>François de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Some very basic ML using KNN and python and the tidymodel framework.</p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>KNN stands for <em>K Nearest Neighbor</em>.</p>
+<p>KNN is not really a machine learning techniques in the sense that it trains a model. It can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
+<p>As mentioned, there is no training phase when using KNN. Instead, there is only prediction.<br>
+We take an observation and check the <strong>K</strong> observations next to it. We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/knn01.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">KNN illustration</figcaption>
+</figure>
+</div>
+<p>Looking at the above image, we can see that, using k=3, the 3 observations closest to the star (our data to be classified) are all brown circle. Hence we should classify the star as a brown circle instead of an orange rectangle.</p>
+<div class="callout callout-style-simple callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Scaling
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Because KNN use distance, it is important to scale the data as a pre-processing steps. Otherwise, features with big scale (let’s say price) will skew the distance against features with lower scale (let’s say percentage).</p>
+</div>
+</div>
+<section id="pros-cons-of-knn" class="level2">
+<h2 class="anchored" data-anchor-id="pros-cons-of-knn">Pros-Cons of KNN</h2>
+<section id="pros" class="level3">
+<h3 class="anchored" data-anchor-id="pros">Pros</h3>
+<ul>
+<li>KNN is non-parametric. It’s not making any assumptions on the the type of distribution of the data.</li>
+</ul>
+</section>
+<section id="cons" class="level3">
+<h3 class="anchored" data-anchor-id="cons">Cons</h3>
+
+
+</section>
+</section>
+</section>
+
+ ]]></description>
+  <category>ML</category>
+  <category>KNN</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</guid>
+  <pubDate>Mon, 13 Nov 2023 17:00:00 GMT</pubDate>
+</item>
+<item>
   <title>Discrete Probability Simulations in R</title>
   <dc:creator>Francois de Ryckel</dc:creator>
   <link>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</link>
@@ -7854,357 +7912,6 @@ font-style: inherit;">4</span>)</span></code></pre></div>
   <category>Markov Chain</category>
   <guid>https://fderyckel.github.io/blog.html/posts/stochastic-processes/index.html</guid>
   <pubDate>Fri, 11 Nov 2022 17:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>02 - Statistical Moments</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a <a href="../../../posts/quant-part1/normality-returns/index.html">previous post</a>, we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails).</p>
-<p>We’ll show these parameters using both R and python.</p>
-<p>We’ll use the SPY as a low-ish vol asset and AMD as an equity with higher vol.&nbsp;We only use the last 5 years of data (from 2018 and beyond)</p>
-<p>Let’s first load our libraries and the 2 data frame worth of prices.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(readr)    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># read_csv()</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># mutate(), filter()</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(lubridate)</span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb1-5"></span>
-<span id="cb1-6">df_spy <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'../../../raw_data/SPY.csv'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-7">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(date, adjClose) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(date) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-9">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">return =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(adjClose <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lag</span>(adjClose))) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-10">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">filter</span>(date <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'2018-01-01'</span>)</span>
-<span id="cb1-11"></span>
-<span id="cb1-12">df_amd <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'../../../raw_data/AMD.csv'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(date, adjClose) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(date) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-15">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">return =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(adjClose <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lag</span>(adjClose))) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-16">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">filter</span>(date <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'2018-01-01'</span>)</span></code></pre></div>
-</div>
-<section id="mean" class="level1">
-<h1>Mean</h1>
-<p>The mean is our first moment. We’ll cons</p>
-<p>Mathematically speaking, we define the mean as <img src="https://latex.codecogs.com/png.latex?%5Csum%5E%7Bn%7D_%7Bi=1%7D%20%5Cfrac%7Br_i%7D%7Bn%7D"></p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?r_i"> is the return of the i-th observation
-<ul>
-<li>using log return</li>
-</ul></li>
-<li><img src="https://latex.codecogs.com/png.latex?n"> is the number of observation</li>
-</ul>
-</section>
-<section id="standard-deviation" class="level1">
-<h1>Standard Deviation</h1>
-<p>Standard deviation is the second moment.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Csigma%20=%20%5Csqrt%7B%5Cfrac%7B%5Csum(x_i%20-%20%5Cmu)%5E2%7D%7Bn%7D%7D"> In the case of a sample: <img src="https://latex.codecogs.com/png.latex?s%20=%20%5Csqrt%7B%5Cfrac%7B(x_i%20-%20%5Cbar%7Bx%7D)%5E2%7D%7Bn-1%7D%7D"></p>
-<p>The variance is the square of the standard deviation. There is this neat little alternative expression of variance (I like the way it sounds).</p>
-<blockquote class="blockquote">
-<p>Variance is the difference between the mean of the square and the square of the mean.</p>
-</blockquote>
-<p>Here is how it goes:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2%20=%20%5Cfrac%7B%5Csum(x_i-%5Cmu)%5E2%7D%7Bn%7D%20=%20%5Cfrac%7B%5Csum(x_i)%5E2%7D%7Bn%7D%20-%202%20%5Cfrac%7B%5Csum(x_i%20%5Cmu)%7D%7Bn%7D%20+%20%5Cfrac%7B%5Csum(%5Cmu)%5E2%7D%7Bn%7D"></p>
-<p>Considering</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Csum(x_i%20%5Cmu)%7D%7Bn%7D%20=%20%5Cmu%20%5Cfrac%7B%5Csum(x_i)%7D%7Bn%7D%20=%20%5Cmu%20%5Cmu=%5Cmu%5E2"></li>
-<li>and considering <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Csum(%5Cmu)%5E2%7D%7Bn%7D%20=%20n%20%5Cfrac%7B%5Cmu%5E2%7D%7Bn%7D%20=%20%5Cmu%5E2">, we can re-write our variance like this</li>
-</ul>
-<p><img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2%20=%20%5Cfrac%7B%5Csum(x_i)%5E2%7D%7Bn%7D%20-%202%20%5Cmu%5E2%20+%20%5Cmu%5E2%20=%20%5Cfrac%7B%5Csum(x_i)%5E2%7D%7Bn%7D%20-%20%5Cmu%5E2"></p>
-</section>
-<section id="coefficient-of-variation" class="level1">
-<h1>Coefficient of variation</h1>
-<p>The coefficient of variation is not a statistical moment, but considering it is the ratio of the first 2 moments (ratio of sd to the mean), we include it here as well. It allows to compare together 2 different distributions (that have different mean and sd).</p>
-<p><img src="https://latex.codecogs.com/png.latex?CV%20=%20%5Cfrac%7B%5Csigma%7D%7B%5Cmu%7D"></p>
-<p>Or in the case of a sample <img src="https://latex.codecogs.com/png.latex?CV%20=%20%5Cfrac%7Bs%7D%7B%5Cbar%7Bx%7D%7D"></p>
-</section>
-<section id="skewness" class="level1">
-<h1>Skewness</h1>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Skewness
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Skewness is measure of asymmetry of a distribution (or actually lack of). How symmetric around the mean is the distribution? A standard normal distribution is perfectly symmetrical and has zero skew. Other examples of zero-skewed distributions are the T Distribution, the uniform distribution and the Laplace distribution. However, other distributions don’t have zero skew.</p>
-<p>In a zero skew distribution, the mean = the median and the distribution is symmetric.</p>
-</div>
-</div>
-<p>In a sense, skewness is quantifying for us how far is the median from the mean.</p>
-<p>Mathematically, we define skewness as</p>
-<p><span id="eq-skewness-pop"><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cfrac%7B1%7D%7Bn%7D%20%5Csum(x_i%20-%20%5Cbar%7Bx%7D)%5E3%7D%7B%5Csqrt%7B%20%5Cleft(%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum(x_i%20-%20%5Cbar%7Bx%7D)%5E2%20%5Cright)%5E3%7D%7D%20%5Ctag%7B1%7D"></span></p>
-<p>In the case of a sample, we’ll multiply Equation&nbsp;2 by a factor of <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Csqrt%7Bn(n-1)%7D%7D%7Bn-2%7D"></p>
-<ul>
-<li>skenwess = 0 ==&gt; normallly distributed</li>
-<li>$ -0.5 skewness $ ==&gt; moderately skew</li>
-<li>$$</li>
-</ul>
-</section>
-<section id="kurtosis" class="level1">
-<h1>Kurtosis</h1>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Kurtosis
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Kurtosis is a measure that describes the shape of a distribution’s tails in relation to its overall shape. A distribution can be infinitely peaked with low kurtosis, and a distribution can be perfectly flat-topped with infinite kurtosis. Thus, kurtosis measures “tailedness,” not “peakedness.”</p>
-</div>
-</div>
-<p>Because, we raised the difference of a data point to its mean to the 4th power, it is really the data points far away from the mean that do participate to the kurtosis.</p>
-<blockquote class="blockquote">
-<p>“increasing kurtosis is associated with the “movement of probability mass from the shoulders of a distribution into its center and tails.” (Someone important who got published and knew his stuff!)</p>
-</blockquote>
-<p>Mathematically, we define kurtosis as</p>
-<p><span id="eq-skewness-pop"><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cfrac%7B1%7D%7Bn%7D%20%5Csum(x_i%20-%20%5Cbar%7Bx%7D)%5E4%7D%7B%20%5Cleft(%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum(x_i%20-%20%5Cbar%7Bx%7D)%5E2%20%5Cright)%5E2%7D%20%5Ctag%7B2%7D"></span></p>
-<p>Some statistical packages are providing <strong>excess kurtosis</strong> by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0.</p>
-<p>There are 3 categories of kurtosis: leptokurtic (positive excess kurtosis), mesokurtic (aka normal distribution), platykurtic. <img src="https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/kurtosis.png" class="img-fluid" alt="Type of Kurtosis"></p>
-<ul>
-<li>A kurtosis greater than 3 =&gt; leptokurtic</li>
-<li>A kurtosis around 3 =&gt; mesokurtic</li>
-<li>A kurtosis less than 3 =&gt; platykurtic</li>
-</ul>
-<p>A Student’s T distribution with degree of freedom 4 has infinite kurtosis (huge peak and tails + narrow shoulders)</p>
-<p>Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.</p>
-</section>
-<section id="using-python" class="level1">
-<h1>Using Python</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> np</span>
-<span id="cb2-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> pd</span>
-<span id="cb2-3"></span>
-<span id="cb2-4">amd <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'../../../raw_data/AMD.csv'</span>)</span>
-<span id="cb2-5"></span>
-<span id="cb2-6">x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> amd[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'adjClose'</span>]</span>
-<span id="cb2-7"></span>
-<span id="cb2-8">returns_21d <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.log(x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> x.shift(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">21</span>)).dropna()</span>
-<span id="cb2-9"></span>
-<span id="cb2-10">mean_21dret <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.mean(returns_21d)</span>
-<span id="cb2-11">std_21dret <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.std(returns_21d)</span>
-<span id="cb2-12"></span>
-<span id="cb2-13"><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"The mean rolling 21 days return is: </span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%s</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">round</span>(mean_21dret, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>The mean rolling 21 days return is: -0.00594</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"The standard deviation of the rolling 21 days return is: </span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%s</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%</span><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">round</span>(std_21dret, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>The standard deviation of the rolling 21 days return is: 0.1832</code></pre>
-</div>
-</div>
-<p>The standard deviation is quite bigger than the mean. An histogram of the returns will confirm that.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> plt</span>
-<span id="cb6-2"></span>
-<span id="cb6-3">plt.hist(returns_21d, bins <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'rice'</span>, label <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Rolling 21-days return'</span>)</span>
-<span id="cb6-4">plt.show()</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="614"></p>
-</div>
-</div>
-<p>We are seeing a larger left tail with indeed the mean looking around 0. An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">plt.boxplot(returns_21d, labels <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Rolling 21-days return'</span>])</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x17d63b9d0&gt;, &lt;matplotlib.lines.Line2D object at 0x17d63bc70&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x17d63bf10&gt;, &lt;matplotlib.lines.Line2D object at 0x17979e1f0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x17d63b730&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x17979e490&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x17979e730&gt;], 'means': []}</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">plt.show()</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> scipy.stats <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> skew, skewtest</span>
-<span id="cb10-2"></span>
-<span id="cb10-3">skew(returns_21d)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.21432056577181507</code></pre>
-</div>
-</div>
-<p>The skew value is quite large and negative which confirms the fat left tail we saw on the histogram</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">skewtest(returns_21d)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>SkewtestResult(statistic=6.477804949429641, pvalue=9.306654969735504e-11)</code></pre>
-</div>
-</div>
-<p>Very small p-value. We reject the null-hypothesis. The distribution is not symetrical.</p>
-
-
-</section>
-
- ]]></description>
-  <category>statistics</category>
-  <category>Mean</category>
-  <category>Skewness</category>
-  <category>Kurtosis</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</guid>
-  <pubDate>Tue, 01 Nov 2022 17:00:00 GMT</pubDate>
-  <media:content url="https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/kurtosis.png" medium="image" type="image/png" height="70" width="144"/>
 </item>
 </channel>
 </rss>

@@ -1,0 +1,44 @@
+---
+title: "KNN"
+author: "François de Ryckel"
+date: "2023-11-14"
+categories: [ML, KNN]
+description: 'Using KNN in both python and R'
+editor: source
+date-modified: "2023-11-14"
+---
+
+Some very basic ML using KNN and python and the tidymodel framework. 
+
+# Introduction 
+
+KNN stands for *K Nearest Neighbor*.  
+
+KNN is not really a machine learning techniques in the sense that it trains a model. It can be used for both classification and regression.  The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).  
+
+As mentioned, there is no training phase when using KNN.  Instead, there is only prediction.  
+We take an observation and check the **K** observations next to it.  We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.
+
+![KNN illustration](knn01.png) 
+
+Looking at the above image, we can see that, using k=3, the 3 observations closest to the star (our data to be classified) are all brown circle.  Hence we should classify the star as a brown circle instead of an orange rectangle. 
+
+::: {.callout-caution appearance="simple"} 
+
+## Scaling
+
+Because KNN use distance, it is important to scale the data as a pre-processing steps.  Otherwise, features with big scale (let's say price) will skew the distance against features with lower scale (let's say percentage).  
+
+:::
+
+## Pros-Cons of KNN 
+
+### Pros 
+
+* KNN is non-parametric. It's not making any assumptions on the the type of distribution of the data. 
+
+### Cons
+
+
+
+

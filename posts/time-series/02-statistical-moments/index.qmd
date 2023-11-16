@@ -94,6 +94,8 @@ In a zero skew distribution, the mean = the median and the distribution is symme
 
 :::
 
+![Illustration of skewness](skewness.png)
+
 In a sense, skewness is quantifying for us how far is the median from the mean.  
 
 Mathematically, we define skewness as 
@@ -102,10 +104,11 @@ $$\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - 
 
 In the case of a sample, we'll multiply @eq-skewness-pop by a factor of $\frac{\sqrt{n(n-1)}}{n-2}$
 
-* skenwess = 0 ==> normallly distributed
-* $ -0.5 \leq skewness \leq 0.5 $  ==> moderately skew
-* $$
+* skenwess = 0 ==> normally distributed
+* $-0.5 \leq skewness \leq 0.5$  ==> moderately skewed
+* $skewness \leq -1$ or $skewness \geq 1$ ==> highly skewed
 
+In finance, understanding skewness can help investors understand probable future outcomes. Negative skewness (left-tail) in investment returns would indicate a greater probability of large losses, while positive skewness (right-tail) would indicate a higher chance of large gains.
 
 # Kurtosis 
 
@@ -123,7 +126,7 @@ Because, we raised the difference of a data point to its mean to the 4th power, 
 
 Mathematically, we define kurtosis as 
 
-$$\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2}$$ {#eq-skewness-pop}
+$$\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2}$$ {#eq-kurtosis-pop}
 
 Some statistical packages are providing **excess kurtosis** by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0. 
 
@@ -138,6 +141,10 @@ A Student's T distribution with degree of freedom 4 has infinite kurtosis (huge 
 
 Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.  
 
+Kurtosis helps understand the extremities in the data by measuring the “tailedness.” High kurtosis (‘Leptokurtic’ data) indicates a distribution with tail data exceeding the tails of the normal distribution. This means there are more chances of outliers, indicating a “heavy-tailed” distribution and potentially higher risk in financial contexts.
+Especially in finance, kurtosis is critical to assess market volatility. Higher kurtosis indicates more frequent significant market movements than expected for a normal distribution.
+
+
 # Using Python
 
 ```{python}
@@ -148,16 +155,21 @@ amd = pd.read_csv('../../../raw_data/AMD.csv')
 
 x = amd['adjClose']
 
-returns_21d = np.log(x / x.shift(21)).dropna()
+returns_21d = (x / x.shift(21) - 1).dropna()
+returns_21d_log = np.log(x / x.shift(21)).dropna()
 
 mean_21dret = np.mean(returns_21d)
+mean_21d_log_ret = np.mean(returns_21d_log)
 std_21dret = np.std(returns_21d)
+std_21d_log_ret = np.std(returns_21d_log)
 
 print("The mean rolling 21 days return is: %s" % round(mean_21dret, 5))
+print("The mean rolling 21 days log return is: %s" % round(mean_21d_log_ret, 5))
 print("The standard deviation of the rolling 21 days return is: %s" %round(std_21dret, 5))
+print("The standard deviation of the rolling 21 days return is: %s" %round(std_21d_log_ret, 5))
 ```
 
-The standard deviation is quite bigger than the mean.  An histogram of the returns will confirm that. 
+An histogram of the returns will help visualize the center and spread of the data. 
 
 ```{python}
 import matplotlib.pyplot as plt
@@ -166,7 +178,7 @@ plt.hist(returns_21d, bins = 'rice', label = 'Rolling 21-days return')
 plt.show()
 ```
 
-We are seeing a larger left tail with indeed the mean looking around 0. 
+We are seeing a larger right tail with indeed the mean looking around 0. 
 An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot. 
 
 ```{python}
@@ -177,12 +189,17 @@ plt.show()
 
 
 ```{python}
-from scipy.stats import skew, skewtest
+from scipy.stats import skew, skewtest, kurtosis
 
-skew(returns_21d)
+print('The skew of 21-day returns is: %f' % round(skew(returns_21d), 3))
+print('The kurtosis of 21-day returns is %f' % round(kurtosis(returns_21d), 3))
+
+# now checking on log returns
+print('The skew of 21-day log returns is: %f' % round(skew(returns_21d_log), 3))
+print('The kurtosis of 21-day log returns is %f' % round(kurtosis(returns_21d_log), 3))
 ```
 
-The skew value is quite large and negative which confirms the fat left tail we saw on the histogram 
+The skew value is quite large and positive which confirms the right tail of the histogram 
 
 ```{python}
 skewtest(returns_21d)
@@ -190,4 +207,130 @@ skewtest(returns_21d)
 
 Very small p-value.  We reject the null-hypothesis.  The distribution is not symetrical. 
 
+# Transformation to reduce skewness and kurtosis  
+
+Why do we care about skewness and kurtosis?  Many of the statistical tests and machine learning algorithms are making assumptions on the type of distribution (often assuming the data are normally distributed).  Skewness and kurtosis are part of the tool box to check the normality of the data. 
+
+There are 2 types of transformation one can do to transform data to a more normal distribution.
+
+Let's consider [weekly oil price](https://fred.stlouisfed.org/series/WCOILWTICO) (as per the FED Bank).  I am using here a commodity as they are known to be positively skewed (as opposed to equities which tends to be negatively skewed)
+
+## Log-transformations 
+
+Log transformations tends to reduce the spread of the data.  They are appropriate for **right-skewed data** that is the tail is on the right side of the data. Majority of the data are on the left side with few extreme data on the right side.  
+In the case of left-skewed data, a log transformation will accentuate that skewness even more. 
+
+Also you cannot log negative values (duh!)
+
+The effect of a log transformation on dummy data looks like 
+![Log transformation on dummy data](log-dummy-data.png)
+
+The points that were all close to each other are now more spread out.  For low values, the log curve is pretty steep in increase the spread.  And for the more extreme values (on the right side) log bring them closer to each others (curve at higher values is less steep, lower gradient). 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(readr)
+library(dplyr)
+
+w_oil <- read_csv('../../../raw_data/WCOILWTICO.csv') |> 
+  mutate(w_log_return = log(WCOILWTICO / lag(WCOILWTICO)), 
+         w_return = WCOILWTICO / lag(WCOILWTICO))
+
+library(moments)
+skewness(w_oil$w_return, na.rm = T)
+kurtosis(w_oil$w_return, na.rm = T)
+
+library(ggplot2)
+
+ggplot(w_oil, aes(x = w_return)) + 
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.3, fill = 'blue') + 
+  geom_density()
+```
+
+Applying now the same process (histogram, skewness and kurtosis) on our log transformed returns and checking the results. 
+
+```{r}
+#| warning: false
+skewness(w_oil$w_log_return, na.rm = T)
+kurtosis(w_oil$w_log_return, na.rm = T)
+
+ggplot(w_oil, aes(x = w_log_return)) + 
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.3, fill = 'blue') + 
+  geom_density()
+```
+
+Indeed we have a slightly more normal distribution of data (although, we still have both skewness and kurtosis)
+
+## Box-Cox transformation 
+
+he Box-Cox transformation is a statistical technique used to transform non-normal data into a more normal distribution. It is named after George Box and John Tukey, who introduced the method in 1964.
+
+The Box-Cox transformation is based on the idea that many non-normal distributions can be approximated by a power transformation of a normal distribution. The power transformation is given by:
+
+$$\begin{equation}
+Y_i^{(\lambda)} = 
+\left\{ \begin{aligned}
+\frac{Y_i^{\lambda} -1}{\lambda} \; \space (\lambda \neq 0) \\
+log(Y_i) \; \space (\lambda = 0)
+\end{aligned}\right.
+\end{equation}$$
+
+If $\lambda$ equal ... 
+
+* 2: square transformation
+* 1: no transformation needed; produces results identical to original data
+* 0.50: square root transformation
+* 0.33: cube root transformation
+* 0.00: natural log transformation
+* -0.50: reciprocal square root transformation
+* -1.00: reciprocal (inverse) transformation 
+
+Once data have been transformed, we will need to apply the inverse transformed back at some point.  The inverse transformation is using the log function (inverse of exponent!)
+
+$$\begin{equation}
+Y_i = 
+\left\{ \begin{aligned}
+exp \left(\frac{ log(1 + \lambda Y_i^{(\lambda)})}{\lambda} \right) \; \space (\lambda \neq 0) \\
+exp(Y_i^{\lambda}) \; \space (\lambda = 0)
+\end{aligned}\right.
+\end{equation}$$
+
+How is lambda chosen?  Using maximum likelihood. 
+
+Let's apply the transformation to our oil data using the *tidymodel* approach with the *recipes* library. 
+
+```{r}
+#| message: false
+#| warning: false
+
+library(recipes)
+
+dat <- w_oil |> na.omit() |> select(w_return)
+
+recipe_bc <- recipe(~ w_return, data = dat) |> 
+  step_BoxCox(w_return) |> 
+  # the estimating of lambda step
+  prep(training = dat, retain = TRUE)
+
+# to check the recipe steps
+tidy(recipe_bc)
+# to check the estimation of lambda
+tidy(recipe_bc, number = 1)
+
+# transforming the data using the estimated lambda
+w_oil_bc <- juice(recipe_bc)
+
+w_oil$w_return_bc <- c(NA, w_oil_bc$w_return)
+
+skewness(w_oil$w_return_bc, na.rm = T)
+kurtosis(w_oil$w_return_bc, na.rm = T)
+
+library(ggplot2)
+
+ggplot(w_oil, aes(x = w_return_bc)) + 
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.3, fill = 'blue') + 
+  geom_density()
+```
 

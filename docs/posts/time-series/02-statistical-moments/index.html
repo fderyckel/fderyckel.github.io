@@ -200,6 +200,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#skewness" id="toc-skewness" class="nav-link" data-scroll-target="#skewness">Skewness</a></li>
   <li><a href="#kurtosis" id="toc-kurtosis" class="nav-link" data-scroll-target="#kurtosis">Kurtosis</a></li>
   <li><a href="#using-python" id="toc-using-python" class="nav-link" data-scroll-target="#using-python">Using Python</a></li>
+  <li><a href="#transformation-to-reduce-skewness-and-kurtosis" id="toc-transformation-to-reduce-skewness-and-kurtosis" class="nav-link" data-scroll-target="#transformation-to-reduce-skewness-and-kurtosis">Transformation to reduce skewness and kurtosis</a>
+  <ul class="collapse">
+  <li><a href="#log-transformations" id="toc-log-transformations" class="nav-link" data-scroll-target="#log-transformations">Log-transformations</a></li>
+  <li><a href="#box-cox-transformation" id="toc-box-cox-transformation" class="nav-link" data-scroll-target="#box-cox-transformation">Box-Cox transformation</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -286,15 +291,22 @@ Skewness
 <p>In a zero skew distribution, the mean = the median and the distribution is symmetric.</p>
 </div>
 </div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="skewness.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Illustration of skewness</figcaption>
+</figure>
+</div>
 <p>In a sense, skewness is quantifying for us how far is the median from the mean.</p>
 <p>Mathematically, we define skewness as</p>
 <p><span id="eq-skewness-pop"><span class="math display">\[\frac{\frac{1}{n} \sum(x_i - \bar{x})^3}{\sqrt{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^3}} \tag{1}\]</span></span></p>
-<p>In the case of a sample, we’ll multiply <a href="#eq-skewness-pop">Equation&nbsp;2</a> by a factor of <span class="math inline">\(\frac{\sqrt{n(n-1)}}{n-2}\)</span></p>
+<p>In the case of a sample, we’ll multiply <a href="#eq-skewness-pop">Equation&nbsp;1</a> by a factor of <span class="math inline">\(\frac{\sqrt{n(n-1)}}{n-2}\)</span></p>
 <ul>
-<li>skenwess = 0 ==&gt; normallly distributed</li>
-<li>$ -0.5 skewness $ ==&gt; moderately skew</li>
-<li>$$</li>
+<li>skenwess = 0 ==&gt; normally distributed</li>
+<li><span class="math inline">\(-0.5 \leq skewness \leq 0.5\)</span> ==&gt; moderately skewed</li>
+<li><span class="math inline">\(skewness \leq -1\)</span> or <span class="math inline">\(skewness \geq 1\)</span> ==&gt; highly skewed</li>
 </ul>
+<p>In finance, understanding skewness can help investors understand probable future outcomes. Negative skewness (left-tail) in investment returns would indicate a greater probability of large losses, while positive skewness (right-tail) would indicate a higher chance of large gains.</p>
 </section>
 <section id="kurtosis" class="level1">
 <h1>Kurtosis</h1>
@@ -316,7 +328,7 @@ Kurtosis
 <p>“increasing kurtosis is associated with the “movement of probability mass from the shoulders of a distribution into its center and tails.” (Someone important who got published and knew his stuff!)</p>
 </blockquote>
 <p>Mathematically, we define kurtosis as</p>
-<p><span id="eq-skewness-pop"><span class="math display">\[\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2} \tag{2}\]</span></span></p>
+<p><span id="eq-kurtosis-pop"><span class="math display">\[\frac{\frac{1}{n} \sum(x_i - \bar{x})^4}{ \left( \frac{1}{n} \sum(x_i - \bar{x})^2 \right)^2} \tag{2}\]</span></span></p>
 <p>Some statistical packages are providing <strong>excess kurtosis</strong> by subtracting 3 to the kurtosis value. So for a data set that is perfectly normally distributed, we expect the excess kurtosis to be 0.</p>
 <p>There are 3 categories of kurtosis: leptokurtic (positive excess kurtosis), mesokurtic (aka normal distribution), platykurtic. <img src="kurtosis.png" class="img-fluid" alt="Type of Kurtosis"></p>
 <ul>
@@ -326,6 +338,7 @@ Kurtosis
 </ul>
 <p>A Student’s T distribution with degree of freedom 4 has infinite kurtosis (huge peak and tails + narrow shoulders)</p>
 <p>Most equities display a leptokurtic behavior (skinny at the mean - most returns are clustered around the mean) and narrow shoulders and fat tails.</p>
+<p>Kurtosis helps understand the extremities in the data by measuring the “tailedness.” High kurtosis (‘Leptokurtic’ data) indicates a distribution with tail data exceeding the tails of the normal distribution. This means there are more chances of outliers, indicating a “heavy-tailed” distribution and potentially higher risk in financial contexts. Especially in finance, kurtosis is critical to assess market volatility. Higher kurtosis indicates more frequent significant market movements than expected for a normal distribution.</p>
 </section>
 <section id="using-python" class="level1">
 <h1>Using Python</h1>
@@ -337,59 +350,221 @@ Kurtosis
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> amd[<span class="st">'adjClose'</span>]</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>returns_21d <span class="op">=</span> np.log(x <span class="op">/</span> x.shift(<span class="dv">21</span>)).dropna()</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>mean_21dret <span class="op">=</span> np.mean(returns_21d)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>std_21dret <span class="op">=</span> np.std(returns_21d)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>returns_21d <span class="op">=</span> (x <span class="op">/</span> x.shift(<span class="dv">21</span>) <span class="op">-</span> <span class="dv">1</span>).dropna()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>returns_21d_log <span class="op">=</span> np.log(x <span class="op">/</span> x.shift(<span class="dv">21</span>)).dropna()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>mean_21dret <span class="op">=</span> np.mean(returns_21d)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>mean_21d_log_ret <span class="op">=</span> np.mean(returns_21d_log)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>std_21dret <span class="op">=</span> np.std(returns_21d)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>std_21d_log_ret <span class="op">=</span> np.std(returns_21d_log)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean rolling 21 days return is: -0.00594</code></pre>
+<pre><code>The mean rolling 21 days return is: 0.01117</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days log return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21d_log_ret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The mean rolling 21 days log return is: -0.00594</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The standard deviation of the rolling 21 days return is: 0.19248</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21d_log_ret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>The standard deviation of the rolling 21 days return is: 0.1832</code></pre>
 </div>
 </div>
-<p>The standard deviation is quite bigger than the mean. An histogram of the returns will confirm that.</p>
+<p>An histogram of the returns will help visualize the center and spread of the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.hist(returns_21d, bins <span class="op">=</span> <span class="st">'rice'</span>, label <span class="op">=</span> <span class="st">'Rolling 21-days return'</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.hist(returns_21d, bins <span class="op">=</span> <span class="st">'rice'</span>, label <span class="op">=</span> <span class="st">'Rolling 21-days return'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="614"></p>
 </div>
 </div>
-<p>We are seeing a larger left tail with indeed the mean looking around 0. An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot.</p>
+<p>We are seeing a larger right tail with indeed the mean looking around 0. An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x17d63b9d0&gt;, &lt;matplotlib.lines.Line2D object at 0x17d63bc70&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x17d63bf10&gt;, &lt;matplotlib.lines.Line2D object at 0x17979e1f0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x17d63b730&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x17979e490&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x17979e730&gt;], 'means': []}</code></pre>
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x17c91c100&gt;, &lt;matplotlib.lines.Line2D object at 0x17c91c3a0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x17c91c640&gt;, &lt;matplotlib.lines.Line2D object at 0x17c91c8e0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x17c906e20&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x17c91cb80&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x17c91ce20&gt;], 'means': []}</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skew, skewtest</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>skew(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skew, skewtest, kurtosis</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The skew of 21-day returns is: </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(skew(returns_21d), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.21432056577181507</code></pre>
+<pre><code>The skew of 21-day returns is: 1.122000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The kurtosis of 21-day returns is </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(kurtosis(returns_21d), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The kurtosis of 21-day returns is 3.690000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now checking on log returns</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The skew of 21-day log returns is: </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(skew(returns_21d_log), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The skew of 21-day log returns is: 0.214000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The kurtosis of 21-day log returns is </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(kurtosis(returns_21d_log), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The kurtosis of 21-day log returns is 0.973000</code></pre>
 </div>
 </div>
-<p>The skew value is quite large and negative which confirms the fat left tail we saw on the histogram</p>
+<p>The skew value is quite large and positive which confirms the right tail of the histogram</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>skewtest(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>skewtest(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SkewtestResult(statistic=6.477804949429641, pvalue=9.306654969735504e-11)</code></pre>
+<pre><code>SkewtestResult(statistic=28.030054369118826, pvalue=6.993000434657173e-173)</code></pre>
 </div>
 </div>
 <p>Very small p-value. We reject the null-hypothesis. The distribution is not symetrical.</p>
+</section>
+<section id="transformation-to-reduce-skewness-and-kurtosis" class="level1">
+<h1>Transformation to reduce skewness and kurtosis</h1>
+<p>Why do we care about skewness and kurtosis? Many of the statistical tests and machine learning algorithms are making assumptions on the type of distribution (often assuming the data are normally distributed). Skewness and kurtosis are part of the tool box to check the normality of the data.</p>
+<p>There are 2 types of transformation one can do to transform data to a more normal distribution.</p>
+<p>Let’s consider <a href="https://fred.stlouisfed.org/series/WCOILWTICO">weekly oil price</a> (as per the FED Bank). I am using here a commodity as they are known to be positively skewed (as opposed to equities which tends to be negatively skewed)</p>
+<section id="log-transformations" class="level2">
+<h2 class="anchored" data-anchor-id="log-transformations">Log-transformations</h2>
+<p>Log transformations tends to reduce the spread of the data. They are appropriate for <strong>right-skewed data</strong> that is the tail is on the right side of the data. Majority of the data are on the left side with few extreme data on the right side.<br>
+In the case of left-skewed data, a log transformation will accentuate that skewness even more.</p>
+<p>Also you cannot log negative values (duh!)</p>
+<p>The effect of a log transformation on dummy data looks like <img src="log-dummy-data.png" class="img-fluid" alt="Log transformation on dummy data"></p>
+<p>The points that were all close to each other are now more spread out. For low values, the log curve is pretty steep in increase the spread. And for the more extreme values (on the right side) log bring them closer to each others (curve at higher values is less steep, lower gradient).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>w_oil <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../../../raw_data/WCOILWTICO.csv'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">w_log_return =</span> <span class="fu">log</span>(WCOILWTICO <span class="sc">/</span> <span class="fu">lag</span>(WCOILWTICO)), </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">w_return =</span> WCOILWTICO <span class="sc">/</span> <span class="fu">lag</span>(WCOILWTICO))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">skewness</span>(w_oil<span class="sc">$</span>w_return, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 27.9621</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kurtosis</span>(w_oil<span class="sc">$</span>w_return, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1081.682</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(w_oil, <span class="fu">aes</span>(<span class="at">x =</span> w_return)) <span class="sc">+</span> </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">'blue'</span>) <span class="sc">+</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-5.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Applying now the same process (histogram, skewness and kurtosis) on our log transformed returns and checking the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skewness</span>(w_oil<span class="sc">$</span>w_log_return, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -3.073457</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kurtosis</span>(w_oil<span class="sc">$</span>w_log_return, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 336.4981</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(w_oil, <span class="fu">aes</span>(<span class="at">x =</span> w_log_return)) <span class="sc">+</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">'blue'</span>) <span class="sc">+</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Indeed we have a slightly more normal distribution of data (although, we still have both skewness and kurtosis)</p>
+</section>
+<section id="box-cox-transformation" class="level2">
+<h2 class="anchored" data-anchor-id="box-cox-transformation">Box-Cox transformation</h2>
+<p>he Box-Cox transformation is a statistical technique used to transform non-normal data into a more normal distribution. It is named after George Box and John Tukey, who introduced the method in 1964.</p>
+<p>The Box-Cox transformation is based on the idea that many non-normal distributions can be approximated by a power transformation of a normal distribution. The power transformation is given by:</p>
+<p><span class="math display">\[\begin{equation}
+Y_i^{(\lambda)} =
+\left\{ \begin{aligned}
+\frac{Y_i^{\lambda} -1}{\lambda} \; \space (\lambda \neq 0) \\
+log(Y_i) \; \space (\lambda = 0)
+\end{aligned}\right.
+\end{equation}\]</span></p>
+<p>If <span class="math inline">\(\lambda\)</span> equal …</p>
+<ul>
+<li>2: square transformation</li>
+<li>1: no transformation needed; produces results identical to original data</li>
+<li>0.50: square root transformation</li>
+<li>0.33: cube root transformation</li>
+<li>0.00: natural log transformation</li>
+<li>-0.50: reciprocal square root transformation</li>
+<li>-1.00: reciprocal (inverse) transformation</li>
+</ul>
+<p>Once data have been transformed, we will need to apply the inverse transformed back at some point. The inverse transformation is using the log function (inverse of exponent!)</p>
+<p><span class="math display">\[\begin{equation}
+Y_i =
+\left\{ \begin{aligned}
+exp \left(\frac{ log(1 + \lambda Y_i^{(\lambda)})}{\lambda} \right) \; \space (\lambda \neq 0) \\
+exp(Y_i^{\lambda}) \; \space (\lambda = 0)
+\end{aligned}\right.
+\end{equation}\]</span></p>
+<p>How is lambda chosen? Using maximum likelihood.</p>
+<p>Let’s apply the transformation to our oil data using the <em>tidymodel</em> approach with the <em>recipes</em> library.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> w_oil <span class="sc">|&gt;</span> <span class="fu">na.omit</span>() <span class="sc">|&gt;</span> <span class="fu">select</span>(w_return)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>recipe_bc <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span> w_return, <span class="at">data =</span> dat) <span class="sc">|&gt;</span> </span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_BoxCox</span>(w_return) <span class="sc">|&gt;</span> </span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the estimating of lambda step</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> dat, <span class="at">retain =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># to check the recipe steps</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(recipe_bc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  number operation type   trained skip  id          
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;       
+1      1 step      BoxCox TRUE    FALSE BoxCox_uVl33</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to check the estimation of lambda</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(recipe_bc, <span class="at">number =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  terms    value id          
+  &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 w_return 0.115 BoxCox_uVl33</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transforming the data using the estimated lambda</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>w_oil_bc <span class="ot">&lt;-</span> <span class="fu">juice</span>(recipe_bc)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>w_oil<span class="sc">$</span>w_return_bc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, w_oil_bc<span class="sc">$</span>w_return)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">skewness</span>(w_oil<span class="sc">$</span>w_return_bc, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8642865</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kurtosis</span>(w_oil<span class="sc">$</span>w_return_bc, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 324.378</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(w_oil, <span class="fu">aes</span>(<span class="at">x =</span> w_return_bc)) <span class="sc">+</span> </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">'blue'</span>) <span class="sc">+</span> </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
