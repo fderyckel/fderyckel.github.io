@@ -182,7 +182,13 @@ moments::kurtosis(df$return)
 moments::kurtosis(df_spy$return)
 ```
 
-Again, our fictious asset has kurtosis pretty close to perfect normality (almost 3).  SPY deviate very much from normality and displays leptokurotic kurtosis. 
+Again, our fictitious asset has kurtosis pretty close to perfect normality (almost 3).  SPY deviate very much from normality and displays leptokurotic kurtosis. 
+
+::: {.callout-note}
+
+In [this post](../../time-series/02-statistical-moments/index.qmd) on the statistical moments, we have showed a couple of transformation methods (log transform and Box-Cox transform) to normalize data.  
+
+:::
 
 # Statistical tests
 

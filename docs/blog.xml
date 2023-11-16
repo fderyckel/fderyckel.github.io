@@ -4992,7 +4992,20 @@ font-style: inherit;">$</span>return)</span></code></pre></div>
 <pre><code>[1] 12.75883</code></pre>
 </div>
 </div>
-<p>Again, our fictious asset has kurtosis pretty close to perfect normality (almost 3). SPY deviate very much from normality and displays leptokurotic kurtosis.</p>
+<p>Again, our fictitious asset has kurtosis pretty close to perfect normality (almost 3). SPY deviate very much from normality and displays leptokurotic kurtosis.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In <a href="../../../posts/time-series/02-statistical-moments/index.html">this post</a> on the statistical moments, we have showed a couple of transformation methods (log transform and Box-Cox transform) to normalize data.</p>
+</div>
+</div>
 </section>
 </section>
 <section id="statistical-tests" class="level1">

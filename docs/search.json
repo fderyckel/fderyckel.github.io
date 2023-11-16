@@ -18,7 +18,7 @@
     "href": "quant-part1.html",
     "title": "Series: Quant - Part 1",
     "section": "",
-    "text": "01 - Random Behavior of Financial Assets\n\n\n\n\n\nWe explore one of the main assumption of quantitative finance: assets returns are random.\n\n\n\n\n\n\nApr 18, 2023\n\n\n6 min\n\n\n\n\n\n\n\n\n02 - Normality of asset returns\n\n\n\n\n\nChecking the normality of asset returns visually and quantitatively.\n\n\n\n\n\n\nApr 19, 2023\n\n\n6 min\n\n\n\n\n\n\n\n\n03 - Random-walks & Brownian Motions\n\n\n\n\n\nRW (discrete) and BM (continuous) constitute the way assets returns are modelled.\n\n\n\n\n\n\nJul 20, 2023\n\n\n7 min\n\n\n\n\n\n\n\n\n04 - Binomials models for Quantitative Finance\n\n\n\n\n\nCreating a basic or binomial model on pricing an option.\n\n\n\n\n\n\nApr 6, 2023\n\n\n7 min\n\n\n\n\n\n\n\n\n05 - Trinomials models for Quantitative Finance\n\n\n\n\n\nCreating a trinomial model and deriving the Forward Kolmogorov Equation.\n\n\n\n\n\n\nApr 8, 2023\n\n\n8 min\n\n\n\n\n\n\nNo matching items"
+    "text": "01 - Random Behavior of Financial Assets\n\n\n\n\n\nWe explore one of the main assumption of quantitative finance: assets returns are random.\n\n\n\n\n\n\nApr 18, 2023\n\n\n6 min\n\n\n\n\n\n\n\n\n02 - Normality of asset returns\n\n\n\n\n\nChecking the normality of asset returns visually and quantitatively.\n\n\n\n\n\n\nApr 19, 2023\n\n\n7 min\n\n\n\n\n\n\n\n\n03 - Random-walks & Brownian Motions\n\n\n\n\n\nRW (discrete) and BM (continuous) constitute the way assets returns are modelled.\n\n\n\n\n\n\nJul 20, 2023\n\n\n7 min\n\n\n\n\n\n\n\n\n04 - Binomials models for Quantitative Finance\n\n\n\n\n\nCreating a basic or binomial model on pricing an option.\n\n\n\n\n\n\nApr 6, 2023\n\n\n7 min\n\n\n\n\n\n\n\n\n05 - Trinomials models for Quantitative Finance\n\n\n\n\n\nCreating a trinomial model and deriving the Forward Kolmogorov Equation.\n\n\n\n\n\n\nApr 8, 2023\n\n\n8 min\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "quant-part3.html",
@@ -88,7 +88,7 @@
     "href": "posts/quant-part1/normality-returns/index.html#kurtosis",
     "title": "02 - Normality of asset returns",
     "section": "Kurtosis",
-    "text": "Kurtosis\n\nmoments::kurtosis(df$return)\n\n[1] 2.879684\n\nmoments::kurtosis(df_spy$return)\n\n[1] 12.75883\n\n\nAgain, our fictious asset has kurtosis pretty close to perfect normality (almost 3). SPY deviate very much from normality and displays leptokurotic kurtosis."
+    "text": "Kurtosis\n\nmoments::kurtosis(df$return)\n\n[1] 2.879684\n\nmoments::kurtosis(df_spy$return)\n\n[1] 12.75883\n\n\nAgain, our fictitious asset has kurtosis pretty close to perfect normality (almost 3). SPY deviate very much from normality and displays leptokurotic kurtosis.\n\n\n\n\n\n\nNote\n\n\n\nIn this post on the statistical moments, we have showed a couple of transformation methods (log transform and Box-Cox transform) to normalize data."
   },
   {
     "objectID": "posts/quant-part1/normality-returns/index.html#shapiro-wilk-test",
