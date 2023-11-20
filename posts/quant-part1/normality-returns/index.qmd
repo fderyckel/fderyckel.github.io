@@ -6,7 +6,7 @@ description: 'Checking the normality of asset returns visually and quantitativel
 categories: [Normal Distribution, qq-plot, Kurtosis, Skewness]
 editor: source
 image: qqplot-spy.png
-date-modified: '2023-04-25'
+date-modified: '2023-11-16'
 ---
 
 ```{r}
@@ -160,7 +160,7 @@ This QQ-plot can also be used to check for asymetry in the distribution of retur
 
 # Skewness and Kurtosis
 
-Skewness and Kurtosis are the third and fourth [statiscal moments](../statistical-moments/index.qmd) of a distribution.
+Skewness and Kurtosis are the third and fourth [statistical moments](../../time-series/02-statistical-moments/index.qmd) of a distribution.
 
 ## Skewness
 

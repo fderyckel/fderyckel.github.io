@@ -4939,7 +4939,7 @@ font-style: inherit;">'QQ-Plot for SPY returns'</span>)</span></code></pre></div
 </section>
 <section id="skewness-and-kurtosis" class="level1">
 <h1>Skewness and Kurtosis</h1>
-<p>Skewness and Kurtosis are the third and fourth <a href="../statistical-moments/index.qmd">statiscal moments</a> of a distribution.</p>
+<p>Skewness and Kurtosis are the third and fourth <a href="../../../posts/time-series/02-statistical-moments/index.html">statistical moments</a> of a distribution.</p>
 <section id="skewness" class="level2">
 <h2 class="anchored" data-anchor-id="skewness">Skewness</h2>
 <p>Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symmetric).</p>
