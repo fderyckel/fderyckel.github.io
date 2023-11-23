@@ -3,7 +3,7 @@ title: "02 - Normality of asset returns"
 author: "Francois de Ryckel"
 date: "2023-04-19"
 description: 'Checking the normality of asset returns visually and quantitatively.'
-categories: [Normal Distribution, qq-plot, Kurtosis, Skewness]
+categories: [Normal Distribution, QQ-plot, Kurtosis, Skewness, Histogram]
 editor: source
 image: qqplot-spy.png
 date-modified: '2023-11-16'
@@ -22,9 +22,9 @@ library(ggplot2)
 
 # Introduction
 
-As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random. That being said they are not totally normally distributed. This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns.
+As mentioned in one of our [previous posts](../random-behavior-assets/index.qmd), we know that in quantitative finance, assets returns are assumed to be random. That being said, they are actually not normally distributed. This post digg in a bit further in assessing the normality (or non-normality) of equity returns.
 
-As reminder, a dataset can be said to be normally distributed if its probability density function can be modelled by $$P(X = x) = \frac{1}{\sigma \sqrt{2 \pi}} \cdot e^{-\frac{(x-\mu)^2}{2 \sigma^2}}$$
+As reminder, a dataset can be said to be normally distributed if its probability density function can be modeled by $$P(X = x) = \frac{1}{\sigma \sqrt{2 \pi}} \cdot e^{-\frac{(x-\mu)^2}{2 \sigma^2}}$$
 
 When testing for normality, there are many ways to get there.
 
@@ -33,9 +33,11 @@ When testing for normality, there are many ways to get there.
 -   Statistical tests such as the Shapiro-Wilk test (small to medium sample size, $n \leq 300$) or the Kolmogorov-Smirnov test
 
 Let's start by considering an ETF (low-ish volatility) like the SPY500.\
-To better illustrate our point, we'll also consider a fictitious stock with random and almost perfectly normally distributed returns.
+To better illustrate our point and for comparative purposes, we'll also consider a fictitious stock with the same standard deviation and mean returns as the SPY500 but this time, with random and almost perfectly normally distributed returns.
 
 From previous post, returns can be explained with a drift rate + some randomness: $$R_i = \mu \delta t + \phi \sigma \delta t^{1/2}$$
+
+* $\phi$ is a random number taken from the standard normal distribution. 
 
 # Comparing SPY returns with a similar imaginary stock
 
@@ -55,7 +57,7 @@ drift = mean(df_spy$return)
 sigma = sd(df_spy$return) 
 ```
 
-So over the last 3-ish years, SPY had an annualized drift rate of `r round((drift * 252)*100, 2)`% with an volatility of `r round((sigma * sqrt(252))*100, 2)`%
+So over the last 3-ish years, SPY had an annualized drift rate of `r round((drift * 252)*100, 2)`% with an volatility of `r round((sigma * sqrt(252))*100, 2)`%.  We multiplied the drift rate by 252 and the standard deviation by the square root of time (252). 
 
 Let's consider now an imaginary stock with a similar drift rate and standard deviation as SPY.
 
@@ -71,7 +73,7 @@ for (i in 2:(nrow(df))) {
   prices[i] = prices[i-1] * (1 + df$return[i])  #create a vector of prices based on the returns
 }
 
-df <- add_column(df, prices)
+df_dummy <- add_column(df, prices)
 
 ```
 
@@ -84,8 +86,10 @@ Let's have a quick check that indeed mean and standard deviation of returns are 
 
 : Summary of first 2 moments for both assets
 
+Let's have a look at our fictious stock price. 
+
 ```{r}
-ggplot(df, aes(x = time, y = prices)) + 
+ggplot(df_dummy, aes(x = time, y = prices)) + 
   geom_line() + 
   labs(title = 'Imaginary Stock', 
        subtitle = 'Same drift as volatility as SPY')
@@ -97,7 +101,10 @@ ggplot(df_spy, aes(x = date, y = adjClose)) +
 
 # Visual checks on imaginary stock vs SPY
 
-Usual visual checks for normality are the histogram and the QQ-plot.
+Usual visual checks for normality are:  
+
+* the histogram 
+* the QQ-plot.
 
 ## Histograms
 
@@ -106,7 +113,7 @@ Let's see how well the returns stack to our imaginary stock (with close to perfe
 ```{r}
 #| warning: false
 
-ggplot(df, aes(return)) + 
+ggplot(df_dummy, aes(return)) + 
   geom_histogram(aes(y = after_stat(density)), alpha = 0.3, fill = 'blue') + 
   geom_density() + 
   stat_function(fun = dnorm, n = nrow(df), args = list(mean = drift, sd = sigma), color = 'red', size = 1) +
@@ -138,7 +145,7 @@ And here, we clearly see the big disconnect from normality: above expected numbe
 Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot). On the y-axis, we have the returns, on the x-axis the theoretical quantiles.
 
 ```{r}
-ggplot(df, aes(sample = return)) + 
+ggplot(df_dummy, aes(sample = return)) + 
   stat_qq() + 
   stat_qq_line(color = 'blue', linetype = 3, linewidth = 1) + 
   labs(title = 'QQ-Plot for fictious stock returns')
@@ -169,7 +176,7 @@ Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symme
 Let's test the symmetry of our 2 sets of returns. Unfortunately, we did not find any function to calculate skewness in base R (seems strange!).
 
 ```{r}
-moments::skewness(df$return)
+moments::skewness(df_dummy$return)
 moments::skewness(df_spy$return)
 ```
 
@@ -178,7 +185,7 @@ As expected, our fictitious stock has almost 0 skew (symmetric around the mean),
 ## Kurtosis
 
 ```{r}
-moments::kurtosis(df$return)
+moments::kurtosis(df_dummy$return)
 moments::kurtosis(df_spy$return)
 ```
 
@@ -204,7 +211,7 @@ Let's specify our hypothesis:
 Let's first test on our fictitious equity.
 
 ```{r}
-shapiro.test(df$return)
+shapiro.test(df_dummy$return)
 ```
 
 Expected, as the randomness of our fictitious stock was randomly distributed.
@@ -214,3 +221,47 @@ And then on the return of SPY
 ```{r}
 shapiro.test(df_spy$return)
 ```
+
+## Jarque-Bera test 
+
+The Jarque-Bera test is a statistical test used to assess whether a sample of data follows a normal distribution. It is a goodness-of-fit test that compares the skewness and kurtosis of the sample data to the skewness and kurtosis of a normal distribution.  The test statistic follows a chi-squared distribution with 2 degrees of freedom under the null hypothesis that the data is normally distributed.  So low p-values indicates that the data do not follow a normal distribution. 
+
+As oppose to the Shapiro-Wilk test, the Jarque Bera test can be apply to big data set. 
+
+Jarque Bera test is defined as $$JB = \frac{n}{6} \cdot \left( S^2 + \frac{(K-3)^2}{4} \right)$$ 
+
+* S is the sample skewness
+* K is the sample kurtosis
+* n is the sample size 
+
+```{r}
+moments::jarque.test(df_spy$return)
+```
+
+As expected, we have a tiny p-value, hence we reject the $H_0$ that the data are normally distributed. 
+
+And now for our dummy normal returns. 
+
+```{r}
+moments::jarque.test(df_dummy$return)
+```
+
+p-value is above the 0.05 threshold, we do not reject the $H_0$ that data are normally distributed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -23,6 +23,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -164,6 +198,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#cons" id="toc-cons" class="nav-link" data-scroll-target="#cons">Cons</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#example-in-python" id="toc-example-in-python" class="nav-link" data-scroll-target="#example-in-python">Example in Python</a>
+  <ul class="collapse">
+  <li><a href="#starting-example" id="toc-starting-example" class="nav-link" data-scroll-target="#starting-example">Starting example</a></li>
+  <li><a href="#example-with-synthetic-data" id="toc-example-with-synthetic-data" class="nav-link" data-scroll-target="#example-with-synthetic-data">Example with synthetic data</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -181,7 +220,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>KNN stands for <em>K Nearest Neighbor</em>.</p>
-<p>KNN is not really a machine learning techniques in the sense that it trains a model. It can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
+<p>KNN is not really a machine learning techniques in the sense that it trains a model. Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
 <p>As mentioned, there is no training phase when using KNN. Instead, there is only prediction.<br>
 We take an observation and check the <strong>K</strong> observations next to it. We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -214,9 +253,126 @@ Scaling
 </section>
 <section id="cons" class="level3">
 <h3 class="anchored" data-anchor-id="cons">Cons</h3>
-
-
+<ul>
+<li>non-efficient in terms of memory</li>
+<li>non-efficient on speed of execution with new data</li>
+</ul>
 </section>
+</section>
+</section>
+<section id="example-in-python" class="level1">
+<h1>Example in Python</h1>
+<section id="starting-example" class="level2">
+<h2 class="anchored" data-anchor-id="starting-example">Starting example</h2>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">11</span>, <span class="dv">14</span> , <span class="dv">8</span>, <span class="dv">10</span>, <span class="dv">12</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> [<span class="dv">21</span>, <span class="dv">19</span>, <span class="dv">24</span>, <span class="dv">17</span>, <span class="dv">16</span>, <span class="dv">25</span>, <span class="dv">24</span>, <span class="dv">22</span>, <span class="dv">21</span>, <span class="dv">21</span>]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y, c <span class="op">=</span> classes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x16e1f9cd0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-2-output-2.png" width="566" height="411"></p>
+</div>
+</div>
+<p>Now let’s create a KNN object and a new point</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>knn <span class="op">=</span> KNeighborsClassifier(n_neighbors <span class="op">=</span> <span class="dv">3</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>knn.fit(<span class="bu">list</span>(<span class="bu">zip</span>(x, y)), classes)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>new_x <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>new_y <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>new_point <span class="op">=</span> [(new_x, new_y)]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> knn.predict(new_point)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>plt.scatter(x <span class="op">+</span> [new_x], y <span class="op">+</span> [new_y], c <span class="op">=</span> classes <span class="op">+</span> [prediction[<span class="dv">0</span>]])</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>plt.text(x <span class="op">=</span> new_x<span class="op">-</span><span class="dv">1</span>, y <span class="op">=</span> new_y<span class="op">-</span><span class="dv">1</span>, s <span class="op">=</span> <span class="ss">f"new point, class:</span><span class="sc">{</span>prediction[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>Text(2, 19, 'new point, class:0')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-3-output-2.png" width="566" height="411"></p>
+</div>
+</div>
+</section>
+<section id="example-with-synthetic-data" class="level2">
+<h2 class="anchored" data-anchor-id="example-with-synthetic-data">Example with synthetic data</h2>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_blobs</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># create our synthetic data</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_blobs(n_samples <span class="op">=</span> <span class="dv">1000</span>, n_features <span class="op">=</span> <span class="dv">2</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                  centers <span class="op">=</span> <span class="dv">4</span>, cluster_std <span class="op">=</span> <span class="fl">1.9</span>, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                  random_state <span class="op">=</span> <span class="dv">4</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># visualizing the dataset </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[:,<span class="dv">0</span>], X[:,<span class="dv">1</span>], c <span class="op">=</span> y, s <span class="op">=</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x16e32ea90&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-4-output-2.png" width="577" height="411"></p>
+</div>
+</div>
+<p>Splitting our dataset into training &amp; testing + running KNN on the data</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># spliting our data into training and testing</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, random_state <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>knn5 <span class="op">=</span> KNeighborsClassifier(n_neighbors <span class="op">=</span> <span class="dv">5</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>knn19 <span class="op">=</span> KNeighborsClassifier(n_neighbors <span class="op">=</span> <span class="dv">19</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># fit our 'model' with either '5' or '19' Nearest Neighbors</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>knn5.fit(X_train, y_train)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>knn19.fit(X_train, y_train)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># apply prediction on our test set</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>y_pred_5 <span class="op">=</span> knn5.predict(X_test)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>y_pred_19 <span class="op">=</span> knn19.predict(X_test)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Accuracy with K = 5 is'</span>, <span class="bu">round</span>(accuracy_score(y_test, y_pred_5)<span class="op">*</span><span class="dv">100</span>, <span class="dv">2</span>), <span class="st">'%'</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Accuracy with k = 19 is'</span>, <span class="bu">round</span>(accuracy_score(y_test, y_pred_19)<span class="op">*</span><span class="dv">100</span>, <span class="dv">2</span>), <span class="st">'%'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy with K = 5 is 87.6 %
+Accuracy with k = 19 is 89.6 %</code></pre>
+</div>
+</div>
+<p>Let’s visualize both ‘models’ and the impact of the choice of K.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using subplots to compare</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># first subplot</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_test[:, <span class="dv">0</span>], X_test[:, <span class="dv">1</span>], c <span class="op">=</span> y_pred_5, s<span class="op">=</span><span class="dv">21</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Predictions with K=5'</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># second subplot</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_test[:, <span class="dv">0</span>], X_test[:, <span class="dv">1</span>], c <span class="op">=</span> y_pred_19, s<span class="op">=</span><span class="dv">21</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Prediction with K=19'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Text(0.5, 1.0, 'Prediction with K=19')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-6-output-2.png" width="726" height="431"></p>
+</div>
+</div>
+<p>Because the data are already pretty well separted, the only changes we see easily are the ones in the junction between the blue and purple dots.</p>
+
+
 </section>
 </section>
 

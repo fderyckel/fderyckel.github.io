@@ -2,11 +2,11 @@
 title: "02 - Statistical Moments"
 author: "Francois de Ryckel"
 date: "2022-11-02"
-categories: [statistics, Mean, Skewness, Kurtosis]
+categories: [statistics, Mean, Skewness, Kurtosis, log-transformation, Box-Cox]
 description: 'Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis.  Showing how to use R and Python on these concepts.'
 editor: source
 image: kurtosis.png
-date-modified: "2023-04-22"
+date-modified: "2023-11-21"
 ---
 
 This post is about summarizing the various statistical moments when doing quantitative finance. The focus is on the asset returns. From a [previous post](../../quant-part1/normality-returns/index.qmd), we already know that financial asset returns do not follow a normal distribution (too peaked at the mean and fat tails). 

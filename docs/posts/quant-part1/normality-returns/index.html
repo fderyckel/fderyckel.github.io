@@ -209,6 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#statistical-tests" id="toc-statistical-tests" class="nav-link" data-scroll-target="#statistical-tests">Statistical tests</a>
   <ul class="collapse">
   <li><a href="#shapiro-wilk-test" id="toc-shapiro-wilk-test" class="nav-link" data-scroll-target="#shapiro-wilk-test">Shapiro-Wilk test</a></li>
+  <li><a href="#jarque-bera-test" id="toc-jarque-bera-test" class="nav-link" data-scroll-target="#jarque-bera-test">Jarque-Bera test</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -225,8 +226,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>As mentioned in one of our <a href="../../../posts/quant-part1/random-behavior-assets/index.html">previous posts</a>, we know that in quantitative finance, assets returns are assumed to be random. That being said they are not totally normally distributed. This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns.</p>
-<p>As reminder, a dataset can be said to be normally distributed if its probability density function can be modelled by <span class="math display">\[P(X = x) = \frac{1}{\sigma \sqrt{2 \pi}} \cdot e^{-\frac{(x-\mu)^2}{2 \sigma^2}}\]</span></p>
+<p>As mentioned in one of our <a href="../../../posts/quant-part1/random-behavior-assets/index.html">previous posts</a>, we know that in quantitative finance, assets returns are assumed to be random. That being said, they are actually not normally distributed. This post digg in a bit further in assessing the normality (or non-normality) of equity returns.</p>
+<p>As reminder, a dataset can be said to be normally distributed if its probability density function can be modeled by <span class="math display">\[P(X = x) = \frac{1}{\sigma \sqrt{2 \pi}} \cdot e^{-\frac{(x-\mu)^2}{2 \sigma^2}}\]</span></p>
 <p>When testing for normality, there are many ways to get there.</p>
 <ul>
 <li>Visual ways: histogram, density plot and QQ-plots<br>
@@ -235,8 +236,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Statistical tests such as the Shapiro-Wilk test (small to medium sample size, <span class="math inline">\(n \leq 300\)</span>) or the Kolmogorov-Smirnov test</li>
 </ul>
 <p>Let’s start by considering an ETF (low-ish volatility) like the SPY500.<br>
-To better illustrate our point, we’ll also consider a fictitious stock with random and almost perfectly normally distributed returns.</p>
+To better illustrate our point and for comparative purposes, we’ll also consider a fictitious stock with the same standard deviation and mean returns as the SPY500 but this time, with random and almost perfectly normally distributed returns.</p>
 <p>From previous post, returns can be explained with a drift rate + some randomness: <span class="math display">\[R_i = \mu \delta t + \phi \sigma \delta t^{1/2}\]</span></p>
+<ul>
+<li><span class="math inline">\(\phi\)</span> is a random number taken from the standard normal distribution.</li>
+</ul>
 </section>
 <section id="comparing-spy-returns-with-a-similar-imaginary-stock" class="level1">
 <h1>Comparing SPY returns with a similar imaginary stock</h1>
@@ -251,7 +255,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">=</span> <span class="fu">mean</span>(df_spy<span class="sc">$</span>return) </span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fu">sd</span>(df_spy<span class="sc">$</span>return) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>So over the last 3-ish years, SPY had an annualized drift rate of 9.04% with an volatility of 24.4%</p>
+<p>So over the last 3-ish years, SPY had an annualized drift rate of 9.04% with an volatility of 24.4%. We multiplied the drift rate by 252 and the standard deviation by the square root of time (252).</p>
 <p>Let’s consider now an imaginary stock with a similar drift rate and standard deviation as SPY.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">21042023</span>)</span>
@@ -265,7 +269,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  prices[i] <span class="ot">=</span> prices[i<span class="dv">-1</span>] <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> df<span class="sc">$</span>return[i])  <span class="co">#create a vector of prices based on the returns</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">add_column</span>(df, prices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>df_dummy <span class="ot">&lt;-</span> <span class="fu">add_column</span>(df, prices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s have a quick check that indeed mean and standard deviation of returns are similar.</p>
 <table class="table">
@@ -290,8 +294,9 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 </tr>
 </tbody>
 </table>
+<p>Let’s have a look at our fictious stock price.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prices)) <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_dummy, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prices)) <span class="sc">+</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Imaginary Stock'</span>, </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">'Same drift as volatility as SPY'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -308,12 +313,16 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 </section>
 <section id="visual-checks-on-imaginary-stock-vs-spy" class="level1">
 <h1>Visual checks on imaginary stock vs SPY</h1>
-<p>Usual visual checks for normality are the histogram and the QQ-plot.</p>
+<p>Usual visual checks for normality are:</p>
+<ul>
+<li>the histogram</li>
+<li>the QQ-plot.</li>
+</ul>
 <section id="histograms" class="level2">
 <h2 class="anchored" data-anchor-id="histograms">Histograms</h2>
 <p>Let’s see how well the returns stack to our imaginary stock (with close to perfect pseudo-randomness)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(return)) <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_dummy, <span class="fu">aes</span>(return)) <span class="sc">+</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">'blue'</span>) <span class="sc">+</span> </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span> </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">n =</span> <span class="fu">nrow</span>(df), <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> drift, <span class="at">sd =</span> sigma), <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
@@ -344,7 +353,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <h2 class="anchored" data-anchor-id="qq-plots">QQ Plots</h2>
 <p>Another way to visually check for normality is to use a quantile-quantile plot (aka QQ-plot). On the y-axis, we have the returns, on the x-axis the theoretical quantiles.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> return)) <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_dummy, <span class="fu">aes</span>(<span class="at">sample =</span> return)) <span class="sc">+</span> </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span> </span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">linetype =</span> <span class="dv">3</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'QQ-Plot for fictious stock returns'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -374,7 +383,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <p>Ideally, skewness as a measure of symmetry should be close to 0 (perfectly symmetric).</p>
 <p>Let’s test the symmetry of our 2 sets of returns. Unfortunately, we did not find any function to calculate skewness in base R (seems strange!).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">skewness</span>(df<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">skewness</span>(df_dummy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.0398789</code></pre>
 </div>
@@ -388,7 +397,7 @@ To better illustrate our point, we’ll also consider a fictitious stock with ra
 <section id="kurtosis" class="level2">
 <h2 class="anchored" data-anchor-id="kurtosis">Kurtosis</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">kurtosis</span>(df<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">kurtosis</span>(df_dummy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.879684</code></pre>
 </div>
@@ -425,12 +434,12 @@ Note
 </ul>
 <p>Let’s first test on our fictitious equity.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df_dummy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Shapiro-Wilk normality test
 
-data:  df$return
+data:  df_dummy$return
 W = 0.99895, p-value = 0.9215</code></pre>
 </div>
 </div>
@@ -446,6 +455,42 @@ data:  df_spy$return
 W = 0.894, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
+</section>
+<section id="jarque-bera-test" class="level2">
+<h2 class="anchored" data-anchor-id="jarque-bera-test">Jarque-Bera test</h2>
+<p>The Jarque-Bera test is a statistical test used to assess whether a sample of data follows a normal distribution. It is a goodness-of-fit test that compares the skewness and kurtosis of the sample data to the skewness and kurtosis of a normal distribution. The test statistic follows a chi-squared distribution with 2 degrees of freedom under the null hypothesis that the data is normally distributed. So low p-values indicates that the data do not follow a normal distribution.</p>
+<p>As oppose to the Shapiro-Wilk test, the Jarque Bera test can be apply to big data set.</p>
+<p>Jarque Bera test is defined as <span class="math display">\[JB = \frac{n}{6} \cdot \left( S^2 + \frac{(K-3)^2}{4} \right)\]</span></p>
+<ul>
+<li>S is the sample skewness</li>
+<li>K is the sample kurtosis</li>
+<li>n is the sample size</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">jarque.test</span>(df_spy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Jarque-Bera Normality Test
+
+data:  df_spy$return
+JB = 3373.7, p-value &lt; 2.2e-16
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p>As expected, we have a tiny p-value, hence we reject the <span class="math inline">\(H_0\)</span> that the data are normally distributed.</p>
+<p>And now for our dummy normal returns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">jarque.test</span>(df_dummy<span class="sc">$</span>return)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Jarque-Bera Normality Test
+
+data:  df_dummy$return
+JB = 0.72149, p-value = 0.6972
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p>p-value is above the 0.05 threshold, we do not reject the <span class="math inline">\(H_0\)</span> that data are normally distributed.</p>
 
 
 </section>

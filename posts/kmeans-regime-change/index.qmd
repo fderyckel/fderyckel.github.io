@@ -13,7 +13,7 @@ This post is about how to use Kmeans to classify various market regimes or to us
 
 # Market regime 
 
-Financial markets have the tendency to change their behavior over time, which can create regimes, or periods of fairly persistent market conditions. Investors often look to discern the current market regime, looking out for any changes to it and how those might affect the individual components of their portfolio’s asset allocation. Modeling various market regimes can be an effective tool, as it can enable macro-economically aware investment decision-making and better management of tail risks. 
+Financial markets have the tendency to change their behavior over time, which can create regimes, or periods of fairly persistent market conditions. Investors often look to discern the current market regime, looking out for any changes to it and how those might affect the individual components of their portfolio asset allocation. Modeling various market regimes can be an effective tool, as it can enable macro-economically aware investment decision-making and better management of tail risks. 
 
 :::
 
@@ -146,6 +146,7 @@ yo |> ggplot(aes(k, avg_sil_values)) +
   geom_point(size = 2, color = 'midnightblue')
   
 ```
+
 2 is the winner ;-) 
 
 ### Plotting the stocks with clustered observations 
@@ -188,6 +189,7 @@ augment(yo, df1) |> filter(date >= today() - 500) |>
 
 
 # Using python 
+
 Original blog post 
 
 ```{python}

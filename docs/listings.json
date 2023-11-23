@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/normality-returns/index.html",
       "/posts/machine-learning-part1/knn/index.html",
       "/posts/time-series/04-ts-decomposition/index.html",
@@ -18,7 +19,6 @@
       "/posts/quant-part1/binomials_models/index.html",
       "/posts/machine-learning-part1/naives-bayes-intro/index.html",
       "/posts/machine-learning-part1/linear-regression/index.html",
-      "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/random-behavior-assets/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/portfolio_optimization_parti_inR/index.html",

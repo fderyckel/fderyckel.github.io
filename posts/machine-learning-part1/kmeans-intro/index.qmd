@@ -2,7 +2,7 @@
 title: "Intro to Kmeans"
 author: "Francois de Ryckel"
 date: '2022-10-31'
-categories: [kmeans, code, analysis, model]
+categories: [Kmeans, ML]
 descritpion: 'An introduction on the Kmeans algorithms.'
 editor: source
 date-modified: '2022-10-31'
@@ -12,7 +12,7 @@ The purpose of this article is to get a deeper dive into Kmeans as an unsupervis
 
 As mentioned, Kmeans is an unsupervised learning algorithm, aiming to group “observations” based on their distances to a fixed number of “centroids” (aka: the fixed number is K). Each centroids is defined as the mean (in each dimension) of all the points belonging to that centroid.  All the points belonging to a centroid makes a cluster: all the observations belonging to the k-centroid makes the k-cluster. 
 
-The objective is, for a given number of centroids (i.e. k), to **minimize the total within-cluster variation** or intra cluster variation (distance from the observation to the centroid). 
+The objective is, for a given number of centroids (i.e. k), to **minimize the total within-cluster variation** or intra-cluster variation (distance from the observation to the centroid). 
 
 The standard Kmeans algorithm aims to minimize the total sum of the square distances (Euclidean distance) between observations and centroids. 
 
@@ -24,7 +24,7 @@ $$W(C_k) = \sum_{x_i \in C_k} (x_i - \mu_k)^2$$ {#eq-sum-of-square-for-a-cluster
 * $\mu_k$ is the mean value of all the points assigned to the $C_k$ cluster.  You get the mean of the centroid is a p-dimensional vector comprising the mean of each of the variables.  
 
 The objective is to minimize the total within cluster variation, that is the total sum of the distance of each observations to its centroid and that for each of the k-centroids: 
-$$tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2  $$ {#eq-total-within-cluster-sum-of-square}
+$$tot.withinss = \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2$$ {#eq-total-within-cluster-sum-of-square}
 
 # The Kmeans algorithms 
 

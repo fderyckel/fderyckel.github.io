@@ -14,7 +14,7 @@ Some very basic ML using KNN and python and the tidymodel framework.
 
 KNN stands for *K Nearest Neighbor*.  
 
-KNN is not really a machine learning techniques in the sense that it trains a model. It can be used for both classification and regression.  The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).  
+KNN is not really a machine learning techniques in the sense that it trains a model. Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression.  The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).  
 
 As mentioned, there is no training phase when using KNN.  Instead, there is only prediction.  
 We take an observation and check the **K** observations next to it.  We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.
@@ -39,6 +39,99 @@ Because KNN use distance, it is important to scale the data as a pre-processing 
 
 ### Cons
 
+* non-efficient in terms of memory 
+* non-efficient on speed of execution with new data 
+
+# Example in Python 
+
+## Starting example 
+
+```{python}
+x = [4, 5, 10, 4, 3, 11, 14 , 8, 10, 12]
+y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
+classes = [0, 0, 1, 0, 0, 1, 1, 0, 1, 1]
 
 
+import matplotlib.pyplot as plt
 
+plt.scatter(x, y, c = classes)
+```
+
+Now let's create a KNN object and a new point 
+
+```{python}
+from sklearn.neighbors import KNeighborsClassifier
+
+knn = KNeighborsClassifier(n_neighbors = 3)
+knn.fit(list(zip(x, y)), classes)
+
+new_x = 3
+new_y = 20
+new_point = [(new_x, new_y)]
+prediction = knn.predict(new_point)
+
+plt.scatter(x + [new_x], y + [new_y], c = classes + [prediction[0]])
+plt.text(x = new_x-1, y = new_y-1, s = f"new point, class:{prediction[0]}")
+```
+
+## Example with synthetic data 
+
+```{python}
+from sklearn.datasets import make_blobs
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
+# create our synthetic data
+X, y = make_blobs(n_samples = 1000, n_features = 2, 
+                  centers = 4, cluster_std = 1.9, 
+                  random_state = 4)
+
+
+# visualizing the dataset 
+plt.scatter(X[:,0], X[:,1], c = y, s = 20)
+```
+
+Splitting our dataset into training & testing + running KNN on the data 
+
+```{python}
+# spliting our data into training and testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 0)
+
+knn5 = KNeighborsClassifier(n_neighbors = 5)
+knn19 = KNeighborsClassifier(n_neighbors = 19)
+
+# fit our 'model' with either '5' or '19' Nearest Neighbors
+knn5.fit(X_train, y_train)
+knn19.fit(X_train, y_train)
+
+# apply prediction on our test set
+y_pred_5 = knn5.predict(X_test)
+y_pred_19 = knn19.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+
+print('Accuracy with K = 5 is', round(accuracy_score(y_test, y_pred_5)*100, 2), '%')
+print('Accuracy with k = 19 is', round(accuracy_score(y_test, y_pred_19)*100, 2), '%')
+```
+
+Let's visualize both 'models' and the impact of the choice of K. 
+
+```{python}
+#| message: false
+
+#using subplots to compare
+plt.figure(figsize = (9, 5))
+
+# first subplot
+plt.subplot(1, 2, 1)
+plt.scatter(X_test[:, 0], X_test[:, 1], c = y_pred_5, s=21)
+plt.title('Predictions with K=5')
+
+# second subplot
+plt.subplot(1, 2, 2)
+plt.scatter(X_test[:, 0], X_test[:, 1], c = y_pred_19, s=21)
+plt.title('Prediction with K=19')
+
+```
+
+Because the data are already pretty well separted, the only changes we see easily are the ones in the junction between the blue and purple dots. 

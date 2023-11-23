@@ -24,7 +24,7 @@
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>KNN stands for <em>K Nearest Neighbor</em>.</p>
-<p>KNN is not really a machine learning techniques in the sense that it trains a model. It can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
+<p>KNN is not really a machine learning techniques in the sense that it trains a model. Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
 <p>As mentioned, there is no training phase when using KNN. Instead, there is only prediction.<br>
 We take an observation and check the <strong>K</strong> observations next to it. We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -57,9 +57,414 @@ Scaling
 </section>
 <section id="cons" class="level3">
 <h3 class="anchored" data-anchor-id="cons">Cons</h3>
-
-
+<ul>
+<li>non-efficient in terms of memory</li>
+<li>non-efficient on speed of execution with new data</li>
+</ul>
 </section>
+</section>
+</section>
+<section id="example-in-python" class="level1">
+<h1>Example in Python</h1>
+<section id="starting-example" class="level2">
+<h2 class="anchored" data-anchor-id="starting-example">Starting example</h2>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1">x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span> , <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>]</span>
+<span id="cb1-2">y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">19</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">24</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">17</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">24</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>]</span>
+<span id="cb1-3">classes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-7"></span>
+<span id="cb1-8">plt.scatter(x, y, c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> classes)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x16e1f9cd0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-2-output-2.png" width="566" height="411"></p>
+</div>
+</div>
+<p>Now let’s create a KNN object and a new point</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.neighbors <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> KNeighborsClassifier</span>
+<span id="cb3-2"></span>
+<span id="cb3-3">knn <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> KNeighborsClassifier(n_neighbors <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span>
+<span id="cb3-4">knn.fit(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(x, y)), classes)</span>
+<span id="cb3-5"></span>
+<span id="cb3-6">new_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span></span>
+<span id="cb3-7">new_y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span></span>
+<span id="cb3-8">new_point <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [(new_x, new_y)]</span>
+<span id="cb3-9">prediction <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> knn.predict(new_point)</span>
+<span id="cb3-10"></span>
+<span id="cb3-11">plt.scatter(x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> [new_x], y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> [new_y], c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> classes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> [prediction[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]])</span>
+<span id="cb3-12">plt.text(x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> new_x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> new_y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"new point, class:</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>prediction[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>Text(2, 19, 'new point, class:0')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-3-output-2.png" width="566" height="411"></p>
+</div>
+</div>
+</section>
+<section id="example-with-synthetic-data" class="level2">
+<h2 class="anchored" data-anchor-id="example-with-synthetic-data">Example with synthetic data</h2>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.datasets <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> make_blobs</span>
+<span id="cb5-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.neighbors <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> KNeighborsClassifier</span>
+<span id="cb5-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> train_test_split</span>
+<span id="cb5-4"></span>
+<span id="cb5-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create our synthetic data</span></span>
+<span id="cb5-6">X, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> make_blobs(n_samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, n_features <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, </span>
+<span id="cb5-7">                  centers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, cluster_std <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.9</span>, </span>
+<span id="cb5-8">                  random_state <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb5-9"></span>
+<span id="cb5-10"></span>
+<span id="cb5-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># visualizing the dataset </span></span>
+<span id="cb5-12">plt.scatter(X[:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], X[:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> y, s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x16e32ea90&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-4-output-2.png" width="577" height="411"></p>
+</div>
+</div>
+<p>Splitting our dataset into training &amp; testing + running KNN on the data</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># spliting our data into training and testing</span></span>
+<span id="cb7-2">X_train, X_test, y_train, y_test <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> train_test_split(X, y, random_state <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb7-3"></span>
+<span id="cb7-4">knn5 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> KNeighborsClassifier(n_neighbors <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb7-5">knn19 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> KNeighborsClassifier(n_neighbors <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">19</span>)</span>
+<span id="cb7-6"></span>
+<span id="cb7-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># fit our 'model' with either '5' or '19' Nearest Neighbors</span></span>
+<span id="cb7-8">knn5.fit(X_train, y_train)</span>
+<span id="cb7-9">knn19.fit(X_train, y_train)</span>
+<span id="cb7-10"></span>
+<span id="cb7-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># apply prediction on our test set</span></span>
+<span id="cb7-12">y_pred_5 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> knn5.predict(X_test)</span>
+<span id="cb7-13">y_pred_19 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> knn19.predict(X_test)</span>
+<span id="cb7-14"></span>
+<span id="cb7-15"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.metrics <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> accuracy_score</span>
+<span id="cb7-16"></span>
+<span id="cb7-17"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Accuracy with K = 5 is'</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">round</span>(accuracy_score(y_test, y_pred_5)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'%'</span>)</span>
+<span id="cb7-18"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Accuracy with k = 19 is'</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">round</span>(accuracy_score(y_test, y_pred_19)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'%'</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy with K = 5 is 87.6 %
+Accuracy with k = 19 is 89.6 %</code></pre>
+</div>
+</div>
+<p>Let’s visualize both ‘models’ and the impact of the choice of K.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#using subplots to compare</span></span>
+<span id="cb9-2">plt.figure(figsize <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb9-3"></span>
+<span id="cb9-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># first subplot</span></span>
+<span id="cb9-5">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb9-6">plt.scatter(X_test[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], X_test[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> y_pred_5, s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>)</span>
+<span id="cb9-7">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Predictions with K=5'</span>)</span>
+<span id="cb9-8"></span>
+<span id="cb9-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># second subplot</span></span>
+<span id="cb9-10">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb9-11">plt.scatter(X_test[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], X_test[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> y_pred_19, s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>)</span>
+<span id="cb9-12">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Prediction with K=19'</span>)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Text(0.5, 1.0, 'Prediction with K=19')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-6-output-2.png" width="726" height="431"></p>
+</div>
+</div>
+<p>Because the data are already pretty well separted, the only changes we see easily are the ones in the junction between the blue and purple dots.</p>
+
+
 </section>
 </section>
 
@@ -4370,8 +4775,8 @@ font-style: inherit;">#roc_nb &lt;- bind_cols(df_test, pred_mod_nb_prob) |&gt; r
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>As mentioned in one of our <a href="../../../posts/quant-part1/random-behavior-assets/index.html">previous posts</a>, we know that in quantitative finance, assets returns are assumed to be random. That being said they are not totally normally distributed. This post is to digg in a bit further in assessing the normality (or non-normality) of equity returns.</p>
-<p>As reminder, a dataset can be said to be normally distributed if its probability density function can be modelled by <img src="https://latex.codecogs.com/png.latex?P(X%20=%20x)%20=%20%5Cfrac%7B1%7D%7B%5Csigma%20%5Csqrt%7B2%20%5Cpi%7D%7D%20%5Ccdot%20e%5E%7B-%5Cfrac%7B(x-%5Cmu)%5E2%7D%7B2%20%5Csigma%5E2%7D%7D"></p>
+<p>As mentioned in one of our <a href="../../../posts/quant-part1/random-behavior-assets/index.html">previous posts</a>, we know that in quantitative finance, assets returns are assumed to be random. That being said, they are actually not normally distributed. This post digg in a bit further in assessing the normality (or non-normality) of equity returns.</p>
+<p>As reminder, a dataset can be said to be normally distributed if its probability density function can be modeled by <img src="https://latex.codecogs.com/png.latex?P(X%20=%20x)%20=%20%5Cfrac%7B1%7D%7B%5Csigma%20%5Csqrt%7B2%20%5Cpi%7D%7D%20%5Ccdot%20e%5E%7B-%5Cfrac%7B(x-%5Cmu)%5E2%7D%7B2%20%5Csigma%5E2%7D%7D"></p>
 <p>When testing for normality, there are many ways to get there.</p>
 <ul>
 <li>Visual ways: histogram, density plot and QQ-plots<br>
@@ -4380,8 +4785,11 @@ font-style: inherit;">#roc_nb &lt;- bind_cols(df_test, pred_mod_nb_prob) |&gt; r
 <li>Statistical tests such as the Shapiro-Wilk test (small to medium sample size, <img src="https://latex.codecogs.com/png.latex?n%20%5Cleq%20300">) or the Kolmogorov-Smirnov test</li>
 </ul>
 <p>Let’s start by considering an ETF (low-ish volatility) like the SPY500.<br>
-To better illustrate our point, we’ll also consider a fictitious stock with random and almost perfectly normally distributed returns.</p>
+To better illustrate our point and for comparative purposes, we’ll also consider a fictitious stock with the same standard deviation and mean returns as the SPY500 but this time, with random and almost perfectly normally distributed returns.</p>
 <p>From previous post, returns can be explained with a drift rate + some randomness: <img src="https://latex.codecogs.com/png.latex?R_i%20=%20%5Cmu%20%5Cdelta%20t%20+%20%5Cphi%20%5Csigma%20%5Cdelta%20t%5E%7B1/2%7D"></p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cphi"> is a random number taken from the standard normal distribution.</li>
+</ul>
 </section>
 <section id="comparing-spy-returns-with-a-similar-imaginary-stock" class="level1">
 <h1>Comparing SPY returns with a similar imaginary stock</h1>
@@ -4442,7 +4850,7 @@ font-style: inherit;">sd</span>(df_spy<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>return) </span></code></pre></div>
 </div>
-<p>So over the last 3-ish years, SPY had an annualized drift rate of 9.04% with an volatility of 24.4%</p>
+<p>So over the last 3-ish years, SPY had an annualized drift rate of 9.04% with an volatility of 24.4%. We multiplied the drift rate by 252 and the standard deviation by the square root of time (252).</p>
 <p>Let’s consider now an imaginary stock with a similar drift rate and standard deviation as SPY.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
@@ -4528,7 +4936,7 @@ background-color: null;
 font-style: inherit;">#create a vector of prices based on the returns</span></span>
 <span id="cb2-10">}</span>
 <span id="cb2-11"></span>
-<span id="cb2-12">df <span class="ot" style="color: #003B4F;
+<span id="cb2-12">df_dummy <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4557,10 +4965,11 @@ font-style: inherit;">add_column</span>(df, prices)</span></code></pre></div>
 </tr>
 </tbody>
 </table>
+<p>Let’s have a look at our fictious stock price.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
+font-style: inherit;">ggplot</span>(df_dummy, <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -4619,14 +5028,18 @@ font-style: inherit;">'SPY'</span>)</span></code></pre></div>
 </section>
 <section id="visual-checks-on-imaginary-stock-vs-spy" class="level1">
 <h1>Visual checks on imaginary stock vs SPY</h1>
-<p>Usual visual checks for normality are the histogram and the QQ-plot.</p>
+<p>Usual visual checks for normality are:</p>
+<ul>
+<li>the histogram</li>
+<li>the QQ-plot.</li>
+</ul>
 <section id="histograms" class="level2">
 <h2 class="anchored" data-anchor-id="histograms">Histograms</h2>
 <p>Let’s see how well the returns stack to our imaginary stock (with close to perfect pseudo-randomness)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
+font-style: inherit;">ggplot</span>(df_dummy, <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">aes</span>(return)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -4849,7 +5262,7 @@ font-style: inherit;">9</span>)</span></code></pre></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
+font-style: inherit;">ggplot</span>(df_dummy, <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -4949,7 +5362,7 @@ font-style: inherit;">'QQ-Plot for SPY returns'</span>)</span></code></pre></div
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">skewness</span>(df<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">skewness</span>(df_dummy<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>return)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -4975,7 +5388,7 @@ font-style: inherit;">$</span>return)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">kurtosis</span>(df<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">kurtosis</span>(df_dummy<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>return)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -5022,14 +5435,14 @@ Note
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">shapiro.test</span>(df<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">shapiro.test</span>(df_dummy<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>return)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Shapiro-Wilk normality test
 
-data:  df$return
+data:  df_dummy$return
 W = 0.99895, p-value = 0.9215</code></pre>
 </div>
 </div>
@@ -5049,6 +5462,54 @@ data:  df_spy$return
 W = 0.894, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
+</section>
+<section id="jarque-bera-test" class="level2">
+<h2 class="anchored" data-anchor-id="jarque-bera-test">Jarque-Bera test</h2>
+<p>The Jarque-Bera test is a statistical test used to assess whether a sample of data follows a normal distribution. It is a goodness-of-fit test that compares the skewness and kurtosis of the sample data to the skewness and kurtosis of a normal distribution. The test statistic follows a chi-squared distribution with 2 degrees of freedom under the null hypothesis that the data is normally distributed. So low p-values indicates that the data do not follow a normal distribution.</p>
+<p>As oppose to the Shapiro-Wilk test, the Jarque Bera test can be apply to big data set.</p>
+<p>Jarque Bera test is defined as <img src="https://latex.codecogs.com/png.latex?JB%20=%20%5Cfrac%7Bn%7D%7B6%7D%20%5Ccdot%20%5Cleft(%20S%5E2%20+%20%5Cfrac%7B(K-3)%5E2%7D%7B4%7D%20%5Cright)"></p>
+<ul>
+<li>S is the sample skewness</li>
+<li>K is the sample kurtosis</li>
+<li>n is the sample size</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1">moments<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">jarque.test</span>(df_spy<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>return)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Jarque-Bera Normality Test
+
+data:  df_spy$return
+JB = 3373.7, p-value &lt; 2.2e-16
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p>As expected, we have a tiny p-value, hence we reject the <img src="https://latex.codecogs.com/png.latex?H_0"> that the data are normally distributed.</p>
+<p>And now for our dummy normal returns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">moments<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">jarque.test</span>(df_dummy<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>return)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Jarque-Bera Normality Test
+
+data:  df_dummy$return
+JB = 0.72149, p-value = 0.6972
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p>p-value is above the 0.05 threshold, we do not reject the <img src="https://latex.codecogs.com/png.latex?H_0"> that data are normally distributed.</p>
 
 
 </section>
@@ -5056,9 +5517,10 @@ W = 0.894, p-value &lt; 2.2e-16</code></pre>
 
  ]]></description>
   <category>Normal Distribution</category>
-  <category>qq-plot</category>
+  <category>QQ-plot</category>
   <category>Kurtosis</category>
   <category>Skewness</category>
+  <category>Histogram</category>
   <guid>https://fderyckel.github.io/blog.html/posts/quant-part1/normality-returns/index.html</guid>
   <pubDate>Tue, 18 Apr 2023 17:00:00 GMT</pubDate>
   <media:content url="https://fderyckel.github.io/blog.html/posts/quant-part1/normality-returns/qqplot-spy.png" medium="image" type="image/png" height="89" width="144"/>
