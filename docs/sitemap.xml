@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2023-11-23T11:28:26.923Z</lastmod>
+    <lastmod>2023-11-24T13:09:00.384Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
-    <lastmod>2023-11-23T11:27:23.146Z</lastmod>
+    <lastmod>2023-11-24T10:22:47.731Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part3.html</loc>
@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/normality-returns/index.html</loc>
-    <lastmod>2023-11-23T11:27:22.717Z</lastmod>
+    <lastmod>2023-11-24T10:22:46.792Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/binomials_models/index.html</loc>
@@ -66,15 +66,15 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</loc>
-    <lastmod>2023-11-21T00:46:03.830Z</lastmod>
+    <lastmod>2023-11-24T10:22:43.834Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/03-autocorrelation/index.html</loc>
-    <lastmod>2023-10-26T03:03:19.831Z</lastmod>
+    <lastmod>2023-11-24T12:55:05.367Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/04-ts-decomposition/index.html</loc>
-    <lastmod>2023-10-26T03:03:21.152Z</lastmod>
+    <lastmod>2023-11-24T13:09:05.819Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/prob-quant01/index.html</loc>
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2023-11-23T11:28:25.107Z</lastmod>
+    <lastmod>2023-11-24T10:22:47.215Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -138,7 +138,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2023-11-21T00:46:04.211Z</lastmod>
+    <lastmod>2023-11-24T13:08:58.308Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
@@ -146,6 +146,6 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</loc>
-    <lastmod>2023-11-23T05:41:36.705Z</lastmod>
+    <lastmod>2023-11-24T10:22:45.411Z</lastmod>
   </url>
 </urlset>

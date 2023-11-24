@@ -8,6 +8,16 @@ editor: source
 date-modified: "2023-10-22"
 ---
 
+When studying time-series, we can consider trend and seasonality.  In this sense, we could define time-series either in an additive way $$y_t = T_t + S_t + R_t$$ or  in a multiplicative way $$y_t = T_t \cdot S_t \cdot R_t$$ 
+
+with: 
+
+
+* $y_t$ the value of the time-serie at time $t$
+* $T_t$ the trend component at time $t$
+* $S_t$ the seasonal component at time $t$
+* $R_t$ the remainder component at time $t$
+
 # Time-series composition 
 
 ```{r}

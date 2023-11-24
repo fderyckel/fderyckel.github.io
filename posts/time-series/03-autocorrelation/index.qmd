@@ -3,29 +3,32 @@ title: "03 - AutoCorrelation, Stationarity and Random-Walk - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
 description: 'A dive into the concepts of autocorrelation and stationarity of time-series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise.'
-categories: [Time-series, Stationarity, Random-Walk, Autocorrelation]
-date-modified: '2022-09-09'
+categories: [Time-series, Autocorrelation, Stationarity, Random-Walk]
+date-modified: '2023-11-23'
 ---
 
 This post is to set up the basic concepts of time-series analysis.  
 
 # Autocovariance & autocorrelation 
 
-Autocorrelation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself. 
+Autocorrelation as the name indicates is the correlation of the time-series with itself, more specifically with a lag version of itself. We can think of it as many different coefficient of correlations.  One for each lag.  $r_2$ measure the correlation between the time series at time $t$ and time $t - 2$.  Similarly, $r_k$ measure the correlation between the time series at time $t$ and time $t - k$  
 
-Let's consider $\{X_t\}$ a time series.  
+$$r_k = \frac{\sum_{t=k+1}^T \left( y_t - \bar{y}\right) \left(y_{t-k} - \bar{y} \right)}{\sum_{t=1}^T \left(y_t - \bar{y} \right)^2}$$
+
+More genrally, let's consider $\{X_t\}$ a time series.  
 
 *   Then the mean function of $\{X_t\}$ (the first moment) is defined as $\mu_t = \textbf{E}(X_t)$.  In other words, $\mu_t$ is the expected value of the time series at point t.  
 *   The Variance of the time series is defined as $\sigma_t ^2 = Var(X_t) = \textbf{E}[(X_t - \mu_t)^2]$. 
 *   In general, $\mu_t$ and $\sigma_t ^2$ are different at different point in time. 
 
-Now, we define the **autocovariance** function of the time series as $$\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]$$. 
+Now, we define the **autocovariance** function of the time series as 
+$$\gamma(s, t) = Cov(X_s, X_t) = \textbf{E}[(X_s - \mu_s)(X_t - \mu_t)]$$  
 In the same vein, we define the **autocorrelation** function of the time series as 
 $$\rho(s,t) = Corr(X_s, X_t) = \frac {\gamma (s, t)}{\sigma_s \sigma_t} = \frac{Cov(X_s, X_t)}{\sqrt{Var(X_s) Var(X_t)}}$$
 
 Autocovariance and autocorrelation measure the linear correlation between between two points $X_s$ and $X_t$ on the same time-series. 
 
-Few properties of autocavariance and autocorrelation of time-series 
+Few properties of autocovariance and autocorrelation of time-series 
 
 * $\gamma(t, t) = \sigma_t^2$ 
 * $\gamma(s, t) = \gamma(t, s)$ 
@@ -36,6 +39,25 @@ Few properties of autocavariance and autocorrelation of time-series
 
 As exercise, we can plot the auto-correlation of a non-stationary (aka with significant autocorrelation) time-series.  We are using the [Monthly Milk production](https://www.kaggle.com/datasets/bhaveshsonagra/monthly-milk-production) (no idea where the data come from)
 
+On the autocorrelation plot, the threshold line are situated at $\pm \frac{2}{\sqrt{T}}$ . 
+
+Let's maybe first have a visual of the data. 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(readr)
+library(ggplot2)
+
+milk <- read_csv('../../../raw_data/milk.csv')
+
+ggplot(milk, aes(x = month, y = milk_prod_per_cow_kg)) + 
+  geom_line()
+```
+
+
+
 ### Using R 
 
 In R the standard function to plot a correlogram is the *acf()* function
@@ -43,14 +65,10 @@ In R the standard function to plot a correlogram is the *acf()* function
 ```{r}
 #| warning: false
 #| message: false
-
-library(readr)
-
-milk <- read_csv('../../../raw_data/milk.csv')
 acf(milk$milk_prod_per_cow_kg)
 ```
 
-Graph clearly shows some seasonality (at the 12 lags ==> yearly correlation) which indicates that our data are non-stationary (next section). 
+Graph clearly shows some seasonality (at the 12 lags ==> yearly correlation) which indicates that our data are non-stationary (next section). The threshold line is at `r round(2 / sqrt(nrow(milk)), 3)` as there are `r nrow(milk)` observations in the dataset (number of monthly reported observations)
 
 If we are more attached to the auto-correlation values, we can store the results in a dataframe. 
 

@@ -3,7 +3,7 @@ title: "02 - Statistical Moments"
 author: "Francois de Ryckel"
 date: "2022-11-02"
 categories: [statistics, Mean, Skewness, Kurtosis, log-transformation, Box-Cox]
-description: 'Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis.  Showing how to use R and Python on these concepts.'
+description: 'Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis.  Showing how to use R and Python on these concepts. We then provide 2 methods to transform data in order to bring it closer to a normal distribution.'
 editor: source
 image: kurtosis.png
 date-modified: "2023-11-21"

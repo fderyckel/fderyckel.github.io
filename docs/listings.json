@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/time-series/03-autocorrelation/index.html",
       "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/normality-returns/index.html",
       "/posts/machine-learning-part1/knn/index.html",
@@ -29,8 +30,7 @@
       "/posts/kmeans-regime-change/index.html",
       "/posts/xgboost-time-series/index.html",
       "/posts/algebra-quant/index.html",
-      "/posts/proba-quant/prob-quant01/index.html",
-      "/posts/time-series/03-autocorrelation/index.html"
+      "/posts/proba-quant/prob-quant01/index.html"
     ]
   },
   {

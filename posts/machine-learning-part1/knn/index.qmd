@@ -14,7 +14,7 @@ Some very basic ML using KNN and python and the tidymodel framework.
 
 KNN stands for *K Nearest Neighbor*.  
 
-KNN is not really a machine learning techniques in the sense that it trains a model. Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression.  The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).  
+KNN is not really a machine learning techniques in the sense that it trains a model.  In the case of KNN, there is no training.  We are waiting for test data to see what label (or value) will the the new data will get.  We then say that KNN is a lazy learner (as opposed to eager learners like SVM or RF).  Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression.  The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).  
 
 As mentioned, there is no training phase when using KNN.  Instead, there is only prediction.  
 We take an observation and check the **K** observations next to it.  We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.
@@ -35,12 +35,16 @@ Because KNN use distance, it is important to scale the data as a pre-processing 
 
 ### Pros 
 
-* KNN is non-parametric. It's not making any assumptions on the the type of distribution of the data. 
+* Easy to understand intuition, mathematics (Euclidean Distance)
+* KNN is non-parametric. It's not making any assumptions on the the type of distribution of the data
+* only one parameter to tune
 
 ### Cons
 
 * non-efficient in terms of memory 
 * non-efficient on speed of execution with new data 
+* not suitable for high dimensional data
+* not suitable for big data sets 
 
 # Example in Python 
 
@@ -134,4 +138,34 @@ plt.title('Prediction with K=19')
 
 ```
 
-Because the data are already pretty well separted, the only changes we see easily are the ones in the junction between the blue and purple dots. 
+Because the data are already pretty well separated, the only changes we see easily are the ones in the junction between the blue and purple dots. 
+
+## Example with the adult dataset (from Kaggle)
+
+```{python}
+import numpy as np
+import pandas as pd
+
+data = pd.read_csv('../../../raw_data/adult.csv')
+data.head()
+```
+
+Doing some cleaning of data.  All the cleaning ideas come from the Kaggle notebooks (I have not deeply analysed the data)
+
+```{python}
+# in a few columns, many cells have '?', let's replace those with Nan
+data['workclass'] = data['workclass'].replace('?', np.nan)
+data['occupation'] = data['occupation'].replace('?', np.nan)
+data['native-country'] = data['native-country'] .replace('?', np.nan)
+
+df = data.copy()
+
+# dropping row with NA
+df.dropna(how = 'any', inplace = True)
+
+# dropping dupplicates rows
+df = df.drop_duplicates()
+
+# drop columns 
+```
+
