@@ -51,6 +51,8 @@ Because KNN use distance, it is important to scale the data as a pre-processing 
 ## Starting example 
 
 ```{python}
+#| label: scatterplot1
+
 x = [4, 5, 10, 4, 3, 11, 14 , 8, 10, 12]
 y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
 classes = [0, 0, 1, 0, 0, 1, 1, 0, 1, 1]
@@ -64,6 +66,8 @@ plt.scatter(x, y, c = classes)
 Now let's create a KNN object and a new point 
 
 ```{python}
+#| label: scatterplot2
+
 from sklearn.neighbors import KNeighborsClassifier
 
 knn = KNeighborsClassifier(n_neighbors = 3)
@@ -81,6 +85,8 @@ plt.text(x = new_x-1, y = new_y-1, s = f"new point, class:{prediction[0]}")
 ## Example with synthetic data 
 
 ```{python}
+#| label: scatterplot3
+
 from sklearn.datasets import make_blobs
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
@@ -122,18 +128,19 @@ Let's visualize both 'models' and the impact of the choice of K.
 
 ```{python}
 #| message: false
+#| #| label: scatterplot4
 
 #using subplots to compare
 plt.figure(figsize = (9, 5))
 
 # first subplot
 plt.subplot(1, 2, 1)
-plt.scatter(X_test[:, 0], X_test[:, 1], c = y_pred_5, s=21)
+plt.scatter(X_test[:, 0], X_test[:, 1], c = y_pred_5, s=20)
 plt.title('Predictions with K=5')
 
 # second subplot
 plt.subplot(1, 2, 2)
-plt.scatter(X_test[:, 0], X_test[:, 1], c = y_pred_19, s=21)
+plt.scatter(X_test[:, 0], X_test[:, 1], c = y_pred_19, s=20)
 plt.title('Prediction with K=19')
 
 ```

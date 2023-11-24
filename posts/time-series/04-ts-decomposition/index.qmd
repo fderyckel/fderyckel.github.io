@@ -57,5 +57,7 @@ ggplot(df, aes(x, y)) +
 
 ## Decomposing a time-series. 
 
+### In R using standard library
 
+Let's go back to our 
 

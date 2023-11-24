@@ -46,8 +46,10 @@ Let's maybe first have a visual of the data.
 ```{r}
 #| warning: false
 #| message: false
+#| label: milk-production
 
 library(readr)
+library(tibble)
 library(ggplot2)
 
 milk <- read_csv('../../../raw_data/milk.csv')
@@ -65,6 +67,8 @@ In R the standard function to plot a correlogram is the *acf()* function
 ```{r}
 #| warning: false
 #| message: false
+#| label: acf-milk
+
 acf(milk$milk_prod_per_cow_kg)
 ```
 
@@ -101,8 +105,7 @@ ggacf <- function(series) {
 
 
 ```{r}
-library(ggplot2)
-library(tibble)
+#| label: acf-milk-ggplot
 
 ggacf(milk$milk_prod_per_cow_kg)
 ```

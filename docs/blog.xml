@@ -24,7 +24,7 @@
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>KNN stands for <em>K Nearest Neighbor</em>.</p>
-<p>KNN is not really a machine learning techniques in the sense that it trains a model. Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
+<p>KNN is not really a machine learning techniques in the sense that it trains a model. In the case of KNN, there is no training. We are waiting for test data to see what label (or value) will the the new data will get. We then say that KNN is a lazy learner (as opposed to eager learners like SVM or RF). Nonetheless, it is a supervised ML algorithm that can be used for both classification and regression. The intuition behind the model is that observations that are closed to each other (close in terms of distance in a hyperplane) have similar labels (classification) or values (regression).</p>
 <p>As mentioned, there is no training phase when using KNN. Instead, there is only prediction.<br>
 We take an observation and check the <strong>K</strong> observations next to it. We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -52,7 +52,9 @@ Scaling
 <section id="pros" class="level3">
 <h3 class="anchored" data-anchor-id="pros">Pros</h3>
 <ul>
-<li>KNN is non-parametric. It’s not making any assumptions on the the type of distribution of the data.</li>
+<li>Easy to understand intuition, mathematics (Euclidean Distance)</li>
+<li>KNN is non-parametric. It’s not making any assumptions on the the type of distribution of the data</li>
+<li>only one parameter to tune</li>
 </ul>
 </section>
 <section id="cons" class="level3">
@@ -60,6 +62,8 @@ Scaling
 <ul>
 <li>non-efficient in terms of memory</li>
 <li>non-efficient on speed of execution with new data</li>
+<li>not suitable for high dimensional data</li>
+<li>not suitable for big data sets</li>
 </ul>
 </section>
 </section>
@@ -68,7 +72,7 @@ Scaling
 <h1>Example in Python</h1>
 <section id="starting-example" class="level2">
 <h2 class="anchored" data-anchor-id="starting-example">Starting example</h2>
-<div class="cell" data-execution_count="1">
+<div id="scatterplot1" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1">x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
@@ -149,15 +153,15 @@ font-style: inherit;">as</span> plt</span>
 <span id="cb1-8">plt.scatter(x, y, c <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> classes)</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x16e1f9cd0&gt;</code></pre>
+<div id="scatterplot1-1" class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x11d1878e0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-2-output-2.png" width="566" height="411"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot1-output-2.png" id="scatterplot1-2" width="566" height="411"></p>
 </div>
 </div>
 <p>Now let’s create a KNN object and a new point</p>
-<div class="cell" data-execution_count="2">
+<div id="scatterplot2" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.neighbors <span class="im" style="color: #00769E;
@@ -230,17 +234,17 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div id="scatterplot2-1" class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>Text(2, 19, 'new point, class:0')</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-3-output-2.png" width="566" height="411"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot2-output-2.png" id="scatterplot2-2" width="566" height="411"></p>
 </div>
 </div>
 </section>
 <section id="example-with-synthetic-data" class="level2">
 <h2 class="anchored" data-anchor-id="example-with-synthetic-data">Example with synthetic data</h2>
-<div class="cell" data-execution_count="3">
+<div id="scatterplot3" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.datasets <span class="im" style="color: #00769E;
@@ -301,11 +305,11 @@ background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">20</span>)</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x16e32ea90&gt;</code></pre>
+<div id="scatterplot3-1" class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x14f0889a0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-4-output-2.png" width="577" height="411"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot3-output-2.png" id="scatterplot3-2" width="577" height="411"></p>
 </div>
 </div>
 <p>Splitting our dataset into training &amp; testing + running KNN on the data</p>
@@ -426,7 +430,7 @@ font-style: inherit;">=</span> y_pred_5, s<span class="op" style="color: #5E5E5E
 background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">21</span>)</span>
+font-style: inherit;">20</span>)</span>
 <span id="cb9-7">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Predictions with K=5'</span>)</span>
@@ -451,18 +455,222 @@ font-style: inherit;">=</span> y_pred_19, s<span class="op" style="color: #5E5E5
 background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">21</span>)</span>
+font-style: inherit;">20</span>)</span>
 <span id="cb9-12">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Prediction with K=19'</span>)</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>Text(0.5, 1.0, 'Prediction with K=19')</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-6-output-2.png" width="726" height="431"></p>
 </div>
 </div>
-<p>Because the data are already pretty well separted, the only changes we see easily are the ones in the junction between the blue and purple dots.</p>
+<p>Because the data are already pretty well separated, the only changes we see easily are the ones in the junction between the blue and purple dots.</p>
+</section>
+<section id="example-with-the-adult-dataset-from-kaggle" class="level2">
+<h2 class="anchored" data-anchor-id="example-with-the-adult-dataset-from-kaggle">Example with the adult dataset (from Kaggle)</h2>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb11-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb11-3"></span>
+<span id="cb11-4">data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/adult.csv'</span>)</span>
+<span id="cb11-5">data.head()</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">workclass</th>
+<th data-quarto-table-cell-role="th">fnlwgt</th>
+<th data-quarto-table-cell-role="th">education</th>
+<th data-quarto-table-cell-role="th">educational-num</th>
+<th data-quarto-table-cell-role="th">marital-status</th>
+<th data-quarto-table-cell-role="th">occupation</th>
+<th data-quarto-table-cell-role="th">relationship</th>
+<th data-quarto-table-cell-role="th">race</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">capital-gain</th>
+<th data-quarto-table-cell-role="th">capital-loss</th>
+<th data-quarto-table-cell-role="th">hours-per-week</th>
+<th data-quarto-table-cell-role="th">native-country</th>
+<th data-quarto-table-cell-role="th">income</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>25</td>
+<td>Private</td>
+<td>226802</td>
+<td>11th</td>
+<td>7</td>
+<td>Never-married</td>
+<td>Machine-op-inspct</td>
+<td>Own-child</td>
+<td>Black</td>
+<td>Male</td>
+<td>0</td>
+<td>0</td>
+<td>40</td>
+<td>United-States</td>
+<td>&lt;=50K</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>38</td>
+<td>Private</td>
+<td>89814</td>
+<td>HS-grad</td>
+<td>9</td>
+<td>Married-civ-spouse</td>
+<td>Farming-fishing</td>
+<td>Husband</td>
+<td>White</td>
+<td>Male</td>
+<td>0</td>
+<td>0</td>
+<td>50</td>
+<td>United-States</td>
+<td>&lt;=50K</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>28</td>
+<td>Local-gov</td>
+<td>336951</td>
+<td>Assoc-acdm</td>
+<td>12</td>
+<td>Married-civ-spouse</td>
+<td>Protective-serv</td>
+<td>Husband</td>
+<td>White</td>
+<td>Male</td>
+<td>0</td>
+<td>0</td>
+<td>40</td>
+<td>United-States</td>
+<td>&gt;50K</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>44</td>
+<td>Private</td>
+<td>160323</td>
+<td>Some-college</td>
+<td>10</td>
+<td>Married-civ-spouse</td>
+<td>Machine-op-inspct</td>
+<td>Husband</td>
+<td>Black</td>
+<td>Male</td>
+<td>7688</td>
+<td>0</td>
+<td>40</td>
+<td>United-States</td>
+<td>&gt;50K</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>18</td>
+<td>?</td>
+<td>103497</td>
+<td>Some-college</td>
+<td>10</td>
+<td>Never-married</td>
+<td>?</td>
+<td>Own-child</td>
+<td>White</td>
+<td>Female</td>
+<td>0</td>
+<td>0</td>
+<td>30</td>
+<td>United-States</td>
+<td>&lt;=50K</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Doing some cleaning of data. All the cleaning ideas come from the Kaggle notebooks (I have not deeply analysed the data)</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># in a few columns, many cells have '?', let's replace those with Nan</span></span>
+<span id="cb12-2">data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'workclass'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'workclass'</span>].replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'?'</span>, np.nan)</span>
+<span id="cb12-3">data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'occupation'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'occupation'</span>].replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'?'</span>, np.nan)</span>
+<span id="cb12-4">data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'native-country'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'native-country'</span>] .replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'?'</span>, np.nan)</span>
+<span id="cb12-5"></span>
+<span id="cb12-6">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> data.copy()</span>
+<span id="cb12-7"></span>
+<span id="cb12-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># dropping row with NA</span></span>
+<span id="cb12-9">df.dropna(how <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'any'</span>, inplace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb12-10"></span>
+<span id="cb12-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># dropping dupplicates rows</span></span>
+<span id="cb12-12">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.drop_duplicates()</span>
+<span id="cb12-13"></span>
+<span id="cb12-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># drop columns </span></span></code></pre></div>
+</div>
 
 
 </section>
