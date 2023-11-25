@@ -18,6 +18,13 @@ with:
 * $S_t$ the seasonal component at time $t$
 * $R_t$ the remainder component at time $t$
 
+::: {.callout-note}
+
+Note that, using log, we can easily transform a multiplicative time-series into an addidiative one. 
+
+$$log(y_t) = log(T_t \cdot S_t \cdot R_t) = log(T_t) + log(S_t) + log(R_t)$$
+:::
+
 # Time-series composition 
 
 ```{r}
@@ -59,5 +66,43 @@ ggplot(df, aes(x, y)) +
 
 ### In R using standard library
 
-Let's go back to our 
+Let's go back to our milk example 
+
+```{r}
+#| message: false
+#| label: milk1
+
+library(readr)
+
+milk <- read_csv('../../../raw_data/milk.csv')
+#milk$month <- as.Date(milk$month)
+  
+ggplot(milk, aes(x = month, y = milk_prod_per_cow_kg)) + 
+  geom_line()
+```
+
+We can use the *decompose()* function.  
+
+```{r}
+ts_milk <- ts(milk$milk_prod_per_cow_kg, start = c(1962, 1, 1), frequency = 12)
+milk_dec <- decompose(ts_milk, type = 'additive', filter = NULL)
+
+plot(milk_dec)
+```
+And now, we can use our decomposed time-series to detrend or remove seasonality 
+
+```{r}
+milk_adj <- ts_milk - milk_dec$seasonal
+plot(milk_adj)
+```
+
+```{r}
+#| fig-height: 15
+
+library(timetk)
+
+milk |> 
+  plot_stl_diagnostics(month, milk_prod_per_cow_kg)
+
+```
 

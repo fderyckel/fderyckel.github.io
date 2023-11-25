@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2023-11-24T13:28:13.149Z</lastmod>
+    <lastmod>2023-11-25T04:16:58.355Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -74,7 +74,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/04-ts-decomposition/index.html</loc>
-    <lastmod>2023-11-24T13:09:05.819Z</lastmod>
+    <lastmod>2023-11-25T04:16:56.039Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/prob-quant01/index.html</loc>
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2023-11-24T13:28:11.280Z</lastmod>
+    <lastmod>2023-11-24T13:42:22.258Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -138,7 +138,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2023-11-24T13:23:12.353Z</lastmod>
+    <lastmod>2023-11-25T04:16:56.433Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
@@ -146,6 +146,6 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</loc>
-    <lastmod>2023-11-24T13:28:10.879Z</lastmod>
+    <lastmod>2023-11-24T13:42:21.804Z</lastmod>
   </url>
 </urlset>

@@ -154,7 +154,7 @@ font-style: inherit;">as</span> plt</span>
 background-color: null;
 font-style: inherit;">=</span> classes)</span></code></pre></div>
 <div id="scatterplot1-1" class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x11d1878e0&gt;</code></pre>
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x15b8618b0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot1-output-2.png" id="scatterplot1-2" width="566" height="411"></p>
@@ -306,7 +306,7 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">20</span>)</span></code></pre></div>
 <div id="scatterplot3-1" class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x14f0889a0&gt;</code></pre>
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x28065c9a0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot3-output-2.png" id="scatterplot3-2" width="577" height="411"></p>
@@ -398,7 +398,7 @@ Accuracy with k = 19 is 89.6 %</code></pre>
 </div>
 </div>
 <p>Let’s visualize both ‘models’ and the impact of the choice of K.</p>
-<div class="cell" data-execution_count="5">
+<div id="scatterplot4" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#using subplots to compare</span></span>
@@ -459,11 +459,11 @@ font-style: inherit;">20</span>)</span>
 <span id="cb9-12">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Prediction with K=19'</span>)</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="scatterplot4-1" class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>Text(0.5, 1.0, 'Prediction with K=19')</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/cell-6-output-2.png" width="726" height="431"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot4-output-2.png" id="scatterplot4-2" width="726" height="431"></p>
 </div>
 </div>
 <p>Because the data are already pretty well separated, the only changes we see easily are the ones in the junction between the blue and purple dots.</p>

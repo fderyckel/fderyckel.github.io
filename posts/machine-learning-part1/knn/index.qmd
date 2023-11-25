@@ -128,7 +128,7 @@ Let's visualize both 'models' and the impact of the choice of K.
 
 ```{python}
 #| message: false
-#| #| label: scatterplot4
+#| label: scatterplot4
 
 #using subplots to compare
 plt.figure(figsize = (9, 5))
