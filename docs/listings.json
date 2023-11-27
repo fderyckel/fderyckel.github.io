@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/quant-part1/binomials_models/index.html",
       "/posts/time-series/03-autocorrelation/index.html",
       "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/normality-returns/index.html",
@@ -17,7 +18,6 @@
       "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part2/SDE-part3/index.html",
       "/posts/quant-puzzle-01/index.html",
-      "/posts/quant-part1/binomials_models/index.html",
       "/posts/machine-learning-part1/naives-bayes-intro/index.html",
       "/posts/machine-learning-part1/linear-regression/index.html",
       "/posts/quant-part1/random-behavior-assets/index.html",

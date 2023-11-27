@@ -3,9 +3,9 @@ title: "04 - Binomials models for Quantitative Finance"
 author: "Francois de Ryckel"
 date: "2023-04-06"
 description: 'Creating a basic or binomial model on pricing an option.'
-categories: [Binomial Models, Options Pricing, Delta Hedging, Risk-Neutrality]
+categories: [Binomial Model, Options Pricing, Delta Hedging, Risk-Neutrality, Arbitrage]
 editor: source
-date-modified: "2023-06-14"
+date-modified: "2023-11-25"
 ---
 
 # Binomial models 
@@ -192,4 +192,16 @@ Let's try our function to get some results
 calculate_option_price(spot = 100, strike = 100, rfr = 0.03, sigma = 0.1, time = 1, steps = 4)
 ```
 
+# Arbitrage 
 
+## Put-Call parity 
+
+* Put-call parity shows the relationship that has to exist between European put and call options that have the same underlying asset, expiration, and strike prices. 
+* Put-call parity states that simultaneously holding a short European put and long European call of the same class will deliver the same return as holding one forward contract on the same underlying asset, with the same expiration, and a forward price equal to the option's strike price. 
+* An arbitrage opportunity exists when the P-C parity is violated. 
+* The P-C parity is defined by $$C + PV(x) = P + S$$
+  + C = price of the European Call option
+  + P = price of the European Put Option
+  + S = Spot price of underlying asset (current market value of asset)
+  + PV(x) = Present-Value of the strike price (discounted strike price from expiration)
+* Another way to see the relationship: $$P-C = PV(x) - S$$

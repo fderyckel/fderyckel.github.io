@@ -155,10 +155,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">Binomial Models</div>
+                <div class="quarto-category">Binomial Model</div>
                 <div class="quarto-category">Options Pricing</div>
                 <div class="quarto-category">Delta Hedging</div>
                 <div class="quarto-category">Risk-Neutrality</div>
+                <div class="quarto-category">Arbitrage</div>
               </div>
                   </div>
   </div>
@@ -183,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">June 14, 2023</p>
+        <p class="date-modified">November 25, 2023</p>
       </div>
     </div>
       
@@ -204,6 +205,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#mixing-real-world-and-risk-free-world" id="toc-mixing-real-world-and-risk-free-world" class="nav-link" data-scroll-target="#mixing-real-world-and-risk-free-world">Mixing real-world and risk-free world</a></li>
   </ul></li>
   <li><a href="#the-binomial-tree" id="toc-the-binomial-tree" class="nav-link" data-scroll-target="#the-binomial-tree">The binomial tree</a></li>
+  <li><a href="#arbitrage" id="toc-arbitrage" class="nav-link" data-scroll-target="#arbitrage">Arbitrage</a>
+  <ul class="collapse">
+  <li><a href="#put-call-parity" id="toc-put-call-parity" class="nav-link" data-scroll-target="#put-call-parity">Put-Call parity</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -405,8 +410,27 @@ Example
 <pre><code>[1]  5.415051  8.117623 11.822154 16.506917 21.550625</code></pre>
 </div>
 </div>
+</section>
+<section id="arbitrage" class="level1">
+<h1>Arbitrage</h1>
+<section id="put-call-parity" class="level2">
+<h2 class="anchored" data-anchor-id="put-call-parity">Put-Call parity</h2>
+<ul>
+<li>Put-call parity shows the relationship that has to exist between European put and call options that have the same underlying asset, expiration, and strike prices.</li>
+<li>Put-call parity states that simultaneously holding a short European put and long European call of the same class will deliver the same return as holding one forward contract on the same underlying asset, with the same expiration, and a forward price equal to the option’s strike price.</li>
+<li>An arbitrage opportunity exists when the P-C parity is violated.</li>
+<li>The P-C parity is defined by <span class="math display">\[C + PV(x) = P + S\]</span>
+<ul>
+<li>C = price of the European Call option</li>
+<li>P = price of the European Put Option</li>
+<li>S = Spot price of underlying asset (current market value of asset)</li>
+<li>PV(x) = Present-Value of the strike price (discounted strike price from expiration)</li>
+</ul></li>
+<li>Another way to see the relationship: <span class="math display">\[P-C = PV(x) - S\]</span></li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
