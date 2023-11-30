@@ -118,9 +118,10 @@ ul.task-list li input[type="checkbox"] {
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">Random-Walk</div>
-                <div class="quarto-category">Brownian-Motion</div>
-                <div class="quarto-category">Quadratic-Variation</div>
+                <div class="quarto-category">Random Walk</div>
+                <div class="quarto-category">Brownian Motion</div>
+                <div class="quarto-category">Weiner Process</div>
+                <div class="quarto-category">Quadratic Variation</div>
               </div>
                   </div>
   </div>
@@ -170,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#quadratic-variation-and-transition-to-continuous-time" id="toc-quadratic-variation-and-transition-to-continuous-time" class="nav-link" data-scroll-target="#quadratic-variation-and-transition-to-continuous-time">Quadratic variation and transition to continuous time</a></li>
   <li><a href="#the-probability-of-wiener-processes-or-brownian-motions" id="toc-the-probability-of-wiener-processes-or-brownian-motions" class="nav-link" data-scroll-target="#the-probability-of-wiener-processes-or-brownian-motions">The probability of Wiener Processes or Brownian Motions</a>
   <ul class="collapse">
-  <li><a href="#properties-of-brownian-motions" id="toc-properties-of-brownian-motions" class="nav-link" data-scroll-target="#properties-of-brownian-motions">Properties of Brownian Motions</a></li>
+  <li><a href="#properties-of-weiner-processes" id="toc-properties-of-weiner-processes" class="nav-link" data-scroll-target="#properties-of-weiner-processes">Properties of Weiner processes</a></li>
   <li><a href="#expectation-of-w_t" id="toc-expectation-of-w_t" class="nav-link" data-scroll-target="#expectation-of-w_t">Expectation of <span class="math inline">\(W_t\)</span></a></li>
   <li><a href="#variance-of-w_t" id="toc-variance-of-w_t" class="nav-link" data-scroll-target="#variance-of-w_t">Variance of <span class="math inline">\(W_t\)</span></a></li>
   </ul></li>
@@ -260,6 +261,7 @@ Notes
 </section>
 <section id="the-probability-of-wiener-processes-or-brownian-motions" class="level1">
 <h1>The probability of Wiener Processes or Brownian Motions</h1>
+<p>Although Brownian motions and Weiner processes are often used interchangeably, there is semantic difference, one could make. Brownian motion is the physical phenomenon of random movement of microscopic particles suspended in a fluid, such as dust in air or pollen in water. Wiener process is a mathematical model of Brownian motion, which is a continuous-time stochastic process that satisfies the following properties. The Weiner process models the standard Brownian motion. They are other type of Brownian motions that are not modeled by the Weiner process like geometric brownian motion, fractional brownian motion and Ornstein-Uhlenbeck process.</p>
 <p>We denotes a Wiener Process as <span class="math inline">\(W_t\)</span> or <span class="math inline">\(W(t)\)</span> with initial condition that <span class="math inline">\(W_0 = 0\)</span> or <span class="math inline">\(W(0) = 0\)</span></p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -267,15 +269,15 @@ Notes
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-definition of Brownian Motion
+definition of a Weiner process
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
 <li><span class="math inline">\(W_0 = 0\)</span></li>
 <li><span class="math inline">\(W_t\)</span> is a continuous path (continuous everywhere, differentiable nowhere)</li>
-<li>independent increments. For <span class="math inline">\(t_1 &lt; t_2 &lt; t_3 &lt; t_4 &lt; \cdots\)</span>, <span class="math inline">\(W_{t_4} - W_{t_3}\)</span> and <span class="math inline">\(W_{t_2} - W_{t_1}\)</span> are independent</li>
-<li>normally distributed increments. <span class="math inline">\(|W_t - W_s| \sim N(0, |t-s|)\)</span></li>
+<li>independent increments. For <span class="math inline">\(t_1 &lt; t_2 &lt; t_3 &lt; t_4 &lt; \cdots\)</span>, <span class="math inline">\(W_{t_4} - W_{t_3}\)</span> and <span class="math inline">\(W_{t_2} - W_{t_1}\)</span> are independent. In other words, the change in the process over any time interval is independent of its past and future values.</li>
+<li>normally distributed increments. <span class="math inline">\(|W_t - W_s| \sim N(0, |t-s|)\)</span> The variance is equivalent to the length of the interval.</li>
 </ul>
 </div>
 </div>
@@ -294,11 +296,11 @@ Example. Show that <span class="math inline">\(\mathbb{E}_s \left[ W_t | \mathca
 <p>Hence: <span class="math display">\[\mathbb{E}_s \left[ W_t | \mathcal{F_s} \right]  = \mathbb{E}_s \left[ W_s | \mathcal{F_s} \right] = W_s\]</span></p>
 </div>
 </div>
-<section id="properties-of-brownian-motions" class="level2">
-<h2 class="anchored" data-anchor-id="properties-of-brownian-motions">Properties of Brownian Motions</h2>
+<section id="properties-of-weiner-processes" class="level2">
+<h2 class="anchored" data-anchor-id="properties-of-weiner-processes">Properties of Weiner processes</h2>
 <ul>
 <li>They are <strong>finite</strong> - thanks to the increment (y-axis) scale with the square root of the time-steps</li>
-<li>they are <strong>continuous</strong> - limit when time-steps are infinity small and the random-walk is becoming continuous</li>
+<li>they are <strong>continuous</strong> - limit when time-steps are infinitely small and the random-walk is becoming continuous</li>
 <li>follow <strong>Markov property</strong></li>
 <li>follow <strong>Martingale property</strong></li>
 <li>the quadratic variation from 0 to t is <span class="math inline">\(t\)</span> itself - see <a href="#eq-quad-variation">Equation&nbsp;3</a></li>

@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2023-11-25T14:07:46.353Z</lastmod>
+    <lastmod>2023-11-30T05:45:06.893Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
-    <lastmod>2023-11-25T14:07:44.581Z</lastmod>
+    <lastmod>2023-11-30T05:44:17.372Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part3.html</loc>
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/binomials_models/index.html</loc>
-    <lastmod>2023-11-25T14:07:44.115Z</lastmod>
+    <lastmod>2023-11-30T05:44:16.938Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/markov-chains/index.html</loc>
@@ -70,7 +70,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/03-autocorrelation/index.html</loc>
-    <lastmod>2023-11-24T13:23:11.977Z</lastmod>
+    <lastmod>2023-11-30T05:45:04.637Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/04-ts-decomposition/index.html</loc>
@@ -122,7 +122,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part1/brownian-motion/index.html</loc>
-    <lastmod>2023-11-14T06:17:32.311Z</lastmod>
+    <lastmod>2023-11-30T05:42:52.399Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/probability.html</loc>
@@ -138,7 +138,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2023-11-25T04:16:56.433Z</lastmod>
+    <lastmod>2023-11-30T05:45:04.997Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>

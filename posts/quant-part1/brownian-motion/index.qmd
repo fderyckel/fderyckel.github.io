@@ -3,7 +3,7 @@ title: "03 - Random-walks & Brownian Motions"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'RW (discrete) and BM (continuous) constitute the way assets returns are modelled. '
-categories: [Random-Walk, Brownian-Motion, Quadratic-Variation]
+categories: [Random Walk, Brownian Motion, Weiner Process, Quadratic Variation]
 image: random-walk.png
 editor: source
 date-modified: "2023-07-23"
@@ -103,16 +103,18 @@ Why does it matter that the time-step is $\frac{t}{n}$ and the bet-size is $\sqr
 
 # The probability of Wiener Processes or Brownian Motions 
 
+Although Brownian motions and Weiner processes are often used interchangeably, there is semantic difference, one could make. Brownian motion is the physical phenomenon of random movement of microscopic particles suspended in a fluid, such as dust in air or pollen in water. Wiener process is a mathematical model of Brownian motion, which is a continuous-time stochastic process that satisfies the following properties.  The Weiner process models the standard Brownian motion.  They are other type of Brownian motions that are not modeled by the Weiner process like geometric brownian motion, fractional brownian motion and Ornstein-Uhlenbeck process. 
+
 We denotes a Wiener Process as $W_t$ or $W(t)$ with initial condition that $W_0 = 0$ or $W(0) = 0$ 
 
 ::: {.callout-tip}
 
-## definition of Brownian Motion
+## definition of a Weiner process 
 
 * $W_0 = 0$
 * $W_t$ is a continuous path (continuous everywhere, differentiable nowhere)
-* independent increments.  For $t_1 < t_2 < t_3 < t_4 < \cdots$, $W_{t_4} - W_{t_3}$ and $W_{t_2} - W_{t_1}$ are independent
-* normally distributed increments.  $|W_t - W_s| \sim N(0, |t-s|)$
+* independent increments.  For $t_1 < t_2 < t_3 < t_4 < \cdots$, $W_{t_4} - W_{t_3}$ and $W_{t_2} - W_{t_1}$ are independent.  In other words, the change in the process over any time interval is independent of its past and future values.
+* normally distributed increments.  $|W_t - W_s| \sim N(0, |t-s|)$  The variance is equivalent to the length of the interval. 
 
 :::
 
@@ -131,10 +133,10 @@ $$\mathbb{E}_s \left[ W_t | \mathcal{F_s} \right]  = \mathbb{E}_s \left[ W_s | \
 
 :::
 
-## Properties of Brownian Motions 
+## Properties of Weiner processes  
 
 * They are **finite** - thanks to the increment (y-axis) scale with the square root of the time-steps 
-* they are **continuous** - limit when time-steps are infinity small and the random-walk is becoming continuous
+* they are **continuous** - limit when time-steps are infinitely small and the random-walk is becoming continuous
 * follow **Markov property** 
 * follow **Martingale property**
 * the quadratic variation from 0 to t is $t$ itself - see @eq-quad-variation 

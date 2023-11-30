@@ -3,7 +3,7 @@ title: "04 - Binomials models for Quantitative Finance"
 author: "Francois de Ryckel"
 date: "2023-04-06"
 description: 'Creating a basic or binomial model on pricing an option.'
-categories: [Binomial Model, Options Pricing, Delta Hedging, Risk-Neutrality, Arbitrage]
+categories: [Binomial Model, Options Pricing, Delta Hedging, Risk Neutrality, Arbitrage]
 editor: source
 date-modified: "2023-11-25"
 ---

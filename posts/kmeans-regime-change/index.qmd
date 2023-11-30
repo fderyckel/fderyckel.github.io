@@ -2,7 +2,7 @@
 title: "Kmeans with regime changes"
 author: "Francois de Ryckel"
 date: '2022-10-12'
-categories: [kmeans, code, analysis, tidymodel]
+categories: [Kmeans, code, analysis, tidymodel]
 editor: source
 date-modified: '2022-10-12'
 ---

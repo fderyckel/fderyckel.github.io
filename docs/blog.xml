@@ -2707,6 +2707,7 @@ Notes
 </section>
 <section id="the-probability-of-wiener-processes-or-brownian-motions" class="level1">
 <h1>The probability of Wiener Processes or Brownian Motions</h1>
+<p>Although Brownian motions and Weiner processes are often used interchangeably, there is semantic difference, one could make. Brownian motion is the physical phenomenon of random movement of microscopic particles suspended in a fluid, such as dust in air or pollen in water. Wiener process is a mathematical model of Brownian motion, which is a continuous-time stochastic process that satisfies the following properties. The Weiner process models the standard Brownian motion. They are other type of Brownian motions that are not modeled by the Weiner process like geometric brownian motion, fractional brownian motion and Ornstein-Uhlenbeck process.</p>
 <p>We denotes a Wiener Process as <img src="https://latex.codecogs.com/png.latex?W_t"> or <img src="https://latex.codecogs.com/png.latex?W(t)"> with initial condition that <img src="https://latex.codecogs.com/png.latex?W_0%20=%200"> or <img src="https://latex.codecogs.com/png.latex?W(0)%20=%200"></p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2714,15 +2715,15 @@ Notes
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-definition of Brownian Motion
+definition of a Weiner process
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
 <li><img src="https://latex.codecogs.com/png.latex?W_0%20=%200"></li>
 <li><img src="https://latex.codecogs.com/png.latex?W_t"> is a continuous path (continuous everywhere, differentiable nowhere)</li>
-<li>independent increments. For <img src="https://latex.codecogs.com/png.latex?t_1%20%3C%20t_2%20%3C%20t_3%20%3C%20t_4%20%3C%20%5Ccdots">, <img src="https://latex.codecogs.com/png.latex?W_%7Bt_4%7D%20-%20W_%7Bt_3%7D"> and <img src="https://latex.codecogs.com/png.latex?W_%7Bt_2%7D%20-%20W_%7Bt_1%7D"> are independent</li>
-<li>normally distributed increments. <img src="https://latex.codecogs.com/png.latex?%7CW_t%20-%20W_s%7C%20%5Csim%20N(0,%20%7Ct-s%7C)"></li>
+<li>independent increments. For <img src="https://latex.codecogs.com/png.latex?t_1%20%3C%20t_2%20%3C%20t_3%20%3C%20t_4%20%3C%20%5Ccdots">, <img src="https://latex.codecogs.com/png.latex?W_%7Bt_4%7D%20-%20W_%7Bt_3%7D"> and <img src="https://latex.codecogs.com/png.latex?W_%7Bt_2%7D%20-%20W_%7Bt_1%7D"> are independent. In other words, the change in the process over any time interval is independent of its past and future values.</li>
+<li>normally distributed increments. <img src="https://latex.codecogs.com/png.latex?%7CW_t%20-%20W_s%7C%20%5Csim%20N(0,%20%7Ct-s%7C)"> The variance is equivalent to the length of the interval.</li>
 </ul>
 </div>
 </div>
@@ -2741,11 +2742,11 @@ Example. Show that <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%
 <p>Hence: <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D_s%20%5Cleft%5B%20W_t%20%7C%20%5Cmathcal%7BF_s%7D%20%5Cright%5D%20%20=%20%5Cmathbb%7BE%7D_s%20%5Cleft%5B%20W_s%20%7C%20%5Cmathcal%7BF_s%7D%20%5Cright%5D%20=%20W_s"></p>
 </div>
 </div>
-<section id="properties-of-brownian-motions" class="level2">
-<h2 class="anchored" data-anchor-id="properties-of-brownian-motions">Properties of Brownian Motions</h2>
+<section id="properties-of-weiner-processes" class="level2">
+<h2 class="anchored" data-anchor-id="properties-of-weiner-processes">Properties of Weiner processes</h2>
 <ul>
 <li>They are <strong>finite</strong> - thanks to the increment (y-axis) scale with the square root of the time-steps</li>
-<li>they are <strong>continuous</strong> - limit when time-steps are infinity small and the random-walk is becoming continuous</li>
+<li>they are <strong>continuous</strong> - limit when time-steps are infinitely small and the random-walk is becoming continuous</li>
 <li>follow <strong>Markov property</strong></li>
 <li>follow <strong>Martingale property</strong></li>
 <li>the quadratic variation from 0 to t is <img src="https://latex.codecogs.com/png.latex?t"> itself - see Equation&nbsp;3</li>
@@ -2768,9 +2769,10 @@ Example. Show that <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%
 </section>
 
  ]]></description>
-  <category>Random-Walk</category>
-  <category>Brownian-Motion</category>
-  <category>Quadratic-Variation</category>
+  <category>Random Walk</category>
+  <category>Brownian Motion</category>
+  <category>Weiner Process</category>
+  <category>Quadratic Variation</category>
   <guid>https://fderyckel.github.io/blog.html/posts/quant-part1/brownian-motion/index.html</guid>
   <pubDate>Wed, 19 Jul 2023 17:00:00 GMT</pubDate>
   <media:content url="https://fderyckel.github.io/blog.html/posts/quant-part1/brownian-motion/random-walk.png" medium="image" type="image/png" height="165" width="144"/>
@@ -7281,7 +7283,7 @@ font-style: inherit;">4</span>)</span></code></pre></div>
   <category>Binomial Model</category>
   <category>Options Pricing</category>
   <category>Delta Hedging</category>
-  <category>Risk-Neutrality</category>
+  <category>Risk Neutrality</category>
   <category>Arbitrage</category>
   <guid>https://fderyckel.github.io/blog.html/posts/quant-part1/binomials_models/index.html</guid>
   <pubDate>Wed, 05 Apr 2023 17:00:00 GMT</pubDate>

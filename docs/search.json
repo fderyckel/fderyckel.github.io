@@ -18,7 +18,7 @@
     "href": "quant-part1.html",
     "title": "Series: Quant - Part 1",
     "section": "",
-    "text": "01 - Random Behavior of Financial Assets\n\n\n\n\n\nWe explore one of the main assumption of quantitative finance: assets returns are random.\n\n\n\n\n\n\nApr 18, 2023\n\n\n6 min\n\n\n\n\n\n\n\n\n02 - Normality of asset returns\n\n\n\n\n\nChecking the normality of asset returns visually and quantitatively.\n\n\n\n\n\n\nApr 19, 2023\n\n\n8 min\n\n\n\n\n\n\n\n\n03 - Random-walks & Brownian Motions\n\n\n\n\n\nRW (discrete) and BM (continuous) constitute the way assets returns are modelled.\n\n\n\n\n\n\nJul 20, 2023\n\n\n7 min\n\n\n\n\n\n\n\n\n04 - Binomials models for Quantitative Finance\n\n\n\n\n\nCreating a basic or binomial model on pricing an option.\n\n\n\n\n\n\nApr 6, 2023\n\n\n8 min\n\n\n\n\n\n\n\n\n05 - Trinomials models for Quantitative Finance\n\n\n\n\n\nCreating a trinomial model and deriving the Forward Kolmogorov Equation.\n\n\n\n\n\n\nApr 8, 2023\n\n\n8 min\n\n\n\n\n\n\nNo matching items"
+    "text": "01 - Random Behavior of Financial Assets\n\n\n\n\n\nWe explore one of the main assumption of quantitative finance: assets returns are random.\n\n\n\n\n\n\nApr 18, 2023\n\n\n6 min\n\n\n\n\n\n\n\n\n02 - Normality of asset returns\n\n\n\n\n\nChecking the normality of asset returns visually and quantitatively.\n\n\n\n\n\n\nApr 19, 2023\n\n\n8 min\n\n\n\n\n\n\n\n\n03 - Random-walks & Brownian Motions\n\n\n\n\n\nRW (discrete) and BM (continuous) constitute the way assets returns are modelled.\n\n\n\n\n\n\nJul 20, 2023\n\n\n8 min\n\n\n\n\n\n\n\n\n04 - Binomials models for Quantitative Finance\n\n\n\n\n\nCreating a basic or binomial model on pricing an option.\n\n\n\n\n\n\nApr 6, 2023\n\n\n8 min\n\n\n\n\n\n\n\n\n05 - Trinomials models for Quantitative Finance\n\n\n\n\n\nCreating a trinomial model and deriving the Forward Kolmogorov Equation.\n\n\n\n\n\n\nApr 8, 2023\n\n\n8 min\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "quant-part3.html",
@@ -810,5 +810,12 @@
     "title": "04 - Binomials models for Quantitative Finance",
     "section": "Put-Call parity",
     "text": "Put-Call parity\n\nPut-call parity shows the relationship that has to exist between European put and call options that have the same underlying asset, expiration, and strike prices.\nPut-call parity states that simultaneously holding a short European put and long European call of the same class will deliver the same return as holding one forward contract on the same underlying asset, with the same expiration, and a forward price equal to the option’s strike price.\nAn arbitrage opportunity exists when the P-C parity is violated.\nThe P-C parity is defined by \\[C + PV(x) = P + S\\]\n\nC = price of the European Call option\nP = price of the European Put Option\nS = Spot price of underlying asset (current market value of asset)\nPV(x) = Present-Value of the strike price (discounted strike price from expiration)\n\nAnother way to see the relationship: \\[P-C = PV(x) - S\\]"
+  },
+  {
+    "objectID": "posts/quant-part1/brownian-motion/index.html#properties-of-weiner-processes",
+    "href": "posts/quant-part1/brownian-motion/index.html#properties-of-weiner-processes",
+    "title": "03 - Random-walks & Brownian Motions",
+    "section": "Properties of Weiner processes",
+    "text": "Properties of Weiner processes\n\nThey are finite - thanks to the increment (y-axis) scale with the square root of the time-steps\nthey are continuous - limit when time-steps are infinitely small and the random-walk is becoming continuous\nfollow Markov property\nfollow Martingale property\nthe quadratic variation from 0 to t is \\(t\\) itself - see Equation 3\nnormality. \\(W(t_i) - W(t_{i-1})\\) is normally distributed with mean 0 and variance \\(t_i - t_{i-1}\\)"
   }
 ]
