@@ -2338,7 +2338,7 @@ font-style: inherit;">-</span>K))</span>
 
  ]]></description>
   <category>Black-Schole</category>
-  <category>Risk-Neutrality</category>
+  <category>Risk Neutrality</category>
   <category>Exotic Options</category>
   <category>Monte-Carlo</category>
   <guid>https://fderyckel.github.io/blog.html/posts/quant-part3/monte-carlo-sim/index.html</guid>
@@ -2348,7 +2348,7 @@ font-style: inherit;">-</span>K))</span>
 <item>
   <title>02 - Stochastic Differential Equation - Part II</title>
   <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/SDE-part2/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/02-SDE-part2/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2478,13 +2478,13 @@ Vasicek revisited
   <category>quant-finance</category>
   <category>ito-integral</category>
   <category>stochastic-calculus</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/SDE-part2/index.html</guid>
+  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/02-SDE-part2/index.html</guid>
   <pubDate>Fri, 21 Jul 2023 17:00:00 GMT</pubDate>
 </item>
 <item>
   <title>01 - Stochastic Differential Equation - Part I</title>
   <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/SDE-Part1/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/01-SDE-Part1/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2558,13 +2558,13 @@ This allows us to find <img src="https://latex.codecogs.com/png.latex?F"> by int
  ]]></description>
   <category>quant-finance</category>
   <category>stochastic-integrals</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/SDE-Part1/index.html</guid>
+  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/01-SDE-Part1/index.html</guid>
   <pubDate>Fri, 21 Jul 2023 17:00:00 GMT</pubDate>
 </item>
 <item>
   <title>04 -Martingales</title>
   <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/martingales/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/04 - martingales/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2619,10 +2619,9 @@ Intuitive &amp; Motivating example
 </section>
 
  ]]></description>
-  <category>quant-finance</category>
-  <category>stochastic-calculus</category>
-  <category>martingales</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/martingales/index.html</guid>
+  <category>Stochastic Calculus</category>
+  <category>Martingales</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/04 - martingales/index.html</guid>
   <pubDate>Wed, 19 Jul 2023 17:00:00 GMT</pubDate>
 </item>
 <item>
@@ -3600,7 +3599,7 @@ font-style: inherit;">'impl_vol'</span>].iloc[i]).gamma</span></code></pre></div
 <item>
   <title>03 - Stochastic Calculus - Part III</title>
   <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/SDE-part3/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/quant-part2/03-SDE-part3/index.html</link>
   <description><![CDATA[ 
 
 
@@ -3687,7 +3686,7 @@ In the quant world.
 
  ]]></description>
   <category>time-series</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/SDE-part3/index.html</guid>
+  <guid>https://fderyckel.github.io/blog.html/posts/quant-part2/03-SDE-part3/index.html</guid>
   <pubDate>Sun, 02 Jul 2023 17:00:00 GMT</pubDate>
 </item>
 <item>

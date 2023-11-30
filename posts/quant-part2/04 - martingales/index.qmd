@@ -3,7 +3,7 @@ title: "04 -Martingales"
 author: "Francois de Ryckel"
 date: "2023-07-20"
 description: 'Digging into Martingales. Making connections between martingales and itô integrals.'
-categories: [quant-finance, stochastic-calculus, martingales]
+categories: [Stochastic Calculus, Martingales]
 editor: source
 date-modified: "2023-07-23"
 ---

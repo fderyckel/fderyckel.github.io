@@ -9,14 +9,14 @@
       "/posts/machine-learning-part1/knn/index.html",
       "/posts/time-series/04-ts-decomposition/index.html",
       "/posts/proba-quant/jensen-inequality/index.html",
-      "/posts/quant-part2/SDE-part2/index.html",
-      "/posts/quant-part2/SDE-Part1/index.html",
-      "/posts/quant-part2/martingales/index.html",
+      "/posts/quant-part2/02-SDE-part2/index.html",
+      "/posts/quant-part2/01-SDE-Part1/index.html",
+      "/posts/quant-part2/04 - martingales/index.html",
       "/posts/quant-part3/monte-carlo-sim/index.html",
       "/posts/quant-part3/black-schole/index.html",
       "/posts/quant-part1/trinomial-model/index.html",
       "/posts/quant-part1/brownian-motion/index.html",
-      "/posts/quant-part2/SDE-part3/index.html",
+      "/posts/quant-part2/03-SDE-part3/index.html",
       "/posts/quant-puzzle-01/index.html",
       "/posts/machine-learning-part1/naives-bayes-intro/index.html",
       "/posts/machine-learning-part1/linear-regression/index.html",
@@ -70,10 +70,10 @@
   {
     "listing": "/quant-part2.html",
     "items": [
-      "/posts/quant-part2/SDE-Part1/index.html",
-      "/posts/quant-part2/SDE-part2/index.html",
-      "/posts/quant-part2/SDE-part3/index.html",
-      "/posts/quant-part2/martingales/index.html"
+      "/posts/quant-part2/01-SDE-Part1/index.html",
+      "/posts/quant-part2/02-SDE-part2/index.html",
+      "/posts/quant-part2/03-SDE-part3/index.html",
+      "/posts/quant-part2/04 - martingales/index.html"
     ]
   },
   {
