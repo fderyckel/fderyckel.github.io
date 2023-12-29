@@ -1,0 +1,26 @@
+---
+title: "Hotel forecasting"
+author: "François de Ryckel"
+date: "2023-12-29"
+categories: [time-series, forecasting]
+editor: source
+date-modified: "2023-12-29"
+---
+
+Forceasting hotel demands from medium post
+Data from Kaggle
+
+# Python version 
+
+```{python}
+import pandas as pd
+
+df <- 
+```
+
+
+
+```{r}
+
+```
+

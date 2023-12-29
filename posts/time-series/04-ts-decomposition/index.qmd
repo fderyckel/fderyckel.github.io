@@ -8,7 +8,7 @@ editor: source
 date-modified: "2023-10-22"
 ---
 
-When studying time-series, we can consider trend and seasonality.  In this sense, we could define time-series either in an additive way $$y_t = T_t + S_t + R_t$$ or  in a multiplicative way $$y_t = T_t \cdot S_t \cdot R_t$$ 
+When studying time-series, we usually consider trend and seasonality.  With that in mind, we define time-series either in an additive way $$y_t = T_t + S_t + R_t$$ or in a multiplicative way $$y_t = T_t \cdot S_t \cdot R_t$$ 
 
 with: 
 
@@ -25,18 +25,22 @@ Note that, using log, we can easily transform a multiplicative time-series into 
 $$log(y_t) = log(T_t \cdot S_t \cdot R_t) = log(T_t) + log(S_t) + log(R_t)$$
 :::
 
+Because decomposition used averages (for seasonal) and noving average (for trend), decomposition is not robust to outlier (aka, it is very sensitive to outlier)
+
 # Time-series composition 
+
+Perhaps before to decompose time-series, we can try to compose some dummy time-series in both additive or multiplicative ways. 
 
 ```{r}
 #| message: false
 #| warning: false
+#| echo: false
 
 library(dplyr)
 library(ggplot2)
 ```
 
-
-## Compose deterministic time-series (with trend and seasonality) with stochastic component 
+## Compose deterministic time-series (with a trend and a stochastic component) 
 
 ```{r}
 #| label: time_series_composition
@@ -51,7 +55,7 @@ ggplot(df, aes(x, y)) +
   
 ```
 
-We can also create a seasonality with a stochastic component 
+We could also create a seasonal time-series with a stochastic component. 
 
 ```{r}
 df <- tibble(x = 1:252, phi = rnorm(252, mean = 0, sd = 1.5)) |> 
@@ -66,7 +70,7 @@ ggplot(df, aes(x, y)) +
 
 ### In R using standard library
 
-Let's go back to our milk example 
+Let's go back to the milk example which looks like this.   
 
 ```{r}
 #| message: false
@@ -75,13 +79,14 @@ Let's go back to our milk example
 library(readr)
 
 milk <- read_csv('../../../raw_data/milk.csv')
-#milk$month <- as.Date(milk$month)
+
+head(milk)
   
 ggplot(milk, aes(x = month, y = milk_prod_per_cow_kg)) + 
   geom_line()
 ```
 
-We can use the *decompose()* function.  
+If we transform our tibble into a time-series df, then we can use the *decompose()* function.  
 
 ```{r}
 ts_milk <- ts(milk$milk_prod_per_cow_kg, start = c(1962, 1, 1), frequency = 12)
@@ -89,6 +94,7 @@ milk_dec <- decompose(ts_milk, type = 'additive', filter = NULL)
 
 plot(milk_dec)
 ```
+
 And now, we can use our decomposed time-series to detrend or remove seasonality 
 
 ```{r}
@@ -96,13 +102,41 @@ milk_adj <- ts_milk - milk_dec$seasonal
 plot(milk_adj)
 ```
 
+The *timtk* package can achieve the same output in a more direct way as timetk fit the tidyverse framework. 
+
 ```{r}
 #| fig-height: 15
 
 library(timetk)
 
 milk |> 
-  plot_stl_diagnostics(month, milk_prod_per_cow_kg)
+  plot_stl_diagnostics(month, milk_prod_per_cow_kg, .frequency = 12)
 
+```
+
+It should be noted that the *timetk* package use a Seasonal-Trend-Loess decomposition (STL).
+If we want to get the values, we use the **tk_stl_diagnostics(date, value)** function. 
+
+([From FPP 3rd ed.](https://otexts.com/fpp3/stl.html) )While loess is a method for estimating nonlinear relationships. The STL method was developed by R. B. Cleveland et al. (1990).
+
+STL has several advantages over classical decomposition:
+
+* STL will handle any type of seasonality, not only monthly and quarterly data.
+* The seasonal component is allowed to change over time, and the rate of change can be controlled by the user.
+* The smoothness of the trend-cycle can also be controlled by the user.
+* It can be robust to outliers (i.e., the user can specify a robust decomposition), so that occasional unusual observations will not affect the estimates of the trend-cycle and seasonal components. They will, however, affect the remainder component. 
+
+
+```{r}
+head(milk |> tk_stl_diagnostics(month, milk_prod_per_cow_kg))
+```
+
+## Moving averages 
+
+There are so many packet in R to calculate moving averages.  We'll keep using the timetk package 
+
+```{r}
+yo <- milk |> 
+  mutate(ma_3m = slidify_vec(.x = milk_prod_per_cow_kg, .f = mean, .period = 3, .align = 'right'))
 ```
 

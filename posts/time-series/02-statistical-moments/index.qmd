@@ -265,7 +265,7 @@ Indeed we have a slightly more normal distribution of data (although, we still h
 
 ## Box-Cox transformation 
 
-he Box-Cox transformation is a statistical technique used to transform non-normal data into a more normal distribution. It is named after George Box and John Tukey, who introduced the method in 1964.
+The Box-Cox transformation is a statistical technique used to transform non-normal data into a more normal distribution. It is named after George Box and John Tukey, who introduced the method in 1964.
 
 The Box-Cox transformation is based on the idea that many non-normal distributions can be approximated by a power transformation of a normal distribution. The power transformation is given by:
 

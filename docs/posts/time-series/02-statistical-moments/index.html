@@ -8,7 +8,7 @@
 
 <meta name="author" content="Francois de Ryckel">
 <meta name="dcterms.date" content="2022-11-02">
-<meta name="description" content="Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts.">
+<meta name="description" content="Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts. We then provide 2 methods to transform data in order to bring it closer to a normal distribution.">
 
 <title>QUANT dira-t-on? - 02 - Statistical Moments</title>
 <style>
@@ -148,7 +148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <h1 class="title">02 - Statistical Moments</h1>
                   <div>
         <div class="description">
-          Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts.
+          Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts. We then provide 2 methods to transform data in order to bring it closer to a normal distribution.
         </div>
       </div>
                           <div class="quarto-categories">
@@ -391,7 +391,7 @@ Kurtosis
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x169406fd0&gt;, &lt;matplotlib.lines.Line2D object at 0x16941b2b0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x16941b550&gt;, &lt;matplotlib.lines.Line2D object at 0x16941b7f0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x169406d30&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x16941ba90&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x16941bd30&gt;], 'means': []}</code></pre>
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x157ebda90&gt;, &lt;matplotlib.lines.Line2D object at 0x157ebdd30&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x157ebdfd0&gt;, &lt;matplotlib.lines.Line2D object at 0x157ecf2b0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x157ebd7f0&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x157ecf550&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x157ecf7f0&gt;], 'means': []}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -487,7 +487,7 @@ In the case of left-skewed data, a log transformation will accentuate that skewn
 </section>
 <section id="box-cox-transformation" class="level2">
 <h2 class="anchored" data-anchor-id="box-cox-transformation">Box-Cox transformation</h2>
-<p>he Box-Cox transformation is a statistical technique used to transform non-normal data into a more normal distribution. It is named after George Box and John Tukey, who introduced the method in 1964.</p>
+<p>The Box-Cox transformation is a statistical technique used to transform non-normal data into a more normal distribution. It is named after George Box and John Tukey, who introduced the method in 1964.</p>
 <p>The Box-Cox transformation is based on the idea that many non-normal distributions can be approximated by a power transformation of a normal distribution. The power transformation is given by:</p>
 <p><span class="math display">\[\begin{equation}
 Y_i^{(\lambda)} =
@@ -532,7 +532,7 @@ exp(Y_i^{\lambda}) \; \space (\lambda = 0)
 <pre><code># A tibble: 1 × 6
   number operation type   trained skip  id          
    &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;       
-1      1 step      BoxCox TRUE    FALSE BoxCox_bGgxY</code></pre>
+1      1 step      BoxCox TRUE    FALSE BoxCox_SJuL5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to check the estimation of lambda</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(recipe_bc, <span class="at">number =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -540,7 +540,7 @@ exp(Y_i^{\lambda}) \; \space (\lambda = 0)
 <pre><code># A tibble: 1 × 3
   terms    value id          
   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;       
-1 w_return 0.115 BoxCox_bGgxY</code></pre>
+1 w_return 0.115 BoxCox_SJuL5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transforming the data using the estimated lambda</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>w_oil_bc <span class="ot">&lt;-</span> <span class="fu">juice</span>(recipe_bc)</span>
