@@ -1,0 +1,16 @@
+{
+  "hash": "27398beffe712fbdc912a3377535304f",
+  "result": {
+    "markdown": "---\ntitle: \"Hotel forecasting\"\nauthor: \"François de Ryckel\"\ndate: \"2023-12-29\"\ncategories: [time-series, forecasting]\neditor: source\ndate-modified: \"2023-12-29\"\n---\n\n\nForceasting hotel demands from medium post\nData from Kaggle\n\n# Python version \n\n\n::: {.cell}\n\n```{.python .cell-code}\nimport pandas as pd\n\ndf = pd.read_csv('../../../raw_data/hotel_bookings.csv')\ndf = df.rename(columns = {'arrival_date_year': 'year', \n                          'arrival_date_month': 'month', \n                          'arrival_date_day_of_month': 'day'})\n\n# turn the months into numbers\ndef monthToNum(shortMonth):\n    return {'January': 1, 'February': 2, 'March': 3,\n            'April': 4, 'May': 5, 'June': 6,\n            'July': 7, 'August': 8, 'September': 9, \n            'October': 10, 'November': 11, 'December': 12\n    }[shortMonth]\n    \ndf['month'] = df['month'].apply(monthToNum)\ndf['date'] = pd.to_datetime(df[['year', 'month', 'day']])\n\n#filter hotel resort and remove cancelations\ndf = df[(df['is_canceled'] == 0) & (df['hotel'] == 'Resort Hotel')]\nt_df = df.groupby(['date'])['hotel'].count().reset_index().rename(columns={'hotel':'y','date':'ds'})\n```\n:::\n\n::: {.cell}\n\n```{.python .cell-code}\nimport matplotlib.pyplot as plt\n\nplt.plot(t_df.ds, t_df['y'])\nplt.show()\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-2-1.png){width=614}\n:::\n:::\n\n\nIn a very naive and limited way let's create a training and testing set (keeping only last month for testing).  This is obviously a poor choices as ideally we would need to test multiple months.  \n\n\n::: {.cell}\n\n```{.python .cell-code}\ntrain_df = t_df.loc[(t_df['ds'] >= '2015-01-01') & (t_df['ds'] < '2017-08-01')]\ntest_df = t_df.loc[(t_df['ds'] >= '2017-08-01') & (t_df['ds'] > '2017-09-01')]\n```\n:::\n\n\nUsing MAE (Mean Absolute Error) to estimate the suitability our model.  \n\n## Method 1.  Arima. \n\n\n\n::: {.cell}\n\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

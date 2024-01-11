@@ -10,7 +10,1008 @@
 <atom:link href="https://fderyckel.github.io/blog.html/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Curating notes from a Quant learning journey.</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Mon, 13 Nov 2023 17:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 08 Jan 2024 17:00:00 GMT</lastBuildDate>
+<item>
+  <title>05 - Arima</title>
+  <dc:creator>François de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data.</p>
+<p>Our <a href="../../../posts/time-series/03-autocorrelation/index.html">previous post</a> on autocorrelation and partial autocorelation could be considered as prior material.</p>
+<p>Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations). <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t"> This AR model used <img src="https://latex.codecogs.com/png.latex?p"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?p">.</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cdelta"> is an intercept like term</li>
+<li><img src="https://latex.codecogs.com/png.latex?Y_%7Bt-i%7D"> are the regressors (time series own lagged observations) with parameters <img src="https://latex.codecogs.com/png.latex?%5Cphi_%7Bt-i%7D"></li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> is the error term</li>
+</ul>
+<p>Moving Average (MA) is another class of linear model where the outcome variable is regressed using its own previous error terms. <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cmu%20+%20%20%5Ctheta_1%20%5Cepsilon_%7Bt-1%7D%20+%20%5Ctheta_2%20%5Cepsilon_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Ctheta_q%20%5Cepsilon_%7Bt-q%7D%20+%20%5Cepsilon_t"> This MA model used <img src="https://latex.codecogs.com/png.latex?q"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?q">.</p>
+<p>Putting it all together, the outcome variable of an ARIMA model can be predicted: <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5C%7B%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t%20%5C%7D%20+%20%5C%7B%5Cmu%20+%20%20%5Ctheta_1%20%5Cepsilon_%7Bt-1%7D%20+%20%5Ctheta_2%20%5Cepsilon_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Ctheta_q%20%5Cepsilon_%7Bt-q%7D%20+%20%5Cepsilon_t%20%5C%7D"> This can be simplify into: <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Csum_%7Bi=1%7D%5Ep%20%5Cphi_i%20Y_%7Bt-i%7D%20+%20%5Csum_%7Bj=1%7D%5Eq%20%5Ctheta_j%20%5Cepsilon_%7Bt-j%7D%20+%20%5Cepsilon_t"></p>
+<p>The parameters of an ARIMA model are (p, d, q) :</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?p"> - Autoregressive. The number of lagged observations in the model. Use the previous <img src="https://latex.codecogs.com/png.latex?n"> observations as predictors.</li>
+<li><img src="https://latex.codecogs.com/png.latex?d"> - Integrated. The number of times the data is differenced to make the data stationary<br>
+</li>
+<li><img src="https://latex.codecogs.com/png.latex?q"> - the size of the moving average. Use previous errors to predict <img src="https://latex.codecogs.com/png.latex?Y_t"></li>
+</ul>
+<p>To apply an ARIMA model to a set of data, we will use the US CPI Energy component that we downloaded on the <a href="https://fred.stlouisfed.org/series/CPIENGSL">FED St-Louis website</a>.</p>
+</section>
+<section id="application-using-r" class="level1">
+<h1>Application using R</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(readr)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(modeltime)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(timetk)</span>
+<span id="cb1-6"></span>
+<span id="cb1-7">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/CPI_energy.csv'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb1-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date =</span> DATE, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cpi_energy =</span> CPIENGNS)</span>
+<span id="cb1-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glimpse</span>(df)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 803
+Columns: 2
+$ date       &lt;date&gt; 1957-01-01, 1957-02-01, 1957-03-01, 1957-04-01, 1957-05-01…
+$ cpi_energy &lt;dbl&gt; 21.3, 21.5, 21.6, 21.5, 21.4, 21.4, 21.5, 21.4, 21.5, 21.4,…</code></pre>
+</div>
+</div>
+<section id="arima-using-the-base-r-framework" class="level2">
+<h2 class="anchored" data-anchor-id="arima-using-the-base-r-framework">ARIMA using the base R framework</h2>
+<p>We need first to convert our df into a ts object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">df_ts <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ts</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>cpi_energy, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">start =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1957</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">01</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">frequency =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">end =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2023</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>))</span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str</span>(df_ts)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Time-Series [1:803] from 1957 to 2024: 21.3 21.5 21.6 21.5 21.4 21.4 21.5 21.4 21.5 21.4 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ts.plot</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Date'</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Energy CPI'</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It is usually a wise idea to check for outliers? An easy way to do this is using a boxplot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">boxplot</span>(df_ts)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We use the ACF to determine the MA parameter (q) of the ARIMA model.</p>
+<ul>
+<li>Significant spikes at specific lags in the ACF plot suggest potential MA terms at those lags</li>
+<li>An ACF plot that cuts off sharply after a few lags often indicates a suitable MA model</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">acf</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lag.max =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggacf</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">num_lags =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Data is clearly not stationary. We will need to use differentiation to make it stationary.</p>
+<p>The PCAF helps determine the AR (Autoregressive) order (p) in an ARIMA model.</p>
+<ul>
+<li>Significant spikes at specific lags in the PACF plot suggest potential AR terms at those lags</li>
+<li>A PACF plot that cuts off sharply after a few lags often indicates a suitable AR model</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pacf</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lag.max =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This can be confirm with Augmented Dickey Fuller test</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">tseries<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">adf.test</span>(df_ts)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Augmented Dickey-Fuller Test
+
+data:  df_ts
+Dickey-Fuller = -2.4123, Lag order = 9, p-value = 0.4038
+alternative hypothesis: stationary</code></pre>
+</div>
+</div>
+<p>adf test confirm non-stationarity of our ts. We can differentiate our ts to make it stationary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">diff_ts <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">diff</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lag =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb13-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ts.plot</span>(diff_ts)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">tseries<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">adf.test</span>(diff_ts)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in tseries::adf.test(diff_ts): p-value smaller than printed p-value</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Augmented Dickey-Fuller Test
+
+data:  diff_ts
+Dickey-Fuller = -9.4624, Lag order = 9, p-value = 0.01
+alternative hypothesis: stationary</code></pre>
+</div>
+</div>
+<p>We can create our training and testing set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">train_ts <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> df_ts[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">793</span>]</span></code></pre></div>
+</div>
+<p>We can now use ARIMA model using 1 and 1 for parameter (all we could see from acf)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">result <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arima</span>(train_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">order =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb18-2">result</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = train_ts, order = c(0, 1, 2))
+
+Coefficients:
+         ma1     ma2
+      0.5197  0.0884
+s.e.  0.0356  0.0361
+
+sigma^2 estimated as 17.24:  log likelihood = -2251.54,  aic = 4509.07</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tsdiag</span>(result)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(result, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$pred
+Time Series:
+Start = 794 
+End = 796 
+Frequency = 1 
+[1] 290.5702 292.0037 292.0037
+
+$se
+Time Series:
+Start = 794 
+End = 796 
+Frequency = 1 
+[1]  4.152615  7.554318 10.082648</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">result_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arima</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">order =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb23-2">result_df</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = df_ts, order = c(0, 1, 2))
+
+Coefficients:
+         ma1     ma2
+      0.5033  0.0834
+s.e.  0.0347  0.0358
+
+sigma^2 estimated as 17.52:  log likelihood = -2286.24,  aic = 4578.49</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(result_df, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$pred
+          Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov      Dec
+2023                                                  273.7094
+2024 273.2768                                                 
+
+$se
+          Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov      Dec
+2023                                                  4.185297
+2024 7.556805                                                 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">result_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arima</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">order =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))</span>
+<span id="cb27-2">result_df</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = df_ts, order = c(4, 1, 1))
+
+Coefficients:
+         ar1      ar2     ar3      ar4      ma1
+      1.1419  -0.4870  0.1896  -0.1582  -0.6576
+s.e.  0.0776   0.0626  0.0531   0.0362   0.0722
+
+sigma^2 estimated as 16.92:  log likelihood = -2272.35,  aic = 4556.69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(result_df, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$pred
+          Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov      Dec
+2023                                                  272.8635
+2024 270.8238                                                 
+
+$se
+          Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov      Dec
+2023                                                  4.112985
+2024 7.361178                                                 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">forecast<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">auto.arima</span>(df_ts, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">trace =</span> T, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stepwise =</span> F, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">approximation =</span> F)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ ARIMA(0,1,0)                               : 4762.801
+ ARIMA(0,1,0)            with drift         : 4761.123
+ ARIMA(0,1,0)(0,0,1)[12]                    : 4751.105
+ ARIMA(0,1,0)(0,0,1)[12] with drift         : 4750.212
+ ARIMA(0,1,0)(0,0,2)[12]                    : 4749.802
+ ARIMA(0,1,0)(0,0,2)[12] with drift         : 4749.14
+ ARIMA(0,1,0)(1,0,0)[12]                    : 4748.883
+ ARIMA(0,1,0)(1,0,0)[12] with drift         : 4748.184
+ ARIMA(0,1,0)(1,0,1)[12]                    : Inf
+ ARIMA(0,1,0)(1,0,1)[12] with drift         : Inf
+ ARIMA(0,1,0)(1,0,2)[12]                    : Inf
+ ARIMA(0,1,0)(1,0,2)[12] with drift         : Inf
+ ARIMA(0,1,0)(2,0,0)[12]                    : 4742.386
+ ARIMA(0,1,0)(2,0,0)[12] with drift         : 4742.203
+ ARIMA(0,1,0)(2,0,1)[12]                    : Inf
+ ARIMA(0,1,0)(2,0,1)[12] with drift         : Inf
+ ARIMA(0,1,0)(2,0,2)[12]                    : Inf
+ ARIMA(0,1,0)(2,0,2)[12] with drift         : Inf
+ ARIMA(0,1,1)                               : 4581.902
+ ARIMA(0,1,1)            with drift         : 4581.821
+ ARIMA(0,1,1)(0,0,1)[12]                    : 4577.654
+ ARIMA(0,1,1)(0,0,1)[12] with drift         : 4577.884
+ ARIMA(0,1,1)(0,0,2)[12]                    : 4573.756
+ ARIMA(0,1,1)(0,0,2)[12] with drift         : 4574.212
+ ARIMA(0,1,1)(1,0,0)[12]                    : 4576.446
+ ARIMA(0,1,1)(1,0,0)[12] with drift         : 4576.758
+ ARIMA(0,1,1)(1,0,1)[12]                    : Inf
+ ARIMA(0,1,1)(1,0,1)[12] with drift         : Inf
+ ARIMA(0,1,1)(1,0,2)[12]                    : Inf
+ ARIMA(0,1,1)(1,0,2)[12] with drift         : Inf
+ ARIMA(0,1,1)(2,0,0)[12]                    : 4568.379
+ ARIMA(0,1,1)(2,0,0)[12] with drift         : 4569.08
+ ARIMA(0,1,1)(2,0,1)[12]                    : Inf
+ ARIMA(0,1,1)(2,0,1)[12] with drift         : Inf
+ ARIMA(0,1,1)(2,0,2)[12]                    : Inf
+ ARIMA(0,1,1)(2,0,2)[12] with drift         : Inf
+ ARIMA(0,1,2)                               : 4578.515
+ ARIMA(0,1,2)            with drift         : 4578.734
+ ARIMA(0,1,2)(0,0,1)[12]                    : 4575.644
+ ARIMA(0,1,2)(0,0,1)[12] with drift         : 4576.08
+ ARIMA(0,1,2)(0,0,2)[12]                    : 4572.671
+ ARIMA(0,1,2)(0,0,2)[12] with drift         : 4573.279
+ ARIMA(0,1,2)(1,0,0)[12]                    : 4574.772
+ ARIMA(0,1,2)(1,0,0)[12] with drift         : 4575.261
+ ARIMA(0,1,2)(1,0,1)[12]                    : Inf
+ ARIMA(0,1,2)(1,0,1)[12] with drift         : Inf
+ ARIMA(0,1,2)(1,0,2)[12]                    : Inf
+ ARIMA(0,1,2)(1,0,2)[12] with drift         : Inf
+ ARIMA(0,1,2)(2,0,0)[12]                    : 4568.289
+ ARIMA(0,1,2)(2,0,0)[12] with drift         : 4569.079
+ ARIMA(0,1,2)(2,0,1)[12]                    : Inf
+ ARIMA(0,1,2)(2,0,1)[12] with drift         : Inf
+ ARIMA(0,1,3)                               : 4579.677
+ ARIMA(0,1,3)            with drift         : 4580.023
+ ARIMA(0,1,3)(0,0,1)[12]                    : 4577.191
+ ARIMA(0,1,3)(0,0,1)[12] with drift         : 4577.708
+ ARIMA(0,1,3)(0,0,2)[12]                    : 4574.269
+ ARIMA(0,1,3)(0,0,2)[12] with drift         : 4574.946
+ ARIMA(0,1,3)(1,0,0)[12]                    : 4576.379
+ ARIMA(0,1,3)(1,0,0)[12] with drift         : 4576.941
+ ARIMA(0,1,3)(1,0,1)[12]                    : Inf
+ ARIMA(0,1,3)(1,0,1)[12] with drift         : Inf
+ ARIMA(0,1,3)(2,0,0)[12]                    : 4569.998
+ ARIMA(0,1,3)(2,0,0)[12] with drift         : 4570.839
+ ARIMA(0,1,4)                               : 4581.69
+ ARIMA(0,1,4)            with drift         : 4582.053
+ ARIMA(0,1,4)(0,0,1)[12]                    : 4579.221
+ ARIMA(0,1,4)(0,0,1)[12] with drift         : 4579.733
+ ARIMA(0,1,4)(1,0,0)[12]                    : 4578.408
+ ARIMA(0,1,4)(1,0,0)[12] with drift         : 4578.96
+ ARIMA(0,1,5)                               : 4583.72
+ ARIMA(0,1,5)            with drift         : 4584.063
+ ARIMA(1,1,0)                               : 4592.114
+ ARIMA(1,1,0)            with drift         : 4592.78
+ ARIMA(1,1,0)(0,0,1)[12]                    : 4590.795
+ ARIMA(1,1,0)(0,0,1)[12] with drift         : 4591.591
+ ARIMA(1,1,0)(0,0,2)[12]                    : 4589.897
+ ARIMA(1,1,0)(0,0,2)[12] with drift         : 4590.8
+ ARIMA(1,1,0)(1,0,0)[12]                    : 4590.336
+ ARIMA(1,1,0)(1,0,0)[12] with drift         : 4591.158
+ ARIMA(1,1,0)(1,0,1)[12]                    : Inf
+ ARIMA(1,1,0)(1,0,1)[12] with drift         : Inf
+ ARIMA(1,1,0)(1,0,2)[12]                    : Inf
+ ARIMA(1,1,0)(1,0,2)[12] with drift         : Inf
+ ARIMA(1,1,0)(2,0,0)[12]                    : 4587.308
+ ARIMA(1,1,0)(2,0,0)[12] with drift         : 4588.314
+ ARIMA(1,1,0)(2,0,1)[12]                    : Inf
+ ARIMA(1,1,0)(2,0,1)[12] with drift         : Inf
+ ARIMA(1,1,0)(2,0,2)[12]                    : Inf
+ ARIMA(1,1,0)(2,0,2)[12] with drift         : Inf
+ ARIMA(1,1,1)                               : 4577.984
+ ARIMA(1,1,1)            with drift         : 4578.289
+ ARIMA(1,1,1)(0,0,1)[12]                    : 4575.351
+ ARIMA(1,1,1)(0,0,1)[12] with drift         : 4575.838
+ ARIMA(1,1,1)(0,0,2)[12]                    : 4572.434
+ ARIMA(1,1,1)(0,0,2)[12] with drift         : 4573.078
+ ARIMA(1,1,1)(1,0,0)[12]                    : 4574.518
+ ARIMA(1,1,1)(1,0,0)[12] with drift         : 4575.051
+ ARIMA(1,1,1)(1,0,1)[12]                    : Inf
+ ARIMA(1,1,1)(1,0,1)[12] with drift         : Inf
+ ARIMA(1,1,1)(1,0,2)[12]                    : Inf
+ ARIMA(1,1,1)(1,0,2)[12] with drift         : Inf
+ ARIMA(1,1,1)(2,0,0)[12]                    : 4568.139
+ ARIMA(1,1,1)(2,0,0)[12] with drift         : 4568.95
+ ARIMA(1,1,1)(2,0,1)[12]                    : Inf
+ ARIMA(1,1,1)(2,0,1)[12] with drift         : Inf
+ ARIMA(1,1,2)                               : 4579.966
+ ARIMA(1,1,2)            with drift         : 4580.292
+ ARIMA(1,1,2)(0,0,1)[12]                    : 4577.355
+ ARIMA(1,1,2)(0,0,1)[12] with drift         : 4577.857
+ ARIMA(1,1,2)(0,0,2)[12]                    : 4574.418
+ ARIMA(1,1,2)(0,0,2)[12] with drift         : 4575.085
+ ARIMA(1,1,2)(1,0,0)[12]                    : 4576.524
+ ARIMA(1,1,2)(1,0,0)[12] with drift         : 4577.071
+ ARIMA(1,1,2)(1,0,1)[12]                    : Inf
+ ARIMA(1,1,2)(1,0,1)[12] with drift         : Inf
+ ARIMA(1,1,2)(2,0,0)[12]                    : 4570.12
+ ARIMA(1,1,2)(2,0,0)[12] with drift         : 4570.951
+ ARIMA(1,1,3)                               : 4581.695
+ ARIMA(1,1,3)            with drift         : 4582.053
+ ARIMA(1,1,3)(0,0,1)[12]                    : 4579.222
+ ARIMA(1,1,3)(0,0,1)[12] with drift         : 4579.743
+ ARIMA(1,1,3)(1,0,0)[12]                    : 4578.411
+ ARIMA(1,1,3)(1,0,0)[12] with drift         : 4578.979
+ ARIMA(1,1,4)                               : 4573.756
+ ARIMA(1,1,4)            with drift         : 4571.09
+ ARIMA(2,1,0)                               : 4579.505
+ ARIMA(2,1,0)            with drift         : 4579.69
+ ARIMA(2,1,0)(0,0,1)[12]                    : 4577.142
+ ARIMA(2,1,0)(0,0,1)[12] with drift         : 4577.505
+ ARIMA(2,1,0)(0,0,2)[12]                    : 4575.062
+ ARIMA(2,1,0)(0,0,2)[12] with drift         : 4575.574
+ ARIMA(2,1,0)(1,0,0)[12]                    : 4576.421
+ ARIMA(2,1,0)(1,0,0)[12] with drift         : 4576.826
+ ARIMA(2,1,0)(1,0,1)[12]                    : Inf
+ ARIMA(2,1,0)(1,0,1)[12] with drift         : Inf
+ ARIMA(2,1,0)(1,0,2)[12]                    : Inf
+ ARIMA(2,1,0)(1,0,2)[12] with drift         : Inf
+ ARIMA(2,1,0)(2,0,0)[12]                    : 4571.428
+ ARIMA(2,1,0)(2,0,0)[12] with drift         : 4572.095
+ ARIMA(2,1,0)(2,0,1)[12]                    : Inf
+ ARIMA(2,1,0)(2,0,1)[12] with drift         : Inf
+ ARIMA(2,1,1)                               : 4579.893
+ ARIMA(2,1,1)            with drift         : 4580.248
+ ARIMA(2,1,1)(0,0,1)[12]                    : 4577.321
+ ARIMA(2,1,1)(0,0,1)[12] with drift         : 4577.839
+ ARIMA(2,1,1)(0,0,2)[12]                    : 4574.356
+ ARIMA(2,1,1)(0,0,2)[12] with drift         : 4575.04
+ ARIMA(2,1,1)(1,0,0)[12]                    : 4576.493
+ ARIMA(2,1,1)(1,0,0)[12] with drift         : 4577.055
+ ARIMA(2,1,1)(1,0,1)[12]                    : Inf
+ ARIMA(2,1,1)(1,0,1)[12] with drift         : Inf
+ ARIMA(2,1,1)(2,0,0)[12]                    : 4570.052
+ ARIMA(2,1,1)(2,0,0)[12] with drift         : 4570.9
+ ARIMA(2,1,2)                               : 4581.576
+ ARIMA(2,1,2)            with drift         : 4582.003
+ ARIMA(2,1,2)(0,0,1)[12]                    : Inf
+ ARIMA(2,1,2)(0,0,1)[12] with drift         : Inf
+ ARIMA(2,1,2)(1,0,0)[12]                    : Inf
+ ARIMA(2,1,2)(1,0,0)[12] with drift         : Inf
+ ARIMA(2,1,3)                    : Inf
+ ARIMA(2,1,3) with drift         : Inf
+ ARIMA(3,1,0)                               : 4581.026
+ ARIMA(3,1,0)            with drift         : 4581.307
+ ARIMA(3,1,0)(0,0,1)[12]                    : 4578.438
+ ARIMA(3,1,0)(0,0,1)[12] with drift         : 4578.91
+ ARIMA(3,1,0)(0,0,2)[12]                    : 4575.713
+ ARIMA(3,1,0)(0,0,2)[12] with drift         : 4576.374
+ ARIMA(3,1,0)(1,0,0)[12]                    : 4577.627
+ ARIMA(3,1,0)(1,0,0)[12] with drift         : 4578.148
+ ARIMA(3,1,0)(1,0,1)[12]                    : Inf
+ ARIMA(3,1,0)(1,0,1)[12] with drift         : Inf
+ ARIMA(3,1,0)(2,0,0)[12]                    : 4571.48
+ ARIMA(3,1,0)(2,0,0)[12] with drift         : 4572.324
+ ARIMA(3,1,1)                               : 4581.285
+ ARIMA(3,1,1)            with drift         : 4581.576
+ ARIMA(3,1,1)(0,0,1)[12]                    : 4578.762
+ ARIMA(3,1,1)(0,0,1)[12] with drift         : 4579.224
+ ARIMA(3,1,1)(1,0,0)[12]                    : 4577.945
+ ARIMA(3,1,1)(1,0,0)[12] with drift         : 4578.452
+ ARIMA(3,1,2)                               : 4568.698
+ ARIMA(3,1,2) with drift         : Inf
+ ARIMA(4,1,0)                               : 4575.634
+ ARIMA(4,1,0)            with drift         : 4575.534
+ ARIMA(4,1,0)(0,0,1)[12]                    : 4574.175
+ ARIMA(4,1,0)(0,0,1)[12] with drift         : 4574.312
+ ARIMA(4,1,0)(1,0,0)[12]                    : 4573.622
+ ARIMA(4,1,0)(1,0,0)[12] with drift         : 4573.812
+ ARIMA(4,1,1)                               : 4556.801
+ ARIMA(4,1,1)            with drift         : 4554.628
+ ARIMA(5,1,0)                               : 4561.352
+ ARIMA(5,1,0)            with drift         : 4560.508
+
+
+
+ Best model: ARIMA(4,1,1)            with drift         </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: df_ts 
+ARIMA(4,1,1) with drift 
+
+Coefficients:
+         ar1      ar2     ar3      ar4      ma1   drift
+      1.1535  -0.4942  0.1912  -0.1603  -0.6749  0.3205
+s.e.  0.0758   0.0622  0.0534   0.0365   0.0703  0.1523
+
+sigma^2 = 16.95:  log likelihood = -2270.24
+AIC=4554.49   AICc=4554.63   BIC=4587.3</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="using-modeltime-framework" class="level1">
+<h1>Using modeltime framework</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_time_series</span>(date, cpi_energy, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.interactive =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>with model time, it is pretty easy to do get the value for arima.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1">cv_splits <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb35-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">time_series_split</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date_var =</span> date, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">assess =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'13 months'</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cumulative =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb35-3"></span>
+<span id="cb35-4">cv_splits <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb35-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tk_time_series_cv_plan</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb35-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_time_series_cv_plan</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.date_var =</span> date, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.value =</span> cpi_energy, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.interactive =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ broom        1.0.5     ✔ rsample      1.2.0
+✔ dials        1.2.0     ✔ tibble       3.2.1
+✔ infer        1.0.5     ✔ tidyr        1.3.0
+✔ modeldata    1.2.0     ✔ tune         1.1.2
+✔ parsnip      1.1.1     ✔ workflows    1.1.3
+✔ purrr        1.0.2     ✔ workflowsets 1.0.1
+✔ recipes      1.0.9     ✔ yardstick    1.2.0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ purrr::discard()  masks scales::discard()
+✖ dplyr::filter()   masks stats::filter()
+✖ dplyr::lag()      masks stats::lag()
+✖ yardstick::spec() masks readr::spec()
+✖ recipes::step()   masks stats::step()
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(parsnip)</span>
+<span id="cb40-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(modeltime)</span>
+<span id="cb40-3"></span>
+<span id="cb40-4">model_fit_arima <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arima_reg</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb40-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set_engine</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'auto_arima'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb40-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fit</span>(cpi_energy <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> date, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">training</span>(cv_splits))</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>frequency = 12 observations per 1 year</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1">model_fit_arima</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+Series: outcome 
+ARIMA(0,1,2)(0,0,2)[12] 
+
+Coefficients:
+         ma1     ma2    sma1    sma2
+      0.5229  0.0895  0.0733  0.0907
+s.e.  0.0356  0.0358  0.0400  0.0359
+
+sigma^2 = 16.45:  log likelihood = -2222.54
+AIC=4455.07   AICc=4455.15   BIC=4478.42</code></pre>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Time-Series</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index.html</guid>
+  <pubDate>Mon, 08 Jan 2024 17:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Hotel forecasting</title>
+  <dc:creator>François de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/ts-forecast/hotel-booking/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Forceasting hotel demands from medium post Data from Kaggle</p>
+<section id="python-version" class="level1">
+<h1>Python version</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-2"></span>
+<span id="cb1-3">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/hotel_bookings.csv'</span>)</span>
+<span id="cb1-4">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.rename(columns <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'arrival_date_year'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>, </span>
+<span id="cb1-5">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'arrival_date_month'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'month'</span>, </span>
+<span id="cb1-6">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'arrival_date_day_of_month'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'day'</span>})</span>
+<span id="cb1-7"></span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># turn the months into numbers</span></span>
+<span id="cb1-9"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> monthToNum(shortMonth):</span>
+<span id="cb1-10">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'January'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'February'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'March'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,</span>
+<span id="cb1-11">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'April'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'May'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'June'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>,</span>
+<span id="cb1-12">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'July'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'August'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'September'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>, </span>
+<span id="cb1-13">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'October'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'November'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'December'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span></span>
+<span id="cb1-14">    }[shortMonth]</span>
+<span id="cb1-15">    </span>
+<span id="cb1-16">df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'month'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'month'</span>].<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">apply</span>(monthToNum)</span>
+<span id="cb1-17">df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.to_datetime(df[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'month'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'day'</span>]])</span>
+<span id="cb1-18"></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#filter hotel resort and remove cancelations</span></span>
+<span id="cb1-20">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[(df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'is_canceled'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> (df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'hotel'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Resort Hotel'</span>)]</span>
+<span id="cb1-21">t_df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.groupby([<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>])[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'hotel'</span>].count().reset_index().rename(columns<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>{<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'hotel'</span>:<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'y'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>:<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ds'</span>})</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb2-2"></span>
+<span id="cb2-3">plt.plot(t_df.ds, t_df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'y'</span>])</span>
+<span id="cb2-4">plt.show()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/ts-forecast/hotel-booking/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="614"></p>
+</div>
+</div>
+<p>In a very naive and limited way let’s create a training and testing set (keeping only last month for testing). This is obviously a poor choices as ideally we would need to test multiple months.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">train_df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t_df.loc[(t_df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ds'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2015-01-01'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> (t_df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ds'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2017-08-01'</span>)]</span>
+<span id="cb3-2">test_df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t_df.loc[(t_df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ds'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2017-08-01'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> (t_df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ds'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2017-09-01'</span>)]</span></code></pre></div>
+</div>
+<p>Using MAE (Mean Absolute Error) to estimate the suitability our model.</p>
+<section id="method-1.-arima." class="level2">
+<h2 class="anchored" data-anchor-id="method-1.-arima.">Method 1. Arima.</h2>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>time-series</category>
+  <category>forecasting</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/ts-forecast/hotel-booking/index.html</guid>
+  <pubDate>Thu, 28 Dec 2023 17:00:00 GMT</pubDate>
+</item>
 <item>
   <title>KNN</title>
   <dc:creator>François de Ryckel</dc:creator>
@@ -7331,1291 +8332,6 @@ font-style: inherit;">4</span>)</span></code></pre></div>
   <category>Linear-Algebra</category>
   <guid>https://fderyckel.github.io/blog.html/posts/lin-algebra-quant/index.html</guid>
   <pubDate>Fri, 10 Mar 2023 17:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Portfolio Optimization Part I (in R)</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/portfolio_optimization_parti_inR/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>First post on portfolio optimization from a quantitative finance lense.</p>
-<p>We are optimizing a portfolio with <em>N assets</em>, where <img src="https://latex.codecogs.com/png.latex?N%20%5Cgeq%202"> (N is a positive integer)</p>
-<div id="def-weights" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1 </strong></span>The weight of each assets <em>i</em> in the portfolio is defined as:</p>
-<p><span id="eq-def-weight"><img src="https://latex.codecogs.com/png.latex?%20W_i%20=%20%5Cfrac%7B%5Cmbox%7BMarket%20value%20of%20asset%20i%7D%7D%7B%5Cmbox%7BTotal%20market%20value%20of%20portfolio%7D%7D%20%20%5Ctag%7B1%7D"></span></p>
-</div>
-<p>Of course, the sum of all the weights should be equal to 1.<br>
-<span id="eq-sum-of-weights"><img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi%20=%201%7D%5E%7BN%7D%20W_i%20=%201%20%20%5Ctag%7B2%7D"></span></p>
-<p>Few assumptions made on the assets.</p>
-<ul>
-<li>each asset has an expected return denoted by <img src="https://latex.codecogs.com/png.latex?%5Cmu_i%20%5Cmbox%7B%20with%20%7D%20i%20=%201,%202,%20%5Cldots,%20N">. In that sense <img src="https://latex.codecogs.com/png.latex?%5Cmu_i%20=%20E%5BR_i%5D"></li>
-<li>each asset has standard deviation on their returns denotated by <img src="https://latex.codecogs.com/png.latex?%5Csigma_i%20%5Cmbox%7B%20with%20%7D%20i%20=%201,%202,%20%5Cldots,%20N"></li>
-<li>the correlation between asset <em>i</em> and asset <em>j</em> is denoted by <img src="https://latex.codecogs.com/png.latex?%5Crho_%7Bij%7D%20%5Cmbox%7B%20with%20%7D%20i,j%20=%201,%202,%20%5Cldots,%20N">. In that sense, <img src="https://latex.codecogs.com/png.latex?%5Crho_%7Bij%7D%20=%20corr(R_i,%20R_j)"></li>
-</ul>
-<p>The <strong>Mean-Variance Optimization</strong> problem can be formulated in 2 ways:</p>
-<ul>
-<li>Highest possible returns for a given amount of risk</li>
-<li>Lowest possible amount of risk for a given expected return</li>
-</ul>
-<p>Return is the expected return of the asset and risk is the variance of the returns of the asset.</p>
-<p>The <strong>Risk-Free Asset (RFA)</strong> is the money deposited in a bank account-ish (a secure term-deposit) at a fixed rate <strong>R</strong>. The expected return is thus R and volatitliy is 0. Also the correlation between the RFA and any other assets is 0.</p>
-<p>Each asset can be represented on a 2D-plane with the risk on the x-axis and returns on the y-axis.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-asset-plane" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="https://fderyckel.github.io/blog.html/posts/portfolio_optimization_parti_inR/index_files/figure-html/fig-asset-plane-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: <strong>?(caption)</strong></figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>There are some other assumptions made when trying to construct a mean-variance optimum portfolio:</p>
-<ul>
-<li>results are based on total returns (include dividends, interest paid, etc.)</li>
-<li>fractional shares are possible</li>
-<li>can deposit and withdraw money freely at the risk-free rate</li>
-<li>no restriction on short selling</li>
-<li>doesn’t account for tax, transaction fees, collateral and margins.</li>
-</ul>
-<section id="in-practice" class="level1">
-<h1>In practice</h1>
-<p>To bring these idea into practices, there are a few ways to go about it. The first approach is to have <em>Monte-Carlo simulations</em> using historical data for the parameters of the mean and variance. Another approach would be to use numerical methods to find the optimum weights that maximize the sharpe ratio (aka ratio of returns to volatility). In this way, we’ll find the efficient frontier: aka the best returns for a given risk or a lowest risk for a given returns.</p>
-<section id="create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio" class="level2">
-<h2 class="anchored" data-anchor-id="create-mc-simulations-of-weights-to-assess-mean-variance-of-a-portfolio">Create MC simulations of weights to assess mean-variance of a portfolio</h2>
-<p>Let’s get 5 different financial assets: AA, LLY, AMD, SBUX, FDX. Although they are from different industries, it is not a very diverse bunch as they are all from US big companies.</p>
-<p>We already have the assets downloaded and we’ll use their closing prices.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(readr)      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># read_csv()</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># select(), arrange(), filter(), mutate(), summarize()</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(purrr)      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># map()</span></span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(tidyr)      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># drop_na(), pivot_wider(), unnest()</span></span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(glue)       <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># glue()</span></span>
-<span id="cb1-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(lubridate)</span>
-<span id="cb1-7"></span>
-<span id="cb1-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># read adjusted closing prices and compute annualized daily returns and sd</span></span>
-<span id="cb1-9">read_prices <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(ticker) { </span>
-<span id="cb1-10">  df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'../../raw_data/'</span>, {ticker}, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'.csv'</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-11">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(date) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-12">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(date, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">adj_close =</span> adjClose) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-13">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">filter</span>(date <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'2018-01-01'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-14">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ret1d =</span> (adj_close <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lag</span>(adj_close, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-15">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean_ret =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mean</span>(ret1d, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">na.rm =</span> T) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">252</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, </span>
-<span id="cb1-16">              <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">std_ret =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sd</span>(ret1d, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">na.rm =</span> T) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sqrt</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">252</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>)</span>
-<span id="cb1-17">}</span>
-<span id="cb1-18"></span>
-<span id="cb1-19">assets <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'AA'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'LLY'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'AMD'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'SBUX'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'FDX'</span>)</span>
-<span id="cb1-20">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ticker =</span> assets, </span>
-<span id="cb1-21">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">prices =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">map</span>(ticker, read_prices)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-22">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unnest</span>()</span></code></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-mean-variance" class="anchored">
-<table data-quarto-postprocess="true" data-tbl-colwidths="[100,200,200]" class="table table-sm table-striped small">
-<caption>Table&nbsp;1: Annualized Mean and Standard Deviation of daily returns</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Ticker</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Mean Ret</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Std of Ret</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">AA</td>
-<td style="text-align: right;">15.90</td>
-<td style="text-align: right;">60.72</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">LLY</td>
-<td style="text-align: right;">31.79</td>
-<td style="text-align: right;">29.78</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">AMD</td>
-<td style="text-align: right;">55.20</td>
-<td style="text-align: right;">56.37</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SBUX</td>
-<td style="text-align: right;">16.43</td>
-<td style="text-align: right;">30.36</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FDX</td>
-<td style="text-align: right;">4.40</td>
-<td style="text-align: right;">37.53</td>
-</tr>
-</tbody>
-</table>
-</div>
-
-
-</div>
-</div>
-<p>First, we create the df of returns:</p>
-<ul>
-<li>it’s a long df with only ticker, date, daily returns</li>
-<li>one row per daily observation.</li>
-<li>we drop first row with no returns</li>
-<li>the returns df is a wide df with date and tickers as columns, then daily returns as row</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># functions to get daily returns of each assets</span></span>
-<span id="cb2-2">create_returns_df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(ticker) { </span>
-<span id="cb2-3">  df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'../../raw_data/'</span>, {ticker}, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'.csv'</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-4">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(date) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-5">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(date, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">adj_close =</span> adjClose) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-6">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">filter</span>(date <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'2018-01-01'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-7">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ret1d =</span> (adj_close <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lag</span>(adj_close, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-8">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(date, ret1d)</span>
-<span id="cb2-9">}</span>
-<span id="cb2-10"></span>
-<span id="cb2-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># df of each assets and all their daily returns</span></span>
-<span id="cb2-12">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ticker =</span> assets, </span>
-<span id="cb2-13">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">prices =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">map</span>(ticker, create_returns_df)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unnest</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">cols =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(prices)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-15">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">drop_na</span>()</span>
-<span id="cb2-16"></span>
-<span id="cb2-17"></span>
-<span id="cb2-18">returns <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(ticker) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-19">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">names_from =</span> ticker, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">values_from =</span> ret1d)  </span>
-<span id="cb2-20"></span>
-<span id="cb2-21"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">head</span>(returns)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 6
-  date             AA     AMD       FDX       LLY     SBUX
-  &lt;date&gt;        &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 2018-01-03 -0.0121   0.0519  0.0125    0.00543   0.0187 
-2 2018-01-04  0.00367  0.0494  0.0156    0.00446   0.00375
-3 2018-01-05 -0.0112  -0.0198  0.00393   0.0123    0.0115 
-4 2018-01-08  0.0168   0.0337  0.0103   -0.00508  -0.00503
-5 2018-01-09 -0.0145  -0.0375 -0.00339  -0.000813 -0.00219
-6 2018-01-10  0.0363   0.0118  0.000971  0.000465  0.0108 </code></pre>
-</div>
-</div>
-<p>To optimize the mean-variance of the portfolio, we consider the following</p>
-<p>Weights of each assets are <img src="https://latex.codecogs.com/png.latex?w%20=%20%5Cpmatrix%7Bw_1%20%5C%5C%20w_2%20%5C%5C%20%5Cvdots%20%5C%5C%20w_n%7D">.<br>
-Mean returns of each assets are <img src="https://latex.codecogs.com/png.latex?%5Cmu%20=%20%5Cpmatrix%7B%5Cmu_1%20%5C%5C%20%5Cmu_2%20%5C%5C%20%5Cvdots%20%5C%5C%20%5Cmu_n%7D"></p>
-<p>Then, the <strong>expected portfolio return</strong> is <img src="https://latex.codecogs.com/png.latex?%5Cmu_%7B%5Cpi%7D%20=%20w%5E%7BT%7D%20%5Ccdot%20%5Cmu"> where <img src="https://latex.codecogs.com/png.latex?w%5E%7BT%7D"> is the transpose of <img src="https://latex.codecogs.com/png.latex?w"> (aka transforming <img src="https://latex.codecogs.com/png.latex?w"> from a column vector to a row vector in order to have right dimensions to compute the dot product).</p>
-<p>And the <strong>expected portfolio variance</strong> is computed by <img src="https://latex.codecogs.com/png.latex?%5Csigma_%7B%5Cpi%7D%5E2%20=%20w%5ET%20%5Ccdot%20%5CSigma%20%5Ccdot%20w"> where <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is the covariance matrix. Also, don’t forget to square root the variance when using sd: <img src="https://latex.codecogs.com/png.latex?%5Csigma_%7B%5Cpi%7D%20=%20%5Csqrt%7Bw%5ET%20%5Ccdot%20%5CSigma%20%5Ccdot%20w%7D"></p>
-<p>To put this into code, we first create the matrix of returns,then create the covariance matrix. Using both matrices, we create a function that return the portfolio mean and variance using the randomly chosen weights.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># this df to provide vectors of expected returns</span></span>
-<span id="cb4-2">df_stat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(ticker) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean_ret =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mean</span>(ret1d, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">na.rm =</span> T) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">252</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ungroup</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(ticker) </span>
-<span id="cb4-6"></span>
-<span id="cb4-7">mu <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.matrix</span>(df_stat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>mean_ret, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrow =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(assets))</span>
-<span id="cb4-8"></span>
-<span id="cb4-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># this df to provide the covariance matrix</span></span>
-<span id="cb4-10"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># note how we have also multiplied it by 252</span></span>
-<span id="cb4-11">sigma <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(ticker) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-12">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">names_from =</span> ticker, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">values_from =</span> ret1d) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">drop_na</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>date) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cov</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">252</span></span>
-<span id="cb4-15"></span>
-<span id="cb4-16">sigma <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.matrix</span>(sigma, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrow =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(assets))</span>
-<span id="cb4-17"></span>
-<span id="cb4-18"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># this function to create one simulation using random weights</span></span>
-<span id="cb4-19">create_one_portfolio_simulation <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(n) { </span>
-<span id="cb4-20">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># pick random weights</span></span>
-<span id="cb4-21">  weights_rand <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">runif</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(assets))</span>
-<span id="cb4-22">  weights <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matrix</span>(weights_rand <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(weights_rand), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrow =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(assets))</span>
-<span id="cb4-23">  </span>
-<span id="cb4-24">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#these are textbook formula for return and volat of a portfolio</span></span>
-<span id="cb4-25">  return_pi <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t</span>(weights) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> mu)</span>
-<span id="cb4-26">  volat_pi <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sqrt</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.numeric</span>((<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t</span>(weights) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> sigma) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> weights))</span>
-<span id="cb4-27">  sharpe_ratio <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> return_pi <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> volat_pi</span>
-<span id="cb4-28">  </span>
-<span id="cb4-29">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># wrap everything into a df for later checks / analysis</span></span>
-<span id="cb4-30">  df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">portf_ret =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(return_pi <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">portf_volat =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(volat_pi <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>),  </span>
-<span id="cb4-31">               <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">weights =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t</span>(weights) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sharpe_ratio =</span> sharpe_ratio)</span>
-<span id="cb4-32"></span>
-<span id="cb4-33">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">return</span>(df)</span>
-<span id="cb4-34">}</span>
-<span id="cb4-35"></span>
-<span id="cb4-36"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#this is really the only inputs to get </span></span>
-<span id="cb4-37">num_portfolio <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">7000</span></span>
-<span id="cb4-38"></span>
-<span id="cb4-39">mc_simu <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">id =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>num_portfolio) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-40">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">simul =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">map</span>(id, create_one_portfolio_simulation)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-41">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unnest</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">cols=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(simul)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-42">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">arrange</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">desc</span>(sharpe_ratio))</span>
-<span id="cb4-43"></span>
-<span id="cb4-44"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">head</span>(mc_simu)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-     id portf_ret portf_volat weights[,1]  [,2]  [,3]  [,4]   [,5] sharpe_ratio
-  &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;
-1  5710      37.8        29.4       0.168  31.1 0.757  61.6  6.43          1.29
-2  6227      34.7        27.6       0.937  25.3 0.648  55.8 17.2           1.26
-3   483      34.8        27.9       0.917  26.1 5.59   58.2  9.18          1.25
-4   184      37.6        30.3       0.546  35.6 6.66   53.1  4.14          1.24
-5  3169      36.0        29.1       1.90   32.0 4.07   50.2 11.9           1.24
-6  1388      34.1        27.5       3.26   18.0 4.97   73.4  0.415         1.24</code></pre>
-</div>
-</div>
-<section id="vizualisation-of-mean-variances-points" class="level3">
-<h3 class="anchored" data-anchor-id="vizualisation-of-mean-variances-points">Vizualisation of mean-variances points</h3>
-<p>We have highlithed the portfolio with best mean-variance returns with a red square around its dot.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb6-2"></span>
-<span id="cb6-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(mc_simu, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> portf_volat, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> portf_ret)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb6-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">colour =</span> sharpe_ratio)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb6-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_color_distiller</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">palette=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Set1"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb6-6">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> mc_simu[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,], <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> portf_volat, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> portf_ret), </span>
-<span id="cb6-7">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'red'</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shape=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb6-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">xlab</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Portfolio Volatility'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb6-9">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ylab</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Portfolio Returns'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb6-10">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'MC simulation for 5 stocks'</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Sharpe </span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\n</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> Ratio'</span>) </span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/portfolio_optimization_parti_inR/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-
-
-</section>
-</section>
-</section>
-
- ]]></description>
-  <category>portfolio</category>
-  <category>R-code</category>
-  <category>quant-finance</category>
-  <category>model</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/portfolio_optimization_parti_inR/index.html</guid>
-  <pubDate>Sun, 26 Feb 2023 17:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Stochastic processes - Discrete Time Markov Chain</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/stochastic-processes/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>This post is an introduction to Markov Chain with a presentation of Discrete Time Markov Chains.</p>
-<section id="definition" class="level2">
-<h2 class="anchored" data-anchor-id="definition">Definition</h2>
-<p>A stochastic process is <img src="https://latex.codecogs.com/png.latex?%5C%7B%20X(t),%20t%20%5Cin%20T%20%5C%7D"> is a collection of random variables indexed by a parameter t that belongs to a set T.</p>
-<ul>
-<li>t is generally the time</li>
-<li><img src="https://latex.codecogs.com/png.latex?X(t)"> is the state of the process at time t</li>
-<li>The <em>state space</em> <img src="https://latex.codecogs.com/png.latex?S"> of a stochastic process is all possible state <img src="https://latex.codecogs.com/png.latex?X(t)"> for any <img src="https://latex.codecogs.com/png.latex?t%20%5Cin%20T"></li>
-<li>if T is a countable set, we call this a <strong>discrete-time process</strong></li>
-</ul>
-<p>A <strong>discrete-time Markov Chain</strong> is a discrete-time stochastic process which state space <em>S</em> is finite such that: <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BP%7D(X_%7Bn+1%7D%20=%20j%20%7C%20X_0%20=%20i_0,%20X_1%20=%20i_1,%20X_2%20=%20i_2,%20%5Cdots,%20x_n%20=%20i)%20=%20%5Cmathbb%7BP%7D(X_%7Bn+1%7D%20=%20j%20%7C%20X_n%20=%20i)%20=%20P_%7Bij%7D"></p>
-<p>that is, the conditional probability of the process being in state j at time n + 1 given all the previous states depends only on the last-known position (state i at time n).</p>
-</section>
-<section id="some-other-teminology" class="level2">
-<h2 class="anchored" data-anchor-id="some-other-teminology">Some other teminology</h2>
-<ul>
-<li>A state is called <strong>absorbing</strong> if the chain cannot leave it once it enters it. An absorbing Markov chain has at least one absorbing state.</li>
-<li>A state is termed <strong>reflecting</strong> if once the chain leaves it, it cannot return to it.</li>
-<li>The <strong>period d of a state i</strong> is the number such that, starting in i, the chain can return to i only in the number of steps that are multiples of d.&nbsp;A state with period d = 1 is called <strong>aperiodic.</strong> Periodicity is a class property.
-<ul>
-<li>For a reflecting state, the period is infinite, since the chain never comes back to this state.</li>
-<li>Absorbing states necessarily have loops and thus are aperiodic states.</li>
-</ul></li>
-<li>a state is called recurrent if with probability 1 the chain ever reenters that state. Otherwise, the state is called transient.</li>
-<li>A Markov Chain that has a unique stationary distribution (or steady-state distribution) is called an <strong>ergodic</strong> chain.</li>
-</ul>
-</section>
-<section id="chapman-kolmogorov-equations" class="level2">
-<h2 class="anchored" data-anchor-id="chapman-kolmogorov-equations">Chapman-Kolmogorov equations</h2>
-<p>We denote the probability to go from state <img src="https://latex.codecogs.com/png.latex?i"> to state <img src="https://latex.codecogs.com/png.latex?j"> in n-steps by <img src="https://latex.codecogs.com/png.latex?%5Cbf%7BP%7D_%7Bij%7D%5E%7B(n)%7D">. It is also denoted as the <strong>n-steps transition probability matrix</strong>. That is for any time <img src="https://latex.codecogs.com/png.latex?m%20%3E=%200,%20%5Cbf%7BP%7D_%7Bij%7D%5En%20=%20%5Cmathbb%7BP%7D(X_%7Bm+n%7D%20=%20j%20%7C%20X_m%20=%20i)"> . <img src="https://latex.codecogs.com/png.latex?%5Cbf%7BP%7D%5E%7B(n)%7D%20=%20%5Cbf%7BP%7D%5En"> based on the Chapman-Kolmogorov equation.</p>
-<p>The Chapman-Kolmogorov equation states that for all positive integers <img src="https://latex.codecogs.com/png.latex?m"> and <img src="https://latex.codecogs.com/png.latex?n"> , <img src="https://latex.codecogs.com/png.latex?%5Cbf%7BP%7D%5E%7B(m+n)%7D%20=%20%5Cbf%7BP%7D%5Em%20%5Ccdot%20%5Cbf%7BP%7D%5En"> where P is a one-step probability transition matrix (a square matrix)</p>
-</section>
-<section id="example-1" class="level2">
-<h2 class="anchored" data-anchor-id="example-1">Example 1</h2>
-<p>To model a Markov Chain, let’s first set up a <em>one-step probability transition matrix</em> (called here <strong>osptm</strong>).</p>
-<p>We start with an easy 3 possible state process. That is the state space <img src="https://latex.codecogs.com/png.latex?S%20=%20%5C%7B1,%202,%203%5C%7D">. The osptm will provide the probability to go from one state to another.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">osptm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matrix</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.2</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.6</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.4</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.2</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.3</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrow =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">byrow =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb1-2">osptm</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3]
-[1,]  0.7  0.1  0.2
-[2,]  0.0  0.6  0.4
-[3,]  0.5  0.2  0.3</code></pre>
-</div>
-</div>
-<p>We can always have a look at how the osptm looks like.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># note we have to transpose the osptm matrix first. </span></span>
-<span id="cb3-2">osptm_transposed <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t</span>(osptm)</span>
-<span id="cb3-3">osptm_transposed</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3]
-[1,]  0.7  0.0  0.5
-[2,]  0.1  0.6  0.2
-[3,]  0.2  0.4  0.3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">diagram<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotmat</span>(osptm_transposed, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pos =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">arr.length =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.3</span>, </span>
-<span id="cb5-2">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"lightblue"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.prop =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.size =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.12</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.type=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"circle"</span>, </span>
-<span id="cb5-3">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">self.cex =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">self.shifty=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">self.shiftx =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.15</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/stochastic-processes/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The <em>markovchain</em> package can provide us with all the state characteristics of a one-step probabilty transition matrix.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(markovchain)</span>
-<span id="cb6-2">osptm_mc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">new</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"markovchain"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">transitionMatrix =</span> osptm)</span>
-<span id="cb6-3"></span>
-<span id="cb6-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">recurrentClasses</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[[1]]
-[1] "1" "2" "3"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">transientClasses</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>list()</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">absorbingStates</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>character(0)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">period</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">steadyStates</span>(osptm_mc), <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>          1      2      3
-[1,] 0.4651 0.2558 0.2791</code></pre>
-</div>
-</div>
-<p>The next step is to calculate, for instance, what is the probability to go from state 1 to state 3 in 4 steps.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(expm)</span>
-<span id="cb16-2"></span>
-<span id="cb16-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># the expm library brings in the " %^%" operator for power. </span></span>
-<span id="cb16-4">osptm <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%^%</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       [,1]   [,2]   [,3]
-[1,] 0.5021 0.2303 0.2676
-[2,] 0.3860 0.3104 0.3036
-[3,] 0.4760 0.2483 0.2757</code></pre>
-</div>
-</div>
-<p>Looking at the result, we can see that the probability to go from State 1 to State 3 in 4 steps is 0.2676</p>
-<p>We can also calculate the unconditional distribution after 4 steps</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">initial_pro <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>)</span>
-<span id="cb18-2">initial_pro <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> (osptm <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%^%</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       [,1]  [,2]   [,3]
-[1,] 0.4547 0.263 0.2823</code></pre>
-</div>
-</div>
-</section>
-<section id="example-2" class="level2">
-<h2 class="anchored" data-anchor-id="example-2">Example 2</h2>
-<p>Using a slightly more interesting one-step probability transition matrix having 6 different states.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#specifying transition probability matrix</span></span>
-<span id="cb20-2">osptm<span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matrix</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.3</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.6</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.4</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.9</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.3</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrow=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">byrow=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb20-3">osptm</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
-[1,]  0.3  0.7  0.0    0  0.0  0.0
-[2,]  1.0  0.0  0.0    0  0.0  0.0
-[3,]  0.5  0.0  0.0    0  0.0  0.5
-[4,]  0.0  0.0  0.6    0  0.0  0.4
-[5,]  0.0  0.0  0.0    0  0.1  0.9
-[6,]  0.0  0.0  0.0    0  0.7  0.3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1">osptm_transposed <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t</span>(osptm)</span>
-<span id="cb22-2">diagram<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotmat</span>(osptm_transposed, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">arr.length =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.3</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">arr.width =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>, </span>
-<span id="cb22-3">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"lightblue"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.prop =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.size =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.09</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">box.type=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"circle"</span>, </span>
-<span id="cb22-4">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">cex.txt =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.8</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">self.cex =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">self.shifty=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">self.shiftx =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.13</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/stochastic-processes/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">osptm_mc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">new</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"markovchain"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">transitionMatrix =</span> osptm)</span>
-<span id="cb23-2"></span>
-<span id="cb23-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">recurrentClasses</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[[1]]
-[1] "1" "2"
-
-[[2]]
-[1] "5" "6"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">transientClasses</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[[1]]
-[1] "3"
-
-[[2]]
-[1] "4"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">absorbingStates</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>character(0)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">period</span>(osptm_mc)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in period(osptm_mc): The matrix is not irreducible</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">steadyStates</span>(osptm_mc), <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>          1      2 3 4      5      6
-[1,] 0.0000 0.0000 0 0 0.4375 0.5625
-[2,] 0.5882 0.4118 0 0 0.0000 0.0000</code></pre>
-</div>
-</div>
-<p>We can see that there are 2 possible steady states. Hence the Markov Chain is non-ergodic.</p>
-
-
-</section>
-
- ]]></description>
-  <category>Markov Chain</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/stochastic-processes/index.html</guid>
-  <pubDate>Fri, 11 Nov 2022 17:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

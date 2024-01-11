@@ -86,9 +86,9 @@ We could use the *ggplot* package to create a function to draw acf and get more 
 
 ```{r}
 # slightly fancier version (with more customization)
-ggacf <- function(series) {
+ggacf <- function(series, num_lags) {
   significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
-  a <- acf(series, plot=F)
+  a <- acf(series, lag.max = num_lags, plot=F)
   a.2 <- with(a, data.frame(lag, acf))
   g <- ggplot(a.2[-1,], aes(x=lag,y=acf)) + 
     geom_segment(mapping = aes(xend = lag, yend = 0), linewidth = 0.8) + 
@@ -107,7 +107,7 @@ ggacf <- function(series) {
 ```{r}
 #| label: acf-milk-ggplot
 
-ggacf(milk$milk_prod_per_cow_kg)
+ggacf(milk$milk_prod_per_cow_kg, num_lags = 37)
 ```
 
 ### Using Python 
@@ -135,7 +135,9 @@ A time-series $\{X_t\}$ is (weakly) stationary if:
 
 # Random Walk & White Noise 
 
-White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying **Random Walk**.  $\{X_t\}$ is a random-walk if it satisfies the equation: 
+White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying **Random Walk**.  
+
+$\{X_t\}$ is a random-walk if it satisfies the equation: 
 
 $$X_t = X_{t-1} + W_t$$ {#eq-rw1}
 where $\{W_t\}$ is a white-noise.  In other words, $W_t \sim iid N(0, \sigma_w^2)$

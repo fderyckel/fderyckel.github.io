@@ -15,9 +15,46 @@ Data from Kaggle
 ```{python}
 import pandas as pd
 
-df <- 
+df = pd.read_csv('../../../raw_data/hotel_bookings.csv')
+df = df.rename(columns = {'arrival_date_year': 'year', 
+                          'arrival_date_month': 'month', 
+                          'arrival_date_day_of_month': 'day'})
+
+# turn the months into numbers
+def monthToNum(shortMonth):
+    return {'January': 1, 'February': 2, 'March': 3,
+            'April': 4, 'May': 5, 'June': 6,
+            'July': 7, 'August': 8, 'September': 9, 
+            'October': 10, 'November': 11, 'December': 12
+    }[shortMonth]
+    
+df['month'] = df['month'].apply(monthToNum)
+df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
+
+#filter hotel resort and remove cancelations
+df = df[(df['is_canceled'] == 0) & (df['hotel'] == 'Resort Hotel')]
+t_df = df.groupby(['date'])['hotel'].count().reset_index().rename(columns={'hotel':'y','date':'ds'})
+
 ```
 
+```{python}
+import matplotlib.pyplot as plt
+
+plt.plot(t_df.ds, t_df['y'])
+plt.show()
+```
+
+In a very naive and limited way let's create a training and testing set (keeping only last month for testing).  This is obviously a poor choices as ideally we would need to test multiple months.  
+
+```{python}
+train_df = t_df.loc[(t_df['ds'] >= '2015-01-01') & (t_df['ds'] < '2017-08-01')]
+test_df = t_df.loc[(t_df['ds'] >= '2017-08-01') & (t_df['ds'] > '2017-09-01')]
+
+```
+
+Using MAE (Mean Absolute Error) to estimate the suitability our model.  
+
+## Method 1.  Arima. 
 
 
 ```{r}

@@ -1,0 +1,200 @@
+---
+title: "05 - Arima"
+author: "François de Ryckel"
+date: "2024-01-9"
+categories: [Time-Series]
+description: 'Introducing Arima - Autoregressive Integrated Moving Average.'
+editor: source
+date-modified: "2024-01-22"
+---
+
+# Introduction 
+
+This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data. 
+
+Our [previous post](../03-autocorrelation/index.qmd) on autocorrelation and partial autocorelation could be considered as prior material.
+
+Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations). 
+$$Y_t = \delta + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t$$
+This AR model used $p$ lags, hence we say it is of order $p$.
+
+* $\delta$ is an intercept like term
+* $Y_{t-i}$ are the regressors (time series own lagged observations) with parameters $\phi_{t-i}$
+* $\epsilon$ is the error term
+
+Moving Average (MA) is another class of linear model where the outcome variable is regressed using its own previous error terms. 
+$$Y_t = \mu +  \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q} + \epsilon_t$$ 
+This MA model used $q$ lags, hence we say it is of order $q$.
+
+Putting it all together, the outcome variable of an ARIMA model can be predicted: 
+$$Y_t = \{\delta + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t \} + \{\mu +  \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q} + \epsilon_t \}$$
+This can be simplify into: 
+$$Y_t = \delta + \sum_{i=1}^p \phi_i Y_{t-i} + \sum_{j=1}^q \theta_j \epsilon_{t-j} + \epsilon_t$$
+
+The parameters of an ARIMA model are (p, d, q) : 
+
+* $p$ - Autoregressive.  The number of lagged observations in the model.  Use the previous $n$ observations as predictors. 
+* $d$ - Integrated.  The number of times the data is differenced to make the data stationary  
+* $q$ - the size of the moving average. Use previous errors to predict $Y_t$
+
+To apply an ARIMA model to a set of data, we will use the US CPI Energy component that we downloaded on the [FED St-Louis website](https://fred.stlouisfed.org/series/CPIENGSL). 
+
+# Application using R 
+
+```{r}
+#| label: loading_data
+#| message: false
+#| warning: false
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(modeltime)
+library(timetk)
+
+df <- read_csv('../../../raw_data/CPI_energy.csv') |> 
+  select(date = DATE, cpi_energy = CPIENGNS)
+glimpse(df)
+```
+
+```{r}
+#| label: own_functions
+#| message: false
+#| warning: false
+#| echo: false
+
+ggacf <- function(series, num_lags) {
+  significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
+  a <- acf(series, lag.max = num_lags, plot=F)
+  a.2 <- with(a, data.frame(lag, acf))
+  g <- ggplot(a.2[-1,], aes(x=lag,y=acf)) + 
+    geom_segment(mapping = aes(xend = lag, yend = 0), linewidth = 0.8) + 
+    xlab('Lag') + ylab('ACF') + 
+    geom_hline(yintercept=c(significance_level,-significance_level), linetype= 'dashed', color = 'dodgerblue4');
+
+  # fix scale for integer lags
+  if (all(a.2$lag%%1 == 0)) {
+    g<- g + scale_x_discrete(limits = factor(seq(1, max(a.2$lag))));
+  }
+  return(g);
+}
+```
+
+## ARIMA using the base R framework 
+
+We need first to convert our df into a ts object. 
+
+```{r}
+df_ts <- ts(df$cpi_energy, start = c(1957,01), frequency = 12, end = c(2023, 11))
+str(df_ts)
+ts.plot(df_ts, xlab = 'Date', ylab = 'Energy CPI')
+```
+
+It is usually a wise idea to check for outliers? An easy way to do this is using a boxplot. 
+
+```{r}
+boxplot(df_ts)
+```
+
+We use the ACF to determine the MA parameter (q) of the ARIMA model. 
+
+* Significant spikes at specific lags in the ACF plot suggest potential MA terms at those lags 
+* An ACF plot that cuts off sharply after a few lags often indicates a suitable MA model 
+
+```{r}
+acf(df_ts, lag.max = 100)
+```
+
+```{r}
+ggacf(df_ts, num_lags = 100)
+```
+
+Data is clearly not stationary.  We will need to use differentiation to make it stationary. 
+
+The PCAF helps determine the AR (Autoregressive) order (p) in an ARIMA model.
+
+* Significant spikes at specific lags in the PACF plot suggest potential AR terms at those lags 
+* A PACF plot that cuts off sharply after a few lags often indicates a suitable AR model 
+
+```{r}
+pacf(df_ts, lag.max = 100)
+```
+
+This can be confirm with Augmented Dickey Fuller test
+
+```{r}
+tseries::adf.test(df_ts)
+```
+adf test confirm non-stationarity of our ts. We can differentiate our ts to make it stationary. 
+
+```{r}
+diff_ts <- diff(x = df_ts, lag = 1)
+ts.plot(diff_ts)
+tseries::adf.test(diff_ts)
+```
+
+We can create our training and testing set. 
+
+```{r}
+train_ts <- df_ts[1:793]
+```
+
+We can now use ARIMA model using 1 and 1 for parameter (all we could see from acf)
+
+```{r}
+result <- arima(train_ts, order = c(0, 1, 2))
+result
+tsdiag(result)
+```
+
+```{r}
+predict(result, 3)
+ 
+```
+
+```{r}
+result_df <- arima(df_ts, order = c(0, 1, 2))
+result_df
+predict(result_df, 2)
+```
+
+```{r}
+result_df <- arima(df_ts, order = c(4, 1, 1))
+result_df
+predict(result_df, 2)
+```
+
+```{r}
+forecast::auto.arima(df_ts, trace = T, stepwise = F, approximation = F)
+```
+
+
+# Using modeltime framework 
+
+```{r}
+
+df |> plot_time_series(date, cpi_energy, .interactive = FALSE)
+```
+with model time, it is pretty easy to do get the value for arima. 
+
+```{r}
+cv_splits <- df |> 
+  time_series_split(date_var = date, assess = '13 months', cumulative = TRUE)
+
+cv_splits |> 
+  tk_time_series_cv_plan() |>
+  plot_time_series_cv_plan(.date_var = date, .value = cpi_energy, .interactive = FALSE)
+```
+
+```{r}
+library(tidymodels)
+library(parsnip)
+library(modeltime)
+
+model_fit_arima <- arima_reg() |> 
+  set_engine('auto_arima') |>
+  fit(cpi_energy ~ date, training(cv_splits))
+
+model_fit_arima
+```
+
