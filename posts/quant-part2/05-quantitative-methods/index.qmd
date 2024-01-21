@@ -1,0 +1,28 @@
+---
+title: "quantitative Methods"
+author: "Francois de Ryckel"
+date: "2024-01-21"
+categories: [graph, code]
+editor: source
+date-modified: "2024-01-21"
+---
+
+Starting here a few examples on how to graph functions, how to solve equations and differential equations in a computations. 
+
+# Basic graphs of a functions. 
+
+Let's take the function $$Q(t) = 10 e^{- \frac{t}{10}}$$.  We want to graph this in the interval 0-40 for instance and know what is the value of $Q$ when $t=30$. 
+
+```{r}
+library(dplyr)
+library(ggplot2)
+df <- tibble(x = seq(from = 0, to = 40, length.out = 200)) |> 
+  mutate(y = 10 * exp(-x/10))
+df_point <- tibble(x = 30, y = 10 * exp(-x/10))
+
+ggplot(df, aes(x, y)) + 
+  geom_line(color = 'blue', size = 1) + 
+  geom_point(data = df_point, aes(x, y), color = 'red', size = 3) + 
+  geom_text(data = df_point, aes(x+2, y+0.5, label = paste('x = 30, y = ', round(y, 4))), color = 'red')
+```
+
