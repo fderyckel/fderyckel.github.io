@@ -14,22 +14,25 @@ title-block-banner: false
 
 # Series 
 
-### [Time-series](time-series.html)
+## [Time-series](time-series.html)
 A series of posts related to the analysis of time-series.
 
 ## [Probability](probability.html)
 A series of posts centered on basic probability concepts essentials for the study of quantitative finance. 
 
-### [Quant - Part 1](quant-part1.html)
-A series of posts when starting quant finance.  Basic mathematical concepts and related code in R and Python when starting quantitative finance.  
+## [Risk and Portfolio](risk-portfolio.html)
+A series of posts related to risk-management in portfolio construction. 
 
-### [Quant - Part 2](quant-part2.html)
+## [Quant - Part 1](quant-part1.html)
+A series of posts when starting quant finance. Basic mathematical concepts and related code in R and Python when starting quantitative finance.  
+
+## [Quant - Part 2](quant-part2.html)
 A series of posts on some introductory concepts of stochastic calculus.  
 
-### [Quant - Part 3](quant-part3.html)
+## [Quant - Part 3](quant-part3.html)
 A series of posts on the Black-Schole Equation and derivative pricing.
 
-### [Machine Learning - Part 1](machine-learning-part1.html)
+## [Machine Learning - Part 1](machine-learning-part1.html)
 A series of posts on machine learning algorithms with a quant finance lens.  
 
 # Posts 

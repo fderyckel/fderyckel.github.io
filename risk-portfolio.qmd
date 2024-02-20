@@ -1,0 +1,14 @@
+---
+title: "Series: Risk and Portfolio Managment"
+listing:
+  contents: posts/risk-portfolio
+  sort: "title"
+  type: default
+  categories: false
+  sort-ui: false
+  filter-ui: false
+  fields: [date, title, reading-time, description]
+page-layout: full
+title-block-banner: true
+---
+
