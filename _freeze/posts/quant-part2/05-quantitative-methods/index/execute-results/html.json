@@ -1,0 +1,16 @@
+{
+  "hash": "3969c6a165acf255f956df8768ad139d",
+  "result": {
+    "markdown": "---\ntitle: \"quantitative Methods\"\nauthor: \"Francois de Ryckel\"\ndate: \"2024-01-21\"\ncategories: [graph, code]\neditor: source\ndate-modified: \"2024-01-21\"\n---\n\n\nStarting here a few examples on how to graph functions, how to solve equations and differential equations in a computations. \n\n# Basic graphs of a functions. \n\nLet's take the function $$Q(t) = 10 e^{- \\frac{t}{10}}$$.  We want to graph this in the interval 0-40 for instance and know what is the value of $Q$ when $t=30$. \n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(dplyr)\n```\n\n::: {.cell-output .cell-output-stderr}\n```\n\nAttaching package: 'dplyr'\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n```\n:::\n\n```{.r .cell-code}\nlibrary(ggplot2)\ndf <- tibble(x = seq(from = 0, to = 40, length.out = 200)) |> \n  mutate(y = 10 * exp(-x/10))\ndf_point <- tibble(x = 30, y = 10 * exp(-x/10))\n\nggplot(df, aes(x, y)) + \n  geom_line(color = 'blue', size = 1) + \n  geom_point(data = df_point, aes(x, y), color = 'red', size = 3) + \n  geom_text(data = df_point, aes(x+2, y+0.5, label = paste('x = 30, y = ', round(y, 4))), color = 'red')\n```\n\n::: {.cell-output .cell-output-stderr}\n```\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n```\n:::\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

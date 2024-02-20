@@ -11,7 +11,7 @@ Starting here a few examples on how to graph functions, how to solve equations a
 
 # Basic graphs of a functions. 
 
-Let's take the function $$Q(t) = 10 e^{- \frac{t}{10}}$$.  We want to graph this in the interval 0-40 for instance and know what is the value of $Q$ when $t=30$. 
+Let's take the function $$Q(t) = 10 e^{- \frac{t}{10}}$$  We want to graph this in the interval 0-40 for instance and know what is the value of $Q$ when $t=30$. 
 
 ```{r}
 library(dplyr)
@@ -24,5 +24,53 @@ ggplot(df, aes(x, y)) +
   geom_line(color = 'blue', size = 1) + 
   geom_point(data = df_point, aes(x, y), color = 'red', size = 3) + 
   geom_text(data = df_point, aes(x+2, y+0.5, label = paste('x = 30, y = ', round(y, 4))), color = 'red')
+```
+
+# Graphing slope fields from differential equations 
+
+Solving $$\frac{dN}{dt} = r \cdot N \cdot \left( 1 - \frac{N}{K} \right)$$
+
+```{r}
+library(deSolve)
+
+model <- function(time, y, parms) {
+  with(as.list(c(y, parms)), {
+    dN <- r * N * (1 - N/K)
+    list(dN)
+  })
+}
+
+
+y = c(N = 0.1)
+parms <- c(r = 0.1, K = 10)
+times <- seq(0, 100, 1)
+
+out <- ode(y, times, model, parms)
+
+plot(out)
+```
+
+Solving $$\frac{dS}{dt} = 8 - \frac{S(t)}{4+t}$$
+
+```{r}
+model <- function(t, S, parms) {
+  with(as.list(c(S, parms)), {
+    dS <- 8 - S/(4+t)
+    list(dS)
+  })
+}
+
+S0 = 32
+times <- seq(0, 100, 0.1)
+
+out <- ode(y=S0, times = times, func = model, parms=NULL)
+
+plot(out)
+
+# finding S(t) for specific value of time
+library(dplyr)
+yo <- as_tibble(out) |> select(t = time, S = '1')
+
+yo |> filter(t == 20)
 ```
 

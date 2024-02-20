@@ -1,0 +1,29 @@
+---
+title: "Value at Risk using Python"
+author: "Francois de Ryckel"
+date: "2024-02-14"
+categories: [statistics, code, analysis]
+editor: source
+date-modified: "2024-02-14"
+---
+
+Computing Value at Risk (VaR) using Python. 
+
+```{python}
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv('../../../raw_data/FDX.csv', index_col = 0, parse_dates = True)
+returns = df['adjClose'].pct_change().dropna()
+```
+
+```{python}
+print(df)
+
+df
+
+returns
+```
+
+
+
