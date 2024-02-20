@@ -86,7 +86,7 @@ We could use the *ggplot* package to create a function to draw acf and get more 
 
 ```{r}
 # slightly fancier version (with more customization)
-ggacf <- function(series, num_lags) {
+ggacf <- function(series, num_lags=25) {
   significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
   a <- acf(series, lag.max = num_lags, plot=F)
   a.2 <- with(a, data.frame(lag, acf))
@@ -133,6 +133,15 @@ A time-series $\{X_t\}$ is (weakly) stationary if:
 * $E[X_t^2] < \infty$ 
 * $Cov(X_t, X_{t+k}) = \gamma(k)$ is independent of t for each integer k. $\gamma(k)$ is called the lag $k$ autocovariance of function of $\{X_t\}$
 
+# PACF 
+
+The Partial Autocorrelation measures the correlation between $\{X_{t-k} \}$ and $\{ X_t \}$. 
+
+```{r}
+pacf(milk$milk_prod_per_cow_kg)
+```
+
+
 # Random Walk & White Noise 
 
 White noise is a special type of time-series and a special case of stationarity. The concept emerge when studying **Random Walk**.  
@@ -154,7 +163,7 @@ If $\{W_t\}$ is iid (independent and identically distributed) and $\rho(k) = 1$ 
 
 Therefore, as $n \rightarrow \infty$, we can say that $\frac{1}{n} (X_1 + \dots + X_n) = E[X_t] = \mu$
 
-A random walk is mean stationary: $E(X_t) = E(X_0)$.  However, the random walk is NOT variance stationary: $Var(X_t) = Var(X_{t-1}) + \sigma_w^2 \gt Var(X_{t-1})$.  
+**A random walk is mean stationary**: $E(X_t) = E(X_0)$.  However, **the random walk is NOT variance stationary**: $Var(X_t) = Var(X_{t-1}) + \sigma_w^2 \gt Var(X_{t-1})$.  Also the **random-walk has no deterministic trend nor seasonality**. 
 
 We can generate white-noise in R using the arima.sim() function.  
 
@@ -191,18 +200,6 @@ In R we can use the Ljung-Box test (Portmanteau 'Q' test).
 ```{r}
 Box.test(wn, type = 'Ljung-Box', lag = 1)
 ```
-
-
-# PACF 
-
-The Partial Autocorrelation measures the correlation between $\{X_{t-k} \}$ and $\{ X_t \}$. 
-
-```{r}
-pacf(milk$milk_prod_per_cow_kg)
-```
-
-
-
 
 # Application to a financial asset 
 
@@ -292,4 +289,71 @@ pd.Series.idxmin(log_ret)
 ```
 
 
+# Python Code 
+
+## A random-walk 
+
+```{python}
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+from numpy.random import normal
+
+np.random.seed(190224)
+a = normal(size = 500); b = normal(size = 500); c = normal(size = 500)
+x = np.cumsum(a); y = np.cumsum(b); z = np.cumsum(c)
+
+df = pd.DataFrame({'x':x, 'y':y, 'z':z})
+df.index = range(1, 501)
+df.plot(style = ['-', '--', ':'])
+plt.show()
+```
+
+## Making a non-stationary time-series stationary 
+
+As shown above one way to make a time-series stationary is to take its first difference (or logarithm of its first difference)
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('../../../raw_data/JPM.csv')
+df['Date'] = pd.to_datetime(df['Date'])
+df = df[df['Date'] > '2019-01-01']
+df.index = df['Date']
+price = df['Adj Close']
+
+
+plt.clf()
+price.plot()
+plt.title('Price of JPM')
+plt.ylabel('Price (in USD)')
+plt.show()
+
+# And checking the acf and pcaf
+from statsmodels.tsa.stattools import acf, pacf
+from statsmodels.graphics.tsaplots import plot_acf
+
+plt.clf()
+plot_acf(price)
+plt.show()
+
+
+plt.clf()
+log_price = np.log(price)
+log_price.plot()
+plt.show()
+
+plt.clf()
+diff_log_price = log_price.diff(1)
+diff_log_price.plot()
+plt.title('Difference of log price of JPM')
+plt.show()
+
+
+plot_acf(diff_log_price.iloc[1:,])
+plt.show()
+```
 
