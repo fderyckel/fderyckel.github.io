@@ -137,7 +137,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">September 30, 2022</p>
+        <p class="date-modified">February 20, 2024</p>
       </div>
     </div>
       
@@ -151,7 +151,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#expectation-of-the-poisson-distribution" id="toc-expectation-of-the-poisson-distribution" class="nav-link active" data-scroll-target="#expectation-of-the-poisson-distribution">Expectation of the Poisson distribution</a></li>
+  <li><a href="#expectation-with-the-poisson-distribution" id="toc-expectation-with-the-poisson-distribution" class="nav-link active" data-scroll-target="#expectation-with-the-poisson-distribution">Expectation with the Poisson distribution</a>
+  <ul class="collapse">
+  <li><a href="#example-1---find-mathbb-ex" id="toc-example-1---find-mathbb-ex" class="nav-link" data-scroll-target="#example-1---find-mathbb-ex">Example 1 - Find <span class="math inline">\(\mathbb E[X]\)</span></a></li>
+  <li><a href="#example-2---find-mathbb-ex" id="toc-example-2---find-mathbb-ex" class="nav-link" data-scroll-target="#example-2---find-mathbb-ex">Example 2 - Find <span class="math inline">\(\mathbb E[x!]\)</span></a></li>
+  </ul></li>
   <li><a href="#covariance-correlation" id="toc-covariance-correlation" class="nav-link" data-scroll-target="#covariance-correlation">Covariance &amp; correlation</a></li>
   </ul>
 </nav>
@@ -167,12 +171,21 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar <a href="../../../posts/algebra-quant/index.html">page on Algebra</a>. This first series is about discrete probability problems.</p>
-<section id="expectation-of-the-poisson-distribution" class="level1">
-<h1>Expectation of the Poisson distribution</h1>
+<section id="expectation-with-the-poisson-distribution" class="level1">
+<h1>Expectation with the Poisson distribution</h1>
+<section id="example-1---find-mathbb-ex" class="level2">
+<h2 class="anchored" data-anchor-id="example-1---find-mathbb-ex">Example 1 - Find <span class="math inline">\(\mathbb E[X]\)</span></h2>
 <p>Let’s <span class="math inline">\(X\)</span> be a Discrete Random Variable (DRV) such that <span class="math inline">\(X \sim Po(\lambda)\)</span>. Then <span class="math inline">\(P(X = x) = \frac{e^{-\lambda} \lambda^x}{x!}\)</span>. Let’s calculate the expectation of X.</p>
 <p><span class="math display">\[E[X]=\sum_{x=1}^{\infty} x P(X=x)=\sum_{x=1}^{\infty} x \frac{e^{-\lambda} \lambda^x}{x!} = e^{-\lambda} \sum_{x=1}^{\infty} \frac{\lambda^x}{(x-1)!}\]</span></p>
 <p><span class="math display">\[E[X]= e^{-\lambda} \lambda \sum_{x=1}^{\infty} \frac{\lambda^{x-1}}{(x-1)!} = e^{-\lambda} \lambda \sum_{x=0}^{\infty} \frac{\lambda^{x}}{(x)!}= e^{-\lambda} \lambda e^{\lambda} = \lambda\]</span></p>
 <p>The second to last step is just the <a href="../../../posts/algebra-quant/index.html#$e^x$ as an infinite serie">McLaurin expansion</a> of <span class="math inline">\(e^x\)</span>.</p>
+</section>
+<section id="example-2---find-mathbb-ex" class="level2">
+<h2 class="anchored" data-anchor-id="example-2---find-mathbb-ex">Example 2 - Find <span class="math inline">\(\mathbb E[x!]\)</span></h2>
+<p><span class="math inline">\(X \sim Po(\lambda)\)</span>, what is <span class="math inline">\(\mathbb E[X!]\)</span></p>
+<p><span class="math display">\[E[X!]=\sum_{x=0}^{\infty} x! \cdot P(X=x) = \sum_{x=0}^{\infty} x! \frac{e^{-\lambda} \lambda^x}{x!} = e^{-\lambda} \sum_{x=0}^{\infty} \lambda^x = e^{-\lambda} \frac{1}{1-\lambda}\]</span> And this only exist if <span class="math inline">\(0 &lt; \lambda &lt; 1\)</span>.</p>
+<p>On the last step, we just use the infinite series formula <span class="math inline">\(S_{\infty} = \frac{u_1}{1-r}\)</span>; and in this case <span class="math inline">\(u_1 = \lambda^0 = 1\)</span></p>
+</section>
 </section>
 <section id="covariance-correlation" class="level1">
 <h1>Covariance &amp; correlation</h1>

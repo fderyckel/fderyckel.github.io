@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">January 21, 2024</p>
+        <p class="date-modified">February 21, 2024</p>
       </div>
     </div>
       
@@ -187,6 +187,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#basic-graphs-of-a-functions." id="toc-basic-graphs-of-a-functions." class="nav-link active" data-scroll-target="#basic-graphs-of-a-functions.">Basic graphs of a functions.</a></li>
+  <li><a href="#graphing-slope-fields-from-differential-equations" id="toc-graphing-slope-fields-from-differential-equations" class="nav-link" data-scroll-target="#graphing-slope-fields-from-differential-equations">Graphing slope fields from differential equations</a></li>
+  <li><a href="#using-python" id="toc-using-python" class="nav-link" data-scroll-target="#using-python">Using Python</a>
+  <ul class="collapse">
+  <li><a href="#eulers-method" id="toc-eulers-method" class="nav-link" data-scroll-target="#eulers-method">Euler’s method</a>
+  <ul class="collapse">
+  <li><a href="#problem-1" id="toc-problem-1" class="nav-link" data-scroll-target="#problem-1">Problem 1</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -200,10 +208,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Starting here a few examples on how to graph functions, how to solve equations and differential equations in a computations.</p>
+<p>Starting here a few examples on how to graph functions, how to solve equations and differential equations with computational methods.</p>
 <section id="basic-graphs-of-a-functions." class="level1">
 <h1>Basic graphs of a functions.</h1>
-<p>Let’s take the function <span class="math display">\[Q(t) = 10 e^{- \frac{t}{10}}\]</span>. We want to graph this in the interval 0-40 for instance and know what is the value of <span class="math inline">\(Q\)</span> when <span class="math inline">\(t=30\)</span>.</p>
+<p>Let’s take the function <span class="math display">\[Q(t) = 10 e^{- \frac{t}{10}}\]</span> We want to graph this in the interval 0-40 for instance and know what is the value of <span class="math inline">\(Q\)</span> when <span class="math inline">\(t=30\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -237,8 +245,113 @@ Attaching package: 'dplyr'</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
+<section id="graphing-slope-fields-from-differential-equations" class="level1">
+<h1>Graphing slope fields from differential equations</h1>
+<p>Solving <span class="math display">\[\frac{dN}{dt} = r \cdot N \cdot \left( 1 - \frac{N}{K} \right)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(deSolve)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="cf">function</span>(time, y, parms) {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">as.list</span>(<span class="fu">c</span>(y, parms)), {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    dN <span class="ot">&lt;-</span> r <span class="sc">*</span> N <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> N<span class="sc">/</span>K)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(dN)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="at">N =</span> <span class="fl">0.1</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>parms <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="fl">0.1</span>, <span class="at">K =</span> <span class="dv">10</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">1</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">ode</span>(y, times, model, parms)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Solving <span class="math display">\[\frac{dS}{dt} = 8 - \frac{S(t)}{4+t}\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="cf">function</span>(t, S, parms) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">as.list</span>(<span class="fu">c</span>(S, parms)), {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    dS <span class="ot">&lt;-</span> <span class="dv">8</span> <span class="sc">-</span> S<span class="sc">/</span>(<span class="dv">4</span><span class="sc">+</span>t)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(dS)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>S0 <span class="ot">=</span> <span class="dv">32</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="fl">0.1</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">ode</span>(<span class="at">y=</span>S0, <span class="at">times =</span> times, <span class="at">func =</span> model, <span class="at">parms=</span><span class="cn">NULL</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># finding S(t) for specific value of time</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>yo <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(out) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="at">t =</span> time, <span class="at">S =</span> <span class="st">'1'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>yo <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">==</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  t         S        
+  &lt;deSolve&gt; &lt;deSolve&gt;
+1 20        98.66667 </code></pre>
+</div>
+</div>
+</section>
+<section id="using-python" class="level1">
+<h1>Using Python</h1>
+<section id="eulers-method" class="level2">
+<h2 class="anchored" data-anchor-id="eulers-method">Euler’s method</h2>
+<p>Let’s define <span class="math inline">\(y' = f(x, y)\)</span> and a small increment <span class="math inline">\(h\)</span> which is a small steps on the interval <span class="math inline">\([x_0, b]\)</span>. We obtain <span class="math inline">\(h\)</span> by dividing that interval in <span class="math inline">\(n\)</span> eaual parts. Hence <span class="math inline">\(h = \frac{b - x_0}{n}\)</span>. Finally, we approximate <span class="math inline">\(y\)</span> in the following way: <span class="math display">\[y_{i+1} = y_i + h \cdot f(x_i, y_i)\]</span> We need a starting point: <span class="math inline">\(y(x_0) = y_0\)</span> and <span class="math inline">\(x_0 = 0\)</span> and <span class="math inline">\(x_1 = x_0 + h\)</span> and so on.</p>
+<section id="problem-1" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1">Problem 1</h3>
+<p>Approximate the function <span class="math display">\[y' + 2y = x^3 \cdot e^{-2x}\]</span> at <span class="math inline">\(x = 1.7\)</span> using increment of <span class="math inline">\(h = 0.01\)</span>. This is an initial-value problem with <span class="math inline">\(y(0) = 1\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#defining the function first </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, y): </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>y <span class="op">+</span> x<span class="op">**</span><span class="dv">3</span> <span class="op">*</span> np.exp(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>x))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># defining the recurisve loop to approximate y'</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">## in our problem: h = 0.01, xn = 1.7</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> euler_method(f, x0, y0, h, xn): </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  n <span class="op">=</span> np.rint(xn <span class="op">/</span> h).astype(<span class="bu">int</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> np.linspace(x0, xn, n) </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> np.zeros(n) </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  y[<span class="dv">0</span>] <span class="op">=</span> y0 </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):  </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    y[i] <span class="op">=</span> y[i<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> h <span class="op">*</span> f(x[i<span class="op">-</span><span class="dv">1</span>], y[i<span class="op">-</span><span class="dv">1</span>]) </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> x, y</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"># approximatinig our ODE</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>x0<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>y0<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>h<span class="op">=</span><span class="fl">0.01</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>xn<span class="op">=</span><span class="fl">1.7</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> euler_method(f, x0, y0, h, xn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And bonus we could add some graphs to it</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.plot(x, y)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'y'</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Approximate solution to an ODE using Euler</span><span class="ch">\'</span><span class="st">s method'</span> )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

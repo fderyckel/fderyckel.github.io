@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-02-19T16:09:22.451Z</lastmod>
+    <lastmod>2024-02-24T04:37:51.032Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -70,7 +70,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/03-autocorrelation/index.html</loc>
-    <lastmod>2024-02-19T16:09:19.984Z</lastmod>
+    <lastmod>2024-02-24T04:23:04.125Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/04-ts-decomposition/index.html</loc>
@@ -78,7 +78,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/prob-quant01/index.html</loc>
-    <lastmod>2023-11-14T04:47:20.418Z</lastmod>
+    <lastmod>2024-02-24T04:23:05.209Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/xgboost-time-series/index.html</loc>
@@ -126,7 +126,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/probability.html</loc>
-    <lastmod>2023-11-14T05:52:24.348Z</lastmod>
+    <lastmod>2024-02-24T04:23:05.535Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
@@ -134,11 +134,11 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
-    <lastmod>2024-02-14T04:37:22.185Z</lastmod>
+    <lastmod>2024-02-24T04:22:58.231Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2024-02-19T16:09:20.379Z</lastmod>
+    <lastmod>2024-02-24T04:23:05.962Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
@@ -174,7 +174,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part2/05-quantitative-methods/index.html</loc>
-    <lastmod>2024-02-14T04:37:21.470Z</lastmod>
+    <lastmod>2024-02-24T04:23:11.358Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part2/04-martingales/index.html</loc>
@@ -182,10 +182,18 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/risk-portfolio.html</loc>
-    <lastmod>2024-02-19T16:05:48.481Z</lastmod>
+    <lastmod>2024-02-24T04:37:51.356Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/risk-portfolio/var/index.html</loc>
     <lastmod>2024-02-19T16:05:46.099Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html</loc>
+    <lastmod>2024-02-24T04:33:40.987Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/risk-portfolio/03-var/index.html</loc>
+    <lastmod>2024-02-24T04:37:56.874Z</lastmod>
   </url>
 </urlset>

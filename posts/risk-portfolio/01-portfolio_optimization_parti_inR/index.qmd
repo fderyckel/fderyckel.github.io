@@ -101,16 +101,17 @@ library(lubridate)
 
 # read adjusted closing prices and compute annualized daily returns and sd
 read_prices <- function(ticker) { 
-  df <- read_csv(glue('../../raw_data/', {ticker}, '.csv')) |> 
+  df <- read_csv(glue('../../../raw_data/', {ticker}, '.csv')) |> 
     arrange(date) |> 
     select(date, adj_close = adjClose) |> 
     filter(date > '2018-01-01') |> 
     mutate(ret1d = (adj_close / lag(adj_close, 1)) - 1) |> 
     summarize(mean_ret = mean(ret1d, na.rm = T) * 252 * 100, 
               std_ret = sd(ret1d, na.rm = T) * sqrt(252) * 100)
+  return(df)
 }
 
-assets <- c('AA', 'LLY', 'AMD', 'SBUX', 'FDX')
+assets <- c('AA', 'AMD', 'FDX', 'SBUX')
 df <- tibble(ticker = assets, 
              prices = map(ticker, read_prices)) |> 
   unnest()
@@ -141,7 +142,7 @@ First, we create the df of returns:
 
 # functions to get daily returns of each assets
 create_returns_df <- function(ticker) { 
-  df <- read_csv(glue('../../raw_data/', {ticker}, '.csv')) |> 
+  df <- read_csv(glue('../../../raw_data/', {ticker}, '.csv')) |> 
     arrange(date) |> 
     select(date, adj_close = adjClose) |> 
     filter(date > '2018-01-01') |> 

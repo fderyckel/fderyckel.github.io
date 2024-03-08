@@ -2,12 +2,13 @@
   {
     "listing": "/blog.html",
     "items": [
-      "/posts/risk-portfolio/var/index.html",
-      "/posts/time-series/05-arima/index.html",
       "/posts/quant-part2/05-quantitative-methods/index.html",
+      "/posts/proba-quant/prob-quant01/index.html",
+      "/posts/time-series/03-autocorrelation/index.html",
+      "/posts/risk-portfolio/03-var/index.html",
+      "/posts/time-series/05-arima/index.html",
       "/posts/ts-forecast/hotel-booking/index.html",
       "/posts/quant-part1/binomials_models/index.html",
-      "/posts/time-series/03-autocorrelation/index.html",
       "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/normality-returns/index.html",
       "/posts/machine-learning-part1/knn/index.html",
@@ -26,15 +27,14 @@
       "/posts/machine-learning-part1/linear-regression/index.html",
       "/posts/quant-part1/random-behavior-assets/index.html",
       "/posts/lin-algebra-quant/index.html",
-      "/posts/portfolio_optimization_parti_inR/index.html",
+      "/posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html",
       "/posts/proba-quant/discrete-simulations/index.html",
       "/posts/stochastic-processes/index.html",
       "/posts/machine-learning-part1/kmeans-intro/index.html",
       "/posts/markov-chains/index.html",
       "/posts/kmeans-regime-change/index.html",
       "/posts/xgboost-time-series/index.html",
-      "/posts/algebra-quant/index.html",
-      "/posts/proba-quant/prob-quant01/index.html"
+      "/posts/algebra-quant/index.html"
     ]
   },
   {
@@ -93,7 +93,8 @@
   {
     "listing": "/risk-portfolio.html",
     "items": [
-      "/posts/risk-portfolio/var/index.html"
+      "/posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html",
+      "/posts/risk-portfolio/03-var/index.html"
     ]
   }
 ]

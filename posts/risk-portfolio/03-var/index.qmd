@@ -1,0 +1,63 @@
+---
+title: "Value at Risk using Python"
+author: "Francois de Ryckel"
+date: "2024-02-14"
+categories: [statistics, code, analysis]
+editor: source
+date-modified: "2024-02-14"
+---
+
+Computing Value at Risk (VaR) using Python. 
+
+VaR is the maximum amount loss that can happen within a confidence interval over a pre-dertermined interval.  If the 1-day 95% confidence Interval Var is \$100; this means that 95% of the time, under 'normal' market conditions, we do not expect to loose more than \$100 per day for our portfolio.  
+
+Let's use a portfolio of 5 stocks 
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+stock_files = ['AA.csv', 'AMD.csv', 'JPM.csv', 'LLY.csv', 'SBUX.csv']
+
+stock_data = {}
+for stock in stock_files: 
+  full_path = os.path.join('../../../raw_data/', stock)
+  try: 
+    df = pd.read_csv(full_path, index_col = 'date')
+    stock_data[stock.split(".")[0]] = df['adjClose']
+  except FileNotFoundError: 
+    print(f"Error: file '{stock}' not found. Skipping ... ")
+
+df = pd.concat(stock_data.values(), axis=1, keys = stock_data.keys())
+df = df.dropna()
+returns = df.pct_change().dropna()
+
+```
+
+Let's visualize the daily returns 
+```{python}
+import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter, MonthLocator, QuarterLocator
+
+#Let's only focus on the last 3 years of data 
+returns = returns[returns.index > '2021-01-01']
+
+plt.clf()
+plt.plot(returns['JPM'], color = 'blue')
+plt.axhline(y = 0.1, ls = 'dotted', color = 'black')
+plt.axhline(y = -0.1, ls = 'dotted', color = 'black')
+plt.title('JPM daily returns')
+plt.xlabel('Date')
+plt.gca().xaxis.set_major_locator(MonthLocator())
+#plt.gca().xaxis.set_major_locator(QuarterLocator())
+plt.gca().xaxis.set_major_formatter(DateFormatter('%b %Y'))
+plt.grid(True)
+plt.xticks(rotation=45)
+# Show the plot
+plt.tight_layout()
+plt.show()
+```
+
+
+
