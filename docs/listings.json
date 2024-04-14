@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/machine-learning-part1/knn/index.html",
       "/posts/quant-part2/05-quantitative-methods/index.html",
       "/posts/proba-quant/prob-quant01/index.html",
       "/posts/time-series/03-autocorrelation/index.html",
@@ -11,7 +12,6 @@
       "/posts/quant-part1/binomials_models/index.html",
       "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/normality-returns/index.html",
-      "/posts/machine-learning-part1/knn/index.html",
       "/posts/time-series/04-ts-decomposition/index.html",
       "/posts/proba-quant/jensen-inequality/index.html",
       "/posts/quant-part2/02-SDE-part2/index.html",

@@ -127,6 +127,8 @@ plt.show()
 
 
 
+## Solving system of coupled differential equations 
+
 
 
 
