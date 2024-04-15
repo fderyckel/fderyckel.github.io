@@ -1,0 +1,286 @@
+---
+title: "Translating Python Part 1 - Xgboost with Time-Series"
+author: "Francois de Ryckel"
+date: "2022-10-01"
+categories: [xgboost, tidymodel]
+editor: source
+date-modified: '2022-10-01'
+---
+
+
+This post is about using xgboost on a time-series using both R with the tidymodel framework and python.  It is part of a series of articles aiming at translating python timeseries blog articles into their tidymodels equivalent. 
+
+The raw data is quite simple as it is energy consumption based on an hourly consumption. Original article can be found [here](https://www.kaggle.com/code/robikscube/tutorial-time-series-forecasting-with-xgboost/notebook).  Minimal changes were made to better fit current python practices.  
+
+Xgboost is part of the ensemble machine learning algorithms.  It can be used for both regression and classification.  There are few issues in using Xgboost with time-series.  This article is taking a Xgboost post in python and also translating with the new R tidymodel framework.  
+
+# Loading data and features engineering 
+
+## Using R 
+
+
+```{r}
+#| label: load_libraries_in_r
+#| message: false
+#| warning: false
+# setting up main R libraries to start 
+
+library(glue)
+library(readr)
+library(dplyr)
+library(ggplot2)
+df0 <- read_csv("../../../raw_data/AEP_hourly.csv")
+# let's have a quick look at what we are dealing with
+glimpse(df0)
+```
+
+
+There are only 2 variables.  The Datetime being the only independ variable.  And the energy consumption labelled as AEP_MW being our variable to predict. 
+
+
+```{r}
+#| label: fig-r-dataglimpse
+#| fig-cap: "Graphical glimpse of our raw data"
+# and graphically - 
+# just using a couple of years to get an idea 
+ggplot(df0 |> filter(Datetime > "2014-01-01" & Datetime < "2016-01-01"), aes(x =Datetime, y=AEP_MW )) + geom_line(color = "light blue")
+```
+
+
+As Datetime is our only input variable, we'll use the usual tricks of breaking it down into week number, months, etc. I am doing it slightly differently than in the python version here as I will first create the new time related variables then I will split it into training and testing. 
+
+
+```{r} 
+#| label: create-features-in-r
+#| message: false
+#| warning: false
+library(lubridate)
+df <- df0 |> 
+  mutate(hour = hour(Datetime), 
+         day_of_week = wday(Datetime), 
+         day_of_year = yday(Datetime), 
+         day_of_month = mday(Datetime), 
+         week_of_year = isoweek(Datetime), 
+         month = month(Datetime), 
+         quarter = quarter(Datetime), 
+         year = isoyear(Datetime)
+         ) 
+# another glimpse now. 
+glimpse(df)
+```
+
+
+Although, there are only 2 variables, there are over 120,000 rows of data.  That's non-negligible. 
+
+## Using python 
+
+This is the code from the original post. 
+
+
+```{python}
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+py_df = pd.read_csv("../../../raw_data/AEP_hourly.csv", index_col = [0], parse_dates = [0])
+py_df.tail()
+#plt.plot(df0)
+split_date = '01-jan-2016'
+py_df_train = py_df.loc[py_df.index <= split_date].copy()
+py_df_test = py_df.loc[py_df.index > split_date].copy()
+```
+
+
+The author of the python blog first created a train / test set then created a function to add the variables then applied that function to both sets.  This is a very valid way of doing things when steps include normalizing and/or scaling data before applying our ML algorithms as we don't want any leakage from our training set into our testing set. 
+
+
+```{python}
+# Create features of df
+def create_features(df, label = None): 
+  df['date'] = df.index 
+  df['hour'] = df['date'].dt.hour
+  df['day_of_week'] = df['date'].dt.dayofweek
+  df['day_of_year'] = df['date'].dt.dayofyear 
+  df['day_of_month'] = df['date'].dt.day 
+  df['week_of_year'] = df['date'].dt.isocalendar().week 
+  df['month'] = df['date'].dt.month 
+  df['quarter'] = df['date'].dt.quarter 
+  df['year'] = df['date'].dt.year
+  
+  X = df[['hour', 'day_of_week', 'day_of_year', 'day_of_month', 'week_of_year', 'month', 'quarter', 'year']]
+  
+  if label: 
+    y = df[label]
+    return X, y
+  
+  return X
+```
+
+
+Compare this way of constructing variables to the much easier and more elegant tidyverse's way of cleaning and creating variables. 
+The **dplyr** [package](https://dplyr.tidyverse.org/) really makes it painless to wrangle data.  
+
+# Spliting the data into a training and testing set 
+
+## Using R 
+
+*Rsample* is the [tidymodel package](https://rsample.tidymodels.org/) that deals with creating training and testing sets.  There are really many methods available to do this, but we stick to the same methods provided in the original blog post. There are out-of-the-box methods to deal with timeseries like in this case. 
+
+
+```{r r_spliting}
+library(rsample)
+prop_split = 1 - (nrow(df |> filter(Datetime > "2016-01-01")) / nrow(df))
+df_split <- initial_time_split(df |> arrange(Datetime), prop = prop_split)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+```
+
+
+## Using Python
+
+
+```{python py_splitting}
+py_x_train, py_y_train = create_features(py_df_train, label = "AEP_MW")
+py_x_test, py_y_test =   create_features(py_df_test, label = "AEP_MW")
+#When running xgboost, I got an issue with one of the type of the variable.  
+# Let's fix this. 
+py_x_train.info()
+py_x_train = py_x_train.astype(np.int64)
+py_x_test = py_x_test.astype(np.int64)
+py_x_train.info()
+```
+
+
+# Modeling 
+
+## Using R 
+
+Again this is a very straightforward xgboost application to a dataset.  No fine tuning of models, recipe, etc.  
+
+
+```{r}
+#| cache: true
+#| label: the-r-model
+library(parsnip)
+model_xgboost <- boost_tree(stop_iter = 50L, trees=1000L) |> 
+  set_engine("xgboost") |>
+  set_mode("regression")
+  
+fit_xgboost <- model_xgboost |> 
+  fit(AEP_MW ~., data = df_train %>% select(-Datetime))
+fit_xgboost
+```
+
+
+## Using Python 
+
+
+```{python}
+#| label: the-python-model
+from xgboost.sklearn import XGBRegressor
+py_xgboost_mod = XGBRegressor(n_estimator = 1000, early_stopping_rounds = 50)
+py_xgboost_mod.fit(py_x_train, py_y_train, 
+                   eval_set = [(py_x_train, py_y_train), (py_x_test, py_y_test)], 
+                   verbose = True)
+```
+
+
+
+# Features importance 
+
+## Using R 
+
+2 ways to do this ... (actually more than 2 ways, but here are 2 main ways.).  First one is a straight table using the xgboost library itself. 
+
+
+```{r}
+#| message: false
+#| warning: false
+library(xgboost)
+xgb.importance(model = fit_xgboost$fit)
+#detach(xgboost)
+```
+
+
+And also a graphic way. 
+
+
+```{r}
+#| message: false
+#| warning: false
+library(vip)
+fit_xgboost %>%
+  vip(geom = "point")
+```
+
+
+## Using python 
+
+
+```{python}
+from xgboost import plot_importance, plot_tree
+_ = plot_importance(py_xgboost_mod, height=0.9)
+```
+
+
+I am a bit confused here in the output of the python graph with F-score vs the output of the R graph with importance. 
+
+# Checking predictions and evaluating models 
+
+## Using R 
+
+Graphing predicted power output vs actual power output could be a first way to see how our model fares in its predictions. 
+So let's graph our datetime vs power ouput for both actual and predicted. 
+
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 7
+#| label: fig-r-actual_vs_predict_overall
+#| fig-cap: "Actual Vs Predicted power consumption for 2016-2018"
+library(tibble)  # for the add_column 
+library(parsnip)
+df_test1 <- add_column(df_test,  predict(fit_xgboost, new_data = df_test)) 
+ggplot(df_test1, aes(x= Datetime, y = AEP_MW)) + 
+  geom_line(color = "blue") + 
+  geom_line(aes(y = .pred), color = "yellow", alpha = 0.5) + 
+  labs(title = "Energy Consumption in 2016-2018 (in MWh)", y = "Hourly consumption")
+```
+
+We can already see that we are not really modeling well the peaks and through.  
+We could get slightly more granular and try to see whats going on. 
+
+
+```{r}
+#| label: fig-r-actual_vs_predict_granular
+#| fig-cap: "Actual Vs Predicted power consumption"
+#| fig-width: 10
+#| fig-height: 7
+ggplot(df_test1 %>% filter(Datetime > "2016-01-01" & Datetime < "2016-02-28"), aes(x= Datetime, y = AEP_MW)) + 
+  geom_line(color = "blue") + 
+  geom_line(aes(y = .pred), color = "yellow3", alpha = 0.8)
+```
+
+
+We are clearly off there on the second half of February.  
+
+Now, we can use the yardstick package to get numerical values to assess our model on the test set.  
+
+
+```{r}
+#| message: false
+#| warning: false
+library(yardstick)
+# calculating the RMSE (root mean square error)
+rmse(df_test1, truth = AEP_MW, estimate = .pred, na_rm = TRUE)
+# calculating the MAE (mean absolute error)
+mae(df_test1, truth = AEP_MW, estimate = .pred)
+# calculating the MAPE (mean absolute percent error)
+mape(df_test1, truth = AEP_MW, estimate = .pred)
+# actually much easier to use the metric_set() function !
+xgboost_mod_metrics <- metric_set(rmse, mae, mape)
+xgboost_mod_metrics(df_test1, truth = AEP_MW, estimate = .pred) 
+```
