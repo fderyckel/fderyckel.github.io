@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-04-14T06:36:52.977Z</lastmod>
+    <lastmod>2024-04-15T15:35:16.911Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
-    <lastmod>2023-11-30T05:44:17.372Z</lastmod>
+    <lastmod>2024-04-15T15:26:32.177Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part3.html</loc>
@@ -195,5 +195,9 @@
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/risk-portfolio/03-var/index.html</loc>
     <lastmod>2024-04-08T14:45:34.568Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost/index.html</loc>
+    <lastmod>2024-04-15T15:35:14.343Z</lastmod>
   </url>
 </urlset>

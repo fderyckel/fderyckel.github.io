@@ -4,7 +4,7 @@
     "href": "blog.html",
     "title": "Series",
     "section": "",
-    "text": "A series of posts related to the analysis of time-series.\n\n\n\nA series of posts centered on basic probability concepts essentials for the study of quantitative finance.\n\n\n\nA series of posts related to risk-management in portfolio construction.\n\n\n\nA series of posts when starting quant finance. Basic mathematical concepts and related code in R and Python when starting quantitative finance.\n\n\n\nA series of posts on some introductory concepts of stochastic calculus.\n\n\n\nA series of posts on the Black-Schole Equation and derivative pricing.\n\n\n\nA series of posts on machine learning algorithms with a quant finance lens."
+    "text": "A series of posts related to the analysis of time-series.\n\nintroduce the 4 statistical moments\ndevelop concepts on auto-correlation, stationarity and random-walk\ntime-series decomposition\nARIMA and families\n\n\n\n\nA series of posts centered on basic probability concepts essentials for the study of quantitative finance.\n\n\n\nA series of posts related to risk-management in portfolio construction.\n\n\n\nA series of posts when starting quant finance. Basic mathematical concepts and related code in R and Python when starting quantitative finance.\n\n\n\nA series of posts on some introductory concepts of stochastic calculus.\n\n\n\nA series of posts on the Black-Schole Equation and derivative pricing.\n\n\n\nA series of posts on machine learning algorithms with a quant finance lens.\n\nKNN\nlinear regression\nKmeans\n\n\n\n\nA series of posts on machine learning algorithms that focuses on trees, bagging and boosting."
   },
   {
     "objectID": "blog.html#probability",
@@ -914,7 +914,7 @@
     "href": "blog.html#time-series",
     "title": "Series",
     "section": "",
-    "text": "A series of posts related to the analysis of time-series."
+    "text": "A series of posts related to the analysis of time-series.\n\nintroduce the 4 statistical moments\ndevelop concepts on auto-correlation, stationarity and random-walk\ntime-series decomposition\nARIMA and families"
   },
   {
     "objectID": "blog.html#risk-and-portfolio",
@@ -949,7 +949,7 @@
     "href": "blog.html#machine-learning---part-1",
     "title": "Series",
     "section": "",
-    "text": "A series of posts on machine learning algorithms with a quant finance lens."
+    "text": "A series of posts on machine learning algorithms with a quant finance lens.\n\nKNN\nlinear regression\nKmeans"
   },
   {
     "objectID": "risk-portfolio.html",
@@ -1076,5 +1076,12 @@
     "title": "KNN",
     "section": "Checking quality of predictions",
     "text": "Checking quality of predictions\n\nPythonR\n\n\n\nconf_mat = ConfusionMatrixDisplay.from_estimator(\n  knn_model, x_test, y_test, cmap=plt.cm.Blues\n)\n\nplt.title('Confusion Matrix')\nplt.show()\n\n\n\n\n\nprint(classification_report(y_test, y_pred))\n\n              precision    recall  f1-score   support\n\n          -1       0.64      0.81      0.71       687\n           1       0.35      0.18      0.24       388\n\n    accuracy                           0.58      1075\n   macro avg       0.49      0.49      0.48      1075\nweighted avg       0.53      0.58      0.54      1075\n\n\n\nfrom sklearn.metrics import (roc_curve, RocCurveDisplay)\n\nrocCurve = RocCurveDisplay.from_estimator(knn_model, x_test, y_test, name = 'Tuned KNN')\nplt.title('ROC Curve')\nplt.plot([0,1], [0,1], linestyle = '--', label = 'Random 50:50')\nplt.legend()\nplt.show()"
+  },
+  {
+    "objectID": "blog.html#machine-learning---part-2",
+    "href": "blog.html#machine-learning---part-2",
+    "title": "Series",
+    "section": "",
+    "text": "A series of posts on machine learning algorithms that focuses on trees, bagging and boosting."
   }
 ]

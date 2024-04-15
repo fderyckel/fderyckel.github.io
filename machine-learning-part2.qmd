@@ -1,0 +1,14 @@
+---
+title: "Series: Machine Learning - Part 2"
+listing:
+  contents: posts/machine-learning-part2
+  sort: "date-modified desc"
+  type: default
+  categories: false
+  sort-ui: false
+  filter-ui: false
+  fields: [date, title, reading-time, description]
+page-layout: full
+title-block-banner: true
+---
+

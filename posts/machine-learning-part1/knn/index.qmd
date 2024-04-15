@@ -10,7 +10,7 @@ execute:
   cache: true
 ---
 
-Some very basic ML using KNN and python and the tidymodel framework. 
+One of the very first ML algorithm (because it's ease) is KNN.  In this post, we'll learn about KNN using Python (with the Sklearn package) and using R with the tidymodel framework. 
 
 # Introduction 
 
@@ -333,7 +333,7 @@ plt.show()
 #only keep useful columns
 df1a = df.drop(['unadjustedVolume', 'change', 'changePercent', 'vwap', 'label', 'changeOverTime'], axis = 1)
 #or easier actually ;-) 
-df1b = df.iloc[:, :5]
+#df1b = df.iloc[:, :5]
 
 df1a.describe()
 
@@ -360,7 +360,9 @@ df1a['sma200'] = df1a['close'].rolling(window = 200).mean()
 df1a['perc_above_sma200'] = np.log(df1a['close'] / df1a['sma200'])
 df1a['roll_corr_sma50_sma200'] = df1a['sma200'].rolling(window = 252).corr(df1a['sma50'])
 
-df1a['target'] = np.where(df1a['close'].shift(-11) > 1.05*df['close'], 1, -1)
+# setting up a target variable. 
+# is the stock above 5% in 2 weeks time. 
+df1a['target'] = np.where(df1a['close'].shift(-41) > 1.05 * df1a['close'], 1, -1)
 
 df1a = df1a.drop(['open', 'high', 'low', 'close', 'adjClose', 'volume', 'sma50', 'sma200', 'volum_sma200'], axis = 1)
 df1a = df1a.dropna()
@@ -371,7 +373,7 @@ df1a = df1a.drop(['target'], axis = 1)
 df1a.shape
 ```
 
-Splitting the dataset for training and testing 
+Splitting the dataset for training and testing.  Beucause time-series and auto-correlation, we won't randomly take observations from the set for training.  Instead, we split in the first 80% of data for training and the last 20% for testing. 
 
 ```{python}
 from sklearn.model_selection import (train_test_split, GridSearchCV)
@@ -578,7 +580,43 @@ print(classification_report(y_test, y_pred_tuned))
 
 :::
 
+## Trading Strategy 
 
+We can then check a trading strategy based on that model.  
+
+::: {.panel-tabset}
+
+## Python 
+
+```{python}
+df1 = df1a.copy()
+df1['signal'] = tuned_knn_model.predict(df1)
+df['returns'] = np.log(df['close']).diff(41).fillna(0)
+df2 = df[['close', 'returns']]
+
+yo = df1.merge(df2, left_index = True, right_index = True, how = 'left')
+
+df1 = yo
+
+df1['strategy'] = df1['returns'] * df1['signal'].shift(41).fillna(0)
+df1.index = df1.index.tz_localize('utc')
+```
+
+
+```{python}
+import pyfolio as pf
+```
+
+
+## R
+
+```{r}
+
+```
+
+
+
+::: 
 
 # Example with the adult dataset (from Kaggle)
 

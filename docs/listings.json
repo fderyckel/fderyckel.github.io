@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/machine-learning-part2/xgboost/index.html",
       "/posts/machine-learning-part1/knn/index.html",
       "/posts/quant-part2/05-quantitative-methods/index.html",
       "/posts/proba-quant/prob-quant01/index.html",
@@ -32,9 +33,9 @@
       "/posts/stochastic-processes/index.html",
       "/posts/machine-learning-part1/kmeans-intro/index.html",
       "/posts/markov-chains/index.html",
-      "/posts/kmeans-regime-change/index.html",
-      "/posts/xgboost-time-series/index.html",
-      "/posts/algebra-quant/index.html"
+      "/posts/machine-learning-part1/kmeans-regime-change/index.html",
+      "/posts/algebra-quant/index.html",
+      "/posts/machine-learning-part2/xgboost-time-series/index.html"
     ]
   },
   {
