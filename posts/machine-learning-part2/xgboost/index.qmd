@@ -6,3 +6,342 @@ categories: [xgboost, tidymodel]
 editor: source
 date-modified: '2024-04-16'
 ---
+
+Using Xgboost from a quant perspective.  We do a whole cycle of model building on a financial time-series.  We'll again show how to do it with both framework *Sklearn* for Python and *tidymodel* for R.  
+
+We have taken a stock, but this can be applied on an index, or commodity futures, etc. 
+
+# Setting up the data frame 
+
+We are just loading the data set and doing the initial cleaning so the features engineering can be achieved smoothly. 
+
+::: {.panel-tabset}
+
+## Python 
+
+```{python}
+#| label: py_setting_up 
+
+import pandas as pd
+import matplotlib.pyplot as plt 
+import numpy as np
+
+df = pd.read_csv('../../../raw_data/AA.csv')
+df['date'] = pd.to_datetime(df['date'])
+df = df.sort_values(by = 'date', inplace = False)
+df.set_index('date', inplace=True)
+
+df = df[['open', 'high', 'low', 'close', 'volume', 'adjClose']]
+
+df.head()
+df.describe()
+
+df.isnull().sum()
+```
+
+## R
+
+```{r}
+#| label: r_setting_up 
+#| warning: false
+#| message: false
+
+library(readr)
+library(dplyr)
+library(skimr)
+
+dfr = read_csv('../../../raw_data/AA.csv') |> 
+  select(date, open, high, low, close, volume, adjClose)
+
+skim(dfr)
+```
+
+:::
+
+# Feature engineering 
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+
+df['returns'] = np.log(df['adjClose'] / df['adjClose'].shift(1))
+df['ret_1m'] = df['returns'].rolling(20).sum()
+
+feature_list = []
+
+for r in range(11, 81, 5): 
+  df['ret_' + str(r)] = df['returns'].rolling(r).sum()
+  df['std_' + str(r)] = df['returns'].rolling(r).std()
+  feature_list.append('ret_' + str(r))
+  feature_list.append('std_' + str(r))
+
+df1a = df
+
+df1a['o_c'] = (df1a['open'] - df1a['close']) / df1a['close']
+df1a['h_l'] = (df1a['high'] - df1a['low']) / df1a['close']
+df1a['ret_21d'] = np.log(df1a['close'] / df1a['close'].shift(21))
+df1a['roll_sd_ret21d_1Y'] = df1a['ret_21d'].rolling(window = 251).std()
+df1a['volum_sma200'] = df1a['volume'].rolling(window = 200).mean()
+df1a['perc_above_volu_sma200'] = np.log(df1a['volume'] / df1a['volum_sma200'])
+df1a['roll_sd_volum_1Y'] = df1a['volume'].rolling(window = 251).std()
+df1a['sma50'] = df1a['close'].rolling(window = 50).mean()
+df1a['perc_above_sma50'] = np.log(df1a['close'] / df1a['sma50'])
+df1a['sma200'] = df1a['close'].rolling(window = 200).mean()
+df1a['perc_above_sma200'] = np.log(df1a['close'] / df1a['sma200'])
+df1a['roll_corr_sma50_sma200'] = df1a['sma200'].rolling(window = 252).corr(df1a['sma50'])
+
+# setting up a target variable. 
+# is the stock above 5% in 2 weeks time. 
+df1a['target'] = np.where(df1a['close'].shift(-41) > 1.01 * df1a['close'], 1, 0)
+
+df1a = df1a.drop(['open', 'high', 'low', 'close', 'adjClose', 'volume', 'sma50', 'sma200', 'volum_sma200', 'returns'], axis = 1)
+df1a = df1a.dropna()
+
+target = df1a['target']
+df1a = df1a.drop(['target'], axis = 1)
+
+
+df.dropna(inplace = True)  
+
+df1a.values
+```
+
+
+## R
+
+```{r}
+
+```
+
+:::
+
+
+# Base Model 
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+#| label: py_rsample
+
+from sklearn.model_selection import (train_test_split, RandomizedSearchCV, TimeSeriesSplit)
+
+x_train, x_test, y_train, y_test = train_test_split(df1a, target, test_size = 0.2, random_state = 42, shuffle = False)
+
+print(f"Train set size is {len(x_train)} and test set size is {len(x_test)}") 
+```
+
+Let's now fit a basic model without any tuning 
+
+```{python}
+#| label: py_xgboost_base_model
+
+from xgboost import XGBClassifier
+
+model_xgb = XGBClassifier(verbosity = 1, random_state = 41)
+model_xgb.fit(x_train, y_train)
+
+# and now go onto prediction 
+y_pred = model_xgb.predict(x_test)
+
+# or we can also use probability prediction
+y_pred_proba = model_xgb.predict_proba(x_test)
+```
+
+And we can check our result on this basic xgboost model
+
+```{python}
+#| label: py_metrics
+
+from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report 
+from sklearn.metrics import roc_auc_score, roc_curve, RocCurveDisplay
+
+acc_train = accuracy_score(y_train, model_xgb.predict(x_train))
+acc_test = accuracy_score(y_test, model_xgb.predict(x_test))
+
+#f1_train = f1_score(y_train, model_xgb.predict(x_train))
+#f1_test = f1_score(y_test, model_xgb.predict(x_test))
+
+
+disp = ConfusionMatrixDisplay.from_estimator(
+        model_xgb,
+        x_test,
+        y_test,
+        display_labels = model_xgb.classes_,
+        cmap=plt.cm.Blues
+    )
+disp.ax_.set_title('Confusion matrix')
+plt.show()
+```
+
+```{python}
+print(classification_report(y_test, y_pred))
+```
+
+And the ROC curve
+
+```{python}
+#plt.clf()
+disp_roc = RocCurveDisplay.from_estimator(
+            model_xgb,
+            x_test,
+            y_test,
+            name='XGBoost')
+disp_roc.ax_.set_title('ROC Curve')
+plt.plot([0,1], [0,1], linestyle='--')
+plt.show()
+```
+
+
+## R
+
+
+:::
+
+# Hyperparameters and fine tuning 
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.model_selection import RandomizedSearchCV
+
+tscv = TimeSeriesSplit(n_splits = 5, gap = 23)
+model_xgb.get_params()
+
+param_grid = {'learning_rate': [0.05, 0.10, 0.15, 0.20, 0.25, 0.30],
+              'max_depth': [3, 4, 5, 6, 8, 10, 12, 15],
+              'min_child_weight': [1, 3, 5, 7],
+              'gamma': [0.0, 0.1, 0.2 , 0.3, 0.4],
+              'colsample_bytree': [0.3, 0.4, 0.5 , 0.7]}
+            
+xv_xgb = RandomizedSearchCV(model_xgb, param_grid, n_iter = 100, 
+                            scoring = 'f1', cv = tscv, verbose = 1)
+
+xv_xgb.fit(x_train, y_train, verbose = 1)
+
+xv_xgb.best_params_
+xv_xgb.best_score_
+
+```
+
+Now we need to train the model based on the best parameters from the cross-validation process. 
+
+```{python}
+from sklearn.model_selection import cross_val_score
+
+model_xgb_tuned = XGBClassifier(**xv_xgb.best_params_)
+
+model_xgb_tuned.fit(x_train, y_train, 
+                    eval_set = [(x_train, y_train), (x_test, y_test)],         
+                    #eval_metric = 'precision', 
+                    verbose = True)
+
+eval_results = model_xgb_tuned.evals_result()
+#eval_results
+
+score = cross_val_score(model_xgb_tuned, x_train, y_train, cv = tscv)
+#print(f'Mean CV score for: {score.mean():0.4}')
+
+
+
+```
+
+And what is the improvement now 
+
+```{python}
+f1_train_tuned = f1_score(y_train, model_xgb_tuned.predict(x_train))
+f1_test_tuned = f1_score(y_test, model_xgb_tuned.predict(x_test))
+
+plt.clf()
+disp = ConfusionMatrixDisplay.from_estimator(
+        model_xgb_tuned,
+        x_test,
+        y_test,
+        display_labels=model_xgb.classes_,
+        cmap=plt.cm.Blues
+    )
+disp.ax_.set_title('Confusion matrix')
+plt.show()
+
+print(classification_report(y_test, model_xgb_tuned.predict(x_test)))
+```
+
+
+## R
+
+```{r}
+
+
+```
+
+:::
+
+# Feature importance and explainability 
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+fig, ax = plt.subplots(figsize = (10, 8)) 
+feat_imp = pd.DataFrame({'Importance Score': model_xgb_tuned.feature_importances_, 'Features': df1a.columns}).sort_values(by = 'Importance Score', ascending = False)
+plt.show()
+
+
+#plt.bar(x=feat_imp['Importance Score'], height = feat_imp['Features'])
+#ax.set_title('Features Importance');
+
+plt.clf()
+from xgboost import plot_importance
+plot_importance(model_xgb_tuned)
+plt.show()
+
+
+```
+
+We can change the importance type using the build-in importance_type. 
+
+```{python}
+plt.clf()
+plot_importance(model_xgb_tuned, importance_type='weight', show_values=False) 
+plt.show()
+```
+
+```{python}
+from xgboost import to_graphviz
+
+```
+
+
+
+```{python}
+
+import shap
+from xgboost import to_graphviz
+
+explainer = shap.TreeExplainer(model_xgb_tuned)
+shap_values = explainer.shap_values(x_test)
+
+shap.summary_plot(shap_values, x_test, plot_type = 'bar')
+
+shap.summary_plot(shap_values, x_test)
+
+to_graphviz(model_xgb_tuned, num_trees=10, rankdir='UT')
+```
+
+
+## R 
+
+```{r}
+
+```
+
+
+::: 

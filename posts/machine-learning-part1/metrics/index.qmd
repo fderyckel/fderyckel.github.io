@@ -1,0 +1,39 @@
+---
+title: "Defining Success"
+author: "Francois de Ryckel"
+date: "2024-04-16"
+categories: [sklearn, tidymodel]
+editor: source
+date-modified: '2024-04-20'
+execute:
+  cache: true
+---
+
+When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success.  
+
+There are so many ways out there to measure which hyper-parameters performed best for our mode.  We'll bring up some of the most used one. 
+
+# Setting up a model 
+
+# The metrics 
+
+## Accuracy 
+
+Shortcomings: 
+
+* for imbalanced dataset, we can have good accuracy by just predicting most observation with the most frequent class.  For instance in the case of a rare disease or big financial meltdown, we can just predict 
+
+##  Precision 
+
+If you call it true, is it indeed true? In other words, the proportion of predicted positive that are actually positive. 
+
+## Recall 
+
+If there is a positive, did the model predict a positive.  
+
+
+## F1 score 
+
+It is the **harmonic mean** of both precision and recall. The harmonic mean penalizes model that have very low precision or recall.  Which wouldn't be the case with arithmetic mean. 
+
+$$\frac{2 \cdot Precision \cdot Recall}{Precision + Recall}$$

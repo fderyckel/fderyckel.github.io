@@ -10,7 +10,2479 @@
 <atom:link href="https://fderyckel.github.io/blog.html/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Curating notes from a Quant learning journey.</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Tue, 13 Feb 2024 17:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 15 Apr 2024 17:00:00 GMT</lastBuildDate>
+<item>
+  <title>Defining Success</title>
+  <dc:creator>Francois de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/metrics/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success.</p>
+<p>There are so many ways out there to measure which hyper-parameters performed best for our mode. We’ll bring up some of the most used one.</p>
+<section id="setting-up-a-model" class="level1">
+<h1>Setting up a model</h1>
+</section>
+<section id="the-metrics" class="level1">
+<h1>The metrics</h1>
+<section id="accuracy" class="level2">
+<h2 class="anchored" data-anchor-id="accuracy">Accuracy</h2>
+<p>Shortcomings:</p>
+<ul>
+<li>for imbalanced dataset, we can have good accuracy by just predicting most observation with the most frequent class. For instance in the case of a rare disease or big financial meltdown, we can just predict</li>
+</ul>
+</section>
+<section id="precision" class="level2">
+<h2 class="anchored" data-anchor-id="precision">Precision</h2>
+<p>If you call it true, is it indeed true? In other words, the proportion of predicted positive that are actually positive.</p>
+</section>
+<section id="recall" class="level2">
+<h2 class="anchored" data-anchor-id="recall">Recall</h2>
+<p>If there is a positive, did the model predict a positive.</p>
+</section>
+<section id="f1-score" class="level2">
+<h2 class="anchored" data-anchor-id="f1-score">F1 score</h2>
+<p>It is the <strong>harmonic mean</strong> of both precision and recall. The harmonic mean penalizes model that have very low precision or recall. Which wouldn’t be the case with arithmetic mean.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B2%20%5Ccdot%20Precision%20%5Ccdot%20Recall%7D%7BPrecision%20+%20Recall%7D"></p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>sklearn</category>
+  <category>tidymodel</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/metrics/index.html</guid>
+  <pubDate>Mon, 15 Apr 2024 17:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Xgboost</title>
+  <dc:creator>Francois de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Using Xgboost from a quant perspective. We do a whole cycle of model building on a financial time-series. We’ll again show how to do it with both framework <em>Sklearn</em> for Python and <em>tidymodel</em> for R.</p>
+<p>We have taken a stock, but this can be applied on an index, or commodity futures, etc.</p>
+<section id="setting-up-the-data-frame" class="level1">
+<h1>Setting up the data frame</h1>
+<p>We are just loading the data set and doing the initial cleaning so the features engineering can be achieved smoothly.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-hash="index_cache/html/py_setting_up_5e3c8b246daa56a3aaec0117b59459b5">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt </span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/AA.csv'</span>)</span>
+<span id="cb1-6">df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.to_datetime(df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>])</span>
+<span id="cb1-7">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.sort_values(by <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>, inplace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb1-8">df.set_index(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>, inplace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb1-9"></span>
+<span id="cb1-10">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'open'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'high'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'low'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volume'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'adjClose'</span>]]</span>
+<span id="cb1-11"></span>
+<span id="cb1-12">df.head()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             open   high    low  close   volume  adjClose
+date                                                     
+2001-01-02  80.50  80.95  76.60  77.50  1592010     57.23
+2001-01-03  77.50  80.50  75.24  78.55  2011985     58.01
+2001-01-04  78.55  81.25  77.65  81.10  1992468     59.89
+2001-01-05  81.10  81.70  78.85  79.60  1623845     58.78
+2001-01-08  79.60  85.91  79.00  80.80  3073616     59.67</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">df.describe()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              open         high  ...        volume     adjClose
+count  5821.000000  5821.000000  ...  5.821000e+03  5821.000000
+mean     46.372343    47.097133  ...  6.519558e+06    40.404558
+std      24.755757    25.075361  ...  5.452542e+06    18.945874
+min       5.500000     5.950000  ...  4.254680e+05     5.360000
+25%      24.990000    25.420000  ...  2.656970e+06    23.620000
+50%      38.260000    38.780000  ...  5.129900e+06    36.270000
+75%      69.210000    69.980000  ...  8.773242e+06    56.910000
+max     115.010000   117.190000  ...  1.007518e+08    96.360000
+
+[8 rows x 6 columns]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">df.isnull().<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>open        0
+high        0
+low         0
+close       0
+volume      0
+adjClose    0
+dtype: int64</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-hash="index_cache/html/r_setting_up_762b7e82dae93f30220a6b4f78c7075c">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(readr)</span>
+<span id="cb7-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb7-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(skimr)</span>
+<span id="cb7-4"></span>
+<span id="cb7-5">dfr <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/AA.csv'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb7-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(date, open, high, low, close, volume, adjClose)</span>
+<span id="cb7-7"></span>
+<span id="cb7-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">skim</span>(dfr)</span></code></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">dfr</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">5821</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Date</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: Date</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">min</th>
+<th style="text-align: left;">max</th>
+<th style="text-align: left;">median</th>
+<th style="text-align: right;">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">date</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2001-01-02</td>
+<td style="text-align: left;">2024-02-22</td>
+<td style="text-align: left;">2012-07-27</td>
+<td style="text-align: right;">5821</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">open</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">46.37</td>
+<td style="text-align: right;">24.76</td>
+<td style="text-align: right;">5.50</td>
+<td style="text-align: right;">24.99</td>
+<td style="text-align: right;">38.26</td>
+<td style="text-align: right;">69.21</td>
+<td style="text-align: right;">115.01</td>
+<td style="text-align: left;">▇▇▃▅▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">47.10</td>
+<td style="text-align: right;">25.08</td>
+<td style="text-align: right;">5.95</td>
+<td style="text-align: right;">25.42</td>
+<td style="text-align: right;">38.78</td>
+<td style="text-align: right;">69.98</td>
+<td style="text-align: right;">117.19</td>
+<td style="text-align: left;">▇▇▃▅▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">low</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">45.57</td>
+<td style="text-align: right;">24.38</td>
+<td style="text-align: right;">5.16</td>
+<td style="text-align: right;">24.53</td>
+<td style="text-align: right;">37.72</td>
+<td style="text-align: right;">68.03</td>
+<td style="text-align: right;">111.88</td>
+<td style="text-align: left;">▇▇▃▅▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">close</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">46.33</td>
+<td style="text-align: right;">24.74</td>
+<td style="text-align: right;">5.48</td>
+<td style="text-align: right;">25.01</td>
+<td style="text-align: right;">38.26</td>
+<td style="text-align: right;">69.04</td>
+<td style="text-align: right;">113.78</td>
+<td style="text-align: left;">▇▇▃▅▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">volume</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6519558.18</td>
+<td style="text-align: right;">5452542.48</td>
+<td style="text-align: right;">425468.00</td>
+<td style="text-align: right;">2656970.00</td>
+<td style="text-align: right;">5129900.00</td>
+<td style="text-align: right;">8773242.00</td>
+<td style="text-align: right;">100751769.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">adjClose</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">40.40</td>
+<td style="text-align: right;">18.95</td>
+<td style="text-align: right;">5.36</td>
+<td style="text-align: right;">23.62</td>
+<td style="text-align: right;">36.27</td>
+<td style="text-align: right;">56.91</td>
+<td style="text-align: right;">96.36</td>
+<td style="text-align: left;">▆▇▅▅▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="feature-engineering" class="level1">
+<h1>Feature engineering</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" aria-controls="tabset-2-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" aria-controls="tabset-2-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" aria-labelledby="tabset-2-1-tab">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_96f60ca94c4ccb24a60ae52669086b9d">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'returns'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.log(df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'adjClose'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'adjClose'</span>].shift(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))</span>
+<span id="cb8-2">df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ret_1m'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'returns'</span>].rolling(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>()</span>
+<span id="cb8-3"></span>
+<span id="cb8-4">feature_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb8-5"></span>
+<span id="cb8-6"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">81</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>): </span>
+<span id="cb8-7">  df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ret_'</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(r)] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'returns'</span>].rolling(r).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>()</span>
+<span id="cb8-8">  df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'std_'</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(r)] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'returns'</span>].rolling(r).std()</span>
+<span id="cb8-9">  feature_list.append(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ret_'</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(r))</span>
+<span id="cb8-10">  feature_list.append(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'std_'</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(r))</span>
+<span id="cb8-11"></span>
+<span id="cb8-12">df1a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df</span>
+<span id="cb8-13"></span>
+<span id="cb8-14">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'o_c'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'open'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>]</span>
+<span id="cb8-15">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'h_l'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'high'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'low'</span>]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>]</span>
+<span id="cb8-16">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ret_21d'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.log(df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>].shift(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>))</span>
+<span id="cb8-17">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'roll_sd_ret21d_1Y'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ret_21d'</span>].rolling(window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">251</span>).std()</span>
+<span id="cb8-18">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volum_sma200'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volume'</span>].rolling(window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>).mean()</span>
+<span id="cb8-19">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'perc_above_volu_sma200'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.log(df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volume'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volum_sma200'</span>])</span>
+<span id="cb8-20">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'roll_sd_volum_1Y'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volume'</span>].rolling(window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">251</span>).std()</span>
+<span id="cb8-21">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma50'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>].rolling(window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>).mean()</span>
+<span id="cb8-22">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'perc_above_sma50'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.log(df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma50'</span>])</span>
+<span id="cb8-23">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma200'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>].rolling(window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>).mean()</span>
+<span id="cb8-24">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'perc_above_sma200'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.log(df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma200'</span>])</span>
+<span id="cb8-25">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'roll_corr_sma50_sma200'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma200'</span>].rolling(window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">252</span>).corr(df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma50'</span>])</span>
+<span id="cb8-26"></span>
+<span id="cb8-27"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># setting up a target variable. </span></span>
+<span id="cb8-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># is the stock above 5% in 2 weeks time. </span></span>
+<span id="cb8-29">df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'target'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.where(df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>].shift(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">41</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.01</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>], <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb8-30"></span>
+<span id="cb8-31">df1a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a.drop([<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'open'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'high'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'low'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'adjClose'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volume'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma50'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sma200'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'volum_sma200'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'returns'</span>], axis <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb8-32">df1a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a.dropna()</span>
+<span id="cb8-33"></span>
+<span id="cb8-34">target <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'target'</span>]</span>
+<span id="cb8-35">df1a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1a.drop([<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'target'</span>], axis <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb8-36"></span>
+<span id="cb8-37"></span>
+<span id="cb8-38">df.dropna(inplace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)  </span>
+<span id="cb8-39"></span>
+<span id="cb8-40">df1a.values</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>array([[ 0.15564846,  0.21637398,  0.04071166, ...,  0.05192485,
+        -0.27383066,  0.86749277],
+       [ 0.1761608 ,  0.22536981,  0.03979403, ...,  0.03793276,
+        -0.28789777,  0.87185623],
+       [ 0.123086  ,  0.19948936,  0.0422375 , ...,  0.00811607,
+        -0.31777658,  0.87606062],
+       ...,
+       [-0.03425118, -0.09976226,  0.04401878, ..., -0.09835741,
+        -0.12808572,  0.89240416],
+       [-0.05395427,  0.04088161,  0.03663959, ..., -0.05392038,
+        -0.0805411 ,  0.88992296],
+       [-0.06992937,  0.00469569,  0.03579207, ..., -0.06330803,
+        -0.08669331,  0.8874239 ]])</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" aria-labelledby="tabset-2-2-tab">
+
+</div>
+</div>
+</div>
+</section>
+<section id="base-model" class="level1">
+<h1>Base Model</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" aria-controls="tabset-3-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" aria-controls="tabset-3-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" aria-labelledby="tabset-3-1-tab">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_2f1c487307f28582273edae61f229fd8">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> (train_test_split, RandomizedSearchCV, TimeSeriesSplit)</span>
+<span id="cb10-2"></span>
+<span id="cb10-3">x_train, x_test, y_train, y_test <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> train_test_split(df1a, target, test_size <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>, random_state <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>, shuffle <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb10-4"></span>
+<span id="cb10-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Train set size is </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x_train)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> and test set size is </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x_test)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Train set size is 4296 and test set size is 1075</code></pre>
+</div>
+</div>
+<p>Let’s now fit a basic model without any tuning</p>
+<div class="cell" data-hash="index_cache/html/py_xgboost_base_model_8cdd8c3e38cb97d56c6f11e58a244656">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> xgboost <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> XGBClassifier</span>
+<span id="cb12-2"></span>
+<span id="cb12-3">model_xgb <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> XGBClassifier(verbosity <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, random_state <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb12-4">model_xgb.fit(x_train, y_train)</span></code></pre></div>
+<div class="cell-output-display">
+<style>#sk-container-id-1 {
+  /* Definition of color scheme common for light and dark mode */
+  --sklearn-color-text: black;
+  --sklearn-color-line: gray;
+  /* Definition of color scheme for unfitted estimators */
+  --sklearn-color-unfitted-level-0: #fff5e6;
+  --sklearn-color-unfitted-level-1: #f6e4d2;
+  --sklearn-color-unfitted-level-2: #ffe0b3;
+  --sklearn-color-unfitted-level-3: chocolate;
+  /* Definition of color scheme for fitted estimators */
+  --sklearn-color-fitted-level-0: #f0f8ff;
+  --sklearn-color-fitted-level-1: #d4ebff;
+  --sklearn-color-fitted-level-2: #b3dbfd;
+  --sklearn-color-fitted-level-3: cornflowerblue;
+
+  /* Specific color for light theme */
+  --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));
+  --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-icon: #696969;
+
+  @media (prefers-color-scheme: dark) {
+    /* Redefinition of color scheme for dark theme */
+    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));
+    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-icon: #878787;
+  }
+}
+
+#sk-container-id-1 {
+  color: var(--sklearn-color-text);
+}
+
+#sk-container-id-1 pre {
+  padding: 0;
+}
+
+#sk-container-id-1 input.sk-hidden--visually {
+  border: 0;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+#sk-container-id-1 div.sk-dashed-wrapped {
+  border: 1px dashed var(--sklearn-color-line);
+  margin: 0 0.4em 0.5em 0.4em;
+  box-sizing: border-box;
+  padding-bottom: 0.4em;
+  background-color: var(--sklearn-color-background);
+}
+
+#sk-container-id-1 div.sk-container {
+  /* jupyter's `normalize.less` sets `[hidden] { display: none; }`
+     but bootstrap.min.css set `[hidden] { display: none !important; }`
+     so we also need the `!important` here to be able to override the
+     default hidden behavior on the sphinx rendered scikit-learn.org.
+     See: https://github.com/scikit-learn/scikit-learn/issues/21755 */
+  display: inline-block !important;
+  position: relative;
+}
+
+#sk-container-id-1 div.sk-text-repr-fallback {
+  display: none;
+}
+
+div.sk-parallel-item,
+div.sk-serial,
+div.sk-item {
+  /* draw centered vertical line to link estimators */
+  background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));
+  background-size: 2px 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+/* Parallel-specific style estimator block */
+
+#sk-container-id-1 div.sk-parallel-item::after {
+  content: "";
+  width: 100%;
+  border-bottom: 2px solid var(--sklearn-color-text-on-default-background);
+  flex-grow: 1;
+}
+
+#sk-container-id-1 div.sk-parallel {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background-color: var(--sklearn-color-background);
+  position: relative;
+}
+
+#sk-container-id-1 div.sk-parallel-item {
+  display: flex;
+  flex-direction: column;
+}
+
+#sk-container-id-1 div.sk-parallel-item:first-child::after {
+  align-self: flex-end;
+  width: 50%;
+}
+
+#sk-container-id-1 div.sk-parallel-item:last-child::after {
+  align-self: flex-start;
+  width: 50%;
+}
+
+#sk-container-id-1 div.sk-parallel-item:only-child::after {
+  width: 0;
+}
+
+/* Serial-specific style estimator block */
+
+#sk-container-id-1 div.sk-serial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--sklearn-color-background);
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+
+/* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is
+clickable and can be expanded/collapsed.
+- Pipeline and ColumnTransformer use this feature and define the default style
+- Estimators will overwrite some part of the style using the `sk-estimator` class
+*/
+
+/* Pipeline and ColumnTransformer style (default) */
+
+#sk-container-id-1 div.sk-toggleable {
+  /* Default theme specific background. It is overwritten whether we have a
+  specific estimator or a Pipeline/ColumnTransformer */
+  background-color: var(--sklearn-color-background);
+}
+
+/* Toggleable label */
+#sk-container-id-1 label.sk-toggleable__label {
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+  padding: 0.5em;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#sk-container-id-1 label.sk-toggleable__label-arrow:before {
+  /* Arrow on the left of the label */
+  content: "▸";
+  float: left;
+  margin-right: 0.25em;
+  color: var(--sklearn-color-icon);
+}
+
+#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {
+  color: var(--sklearn-color-text);
+}
+
+/* Toggleable content - dropdown */
+
+#sk-container-id-1 div.sk-toggleable__content {
+  max-height: 0;
+  max-width: 0;
+  overflow: hidden;
+  text-align: left;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-1 div.sk-toggleable__content.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-1 div.sk-toggleable__content pre {
+  margin: 0.2em;
+  border-radius: 0.25em;
+  color: var(--sklearn-color-text);
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-1 div.sk-toggleable__content.fitted pre {
+  /* unfitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {
+  /* Expand drop-down */
+  max-height: 200px;
+  max-width: 100%;
+  overflow: auto;
+}
+
+#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
+  content: "▾";
+}
+
+/* Pipeline/ColumnTransformer-specific style */
+
+#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-1 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator-specific style */
+
+/* Colorize estimator box */
+#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-1 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+#sk-container-id-1 div.sk-label label.sk-toggleable__label,
+#sk-container-id-1 div.sk-label label {
+  /* The background is the default theme color */
+  color: var(--sklearn-color-text-on-default-background);
+}
+
+/* On hover, darken the color of the background */
+#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+/* Label box, darken color on hover, fitted */
+#sk-container-id-1 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator label */
+
+#sk-container-id-1 div.sk-label label {
+  font-family: monospace;
+  font-weight: bold;
+  display: inline-block;
+  line-height: 1.2em;
+}
+
+#sk-container-id-1 div.sk-label-container {
+  text-align: center;
+}
+
+/* Estimator-specific */
+#sk-container-id-1 div.sk-estimator {
+  font-family: monospace;
+  border: 1px dotted var(--sklearn-color-border-box);
+  border-radius: 0.25em;
+  box-sizing: border-box;
+  margin-bottom: 0.5em;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-1 div.sk-estimator.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+/* on hover */
+#sk-container-id-1 div.sk-estimator:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-1 div.sk-estimator.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Specification for estimator info (e.g. "i" and "?") */
+
+/* Common style for "i" and "?" */
+
+.sk-estimator-doc-link,
+a:link.sk-estimator-doc-link,
+a:visited.sk-estimator-doc-link {
+  float: right;
+  font-size: smaller;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1em;
+  height: 1em;
+  width: 1em;
+  text-decoration: none !important;
+  margin-left: 1ex;
+  /* unfitted */
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+  color: var(--sklearn-color-unfitted-level-1);
+}
+
+.sk-estimator-doc-link.fitted,
+a:link.sk-estimator-doc-link.fitted,
+a:visited.sk-estimator-doc-link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+div.sk-estimator:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover,
+div.sk-label-container:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover,
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+/* Span, style for the box shown on hovering the info icon */
+.sk-estimator-doc-link span {
+  display: none;
+  z-index: 9999;
+  position: relative;
+  font-weight: normal;
+  right: .2ex;
+  padding: .5ex;
+  margin: .5ex;
+  width: min-content;
+  min-width: 20ex;
+  max-width: 50ex;
+  color: var(--sklearn-color-text);
+  box-shadow: 2pt 2pt 4pt #999;
+  /* unfitted */
+  background: var(--sklearn-color-unfitted-level-0);
+  border: .5pt solid var(--sklearn-color-unfitted-level-3);
+}
+
+.sk-estimator-doc-link.fitted span {
+  /* fitted */
+  background: var(--sklearn-color-fitted-level-0);
+  border: var(--sklearn-color-fitted-level-3);
+}
+
+.sk-estimator-doc-link:hover span {
+  display: block;
+}
+
+/* "?"-specific style due to the `<a>` HTML tag */
+
+#sk-container-id-1 a.estimator_doc_link {
+  float: right;
+  font-size: 1rem;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1rem;
+  height: 1rem;
+  width: 1rem;
+  text-decoration: none;
+  /* unfitted */
+  color: var(--sklearn-color-unfitted-level-1);
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+}
+
+#sk-container-id-1 a.estimator_doc_link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+#sk-container-id-1 a.estimator_doc_link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+#sk-container-id-1 a.estimator_doc_link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+}
+</a></style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>XGBClassifier(base_score=None, booster=None, callbacks=None,
+              colsample_bylevel=None, colsample_bynode=None,
+              colsample_bytree=None, device=None, early_stopping_rounds=None,
+              enable_categorical=False, eval_metric=None, feature_types=None,
+              gamma=None, grow_policy=None, importance_type=None,
+              interaction_constraints=None, learning_rate=None, max_bin=None,
+              max_cat_threshold=None, max_cat_to_onehot=None,
+              max_delta_step=None, max_depth=None, max_leaves=None,
+              min_child_weight=None, missing=nan, monotone_constraints=None,
+              multi_strategy=None, n_estimators=None, n_jobs=None,
+              num_parallel_tree=None, random_state=42, ...)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked=""><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;XGBClassifier<span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>XGBClassifier(base_score=None, booster=None, callbacks=None,
+              colsample_bylevel=None, colsample_bynode=None,
+              colsample_bytree=None, device=None, early_stopping_rounds=None,
+              enable_categorical=False, eval_metric=None, feature_types=None,
+              gamma=None, grow_policy=None, importance_type=None,
+              interaction_constraints=None, learning_rate=None, max_bin=None,
+              max_cat_threshold=None, max_cat_to_onehot=None,
+              max_delta_step=None, max_depth=None, max_leaves=None,
+              min_child_weight=None, missing=nan, monotone_constraints=None,
+              multi_strategy=None, n_estimators=None, n_jobs=None,
+              num_parallel_tree=None, random_state=42, ...)</pre></div> </div></div></div></div>
+</div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"></span>
+<span id="cb13-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># and now go onto prediction </span></span>
+<span id="cb13-3">y_pred <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> model_xgb.predict(x_test)</span>
+<span id="cb13-4"></span>
+<span id="cb13-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># or we can also use probability prediction</span></span>
+<span id="cb13-6">y_pred_proba <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> model_xgb.predict_proba(x_test)</span></code></pre></div>
+</div>
+<p>And we can check our result on this basic xgboost model</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_c7d372dc03342f4d1e87bf7a1bbacef4">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.metrics <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> accuracy_score, roc_auc_score, roc_curve</span>
+<span id="cb14-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.metrics <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> ConfusionMatrixDisplay, classification_report, RocCurveDisplay</span>
+<span id="cb14-3"></span>
+<span id="cb14-4">acc_train <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> accuracy_score(y_train, model_xgb.predict(x_train))</span>
+<span id="cb14-5">acc_test <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> accuracy_score(y_test, model_xgb.predict(x_test))</span>
+<span id="cb14-6"></span>
+<span id="cb14-7"></span>
+<span id="cb14-8">disp <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ConfusionMatrixDisplay.from_estimator(</span>
+<span id="cb14-9">        model_xgb,</span>
+<span id="cb14-10">        x_test,</span>
+<span id="cb14-11">        y_test,</span>
+<span id="cb14-12">        display_labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> model_xgb.classes_,</span>
+<span id="cb14-13">        cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>plt.cm.Blues</span>
+<span id="cb14-14">    )</span>
+<span id="cb14-15">disp.ax_.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Confusion matrix'</span>)</span>
+<span id="cb14-16">plt.show()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_ab747d9e41f2a641199091ccbcca8edf">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(classification_report(y_test, y_pred))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              precision    recall  f1-score   support
+
+           0       0.49      0.85      0.62       537
+           1       0.46      0.13      0.21       538
+
+    accuracy                           0.49      1075
+   macro avg       0.48      0.49      0.42      1075
+weighted avg       0.48      0.49      0.42      1075</code></pre>
+</div>
+</div>
+<p>And the ROC curve</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_48d709c9f54e0174efb1a9d65e3903c0">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#plt.clf()</span></span>
+<span id="cb17-2">disp_roc <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> RocCurveDisplay.from_estimator(</span>
+<span id="cb17-3">            model_xgb,</span>
+<span id="cb17-4">            x_test,</span>
+<span id="cb17-5">            y_test,</span>
+<span id="cb17-6">            name<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'XGBoost'</span>)</span>
+<span id="cb17-7">disp_roc.ax_.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ROC Curve'</span>)</span>
+<span id="cb17-8">plt.plot([<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>)</span>
+<span id="cb17-9">plt.show()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost/index_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" aria-labelledby="tabset-3-2-tab">
+
+</div>
+</div>
+</div>
+</section>
+<section id="hyperparameters-and-fine-tuning" class="level1">
+<h1>Hyperparameters and fine tuning</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" aria-controls="tabset-4-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" aria-controls="tabset-4-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" aria-labelledby="tabset-4-1-tab">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_8702d7cb2716d6469fbc4e8380152273">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> TimeSeriesSplit</span>
+<span id="cb18-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> RandomizedSearchCV</span>
+<span id="cb18-3"></span>
+<span id="cb18-4">tscv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> TimeSeriesSplit(n_splits <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, gap <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">23</span>)</span>
+<span id="cb18-5">model_xgb.get_params()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'objective': 'binary:logistic', 'base_score': None, 'booster': None, 'callbacks': None, 'colsample_bylevel': None, 'colsample_bynode': None, 'colsample_bytree': None, 'device': None, 'early_stopping_rounds': None, 'enable_categorical': False, 'eval_metric': None, 'feature_types': None, 'gamma': None, 'grow_policy': None, 'importance_type': None, 'interaction_constraints': None, 'learning_rate': None, 'max_bin': None, 'max_cat_threshold': None, 'max_cat_to_onehot': None, 'max_delta_step': None, 'max_depth': None, 'max_leaves': None, 'min_child_weight': None, 'missing': nan, 'monotone_constraints': None, 'multi_strategy': None, 'n_estimators': None, 'n_jobs': None, 'num_parallel_tree': None, 'random_state': 42, 'reg_alpha': None, 'reg_lambda': None, 'sampling_method': None, 'scale_pos_weight': None, 'subsample': None, 'tree_method': None, 'validate_parameters': None, 'verbosity': 1}</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1">param_grid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'learning_rate'</span>: [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.10</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.15</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.20</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.30</span>],</span>
+<span id="cb20-2">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'max_depth'</span>: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>],</span>
+<span id="cb20-3">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'min_child_weight'</span>: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>],</span>
+<span id="cb20-4">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'gamma'</span>: [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span> , <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span>],</span>
+<span id="cb20-5">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'colsample_bytree'</span>: [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> , <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>]}</span>
+<span id="cb20-6">            </span>
+<span id="cb20-7">xv_xgb <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> RandomizedSearchCV(model_xgb, param_grid, n_iter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, scoring <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'f1'</span>, cv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tscv, verbose <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb20-8"></span>
+<span id="cb20-9">xv_xgb.fit(x_train, y_train, verbose <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<style>#sk-container-id-2 {
+  /* Definition of color scheme common for light and dark mode */
+  --sklearn-color-text: black;
+  --sklearn-color-line: gray;
+  /* Definition of color scheme for unfitted estimators */
+  --sklearn-color-unfitted-level-0: #fff5e6;
+  --sklearn-color-unfitted-level-1: #f6e4d2;
+  --sklearn-color-unfitted-level-2: #ffe0b3;
+  --sklearn-color-unfitted-level-3: chocolate;
+  /* Definition of color scheme for fitted estimators */
+  --sklearn-color-fitted-level-0: #f0f8ff;
+  --sklearn-color-fitted-level-1: #d4ebff;
+  --sklearn-color-fitted-level-2: #b3dbfd;
+  --sklearn-color-fitted-level-3: cornflowerblue;
+
+  /* Specific color for light theme */
+  --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));
+  --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-icon: #696969;
+
+  @media (prefers-color-scheme: dark) {
+    /* Redefinition of color scheme for dark theme */
+    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));
+    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-icon: #878787;
+  }
+}
+
+#sk-container-id-2 {
+  color: var(--sklearn-color-text);
+}
+
+#sk-container-id-2 pre {
+  padding: 0;
+}
+
+#sk-container-id-2 input.sk-hidden--visually {
+  border: 0;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+#sk-container-id-2 div.sk-dashed-wrapped {
+  border: 1px dashed var(--sklearn-color-line);
+  margin: 0 0.4em 0.5em 0.4em;
+  box-sizing: border-box;
+  padding-bottom: 0.4em;
+  background-color: var(--sklearn-color-background);
+}
+
+#sk-container-id-2 div.sk-container {
+  /* jupyter's `normalize.less` sets `[hidden] { display: none; }`
+     but bootstrap.min.css set `[hidden] { display: none !important; }`
+     so we also need the `!important` here to be able to override the
+     default hidden behavior on the sphinx rendered scikit-learn.org.
+     See: https://github.com/scikit-learn/scikit-learn/issues/21755 */
+  display: inline-block !important;
+  position: relative;
+}
+
+#sk-container-id-2 div.sk-text-repr-fallback {
+  display: none;
+}
+
+div.sk-parallel-item,
+div.sk-serial,
+div.sk-item {
+  /* draw centered vertical line to link estimators */
+  background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));
+  background-size: 2px 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+/* Parallel-specific style estimator block */
+
+#sk-container-id-2 div.sk-parallel-item::after {
+  content: "";
+  width: 100%;
+  border-bottom: 2px solid var(--sklearn-color-text-on-default-background);
+  flex-grow: 1;
+}
+
+#sk-container-id-2 div.sk-parallel {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background-color: var(--sklearn-color-background);
+  position: relative;
+}
+
+#sk-container-id-2 div.sk-parallel-item {
+  display: flex;
+  flex-direction: column;
+}
+
+#sk-container-id-2 div.sk-parallel-item:first-child::after {
+  align-self: flex-end;
+  width: 50%;
+}
+
+#sk-container-id-2 div.sk-parallel-item:last-child::after {
+  align-self: flex-start;
+  width: 50%;
+}
+
+#sk-container-id-2 div.sk-parallel-item:only-child::after {
+  width: 0;
+}
+
+/* Serial-specific style estimator block */
+
+#sk-container-id-2 div.sk-serial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--sklearn-color-background);
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+
+/* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is
+clickable and can be expanded/collapsed.
+- Pipeline and ColumnTransformer use this feature and define the default style
+- Estimators will overwrite some part of the style using the `sk-estimator` class
+*/
+
+/* Pipeline and ColumnTransformer style (default) */
+
+#sk-container-id-2 div.sk-toggleable {
+  /* Default theme specific background. It is overwritten whether we have a
+  specific estimator or a Pipeline/ColumnTransformer */
+  background-color: var(--sklearn-color-background);
+}
+
+/* Toggleable label */
+#sk-container-id-2 label.sk-toggleable__label {
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+  padding: 0.5em;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#sk-container-id-2 label.sk-toggleable__label-arrow:before {
+  /* Arrow on the left of the label */
+  content: "▸";
+  float: left;
+  margin-right: 0.25em;
+  color: var(--sklearn-color-icon);
+}
+
+#sk-container-id-2 label.sk-toggleable__label-arrow:hover:before {
+  color: var(--sklearn-color-text);
+}
+
+/* Toggleable content - dropdown */
+
+#sk-container-id-2 div.sk-toggleable__content {
+  max-height: 0;
+  max-width: 0;
+  overflow: hidden;
+  text-align: left;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-2 div.sk-toggleable__content.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-2 div.sk-toggleable__content pre {
+  margin: 0.2em;
+  border-radius: 0.25em;
+  color: var(--sklearn-color-text);
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-2 div.sk-toggleable__content.fitted pre {
+  /* unfitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-2 input.sk-toggleable__control:checked~div.sk-toggleable__content {
+  /* Expand drop-down */
+  max-height: 200px;
+  max-width: 100%;
+  overflow: auto;
+}
+
+#sk-container-id-2 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
+  content: "▾";
+}
+
+/* Pipeline/ColumnTransformer-specific style */
+
+#sk-container-id-2 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-2 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator-specific style */
+
+/* Colorize estimator box */
+#sk-container-id-2 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-2 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+#sk-container-id-2 div.sk-label label.sk-toggleable__label,
+#sk-container-id-2 div.sk-label label {
+  /* The background is the default theme color */
+  color: var(--sklearn-color-text-on-default-background);
+}
+
+/* On hover, darken the color of the background */
+#sk-container-id-2 div.sk-label:hover label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+/* Label box, darken color on hover, fitted */
+#sk-container-id-2 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator label */
+
+#sk-container-id-2 div.sk-label label {
+  font-family: monospace;
+  font-weight: bold;
+  display: inline-block;
+  line-height: 1.2em;
+}
+
+#sk-container-id-2 div.sk-label-container {
+  text-align: center;
+}
+
+/* Estimator-specific */
+#sk-container-id-2 div.sk-estimator {
+  font-family: monospace;
+  border: 1px dotted var(--sklearn-color-border-box);
+  border-radius: 0.25em;
+  box-sizing: border-box;
+  margin-bottom: 0.5em;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-2 div.sk-estimator.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+/* on hover */
+#sk-container-id-2 div.sk-estimator:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-2 div.sk-estimator.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Specification for estimator info (e.g. "i" and "?") */
+
+/* Common style for "i" and "?" */
+
+.sk-estimator-doc-link,
+a:link.sk-estimator-doc-link,
+a:visited.sk-estimator-doc-link {
+  float: right;
+  font-size: smaller;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1em;
+  height: 1em;
+  width: 1em;
+  text-decoration: none !important;
+  margin-left: 1ex;
+  /* unfitted */
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+  color: var(--sklearn-color-unfitted-level-1);
+}
+
+.sk-estimator-doc-link.fitted,
+a:link.sk-estimator-doc-link.fitted,
+a:visited.sk-estimator-doc-link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+div.sk-estimator:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover,
+div.sk-label-container:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover,
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+/* Span, style for the box shown on hovering the info icon */
+.sk-estimator-doc-link span {
+  display: none;
+  z-index: 9999;
+  position: relative;
+  font-weight: normal;
+  right: .2ex;
+  padding: .5ex;
+  margin: .5ex;
+  width: min-content;
+  min-width: 20ex;
+  max-width: 50ex;
+  color: var(--sklearn-color-text);
+  box-shadow: 2pt 2pt 4pt #999;
+  /* unfitted */
+  background: var(--sklearn-color-unfitted-level-0);
+  border: .5pt solid var(--sklearn-color-unfitted-level-3);
+}
+
+.sk-estimator-doc-link.fitted span {
+  /* fitted */
+  background: var(--sklearn-color-fitted-level-0);
+  border: var(--sklearn-color-fitted-level-3);
+}
+
+.sk-estimator-doc-link:hover span {
+  display: block;
+}
+
+/* "?"-specific style due to the `<a>` HTML tag */
+
+#sk-container-id-2 a.estimator_doc_link {
+  float: right;
+  font-size: 1rem;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1rem;
+  height: 1rem;
+  width: 1rem;
+  text-decoration: none;
+  /* unfitted */
+  color: var(--sklearn-color-unfitted-level-1);
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+}
+
+#sk-container-id-2 a.estimator_doc_link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+#sk-container-id-2 a.estimator_doc_link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+#sk-container-id-2 a.estimator_doc_link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+}
+</a></style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>RandomizedSearchCV(cv=TimeSeriesSplit(gap=23, max_train_size=None, n_splits=5, test_size=None),
+                   estimator=XGBClassifier(base_score=None, booster=None,
+                                           callbacks=None,
+                                           colsample_bylevel=None,
+                                           colsample_bynode=None,
+                                           colsample_bytree=None, device=None,
+                                           early_stopping_rounds=None,
+                                           enable_categorical=False,
+                                           eval_metric=None, feature_types=None,
+                                           gamma=None, grow_policy=...
+                                           monotone_constraints=None,
+                                           multi_strategy=None,
+                                           n_estimators=None, n_jobs=None,
+                                           num_parallel_tree=None,
+                                           random_state=42, ...),
+                   n_iter=100,
+                   param_distributions={'colsample_bytree': [0.3, 0.4, 0.5,
+                                                             0.7],
+                                        'gamma': [0.0, 0.1, 0.2, 0.3, 0.4],
+                                        'learning_rate': [0.05, 0.1, 0.15, 0.2,
+                                                          0.25, 0.3],
+                                        'max_depth': [3, 4, 5, 6, 8, 10, 12,
+                                                      15],
+                                        'min_child_weight': [1, 3, 5, 7]},
+                   scoring='f1', verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox"><label for="sk-estimator-id-2" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;RandomizedSearchCV<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.model_selection.RandomizedSearchCV.html">?<span>Documentation for RandomizedSearchCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>RandomizedSearchCV(cv=TimeSeriesSplit(gap=23, max_train_size=None, n_splits=5, test_size=None),
+                   estimator=XGBClassifier(base_score=None, booster=None,
+                                           callbacks=None,
+                                           colsample_bylevel=None,
+                                           colsample_bynode=None,
+                                           colsample_bytree=None, device=None,
+                                           early_stopping_rounds=None,
+                                           enable_categorical=False,
+                                           eval_metric=None, feature_types=None,
+                                           gamma=None, grow_policy=...
+                                           monotone_constraints=None,
+                                           multi_strategy=None,
+                                           n_estimators=None, n_jobs=None,
+                                           num_parallel_tree=None,
+                                           random_state=42, ...),
+                   n_iter=100,
+                   param_distributions={'colsample_bytree': [0.3, 0.4, 0.5,
+                                                             0.7],
+                                        'gamma': [0.0, 0.1, 0.2, 0.3, 0.4],
+                                        'learning_rate': [0.05, 0.1, 0.15, 0.2,
+                                                          0.25, 0.3],
+                                        'max_depth': [3, 4, 5, 6, 8, 10, 12,
+                                                      15],
+                                        'min_child_weight': [1, 3, 5, 7]},
+                   scoring='f1', verbose=1)</pre></div> </div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox"><label for="sk-estimator-id-3" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">estimator: XGBClassifier</label><div class="sk-toggleable__content fitted"><pre>XGBClassifier(base_score=None, booster=None, callbacks=None,
+              colsample_bylevel=None, colsample_bynode=None,
+              colsample_bytree=None, device=None, early_stopping_rounds=None,
+              enable_categorical=False, eval_metric=None, feature_types=None,
+              gamma=None, grow_policy=None, importance_type=None,
+              interaction_constraints=None, learning_rate=None, max_bin=None,
+              max_cat_threshold=None, max_cat_to_onehot=None,
+              max_delta_step=None, max_depth=None, max_leaves=None,
+              min_child_weight=None, missing=nan, monotone_constraints=None,
+              multi_strategy=None, n_estimators=None, n_jobs=None,
+              num_parallel_tree=None, random_state=42, ...)</pre></div> </div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-4" type="checkbox"><label for="sk-estimator-id-4" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">XGBClassifier</label><div class="sk-toggleable__content fitted"><pre>XGBClassifier(base_score=None, booster=None, callbacks=None,
+              colsample_bylevel=None, colsample_bynode=None,
+              colsample_bytree=None, device=None, early_stopping_rounds=None,
+              enable_categorical=False, eval_metric=None, feature_types=None,
+              gamma=None, grow_policy=None, importance_type=None,
+              interaction_constraints=None, learning_rate=None, max_bin=None,
+              max_cat_threshold=None, max_cat_to_onehot=None,
+              max_delta_step=None, max_depth=None, max_leaves=None,
+              min_child_weight=None, missing=nan, monotone_constraints=None,
+              multi_strategy=None, n_estimators=None, n_jobs=None,
+              num_parallel_tree=None, random_state=42, ...)</pre></div> </div></div></div></div></div></div></div></div></div>
+</div>
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1">xv_xgb.best_params_</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'min_child_weight': 7, 'max_depth': 12, 'learning_rate': 0.1, 'gamma': 0.1, 'colsample_bytree': 0.7}</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1">xv_xgb.best_score_</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.5009456435677468</code></pre>
+</div>
+</div>
+<p>Now we need to train the model based on the best paramaters fromt the cross-validation process.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_21342ef472f66c4a59d196253c6462e4">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> cross_val_score</span>
+<span id="cb25-2"></span>
+<span id="cb25-3">model_xgb_tuned <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> XGBClassifier(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span>xv_xgb.best_params_)</span>
+<span id="cb25-4"></span>
+<span id="cb25-5">model_xgb_tuned.fit(x_train, y_train, </span>
+<span id="cb25-6">                    eval_set <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [(x_train, y_train), (x_test, y_test)],         </span>
+<span id="cb25-7">                    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#eval_metric = 'precision', </span></span>
+<span id="cb25-8">                    verbose <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<style>#sk-container-id-3 {
+  /* Definition of color scheme common for light and dark mode */
+  --sklearn-color-text: black;
+  --sklearn-color-line: gray;
+  /* Definition of color scheme for unfitted estimators */
+  --sklearn-color-unfitted-level-0: #fff5e6;
+  --sklearn-color-unfitted-level-1: #f6e4d2;
+  --sklearn-color-unfitted-level-2: #ffe0b3;
+  --sklearn-color-unfitted-level-3: chocolate;
+  /* Definition of color scheme for fitted estimators */
+  --sklearn-color-fitted-level-0: #f0f8ff;
+  --sklearn-color-fitted-level-1: #d4ebff;
+  --sklearn-color-fitted-level-2: #b3dbfd;
+  --sklearn-color-fitted-level-3: cornflowerblue;
+
+  /* Specific color for light theme */
+  --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));
+  --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-icon: #696969;
+
+  @media (prefers-color-scheme: dark) {
+    /* Redefinition of color scheme for dark theme */
+    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));
+    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-icon: #878787;
+  }
+}
+
+#sk-container-id-3 {
+  color: var(--sklearn-color-text);
+}
+
+#sk-container-id-3 pre {
+  padding: 0;
+}
+
+#sk-container-id-3 input.sk-hidden--visually {
+  border: 0;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+#sk-container-id-3 div.sk-dashed-wrapped {
+  border: 1px dashed var(--sklearn-color-line);
+  margin: 0 0.4em 0.5em 0.4em;
+  box-sizing: border-box;
+  padding-bottom: 0.4em;
+  background-color: var(--sklearn-color-background);
+}
+
+#sk-container-id-3 div.sk-container {
+  /* jupyter's `normalize.less` sets `[hidden] { display: none; }`
+     but bootstrap.min.css set `[hidden] { display: none !important; }`
+     so we also need the `!important` here to be able to override the
+     default hidden behavior on the sphinx rendered scikit-learn.org.
+     See: https://github.com/scikit-learn/scikit-learn/issues/21755 */
+  display: inline-block !important;
+  position: relative;
+}
+
+#sk-container-id-3 div.sk-text-repr-fallback {
+  display: none;
+}
+
+div.sk-parallel-item,
+div.sk-serial,
+div.sk-item {
+  /* draw centered vertical line to link estimators */
+  background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));
+  background-size: 2px 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+/* Parallel-specific style estimator block */
+
+#sk-container-id-3 div.sk-parallel-item::after {
+  content: "";
+  width: 100%;
+  border-bottom: 2px solid var(--sklearn-color-text-on-default-background);
+  flex-grow: 1;
+}
+
+#sk-container-id-3 div.sk-parallel {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background-color: var(--sklearn-color-background);
+  position: relative;
+}
+
+#sk-container-id-3 div.sk-parallel-item {
+  display: flex;
+  flex-direction: column;
+}
+
+#sk-container-id-3 div.sk-parallel-item:first-child::after {
+  align-self: flex-end;
+  width: 50%;
+}
+
+#sk-container-id-3 div.sk-parallel-item:last-child::after {
+  align-self: flex-start;
+  width: 50%;
+}
+
+#sk-container-id-3 div.sk-parallel-item:only-child::after {
+  width: 0;
+}
+
+/* Serial-specific style estimator block */
+
+#sk-container-id-3 div.sk-serial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--sklearn-color-background);
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+
+/* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is
+clickable and can be expanded/collapsed.
+- Pipeline and ColumnTransformer use this feature and define the default style
+- Estimators will overwrite some part of the style using the `sk-estimator` class
+*/
+
+/* Pipeline and ColumnTransformer style (default) */
+
+#sk-container-id-3 div.sk-toggleable {
+  /* Default theme specific background. It is overwritten whether we have a
+  specific estimator or a Pipeline/ColumnTransformer */
+  background-color: var(--sklearn-color-background);
+}
+
+/* Toggleable label */
+#sk-container-id-3 label.sk-toggleable__label {
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+  padding: 0.5em;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#sk-container-id-3 label.sk-toggleable__label-arrow:before {
+  /* Arrow on the left of the label */
+  content: "▸";
+  float: left;
+  margin-right: 0.25em;
+  color: var(--sklearn-color-icon);
+}
+
+#sk-container-id-3 label.sk-toggleable__label-arrow:hover:before {
+  color: var(--sklearn-color-text);
+}
+
+/* Toggleable content - dropdown */
+
+#sk-container-id-3 div.sk-toggleable__content {
+  max-height: 0;
+  max-width: 0;
+  overflow: hidden;
+  text-align: left;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-3 div.sk-toggleable__content.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-3 div.sk-toggleable__content pre {
+  margin: 0.2em;
+  border-radius: 0.25em;
+  color: var(--sklearn-color-text);
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-3 div.sk-toggleable__content.fitted pre {
+  /* unfitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-3 input.sk-toggleable__control:checked~div.sk-toggleable__content {
+  /* Expand drop-down */
+  max-height: 200px;
+  max-width: 100%;
+  overflow: auto;
+}
+
+#sk-container-id-3 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
+  content: "▾";
+}
+
+/* Pipeline/ColumnTransformer-specific style */
+
+#sk-container-id-3 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-3 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator-specific style */
+
+/* Colorize estimator box */
+#sk-container-id-3 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-3 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+#sk-container-id-3 div.sk-label label.sk-toggleable__label,
+#sk-container-id-3 div.sk-label label {
+  /* The background is the default theme color */
+  color: var(--sklearn-color-text-on-default-background);
+}
+
+/* On hover, darken the color of the background */
+#sk-container-id-3 div.sk-label:hover label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+/* Label box, darken color on hover, fitted */
+#sk-container-id-3 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator label */
+
+#sk-container-id-3 div.sk-label label {
+  font-family: monospace;
+  font-weight: bold;
+  display: inline-block;
+  line-height: 1.2em;
+}
+
+#sk-container-id-3 div.sk-label-container {
+  text-align: center;
+}
+
+/* Estimator-specific */
+#sk-container-id-3 div.sk-estimator {
+  font-family: monospace;
+  border: 1px dotted var(--sklearn-color-border-box);
+  border-radius: 0.25em;
+  box-sizing: border-box;
+  margin-bottom: 0.5em;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-3 div.sk-estimator.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+/* on hover */
+#sk-container-id-3 div.sk-estimator:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-3 div.sk-estimator.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Specification for estimator info (e.g. "i" and "?") */
+
+/* Common style for "i" and "?" */
+
+.sk-estimator-doc-link,
+a:link.sk-estimator-doc-link,
+a:visited.sk-estimator-doc-link {
+  float: right;
+  font-size: smaller;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1em;
+  height: 1em;
+  width: 1em;
+  text-decoration: none !important;
+  margin-left: 1ex;
+  /* unfitted */
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+  color: var(--sklearn-color-unfitted-level-1);
+}
+
+.sk-estimator-doc-link.fitted,
+a:link.sk-estimator-doc-link.fitted,
+a:visited.sk-estimator-doc-link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+div.sk-estimator:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover,
+div.sk-label-container:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover,
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+/* Span, style for the box shown on hovering the info icon */
+.sk-estimator-doc-link span {
+  display: none;
+  z-index: 9999;
+  position: relative;
+  font-weight: normal;
+  right: .2ex;
+  padding: .5ex;
+  margin: .5ex;
+  width: min-content;
+  min-width: 20ex;
+  max-width: 50ex;
+  color: var(--sklearn-color-text);
+  box-shadow: 2pt 2pt 4pt #999;
+  /* unfitted */
+  background: var(--sklearn-color-unfitted-level-0);
+  border: .5pt solid var(--sklearn-color-unfitted-level-3);
+}
+
+.sk-estimator-doc-link.fitted span {
+  /* fitted */
+  background: var(--sklearn-color-fitted-level-0);
+  border: var(--sklearn-color-fitted-level-3);
+}
+
+.sk-estimator-doc-link:hover span {
+  display: block;
+}
+
+/* "?"-specific style due to the `<a>` HTML tag */
+
+#sk-container-id-3 a.estimator_doc_link {
+  float: right;
+  font-size: 1rem;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1rem;
+  height: 1rem;
+  width: 1rem;
+  text-decoration: none;
+  /* unfitted */
+  color: var(--sklearn-color-unfitted-level-1);
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+}
+
+#sk-container-id-3 a.estimator_doc_link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+#sk-container-id-3 a.estimator_doc_link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+#sk-container-id-3 a.estimator_doc_link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+}
+</a></style><div id="sk-container-id-3" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>XGBClassifier(base_score=None, booster=None, callbacks=None,
+              colsample_bylevel=None, colsample_bynode=None,
+              colsample_bytree=0.7, device=None, early_stopping_rounds=None,
+              enable_categorical=False, eval_metric=None, feature_types=None,
+              gamma=0.1, grow_policy=None, importance_type=None,
+              interaction_constraints=None, learning_rate=0.1, max_bin=None,
+              max_cat_threshold=None, max_cat_to_onehot=None,
+              max_delta_step=None, max_depth=12, max_leaves=None,
+              min_child_weight=7, missing=nan, monotone_constraints=None,
+              multi_strategy=None, n_estimators=None, n_jobs=None,
+              num_parallel_tree=None, random_state=None, ...)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-5" type="checkbox" checked=""><label for="sk-estimator-id-5" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;XGBClassifier<span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>XGBClassifier(base_score=None, booster=None, callbacks=None,
+              colsample_bylevel=None, colsample_bynode=None,
+              colsample_bytree=0.7, device=None, early_stopping_rounds=None,
+              enable_categorical=False, eval_metric=None, feature_types=None,
+              gamma=0.1, grow_policy=None, importance_type=None,
+              interaction_constraints=None, learning_rate=0.1, max_bin=None,
+              max_cat_threshold=None, max_cat_to_onehot=None,
+              max_delta_step=None, max_depth=12, max_leaves=None,
+              min_child_weight=7, missing=nan, monotone_constraints=None,
+              multi_strategy=None, n_estimators=None, n_jobs=None,
+              num_parallel_tree=None, random_state=None, ...)</pre></div> </div></div></div></div>
+</div>
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">eval_results <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> model_xgb_tuned.evals_result()</span>
+<span id="cb26-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#eval_results</span></span>
+<span id="cb26-3"></span>
+<span id="cb26-4">score <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> cross_val_score(model_xgb_tuned, x_train, y_train, cv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tscv)</span>
+<span id="cb26-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Mean CV score for: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>score<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>mean()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:0.4}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean CV score for: 0.4961</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" aria-labelledby="tabset-4-2-tab">
+
+</div>
+</div>
+</div>
+</section>
+<section id="feature-importance" class="level1">
+<h1>Feature importance</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" aria-controls="tabset-5-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" aria-controls="tabset-5-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" aria-labelledby="tabset-5-1-tab">
+
+</div>
+<div id="tabset-5-2" class="tab-pane" aria-labelledby="tabset-5-2-tab">
+
+</div>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>xgboost</category>
+  <category>tidymodel</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost/index.html</guid>
+  <pubDate>Sun, 14 Apr 2024 17:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Value at Risk using Python</title>
   <dc:creator>Francois de Ryckel</dc:creator>
@@ -12222,356 +14694,6 @@ Returning the palette you asked for with that many colors</code></pre>
   <guid>https://fderyckel.github.io/blog.html/posts/quant-part1/random-behavior-assets/index.html</guid>
   <pubDate>Mon, 17 Apr 2023 17:00:00 GMT</pubDate>
   <media:content url="https://fderyckel.github.io/blog.html/posts/quant-part1/random-behavior-assets/histogram-of-returns.png" medium="image" type="image/png" height="103" width="144"/>
-</item>
-<item>
-  <title>Linear Regression</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/linear-regression/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>Linear regression is probably the most basic example of a machine learning algorithms.</p>
-<section id="simple-linear-regression" class="level1">
-<h1>Simple linear regression</h1>
-<section id="finding-the-coefficients-from-scratch" class="level2">
-<h2 class="anchored" data-anchor-id="finding-the-coefficients-from-scratch">Finding the coefficients from scratch</h2>
-<p>In the case of simple linear regression, we just have one independent variable and one dependent variable. Let’s say we have <img src="https://latex.codecogs.com/png.latex?n"> observations <img src="https://latex.codecogs.com/png.latex?(x_i,%20y_i)"> and we want to find a linear equations that predict y <img src="https://latex.codecogs.com/png.latex?%5Chat%7By_i%7D"> based on a given <img src="https://latex.codecogs.com/png.latex?x_i">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?y_i%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20x_i%20+%20%5Cepsilon_i"></p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?x_i"> is the independent variable (aka: predictor, explanatory variable)</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> and <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> are parameters of our model that have to be found.
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> is the intercept (value of y when x=0)</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> is the slope of our linear model</li>
-</ul></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cepsilon_i"> is the residual or error term of the <img src="https://latex.codecogs.com/png.latex?i%5E%7Bth%7D"> observations
-<ul>
-<li>From a probabilistic perspective, <img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> can be seen as a random variable with the following properties: <img src="https://latex.codecogs.com/png.latex?E(%5Cepsilon)=0"> and <img src="https://latex.codecogs.com/png.latex?Var(%5Cepsilon)=%20%5Csigma_%7B%5Cepsilon%7D%5E2%20=%20%5Csigma%5E2"></li>
-</ul></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Chat%7By_i%7D"> is the estimated or predicted value of y. In that sense <img src="https://latex.codecogs.com/png.latex?%5Chat%7By_i%7D%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20x_i">. The error term is then the difference between the actual y and the predicted y: <img src="https://latex.codecogs.com/png.latex?%5Cepsilon_i%20=%20y_i%20-%20%5Chat%7By_i%7D"></li>
-</ul>
-<p>The cost function (or loss function) is to minimize the sum of squared error. In that sense, we seek to minimize <span id="eq-loss-function"><img src="https://latex.codecogs.com/png.latex?%20%5Ctext%7Bmin%20%7D%20SSE%20=%20min%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20%5Cepsilon_i%5E2%20=%0A%20%20%20%20%20%20%20%20%5Cunderset%7B%5Cbeta_0,%20%5Cbeta1%7D%7Bargmin%7D%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20(y_i-%5Cbeta_0%20-%20%5Cbeta_1%20x_i)%5E2%20%5Ctag%7B1%7D"></span></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/linear-regression/errors_visual.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Trying to minimize the sum of the squared of the vertical bars</figcaption>
-</figure>
-</div>
-<p>To minimize the SSE, we will need to use partial derivatives for both coefficients and solve it for 0.</p>
-<p>Let’s first focus on <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20SSE%7D%7B%5Cpartial%20%5Cbeta_0%7D%20=%20-2%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20(y_i-%5Cbeta_0%20-%20%5Cbeta_1%20x_i)%20=%200"> Breaking down our sum: <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5E%7Bn%7D%20y_i%20-%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20%5Cbeta_0%20-%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20%5Cbeta_1%20x_i%20=%200"> <img src="https://latex.codecogs.com/png.latex?%5Cbeta0"> and <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> are coefficient, hence: <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5E%7Bn%7D%20y_i%20-%20n%20%5Cbeta_0%20-%20%5Cbeta_1%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%20=%200"> and <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0%20=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20y_i%20-%20%5Cbeta_1%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%7D%7Bn%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cbar%7By%7D%20=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20y_i%7D%7Bn%7D"> (mean of y values) and <img src="https://latex.codecogs.com/png.latex?%5Cbar%7Bx%7D=%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%7D%7Bn%7D"> (mean of x values).</p>
-<p>and our previous equation can then be simplified as <span id="eq-beta0"><img src="https://latex.codecogs.com/png.latex?%5Cbeta_0%20=%20%5Cbar%7By%7D%20-%20%5Cbeta_1%20%5Cbar%7Bx%7D%20%5Ctag%7B2%7D"></span></p>
-<p>Let’s now address the second partial derivative wrt <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20SSE%7D%7B%5Cpartial%20%5Cbeta_1%7D%20=%20-2%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%20(y_i-%5Cbeta_0%20-%20%5Cbeta_1%20x_i)%20=%200">.</p>
-<p>Distributing the <img src="https://latex.codecogs.com/png.latex?x_i"> and substituting in the value of <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> from Equation&nbsp;2<br>
-<img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5E%7Bn%7D%20(x_i%20y_i%20-%20x_i%20(%5Cbar%7By%7D%20-%20%5Cbeta_1%20%5Cbar%7Bx%7D)%20-%20%5Cbeta_1%20x_i%5E2)%20=%200">.</p>
-<p>Factoring <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> and breaking down the sum and being careful to the sign, we get: <span id="eq-beta1a"><img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%20(y_i%20-%20%5Cbar%7By%7D)%7D%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%20(x_i%20-%20%5Cbar%7Bx%7D)%7D%20%5Ctag%7B3%7D"></span></p>
-<p>Knowing <img src="https://latex.codecogs.com/png.latex?%5Cbar%7Bx%7D%20=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20x_i%7D%7Bn%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cbar%7By%7D%20=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20y_i%7D%7Bn%7D">, we can get one step further (have a common denominator with over n). I have also removed the index on the sum for readability.<br>
-<span id="eq-beta1"><img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Cfrac%7Bn%20%5CSigma%20x_i%20y_i%20-%20%5CSigma%20x_i%20%5CSigma%20y_i%7D%7Bn%20%5CSigma%20x_i%5E2%20-%20(%5CSigma%20x_i)%5E2%7D%20%5Ctag%7B4%7D"></span></p>
-<p>We can now use the values of <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> Equation&nbsp;2 and <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> Equation&nbsp;4 into our estimate of y: <img src="https://latex.codecogs.com/png.latex?%5Chat%7By_i%7D%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20x_i"></p>
-</section>
-<section id="linking-the-slope-and-covariance" class="level2">
-<h2 class="anchored" data-anchor-id="linking-the-slope-and-covariance">Linking the slope and covariance</h2>
-<p>While going over some textbooks or online resources, we find another formula for the slope of our regression line. That formula involve the covariance and or the Pearson coefficient of correlation.</p>
-<p><span id="eq-beta1-cov"><img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Cfrac%7BCov(x,%20y)%7D%7B%5Csigma%5E2%20x%7D%20%5Ctag%7B5%7D"></span></p>
-<p>Now let’s connect both Equation&nbsp;3 and Equation&nbsp;5</p>
-<p>I’ll rewrite Equation&nbsp;3 in a slightly simpler form just to lighten the notation <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Cfrac%7B%5Csum%20x_i%20(y_i%20-%20%5Cbar%7By%7D)%7D%7B%5Csum%20x_i%20(x_i%20-%20%5Cbar%7Bx%7D)%7D"></p>
-<p>Now, it can be noted that that <img src="https://latex.codecogs.com/png.latex?%5Csum%20(x_i%20-%20%5Cbar%7Bx%7D)%20=%200"> or similarly <img src="https://latex.codecogs.com/png.latex?%5Csum%20(y_i%20-%20%5Cbar%7By%7D)%20=%200">. Hence <img src="https://latex.codecogs.com/png.latex?%5Cbar%7Bx%7D%20%5Csum%20(y_i%20-%20%5Cbar%7By%7D)%20=%200"></p>
-<p>Considering <img src="https://latex.codecogs.com/png.latex?%5Cbar%7Bx%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cbar%7By%7D"> are constant, we could also write <img src="https://latex.codecogs.com/png.latex?%5Csum%20%5Cbar%7Bx%7D%20(y_i%20-%20%5Cbar%7By%7D)%20=%200"> and similarly <img src="https://latex.codecogs.com/png.latex?%5Csum%20%5Cbar%7Bx%7D%20(x_i%20-%20%5Cbar%7Bx%7D)%20=%200">.</p>
-<p>With that in mind, we can now, go back on our Equation&nbsp;3 <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Cfrac%7B%5Csum%20x_i%20(y_i%20-%20%5Cbar%7By%7D)%7D%7B%5Csum%20x_i%20(x_i%20-%20%5Cbar%7Bx%7D)%7D%20=%0A%5Cfrac%7B%5Csum%20x_i%20(y_i%20-%20%5Cbar%7By%7D)%20-%20%5Csum%20%5Cbar%7Bx%7D%20(y_i%20-%20%5Cbar%7By%7D)%7D%7B%5Csum%20x_i%20(x_i%20-%20%5Cbar%7Bx%7D)%20-%20%5Csum%20%5Cbar%7Bx%7D%20(x_i%20-%20%5Cbar%7Bx%7D)%7D"></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cbeta1%20=%20%5Cfrac%7B%5Csum%20(x_i%20-%20%5Cbar%7Bx%7D)%20(y_i%20-%20%5Cbar%7By%7D)%7D%7B%5Csum%20(x_i%20-%20%5Cbar%7Bx%7D)%5E2%7D"></p>
-<p>Defining <img src="https://latex.codecogs.com/png.latex?Cov(x,%20y)%20=%20%5Cfrac%7B%5Csum%20(x_i%20-%20%5Cbar%7Bx%7D)%20(y_i%20-%20%5Cbar%7By%7D)%7D%7Bn%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Csigma_x%20=%20%5Csqrt%7B%5Cfrac%7B%5Csum%20(x_i%20-%20%5Cbar%7Bx%7D)%5E2%7D%7Bn%7D%7D"></p>
-<p>We can finally rewrite</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Cfrac%7BCov(x,%20y)%7D%7B%5Csigma_x%5E2%7D"></p>
-<p>Finally, if we want to involve the Pearson coefficient of correlation <img src="https://latex.codecogs.com/png.latex?%5Crho%20=%20%5Cfrac%7BCov(x,%20y)%7D%7B%5Csigma_x%20%5Csigma_y%7D">, we could also re-write our slope as <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1%20=%20%5Crho%20%5Cfrac%7B%5Csigma_y%7D%7B%5Csigma_x%7D"></p>
-</section>
-<section id="considerations-when-doing-linear-regression" class="level2">
-<h2 class="anchored" data-anchor-id="considerations-when-doing-linear-regression">Considerations when doing linear regression</h2>
-<ul>
-<li>Start with a <strong>scatter plot</strong> to check if data have a linear trend. No points of doing a linear regression on a set of data, if data are not showing a linear trend.<br>
-</li>
-<li>How well the data fits the regression line (correlation) have NO incidence on causality. Correlation is no indication of causation</li>
-<li>Variables have to be normally distributed. This can be checked using histogram or QQ-plot or some other stat tests - Shapiro-Wilk test, Kolmogorov–Smirnov test. Skewness and kurtosis can also be used for that. In case of violation of this assumption, a Box-Cox transformation could be used.</li>
-<li>Homoscedasticity in the residuals. Variance in the spread of residuals should be constant. <img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/linear-regression/residuals_visual.png" class="img-fluid" alt="Visuals on how error terms can behave"></li>
-<li>Error terms are normally distributed (visual: histogram, QQ-plot)</li>
-<li>In the case of multi-variables linear regression, ensure no correlation between independent variables</li>
-</ul>
-</section>
-</section>
-<section id="sources" class="level1">
-<h1>Sources</h1>
-<ul>
-<li><a href="https://www.analyticsvidhya.com/blog/2021/05/all-you-need-to-know-about-your-first-machine-learning-model-linear-regression/">All you need to know about your first Machine Learning model – Linear Regression</a></li>
-<li><a href="https://towardsai.net/p/machine-learning/linear-regression-complete-derivation-with-mathematics-explained">Linear Regression Complete Derivation With Mathematics Explained!</a></li>
-<li><a href="https://youtu.be/ewnc1cXJmGA">Involving cavariance in the slope</a></li>
-</ul>
-
-
-</section>
-
- ]]></description>
-  <category>R-code</category>
-  <category>linear-regression</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/linear-regression/index.html</guid>
-  <pubDate>Thu, 13 Apr 2023 17:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>05 - Trinomials models for Quantitative Finance</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/quant-part1/trinomial-model/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="transition-density-function" class="level1">
-<h1>Transition Density Function</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(tibble)     <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># tibble()</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># mutate()</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ggplot()</span></span></code></pre></div>
-</div>
-<section id="setting-the-stage" class="level2">
-<h2 class="anchored" data-anchor-id="setting-the-stage">Setting the stage</h2>
-<p>A discrete random variable (DRV) <img src="https://latex.codecogs.com/png.latex?y"> can either go up with a probability of <img src="https://latex.codecogs.com/png.latex?%5Calpha"> or down with a probability of <img src="https://latex.codecogs.com/png.latex?%5Calpha"> or stay the same with a probability of <img src="https://latex.codecogs.com/png.latex?1%20-%202%5Calpha">.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<div>
-<pre class="mermaid mermaid-js">flowchart RL
-  y' -- alpha --&gt; y'+delta_y
-  y' -- 1 - 2*alpha --&gt; y
-  y' -- alpha --&gt; y'-delta_y
-</pre>
-</div>
-</div>
-</div>
-</div>
-<p>We call that a trinomial walk.</p>
-</section>
-<section id="generating-an-instance-of-a-trinomial-walk" class="level2">
-<h2 class="anchored" data-anchor-id="generating-an-instance-of-a-trinomial-walk">Generating an instance of a trinomial walk</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">alpha <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.3</span>     <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># probability to go up or down </span></span>
-<span id="cb2-2">                 <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Hence, prob to stay the same is 0.4</span></span>
-<span id="cb2-3"></span>
-<span id="cb2-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#let's do a 252 steps trinomial walk (aka a year of daily movement). </span></span>
-<span id="cb2-5"></span>
-<span id="cb2-6">num_steps <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">252</span></span>
-<span id="cb2-7">prob <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">runif</span>(num_steps)</span>
-<span id="cb2-8"></span>
-<span id="cb2-9">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">step =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>num_steps, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">prob =</span> prob) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-10">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">direction =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">if_else</span>(prob <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> alpha, <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">if_else</span>(prob <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> alpha), <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>)), </span>
-<span id="cb2-11">         <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">cum_walk =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cumsum</span>(direction))</span>
-<span id="cb2-12"></span>
-<span id="cb2-13"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> step, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> cum_walk)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb2-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb2-15">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggtitle</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Instance of a trinomial walk'</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'with 252 steps and symetric move'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb2-16">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ylab</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Cumulative distance'</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/quant-part1/trinomial-model/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>This is just one instance of a trinomial walk. In reality, we are interested in getting to know the probabilistic properties of the <img src="https://latex.codecogs.com/png.latex?y"> variable.</p>
-</section>
-</section>
-<section id="deriving-the-forward-equation" class="level1">
-<h1>Deriving the Forward equation</h1>
-<p><span id="eq-tran-prob-fct"><img src="https://latex.codecogs.com/png.latex?Prob(a%3Cy'%3Cb%20%5Ctext%7B%20at%20time%20t'%20%7D%20%7C%20%5Ctext%7B%20y%20at%20time%20t%7D)%20=%20%5Cint_a%5Eb%20p(y,%20t;%20y',%20t')%20dy'%20%5Ctag%7B1%7D"></span></p>
-<p>This (Equation&nbsp;1) means: <em>What is the probability that the random variable y’ lies between a and b at time t’ given it was at y at time t?</em> In this case (y, t) are given, they are constant, they are known; while (y’, t’) are the variables.</p>
-<p>We re-write this (Equation&nbsp;1) for conciseness as <img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')">.</p>
-<p>Hence, another way to write (Equation&nbsp;1) is <span id="eq-tran-prob-fct2"><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')%20=%20%5Calpha%20%5Ccdot%20P(y,%20t;%20y'+%5Cdelta%20y,%20t'-%5Cdelta%20t)%20+%20(1-2%5Calpha)%20P(y,%20t;%20y',%20t'-%5Cdelta%20t)%20+%20%5Calpha%20%5Ccdot%20P(y,%20t;%20y'-%5Cdelta%20y,%20t'%20-%20%5Cdelta%20t)%20%5Ctag%7B2%7D"></span></p>
-<p>Each terms in the sum of (Equation&nbsp;2) could be evaluated using a <em>Taylor Series Expansion</em>. Note that <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t%5E2%20%3C%3C%20%5Cdelta%20t"> as <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t"> is already quite small.</p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y'%20+%20%5Cdelta%20y,%20t'-%5Cdelta%20t)%20%20%5Capprox%20P(y,t;y',t')%20+%20%5Cdelta%20y%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20y'%7D%20-%20%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D%20+%20%5Cdots"> <img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t'-%5Cdelta%20t)%20%20%5Capprox%20P(y,t;y',t')%20-%20%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20+%20%5Cdots"></p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y'-%20%5Cdelta%20y,%20t'-%5Cdelta%20t)%20%20%5Capprox%20P(y,t;y',t')%20-%20%5Cdelta%20y%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20y'%7D%20-%20%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D%20+%20%5Cdots"></p>
-<p>We have ignored all the terms less than <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t">.</p>
-<p>Adding the 3 equations above with their coefficients, we end up with</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20%5Calpha%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20%5Calpha%20%5Cfrac%7B%5Cdelta%20y%5E2%7D%7B%5Cdelta%20t%7D%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D"></p>
-<p>Note how <img src="https://latex.codecogs.com/png.latex?%5Calpha">, <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t"> and <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20y"> are all positive values. Hence, we can let <img src="https://latex.codecogs.com/png.latex?C%5E2%20=%20%5Calpha%20%5Cfrac%7B%5Cdelta%20y%5E2%7D%7B%5Cdelta%20t%7D">, and we get: <span id="eq-FKE"><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20C%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D%20%5Ctag%7B3%7D"></span></p>
-<p>This last (Equation&nbsp;3) can be recognized as the <strong>Forward Kolmogorov Equation</strong> or Heat-diffusion equation or also Fokker-Plank equation.</p>
-<p>Note that:</p>
-<ul>
-<li>We used <img src="https://latex.codecogs.com/png.latex?P"> instead of <img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')"> just for brievety</li>
-<li>This is a PDE for p with 2 independent variables <img src="https://latex.codecogs.com/png.latex?y'"> and <img src="https://latex.codecogs.com/png.latex?t'"></li>
-<li><img src="https://latex.codecogs.com/png.latex?y"> and <img src="https://latex.codecogs.com/png.latex?t"> are like parameters. They are fixed, they are starting point</li>
-<li>This should model a random-walk that is finite in a finite time.</li>
-</ul>
-</section>
-<section id="solving-the-fke-by-similarity-reduction" class="level1">
-<h1>Solving the FKE (by similarity reduction)</h1>
-<p>To solve this PDE, we solve it by (as per the CQF) similarity reduction. We use a solution of the form <span id="eq-FKE-sol"><img src="https://latex.codecogs.com/png.latex?P%20=%20t'%5Ea%20f%20%5Cleft(%20%5Cfrac%7By'%7D%7Bt'%5Eb%7D%20%5Cright)%20%5Cspace%20a,%20b%20%5Cin%20%5Cmathbb%7BR%7D%20%5Ctag%7B4%7D"></span></p>
-<p>Letting <img src="https://latex.codecogs.com/png.latex?%5Cxi%20=%20%5Cfrac%7By'%7D%7Bt'%5Eb%7D">, we are looking for a solution of the form <img src="https://latex.codecogs.com/png.latex?P%20=%20t'%5Ea%20f(%5Cxi)%20"></p>
-<p>Finding the partial derivatives based on the above solution’s form.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20y'%7D%20=%20t'%5Ea%20%5Ccdot%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D%20%5Ccdot%20%5Cfrac%7B%5Cpartial%20%5Cxi%7D%7B%5Cpartial%20y'%7D"> Note how f is just a function of <img src="https://latex.codecogs.com/png.latex?%5Cxi"> while <img src="https://latex.codecogs.com/png.latex?%5Cxi"> is a function of both <img src="https://latex.codecogs.com/png.latex?y'"> and <img src="https://latex.codecogs.com/png.latex?t'">; hence the difference in notation for the derivatives.</p>
-<p>Since <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20%5Cxi%7D%7B%5Cpartial%20y'%7D%20=%20t'%5E%7B-b%7D">, we have <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20y'%7D%20=%20t'%5E%7Ba-b%7D%20%5Ccdot%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D%20"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%5E2%7D%7B%5Cpartial%20y'%5E2%7D%20=%20t'%5E%7Ba-b%7D%20%5Cfrac%7Bd%5E2f%7D%7Bd%20%5Cxi%5E2%7D%20%5Cfrac%7B%5Cpartial%20%5Cxi%7D%7B%5Cpartial%20y'%7D%20=%20t'%5E%7Ba-2b%7D%20%5Cfrac%7Bd%5E2f%7D%7Bd%20%5Cxi%5E2%7D"></p>
-<p>Also, <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20%5Cxi%7D%7B%5Cpartial%20t'%7D%20=%20-b%20%5Ccdot%20y'%20%5Ccdot%20t'%5E%7B-b-1%7D">. Using product rule to find <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D">, we get: <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20a%20t'%5E%7Ba-1%7D%20f(%5Cxi)%20+%20t'%5Ea%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D%20%5Cfrac%7B%5Cpartial%20%5Cxi%7D%7B%5Cpartial%20t'%7D%20=%20a%20%5Ccdot%20t'%5E%7Ba-1%7D%20%5Ccdot%20f(%5Cxi)%20-%20b%20%5Ccdot%20t'%5E%7Ba-b-1%7D%20%5Ccdot%20y'%20%5Ccdot%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D%20"> which we could also re-write as: <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20a%20%5Ccdot%20t'%5E%7Ba-1%7D%20%5Ccdot%20f(%5Cxi)%20-%20b%20%5Ccdot%20t'%5E%7Ba-1%7D%20%5Ccdot%20%5Cxi%20%5Ccdot%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D"> since <img src="https://latex.codecogs.com/png.latex?%5Cxi%20=%20%5Cfrac%7By'%7D%7Bt'%5Eb%7D"></p>
-<p>Putting everything back together into Equation&nbsp;3, we get: <span id="eq-FKE-sol1"><img src="https://latex.codecogs.com/png.latex?a%20%5Ccdot%20t'%5E%7Ba-1%7D%20%5Ccdot%20f(%5Cxi)%20-%20b%20%5Ccdot%20t'%5E%7Ba-1%7D%20%5Ccdot%20%5Cxi%20%5Ccdot%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D%20=%20C%5E2%20%5Ccdot%20t'%5E%7Ba-2b%7D%20%5Cfrac%7Bd%5E2f%7D%7Bd%20%5Cxi%5E2%7D%20%5Ctag%7B5%7D"></span></p>
-<p>Considering the exponents of <img src="https://latex.codecogs.com/png.latex?t'">, we need to have <img src="https://latex.codecogs.com/png.latex?a-1%20=%20a-2b">. Hence <img src="https://latex.codecogs.com/png.latex?b%20=%20%5Cfrac%7B1%7D%7B2%7D">. We can already re-write <img src="https://latex.codecogs.com/png.latex?%5Cxi%20=%20%5Cfrac%7By'%7D%7B%5Csqrt%7Bt'%7D%7D"></p>
-<p>To find the value of <img src="https://latex.codecogs.com/png.latex?a">, we will use the fact that <img src="https://latex.codecogs.com/png.latex?%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20P(y',%20t')%20dy'%20=%201"> <img src="https://latex.codecogs.com/png.latex?%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20t'%5Ea%20%5Ccdot%20f%20%5Cleft(%20%5Cfrac%7By'%7D%7B%5Csqrt%7Bt'%7D%7D%20%5Cright)%20dy'%20=%201"></p>
-<p>Using the substitution <img src="https://latex.codecogs.com/png.latex?u%20=%20%5Cfrac%7By'%7D%7B%5Csqrt%7Bt'%7D%7D">, we have <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bdu%7D%7Bdy'%7D%20=%20t'%5E%5Cfrac%7B-1%7D%7B2%7D"></p>
-<p><img src="https://latex.codecogs.com/png.latex?t'%5Ea%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f(u)%20du%20%5Ccdot%20t'%5E%5Cfrac%7B1%7D%7B2%7D%20=%201"> <img src="https://latex.codecogs.com/png.latex?t'%5E%7Ba+%5Cfrac%7B1%7D%7B2%7D%7D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f(u)%20du%20=%201"></p>
-<p>Considering <img src="https://latex.codecogs.com/png.latex?%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f(u)%20du%20=%201">, we deduce that <img src="https://latex.codecogs.com/png.latex?a+%5Cfrac%7B1%7D%7B2%7D%20=%200"> and <img src="https://latex.codecogs.com/png.latex?a%20=%20%5Cfrac%7B-1%7D%7B2%7D"></p>
-<p>Re-writing Equation&nbsp;5 using our new values for <img src="https://latex.codecogs.com/png.latex?a"> and <img src="https://latex.codecogs.com/png.latex?b">:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20f(%5Cxi)%20-%20%5Cfrac%7B1%7D%7B2%7D%20%5Cxi%20=%20C%5E2%20%5Cfrac%7Bd%5E2f%7D%7Bd%20%5Cxi%5E2%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20%5Cfrac%7Bd(%5Cxi%20f(%5Cxi))%7D%7Bd(%5Cxi)%7D%20=%20C%5E2%20%5Cfrac%7Bd%5E2f%7D%7Bd%20%5Cxi%5E2%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20%5Cxi%20f(%5Cxi))%20=%20C%5E2%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D%20+%20const."></p>
-<p>We make the constant = 0.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20%5Cxi%20=%20C%5E2%20%5Cfrac%7B1%7D%7Bf(%5Cxi)%7D%20%5Cfrac%7Bdf%7D%7Bd%20%5Cxi%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20%5Cxi%20=%20C%5E2%20%5Cfrac%7Bd(log%20%5Cspace%20f(%5Cxi))%7D%7Bd(f(%5Cxi))%7D%20"></p>
-<p>Integrating both side for <img src="https://latex.codecogs.com/png.latex?%5Cxi">, we get: <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20%5Cint%20%5Cxi%20%5Cspace%20d%5Cxi=%20C%5E2%20log%20%5Cspace%20f(%5Cxi)"></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B-1%7D%7B2%7D%20%5Cfrac%7B%5Cxi%5E2%7D%7B2%7D%20+%20c_1=%20C%5E2%20log%20%5Cspace%20f(%5Cxi)"></p>
-<p><img src="https://latex.codecogs.com/png.latex?log%20%5Cspace%20f(%5Cxi)%20=%20%5Cfrac%7B-1%7D%7B4%20C%5E2%7D%20%5Cxi%5E2%20+%20c"></p>
-<p><img src="https://latex.codecogs.com/png.latex?f(%5Cxi)%20=%20e%5E%7B%5Cfrac%7B-1%7D%7B4%20C%5E2%7D%20%5Cxi%5E2%20+%20c%7D%20=%20A%20%5Ccdot%20e%5E%7B%5Cfrac%7B-1%7D%7B4%20C%5E2%7D%20%5Cxi%5E2%7D"> Time, to revisit our initial solution Equation&nbsp;4:</p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')%20=%20%5Cfrac%7B1%7D%7B%5Csqrt%7Bt%7D%7D%20A%20%5Ccdot%20e%5E%7B%5Cfrac%7B-1%7D%7B4%20C%5E2%7D%20%5Cfrac%7By'%5E2%7D%7Bt'%7D%7D"></p>
-<p>We choose <img src="https://latex.codecogs.com/png.latex?A"> such that <img src="https://latex.codecogs.com/png.latex?%5Cint_%5Cmathbb%7BR%7D%20f(%5Cxi)%20%5Cspace%20d%5Cxi%20=%201"></p>
-<p><img src="https://latex.codecogs.com/png.latex?A%20%5Ccdot%20%5Cint_%5Cmathbb%7BR%7D%20e%5E%7B%5Cfrac%7B-1%7D%7B4%20C%5E2%7D%20%5Cxi%5E2%7D%20%5Cspace%20d%5Cxi%20=%201"></p>
-<p>Using substitution <img src="https://latex.codecogs.com/png.latex?x%20=%20%5Cfrac%7B%5Cxi%7D%7B2C%7D">, we get <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bdx%7D%7Bd%5Cxi%7D%20=%20%5Cfrac%7B1%7D%7B2C%7D">, hence:</p>
-<p><img src="https://latex.codecogs.com/png.latex?A%20%5Ccdot%202C%20%5Ccdot%20%5Cint_%5Cmathbb%7BR%7D%20e%5E%7B-x%5E2%7D%20dx%20=%201"></p>
-<p><img src="https://latex.codecogs.com/png.latex?A%20=%20%5Cfrac%7B1%7D%7B2C%20%5Csqrt%7B%5Cpi%7D%7D"> <img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')%20=%20%5Cfrac%7B1%7D%7B%5Csqrt%7Bt%7D%7D%20%5Cspace%20%5Ccdot%20%5Cfrac%7B1%7D%7B2C%20%5Csqrt%7B%5Cpi%7D%7D%20%5Ccdot%20e%5E%7B%5Cfrac%7B-1%7D%7B4%20C%5E2%7D%20%5Cfrac%7By'%5E2%7D%7Bt'%7D%7D"></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Probability Density Function for normal distribution
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Recall the Probability Density Function for a random normal variable.</p>
-<p><img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cfrac%7B1%7D%7B%5Csigma%20%5Csqrt%7B2%20%5Cpi%7D%7D%20%5Ccdot%20e%5E%7B%5Cfrac%7B-1%7D%7B2%7D%20%5Cfrac%7B(x-%5Cmu)%5E2%7D%7B%5Csigma%5E2%7D%7D"></p>
-</div>
-</div>
-<p>With this in mind, we could set <img src="https://latex.codecogs.com/png.latex?%5Csigma%20=%20C%20%5Ccdot%20%5Csqrt%7B2t'%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2%20=%202%20%5Ccdot%20C%5E2%20%5Ccdot%20t'"></p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')%20=%20%5Cfrac%7B1%7D%7B%5Csigma%20%5Csqrt%7B2%20%5Cpi%7D%7D%20%5Cspace%20%5Ccdot%20e%5E%7B%5Cfrac%7B-1%7D%7B2%7D%20%5Cfrac%7By'%5E2%7D%7B%5Csigma%5E2%7D%7D"></p>
-<p>Hence <img src="https://latex.codecogs.com/png.latex?y'"> is a random variable such that <img src="https://latex.codecogs.com/png.latex?y'%20%5Csim%20N%20%5Cleft(%200,%20(C%20%5Csqrt%7B2t'%7D%20%5Cspace)%5E2%20%5Cright)"></p>
-</section>
-<section id="an-alternative-situation" class="level1">
-<h1>An Alternative Situation</h1>
-<p>We could imagine that instead of the trinomial walk, we a have a <strong>Symmetric Random Walk</strong>. We defined some properties of such symmetric random walk in an earlier <a href="../../../posts/quant-part1/random-behavior-assets/index.html">post</a></p>
-<p>This mean that our random walker can move in steps <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20y"> in time-step <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t">.</p>
-<p>Similarly to what we have done above, <img src="https://latex.codecogs.com/png.latex?Prob(a%3Cy'%3Cb%20%5Ctext%7B%20at%20time%20t'%20%7D%20%7C%20%5Ctext%7B%20y%20at%20time%20t%7D)%20=%20%5Cint_a%5Eb%20p(y,%20t;%20y',%20t')%20dy'"> and</p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')%20=%20%5Calpha%20%5Ccdot%20P(y,%20t;%20y'+%5Cdelta%20y,%20t'-%5Cdelta%20t)%20+%20%5Calpha%20%5Ccdot%20P(y,%20t;%20y'-%5Cdelta%20y,%20t'%20-%20%5Cdelta%20t)"> Because the random walk is symmetric <img src="https://latex.codecogs.com/png.latex?%5Calpha"> has to be <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D"></p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y'%20+%20%5Cdelta%20y,%20t'-%5Cdelta%20t)%20%20%5Capprox%20P(y,t;y',t')%20+%20%5Cdelta%20y%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20y'%7D%20-%20%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D%20+%20%5Cdots"></p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y'-%20%5Cdelta%20y,%20t'-%5Cdelta%20t)%20%20%5Capprox%20P(y,t;y',t')%20-%20%5Cdelta%20y%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20y'%7D%20-%20%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D%20+%20%5Cdots"></p>
-<p>Putting it all back together and again using <img src="https://latex.codecogs.com/png.latex?P(y,%20t;%20y',%20t')%20=%20P(y',%20t')"> for brevity:</p>
-<p><img src="https://latex.codecogs.com/png.latex?P(y',%20t')%20=%20P(y',%20t')%20-%20%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D"></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t%20%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Cdelta%20y%5E2%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D"></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Cfrac%7B%5Cdelta%20y%5E2%7D%7B%5Cdelta%20t%7D%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D"></p>
-<p>When we take the limit for <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20t"> and <img src="https://latex.codecogs.com/png.latex?%5Cdelta%20y'%5E2"> to tend -&gt; 0, this expression would only make sense if <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cdelta%20y%5E2%7D%7B%5Cdelta%20t%7D%20-%3E%201">; otherwise the probability will either be <img src="https://latex.codecogs.com/png.latex?0"> or <img src="https://latex.codecogs.com/png.latex?%5Cinfty">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%20P%7D%7B%5Cpartial%20t'%7D%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Cfrac%7B%5Cpartial%5E2%20P%7D%7B%5Cpartial%20y'%5E2%7D"></p>
-
-
-</section>
-
- ]]></description>
-  <category>Probability</category>
-  <category>Probability Density Function</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/quant-part1/trinomial-model/index.html</guid>
-  <pubDate>Fri, 07 Apr 2023 17:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

@@ -177,6 +177,7 @@ py_xgboost_mod.fit(py_x_train, py_y_train,
 ```{r}
 #| message: false
 #| warning: false
+
 library(xgboost)
 xgb.importance(model = fit_xgboost$fit)
 #detach(xgboost)
@@ -187,6 +188,7 @@ And also a graphic way.
 ```{r}
 #| message: false
 #| warning: false
+
 library(vip)
 fit_xgboost %>%
   vip(geom = "point")
@@ -215,6 +217,7 @@ So let's graph our datetime vs power ouput for both actual and predicted.
 #| fig-height: 7
 #| label: fig-r-actual_vs_predict_overall
 #| fig-cap: "Actual Vs Predicted power consumption for 2016-2018"
+
 library(tibble)  # for the add_column 
 library(parsnip)
 df_test1 <- add_column(df_test,  predict(fit_xgboost, new_data = df_test)) 
@@ -231,6 +234,7 @@ We could get slightly more granular and try to see whats going on.
 #| fig-cap: "Actual Vs Predicted power consumption"
 #| fig-width: 10
 #| fig-height: 7
+
 ggplot(df_test1 %>% filter(Datetime > "2016-01-01" & Datetime < "2016-02-28"), aes(x= Datetime, y = AEP_MW)) + 
   geom_line(color = "blue") + 
   geom_line(aes(y = .pred), color = "yellow3", alpha = 0.8)
@@ -243,6 +247,7 @@ Now, we can use the yardstick package to get numerical values to assess our mode
 ```{r}
 #| message: false
 #| warning: false
+
 library(yardstick)
 # calculating the RMSE (root mean square error)
 rmse(df_test1, truth = AEP_MW, estimate = .pred, na_rm = TRUE)

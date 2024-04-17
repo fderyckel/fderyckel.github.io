@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-04-15T15:39:40.148Z</lastmod>
+    <lastmod>2024-04-16T16:51:38.167Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2024-04-14T06:36:50.833Z</lastmod>
+    <lastmod>2024-04-16T16:51:35.810Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -170,7 +170,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/ts-forecast/hotel-booking/index.html</loc>
-    <lastmod>2024-01-11T10:23:10.453Z</lastmod>
+    <lastmod>2024-04-15T20:24:24.356Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part2/05-quantitative-methods/index.html</loc>
@@ -198,6 +198,18 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost/index.html</loc>
-    <lastmod>2024-04-15T15:35:14.343Z</lastmod>
+    <lastmod>2024-04-16T11:17:59.678Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part2/xgboost-time-series/index.html</loc>
+    <lastmod>2024-04-16T07:13:07.336Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/machine-learning-part2.html</loc>
+    <lastmod>2024-04-16T11:18:02.168Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/metrics/index.html</loc>
+    <lastmod>2024-04-16T16:51:42.212Z</lastmod>
   </url>
 </urlset>

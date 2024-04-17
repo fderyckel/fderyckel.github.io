@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/machine-learning-part1/metrics/index.html",
       "/posts/machine-learning-part2/xgboost/index.html",
       "/posts/machine-learning-part1/knn/index.html",
       "/posts/quant-part2/05-quantitative-methods/index.html",
@@ -35,7 +36,6 @@
       "/posts/markov-chains/index.html",
       "/posts/machine-learning-part1/kmeans-regime-change/index.html",
       "/posts/algebra-quant/index.html",
-      "/posts/machine-learning-part2/xgboost-time-series/index.html",
       "/posts/machine-learning-part2/xgboost-time-series/index.html"
     ]
   },
@@ -67,10 +67,12 @@
   {
     "listing": "/machine-learning-part1.html",
     "items": [
+      "/posts/machine-learning-part1/metrics/index.html",
       "/posts/machine-learning-part1/knn/index.html",
       "/posts/machine-learning-part1/naives-bayes-intro/index.html",
       "/posts/machine-learning-part1/linear-regression/index.html",
-      "/posts/machine-learning-part1/kmeans-intro/index.html"
+      "/posts/machine-learning-part1/kmeans-intro/index.html",
+      "/posts/machine-learning-part1/kmeans-regime-change/index.html"
     ]
   },
   {
@@ -97,6 +99,13 @@
     "items": [
       "/posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html",
       "/posts/risk-portfolio/03-var/index.html"
+    ]
+  },
+  {
+    "listing": "/machine-learning-part2.html",
+    "items": [
+      "/posts/machine-learning-part2/xgboost/index.html",
+      "/posts/machine-learning-part2/xgboost-time-series/index.html"
     ]
   }
 ]
