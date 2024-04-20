@@ -1,0 +1,76 @@
+---
+title: "Naive-Bayes - Part 1"
+author: "Francois de Ryckel"
+date: "2023-05-16"
+categories: [ML, Naive-Bayes, sentiment analysis]
+description: 'Making Naive-Bayes work in R'
+editor: source
+date-modified: "2023-05-16"
+---
+
+Some very basic ML using Naive-Bayes and the tidymodel framework. 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(readr)
+library(dplyr)  # mutate(), row_number()
+
+df <- read_csv('../../../raw_data/financial_news.csv', col_names = c('sentiment', 'text')) |> 
+  mutate(sentiment = factor(sentiment))
+
+```
+
+
+Using the tidyverse, we'll 
+
+* split the df into a training and testing set.  
+
+```{r}
+#| message: false
+#| warning: false
+
+library(rsample)    # initial_split(), training(), testing()
+library(recipes)
+library(parsnip)    # naive_bayes(), set_engine()
+library(workflows)  # workflow()
+
+library(discrim)
+library(textrecipes)
+library(yardstick)
+
+list_splits <- initial_split(df, prop = 0.8, strata = 'sentiment')
+df_train <- training(list_splits)
+df_test <- testing(list_splits)
+
+list_recipe <- recipe(sentiment ~., data = df_train) |> 
+  step_tokenize(text) |> 
+  step_stopwords(text) |> 
+  step_tokenfilter(text, max_tokens = 100) |> 
+  step_tfidf(text)
+  
+
+mod_nb <- naive_Bayes() |> set_engine('naivebayes') |> set_mode('classification')
+mod_svm <- svm_poly() |> set_engine('kernlab') |> set_mode('classification')
+list_cv <- vfold_cv(df_train, v = 5, strata = 'sentiment')
+
+wf_nb <- workflow() |> add_recipe(list_recipe) |> add_model(mod_nb)
+wf_nb
+
+wf_svm <- workflow() |> add_recipe(list_recipe) |> add_model(mod_svm)
+
+fit_mod_nb <- fit(wf_nb, df_train)
+pred_mod_nb <- predict(fit_mod_nb, df_test)
+pred_mod_nb_prob <- predict(fit_mod_nb, df_test, type = 'prob')
+
+fit_mod_svm <- fit(wf_svm, df_train)
+pred_mod_svm <- predict(fit_mod_svm, df_test)
+pred_mod_svm_prob <- predict(fit_mod_svm, df_test, type = 'prob')
+
+bind_cols(df_test, pred_mod_nb) |> conf_mat(sentiment, .pred_class)
+bind_cols(df_test, pred_mod_svm) |> conf_mat(sentiment, .pred_class)
+
+#roc_nb <- bind_cols(df_test, pred_mod_nb_prob) |> roc_curve()
+```
+
