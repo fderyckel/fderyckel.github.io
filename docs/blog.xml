@@ -14,19 +14,35 @@
 <item>
   <title>Defining Success</title>
   <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/metrics/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/05-metrics/index.html</link>
   <description><![CDATA[ 
 
 
 
 
-<p>When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success.</p>
-<p>There are so many ways out there to measure which hyper-parameters performed best for our mode. We’ll bring up some of the most used one.</p>
-<section id="setting-up-a-model" class="level1">
-<h1>Setting up a model</h1>
+<p>When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How would we decide if this models is better than this model? Or even which are the hyper-parameters that fine-tuned a model better?</p>
+<p>This post is about defining what is <em>‘best’</em> or <em>‘better’</em> when comparing different <strong>supervised models</strong>. we’ll have 2 main parts: measure of success for regression models and measure of success for classification models.</p>
+<section id="regression-models" class="level1">
+<h1>Regression models</h1>
+<p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
+<section id="rmse" class="level2">
+<h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
+<p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outlier’ predictions (prediction that are far off.)</p>
+<p><img src="https://latex.codecogs.com/png.latex?RMSE%20=%20%5Csqrt%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By%7D_i)%5E2%7D%7Bn%7D"></p>
 </section>
-<section id="the-metrics" class="level1">
-<h1>The metrics</h1>
+<section id="mae" class="level2">
+<h2 class="anchored" data-anchor-id="mae">MAE</h2>
+<p>With <strong>Mean Absolute Error</strong>, we just take the average of the errors. Useful when we don’t really care if predictions is far off from the observed data.</p>
+<p><img src="https://latex.codecogs.com/png.latex?MAE%20=%20%5Cfrac%20%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%20%20%5Clvert%20y_i%20-%20%5Chat%7By%7D_i%20%5Crvert%7D%7Bn%7D"></p>
+</section>
+<section id="huber-loss" class="level2">
+<h2 class="anchored" data-anchor-id="huber-loss">Huber Loss</h2>
+<p>Huber loss is a mixture of RMSE and MAE. Kind of the best of both world basically.</p>
+<p>$$$$</p>
+</section>
+</section>
+<section id="classfication-models" class="level1">
+<h1>Classfication models</h1>
 <section id="accuracy" class="level2">
 <h2 class="anchored" data-anchor-id="accuracy">Accuracy</h2>
 <p>Shortcomings:</p>
@@ -54,7 +70,7 @@
  ]]></description>
   <category>sklearn</category>
   <category>tidymodel</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/metrics/index.html</guid>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/05-metrics/index.html</guid>
   <pubDate>Mon, 15 Apr 2024 17:00:00 GMT</pubDate>
 </item>
 <item>
@@ -4147,13 +4163,13 @@ font-style: inherit;">'2017-09-01'</span>)]</span></code></pre></div>
 <item>
   <title>KNN</title>
   <dc:creator>François de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index.html</link>
   <description><![CDATA[ 
 
 
 
 
-<p>Some very basic ML using KNN and python and the tidymodel framework.</p>
+<p>One of the very first ML algorithm (because it’s ease) is KNN. In this post, we’ll learn about KNN using Python (with the Sklearn package) and using R with the tidymodel framework.</p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>KNN stands for <em>K Nearest Neighbor</em>.</p>
@@ -4162,7 +4178,7 @@ font-style: inherit;">'2017-09-01'</span>)]</span></code></pre></div>
 We take an observation and check the <strong>K</strong> observations next to it. We check the label of the K observations next to our data to be labeled and using a majority voting system we assign the label. For regression, it calculates the average or weighted average of the target values of the K neighbors to predict the value for the input data point.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/knn01.png" class="img-fluid figure-img"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/knn01.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">KNN illustration</figcaption>
 </figure>
 </div>
@@ -4292,7 +4308,7 @@ font-style: inherit;">as</span> plt</span>
 background-color: null;
 font-style: inherit;">=</span> classes)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot1-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Now let’s create a KNN object and a new point</p>
@@ -4777,7 +4793,7 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot2-3.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot2-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </div>
@@ -4899,7 +4915,7 @@ font-style: inherit;">legend.position =</span> <span class="st" style="color: #2
 background-color: null;
 font-style: inherit;">'none'</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot1_r-5.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot1_r-5.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Using the tidymodel framework, we are first creating a recipe, then applying the transformation to the original data. We then apply these transformation to the new points as well. Using ‘parnsip’, we create the KNN object.</p>
@@ -5091,7 +5107,7 @@ font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.2</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot2_r-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot2_r-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </div>
@@ -5166,7 +5182,7 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">20</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot3-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Splitting our dataset into training &amp; testing + running KNN on the data</p>
@@ -6138,7 +6154,7 @@ font-style: inherit;">20</span>)</span>
 background-color: null;
 font-style: inherit;">'Prediction with K=19'</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot4-3.png" class="img-fluid" width="864"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot4-3.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 </div>
@@ -6399,7 +6415,7 @@ font-style: inherit;">legend.position =</span> <span class="st" style="color: #2
 background-color: null;
 font-style: inherit;">'none'</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot3_r-5.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot3_r-5.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This time, we split the data in a training / testing set.<br>
@@ -6529,8 +6545,8 @@ font-style: inherit;">estimate =</span> .pred_class)</span></code></pre></div>
 <pre><code># A tibble: 2 × 3
   .metric  .estimator .estimate
   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy multiclass     0.825
-2 kap      multiclass     0.767</code></pre>
+1 accuracy multiclass     0.84 
+2 kap      multiclass     0.787</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">knn_fit_19 <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -6576,8 +6592,8 @@ font-style: inherit;">estimate =</span> .pred_class)</span></code></pre></div>
 <pre><code># A tibble: 2 × 3
   .metric  .estimator .estimate
   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy multiclass     0.8  
-2 kap      multiclass     0.733</code></pre>
+1 accuracy multiclass     0.825
+2 kap      multiclass     0.767</code></pre>
 </div>
 </div>
 <p>Let’s visualize both ‘models’ and the impact of the choice of K.</p>
@@ -6625,7 +6641,7 @@ font-style: inherit;">legend.position =</span> <span class="st" style="color: #2
 background-color: null;
 font-style: inherit;">'none'</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/scatterplot5_r-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/scatterplot5_r-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </div>
@@ -6643,7 +6659,7 @@ font-style: inherit;">'none'</span>)</span></code></pre></div>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" aria-labelledby="tabset-3-1-tab">
 <p>Loading and checking the data</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_aeeb9f57e291d4067b324ce330bb3c74">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_9575f15c324fe3d01128dd7b163ad278">
 <div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
@@ -6707,7 +6723,7 @@ background-color: null;
 font-style: inherit;">'adjClose'</span>])</span>
 <span id="cb26-2">plt.show()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -6734,11 +6750,9 @@ font-style: inherit;">1</span>)</span>
 <span id="cb27-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#or easier actually ;-) </span></span>
-<span id="cb27-4">df1b <span class="op" style="color: #5E5E5E;
+<span id="cb27-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> df.iloc[:, :<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>]</span>
+font-style: inherit;">#df1b = df.iloc[:, :5]</span></span>
 <span id="cb27-5"></span>
 <span id="cb27-6">df1a.describe()</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -6772,7 +6786,7 @@ dtype: int64</code></pre>
 </div>
 <p>No missing values and we can go ahead!</p>
 <p>Setting up a few predictors.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_e95c275259fccae74fa96979d4dfeecb">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_7937abec0f7d6495ce854bb8de57434f">
 <div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -6923,7 +6937,13 @@ font-style: inherit;">252</span>).corr(df1a[<span class="st" style="color: #2079
 background-color: null;
 font-style: inherit;">'sma50'</span>])</span>
 <span id="cb31-14"></span>
-<span id="cb31-15">df1a[<span class="st" style="color: #20794D;
+<span id="cb31-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># setting up a target variable. </span></span>
+<span id="cb31-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># is the stock above 5% in 2 weeks time. </span></span>
+<span id="cb31-17">df1a[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'target'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -6933,13 +6953,13 @@ font-style: inherit;">'close'</span>].shift(<span class="op" style="color: #5E5E
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">11</span>) <span class="op" style="color: #5E5E5E;
+font-style: inherit;">41</span>) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1.05</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">1.05</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span>df[<span class="st" style="color: #20794D;
+font-style: inherit;">*</span> df1a[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'close'</span>], <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -6948,8 +6968,8 @@ background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb31-16"></span>
-<span id="cb31-17">df1a <span class="op" style="color: #5E5E5E;
+<span id="cb31-18"></span>
+<span id="cb31-19">df1a <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> df1a.drop([<span class="st" style="color: #20794D;
 background-color: null;
@@ -6974,15 +6994,15 @@ background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb31-18">df1a <span class="op" style="color: #5E5E5E;
+<span id="cb31-20">df1a <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> df1a.dropna()</span>
-<span id="cb31-19">target <span class="op" style="color: #5E5E5E;
+<span id="cb31-21">target <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> df1a[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'target'</span>]</span>
-<span id="cb31-20">df1a <span class="op" style="color: #5E5E5E;
+<span id="cb31-22">df1a <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> df1a.drop([<span class="st" style="color: #20794D;
 background-color: null;
@@ -6991,14 +7011,14 @@ background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb31-21"></span>
-<span id="cb31-22"></span>
-<span id="cb31-23">df1a.shape</span></code></pre></div>
+<span id="cb31-23"></span>
+<span id="cb31-24"></span>
+<span id="cb31-25">df1a.shape</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(5371, 9)</code></pre>
 </div>
 </div>
-<p>Splitting the dataset for training and testing</p>
+<p>Splitting the dataset for training and testing. Beucause time-series and auto-correlation, we won’t randomly take observations from the set for training. Instead, we split in the first 80% of data for training and the last 20% for testing.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-13_546052e1516641d9bc82bb67bf065a62">
 <div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><span class="im" style="color: #00769E;
 background-color: null;
@@ -7084,7 +7104,7 @@ font-style: inherit;">+</span> </span>
 background-color: null;
 font-style: inherit;">geom_line</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -7591,14 +7611,14 @@ font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>:, ]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>array([[0.4, 0.6],
+<pre><code>array([[1. , 0. ],
+       [0.8, 0.2],
        [1. , 0. ],
        [0.8, 0.2],
-       [0.4, 0.6],
+       [1. , 0. ],
        [0.8, 0.2],
-       [0.6, 0.4],
-       [0.8, 0.2],
-       [0.8, 0.2],
+       [1. , 0. ],
+       [1. , 0. ],
        [1. , 0. ],
        [1. , 0. ]])</code></pre>
 </div>
@@ -7630,7 +7650,7 @@ font-style: inherit;">:0.3}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Accuracy for training set is 0.886 and Accuracy for testing set is 0.582</code></pre>
+<pre><code>Accuracy for training set is 0.934 and Accuracy for testing set is 0.489</code></pre>
 </div>
 </div>
 </div>
@@ -7660,7 +7680,7 @@ background-color: null;
 font-style: inherit;">'Confusion Matrix'</span>)</span>
 <span id="cb45-6">plt.show()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-19_6cdf5e2987935d7a193380af375a0579">
@@ -7670,12 +7690,12 @@ font-style: inherit;">print</span>(classification_report(y_test, y_pred))</span>
 <div class="cell-output cell-output-stdout">
 <pre><code>              precision    recall  f1-score   support
 
-          -1       0.64      0.81      0.71       687
-           1       0.35      0.18      0.24       388
+          -1       0.52      0.77      0.62       582
+           1       0.37      0.16      0.23       493
 
-    accuracy                           0.58      1075
-   macro avg       0.49      0.49      0.48      1075
-weighted avg       0.53      0.58      0.54      1075</code></pre>
+    accuracy                           0.49      1075
+   macro avg       0.44      0.46      0.42      1075
+weighted avg       0.45      0.49      0.44      1075</code></pre>
 </div>
 </div>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-20_bfdfd564e06be7d321e6bf49bf69e953">
@@ -7715,7 +7735,7 @@ font-style: inherit;">'Random 50:50'</span>)</span>
 <span id="cb48-6">plt.legend()</span>
 <span id="cb48-7">plt.show()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/unnamed-chunk-20-3.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/unnamed-chunk-20-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </div>
@@ -8254,7 +8274,7 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Optimal Neighbours: 49, Best, Score: 0.4906</code></pre>
+<pre><code>Optimal Neighbours: 5, Best, Score: 0.4586</code></pre>
 </div>
 </div>
 <p>Let’s now use the best parameter found for our model.</p>
@@ -8673,7 +8693,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
 }
-</a></style><div id="sk-container-id-6" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=49)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-11" type="checkbox" checked=""><label for="sk-estimator-id-11" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=49)</pre></div> </div></div></div></div>
+</a></style><div id="sk-container-id-6" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-11" type="checkbox" checked=""><label for="sk-estimator-id-11" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier()</pre></div> </div></div></div></div>
 </div>
 <div class="sourceCode cell-code" id="cb56" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1">y_pred_tuned <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -8721,8 +8741,8 @@ background-color: null;
 font-style: inherit;">'</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
- Training Accuracy  : 0.7691 
- Test Accuracy      : 0.6186</code></pre>
+ Training Accuracy  : 0.8545 
+ Test Accuracy      : 0.5591</code></pre>
 </div>
 </div>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-25_0e1d45e5697feddcec3109646b9ea6c7">
@@ -8744,7 +8764,7 @@ background-color: null;
 font-style: inherit;">'Confusion matrix'</span>)</span>
 <span id="cb58-9">plt.show()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-26_76e9cf58831fce7232d9709bea7d3492">
@@ -8754,12 +8774,12 @@ font-style: inherit;">print</span>(classification_report(y_test, y_pred_tuned))<
 <div class="cell-output cell-output-stdout">
 <pre><code>              precision    recall  f1-score   support
 
-          -1       0.63      0.95      0.76       687
-           1       0.27      0.03      0.06       388
+          -1       0.56      0.84      0.67       582
+           1       0.55      0.23      0.32       493
 
-    accuracy                           0.62      1075
-   macro avg       0.45      0.49      0.41      1075
-weighted avg       0.50      0.62      0.51      1075</code></pre>
+    accuracy                           0.56      1075
+   macro avg       0.55      0.53      0.50      1075
+weighted avg       0.55      0.56      0.51      1075</code></pre>
 </div>
 </div>
 </div>
@@ -8769,107 +8789,105 @@ weighted avg       0.50      0.62      0.51      1075</code></pre>
 </div>
 </div>
 </section>
-</section>
-<section id="example-with-the-adult-dataset-from-kaggle" class="level1">
-<h1>Example with the adult dataset (from Kaggle)</h1>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-28_44993e3b8779934eed892382e414d9b1">
-<div class="sourceCode cell-code" id="cb61" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><span class="im" style="color: #00769E;
+<section id="trading-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="trading-strategy">Trading Strategy</h2>
+<p>We can then check a trading strategy based on that model.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" aria-controls="tabset-7-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" aria-controls="tabset-7-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" aria-labelledby="tabset-7-1-tab">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-28_8320380f1eafdaec6871f0cc5e4a917e">
+<div class="sourceCode cell-code" id="cb61" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1">df1 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+font-style: inherit;">=</span> df1a.copy()</span>
+<span id="cb61-2">df1[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">as</span> np</span>
-<span id="cb61-2"><span class="im" style="color: #00769E;
+font-style: inherit;">'signal'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+font-style: inherit;">=</span> tuned_knn_model.predict(df1)</span>
+<span id="cb61-3">df[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">as</span> pd</span>
-<span id="cb61-3"></span>
-<span id="cb61-4">data <span class="op" style="color: #5E5E5E;
+font-style: inherit;">'returns'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+font-style: inherit;">=</span> np.log(df[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'../../../raw_data/adult.csv'</span>)</span>
-<span id="cb61-5">data.head()</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   age  workclass  fnlwgt  ... hours-per-week  native-country income
-0   25    Private  226802  ...             40   United-States  &lt;=50K
-1   38    Private   89814  ...             50   United-States  &lt;=50K
-2   28  Local-gov  336951  ...             40   United-States   &gt;50K
-3   44    Private  160323  ...             40   United-States   &gt;50K
-4   18          ?  103497  ...             30   United-States  &lt;=50K
-
-[5 rows x 15 columns]</code></pre>
-</div>
-</div>
-<p>Doing some cleaning of data. All the cleaning ideas come from the Kaggle notebooks (I have not deeply analysed the data)</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-29_ffd2829ce62a06ef12c86c2b0f4b3f10">
-<div class="sourceCode cell-code" id="cb63" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">'close'</span>]).diff(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;"># in a few columns, many cells have '?', let's replace those with Nan</span></span>
-<span id="cb63-2">data[<span class="st" style="color: #20794D;
+font-style: inherit;">41</span>).fillna(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">'workclass'</span>] <span class="op" style="color: #5E5E5E;
+font-style: inherit;">0</span>)</span>
+<span id="cb61-4">df2 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> data[<span class="st" style="color: #20794D;
+font-style: inherit;">=</span> df[[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'workclass'</span>].replace(<span class="st" style="color: #20794D;
+font-style: inherit;">'close'</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'?'</span>, np.nan)</span>
-<span id="cb63-3">data[<span class="st" style="color: #20794D;
+font-style: inherit;">'returns'</span>]]</span>
+<span id="cb61-5"></span>
+<span id="cb61-6">yo <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">'occupation'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> data[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'occupation'</span>].replace(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'?'</span>, np.nan)</span>
-<span id="cb63-4">data[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'native-country'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> data[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'native-country'</span>] .replace(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'?'</span>, np.nan)</span>
-<span id="cb63-5"></span>
-<span id="cb63-6">df <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> data.copy()</span>
-<span id="cb63-7"></span>
-<span id="cb63-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># dropping row with NA</span></span>
-<span id="cb63-9">df.dropna(how <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'any'</span>, inplace <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> df1.merge(df2, left_index <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">True</span>)</span>
-<span id="cb63-10"></span>
-<span id="cb63-11"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">True</span>, right_index <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># dropping dupplicates rows</span></span>
-<span id="cb63-12">df <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">=</span> df.drop_duplicates()</span>
-<span id="cb63-13"></span>
-<span id="cb63-14"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">True</span>, how <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># drop columns </span></span></code></pre></div>
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'left'</span>)</span>
+<span id="cb61-7"></span>
+<span id="cb61-8">df1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> yo</span>
+<span id="cb61-9"></span>
+<span id="cb61-10">df1[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'strategy'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'returns'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> df1[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'signal'</span>].shift(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">41</span>).fillna(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb61-11">df1.index <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df1.index.tz_localize(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'utc'</span>)</span></code></pre></div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-29_a5ac4b93c27a70e9c5a9a4f9f8ad73bf">
+<div class="sourceCode cell-code" id="cb62" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pyfolio <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pf</span></code></pre></div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" aria-labelledby="tabset-7-2-tab">
+
+</div>
+</div>
 </div>
 
 
 </section>
+</section>
 
  ]]></description>
-  <category>ML</category>
+  <category>Supervised ML</category>
   <category>KNN</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/knn/index.html</guid>
+  <category>Classification</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/01-knn/index.html</guid>
   <pubDate>Mon, 13 Nov 2023 17:00:00 GMT</pubDate>
 </item>
 <item>
@@ -12849,7 +12867,7 @@ Year 21 has positive returns with probability 91.68499999984621</code></pre>
 <item>
   <title>Naive-Bayes - Part 1</title>
   <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/naives-bayes-intro/index.html</link>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/09-naives-bayes-intro/index.html</link>
   <description><![CDATA[ 
 
 
@@ -13131,9 +13149,9 @@ font-style: inherit;">conf_mat</span>(sentiment, .pred_class)</span></code></pre
 <div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction negative neutral positive
-  negative       65      55       81
-  neutral        53     509      168
-  positive        3      12       24</code></pre>
+  negative       36      22       44
+  neutral        74     531      188
+  positive       11      23       41</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -13145,9 +13163,9 @@ font-style: inherit;">conf_mat</span>(sentiment, .pred_class)</span></code></pre
 <div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction negative neutral positive
-  negative       31       6       17
-  neutral        71     526      181
-  positive       19      44       75</code></pre>
+  negative       22      12       22
+  neutral        81     540      183
+  positive       18      24       68</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -13160,7 +13178,7 @@ font-style: inherit;">#roc_nb &lt;- bind_cols(df_test, pred_mod_nb_prob) |&gt; r
   <category>ML</category>
   <category>Naive-Bayes</category>
   <category>sentiment analysis</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/naives-bayes-intro/index.html</guid>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/09-naives-bayes-intro/index.html</guid>
   <pubDate>Mon, 15 May 2023 17:00:00 GMT</pubDate>
 </item>
 <item>
