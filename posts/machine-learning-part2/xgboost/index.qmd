@@ -39,6 +39,8 @@ df.describe()
 df.isnull().sum()
 ```
 
+No missing data, we can move forward and start the feature engineering process. 
+
 ## R
 
 ```{r}
@@ -140,15 +142,26 @@ Let's now fit a basic model without any tuning
 #| label: py_xgboost_base_model
 
 from xgboost import XGBClassifier
+from catboost import CatBoostClassifier
 
-model_xgb = XGBClassifier(verbosity = 1, random_state = 41)
+# using xgboost 
+model_xgb = XGBClassifier(random_state = 17, verbosity = 0)
 model_xgb.fit(x_train, y_train)
 
+# using catboost
+model_cb = CatBoostClassifier(random_state = 17, verbose = False)
+model_cb.fit(x_train, y_train)
+
 # and now go onto prediction 
-y_pred = model_xgb.predict(x_test)
+y_pred_xgb = model_xgb.predict(x_test)
+y_pred_cb = model_cb.predict(x_test)
 
 # or we can also use probability prediction
-y_pred_proba = model_xgb.predict_proba(x_test)
+y_pred_proba_xgb = model_xgb.predict_proba(x_test)
+y_pred_proba_cb = model_cb.predict_proba(x_test)
+
+# for comparison purposes
+#yo = pd.DataFrame({'y_test': y_test, 'y_pred_xgb': y_pred_xgb, 'y_pred_cb': y_pred_cb})
 ```
 
 And we can check our result on this basic xgboost model
@@ -160,11 +173,13 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report 
 from sklearn.metrics import roc_auc_score, roc_curve, RocCurveDisplay
 
-acc_train = accuracy_score(y_train, model_xgb.predict(x_train))
-acc_test = accuracy_score(y_test, model_xgb.predict(x_test))
+#acc_train = accuracy_score(y_train, model_xgb.predict(x_train))
+acc_test_xgb = accuracy_score(y_test, model_xgb.predict(x_test))
+acc_test_cb = accuracy_score(y_test, model_cb.predict(x_test))
 
 #f1_train = f1_score(y_train, model_xgb.predict(x_train))
-#f1_test = f1_score(y_test, model_xgb.predict(x_test))
+f1_test_xgb = f1_score(y_test, model_xgb.predict(x_test))
+f1_test_cb = f1_score(y_test, model_cb.predict(x_test))
 
 
 disp = ConfusionMatrixDisplay.from_estimator(
@@ -179,7 +194,8 @@ plt.show()
 ```
 
 ```{python}
-print(classification_report(y_test, y_pred))
+print(classification_report(y_test, y_pred_xgb))
+print(classification_report(y_test, y_pred_cb))
 ```
 
 And the ROC curve
@@ -212,22 +228,35 @@ plt.show()
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.model_selection import RandomizedSearchCV
 
+# defining the samples for the cross-validation process
 tscv = TimeSeriesSplit(n_splits = 5, gap = 23)
+
 model_xgb.get_params()
+param_grid_xgb = {'learning_rate': [0.20, 0.25, 0.30], 
+                  'max_depth': [10, 12, 14, 16], 
+                  'min_child_weight': [3, 5, 7], 
+                  'gamma': [0.2 , 0.3, 0.4], 
+                  'colsample_bytree': [0.4, 0.5 , 0.7]}
 
-param_grid = {'learning_rate': [0.05, 0.10, 0.15, 0.20, 0.25, 0.30],
-              'max_depth': [3, 4, 5, 6, 8, 10, 12, 15],
-              'min_child_weight': [1, 3, 5, 7],
-              'gamma': [0.0, 0.1, 0.2 , 0.3, 0.4],
-              'colsample_bytree': [0.3, 0.4, 0.5 , 0.7]}
-            
-xv_xgb = RandomizedSearchCV(model_xgb, param_grid, n_iter = 100, 
+xv_xgb = RandomizedSearchCV(model_xgb, param_grid_xgb, n_iter = 10, 
                             scoring = 'f1', cv = tscv, verbose = 1)
-
 xv_xgb.fit(x_train, y_train, verbose = 1)
-
 xv_xgb.best_params_
 xv_xgb.best_score_
+
+#model_cb.get_params()              
+param_grid_cb = {'learning_rate': [0.20, 0.25, 0.30], 
+                 'depth': [8, 10, 12, 15], 
+                 'l2_leaf_reg': [1, 3, 5, 7], 
+                 'border_count': [254, 300, 400 , 500],
+                 'bagging_temperature': [0.3, 0.7, 1.3, 1.7]}
+
+xv_cb = RandomizedSearchCV(model_cb, param_grid_cb, n_iter = 50, 
+                            scoring = 'f1', cv = tscv, verbose = 1)
+xv_cb.fit(x_train, y_train, verbose = 1)
+
+xv_cb.best_params_
+xv_cb.best_score_
 
 ```
 
@@ -298,8 +327,8 @@ plt.show()
 #plt.bar(x=feat_imp['Importance Score'], height = feat_imp['Features'])
 #ax.set_title('Features Importance');
 
-plt.clf()
 from xgboost import plot_importance
+plt.clf()
 plot_importance(model_xgb_tuned)
 plt.show()
 
@@ -313,12 +342,6 @@ plt.clf()
 plot_importance(model_xgb_tuned, importance_type='weight', show_values=False) 
 plt.show()
 ```
-
-```{python}
-from xgboost import to_graphviz
-
-```
-
 
 
 ```{python}
