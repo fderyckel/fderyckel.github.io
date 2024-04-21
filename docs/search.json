@@ -690,7 +690,7 @@
     "href": "machine-learning-part1.html",
     "title": "Series: Machine Learning - Part 1",
     "section": "",
-    "text": "KNN - K Nearest Neighbor\n\n\n\n\n\nUsing KNN in both python and R\n\n\n\n\n\n\nNov 14, 2023\n\n\n18 min\n\n\n\n\n\n\n\n\nDefining Success\n\n\n\n\n\n\n\n\n\n\n\n\nApr 16, 2024\n\n\n2 min\n\n\n\n\n\n\n\n\nNaive-Bayes - Part 1\n\n\n\n\n\nMaking Naive-Bayes work in R\n\n\n\n\n\n\nMay 16, 2023\n\n\n1 min\n\n\n\n\n\n\n\n\nLinear Regression\n\n\n\n\n\nA dive into the math behind the linear regression algorithm.\n\n\n\n\n\n\nApr 14, 2023\n\n\n5 min\n\n\n\n\n\n\n\n\nIntro to Kmeans\n\n\n\n\n\n\n\n\n\n\n\n\nOct 31, 2022\n\n\n8 min\n\n\n\n\n\n\n\n\nKmeans with regime changes\n\n\n\n\n\n\n\n\n\n\n\n\nOct 12, 2022\n\n\n6 min\n\n\n\n\n\n\nNo matching items"
+    "text": "Lasso and Ridge Regressions\n\n\n\n\n\n\n\n\n\n\n\n\nApr 22, 2024\n\n\n1 min\n\n\n\n\n\n\n\n\nKNN - K Nearest Neighbor\n\n\n\n\n\nUsing KNN in both python and R\n\n\n\n\n\n\nNov 14, 2023\n\n\n18 min\n\n\n\n\n\n\n\n\nDefining Success\n\n\n\n\n\n\n\n\n\n\n\n\nApr 16, 2024\n\n\n3 min\n\n\n\n\n\n\n\n\nNaive-Bayes - Part 1\n\n\n\n\n\nMaking Naive-Bayes work in R\n\n\n\n\n\n\nMay 16, 2023\n\n\n1 min\n\n\n\n\n\n\n\n\nLinear Regression\n\n\n\n\n\nA dive into the math behind the linear regression algorithm.\n\n\n\n\n\n\nApr 14, 2023\n\n\n5 min\n\n\n\n\n\n\n\n\nIntro to Kmeans\n\n\n\n\n\n\n\n\n\n\n\n\nOct 31, 2022\n\n\n8 min\n\n\n\n\n\n\n\n\nKmeans with regime changes\n\n\n\n\n\n\n\n\n\n\n\n\nOct 12, 2022\n\n\n6 min\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "quant-part2.html",
@@ -1299,21 +1299,21 @@
     "href": "posts/machine-learning-part1/05-metrics/index.html#rmse",
     "title": "Defining Success",
     "section": "RMSE",
-    "text": "RMSE\nThis is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outlier’ predictions (prediction that are far off.)\n\\[RMSE = \\sqrt \\frac{\\sum_{i=1}^{n}(y_i - \\hat{y}_i)^2}{n}\\]"
+    "text": "RMSE\nThis is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)\n\\[RMSE = \\sqrt \\frac{\\sum_{i=1}^{n}(y_i - \\hat{y}_i)^2}{n}\\]"
   },
   {
     "objectID": "posts/machine-learning-part1/05-metrics/index.html#mae",
     "href": "posts/machine-learning-part1/05-metrics/index.html#mae",
     "title": "Defining Success",
     "section": "MAE",
-    "text": "MAE\nWith Mean Absolute Error, we just take the average of the errors. Useful when we don’t really care if predictions is far off from the observed data.\n\\[MAE = \\frac {\\sum_{i=1}^{n}  \\lvert y_i - \\hat{y}_i \\rvert}{n}\\]"
+    "text": "MAE\nWith Mean Absolute Error, we just take the average of the errors. Useful when we don’t really care if predictions is far off from the observed data.\n\\[MAE = \\frac {\\sum_{i=1}^{n}  \\lvert y_i - \\hat{y}_i \\rvert}{n}\\]\nWithout the averaging process, this is also called the L1 loss or Laplace Loss. It is robust to outliers (comparing to L2 Loss). But Absolute Error is not smooth (aka not differentiable everywhere). This has implication when using Gradient Descent Algorithms."
   },
   {
     "objectID": "posts/machine-learning-part1/05-metrics/index.html#huber-loss",
     "href": "posts/machine-learning-part1/05-metrics/index.html#huber-loss",
     "title": "Defining Success",
     "section": "Huber Loss",
-    "text": "Huber Loss\nHuber loss is a mixture of RMSE and MAE. Kind of the best of both world basically.\n$$$$"
+    "text": "Huber Loss\nHuber loss is a mixture of MSE and MAE. Kind of the best of both world basically. We define the Huber Loss function using a step wise functions.\n\\[L_\\delta (y, f(x)) = \\begin{cases}\n      \\frac{1}{2} (y - f(x))^2 & \\lvert y - f(x) \\rvert\\leq \\delta \\\\\n      \\delta \\lvert y - f(x) \\rvert-\\frac{1}{2} \\delta^2 & otherwise\n   \\end{cases}\n\\]\nNote how the Huber Loss function require a parameter \\(\\delta\\) which acts as a threshold value (usually by default it is 1).\nBasically the function says that for value less than \\(\\delta\\) uses MSE and for loss values great than \\(\\delta\\) uses MAE.\nSome advantages of Huber Loss functions:\n\nRobust to outliers\ndifferentiable everywhere (even at the junction of the MAE and MSE). Meanings it can be used with Gradient Descent algorithms as well.\nThe transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.\n\nThe main disadventage of the Huber Loss function is how to tune that \\(\\delta\\) parameters."
   },
   {
     "objectID": "posts/machine-learning-part1/05-metrics/index.html#accuracy",

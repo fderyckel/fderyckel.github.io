@@ -220,18 +220,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
 <section id="rmse" class="level2">
 <h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
-<p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outlier’ predictions (prediction that are far off.)</p>
+<p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)</p>
 <p><span class="math display">\[RMSE = \sqrt \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}\]</span></p>
 </section>
 <section id="mae" class="level2">
 <h2 class="anchored" data-anchor-id="mae">MAE</h2>
 <p>With <strong>Mean Absolute Error</strong>, we just take the average of the errors. Useful when we don’t really care if predictions is far off from the observed data.</p>
 <p><span class="math display">\[MAE = \frac {\sum_{i=1}^{n}  \lvert y_i - \hat{y}_i \rvert}{n}\]</span></p>
+<p>Without the averaging process, this is also called the <strong>L1 loss</strong> or <strong>Laplace Loss</strong>. It is robust to outliers (comparing to L2 Loss). But Absolute Error is not smooth (aka not differentiable everywhere). This has implication when using Gradient Descent Algorithms.</p>
 </section>
 <section id="huber-loss" class="level2">
 <h2 class="anchored" data-anchor-id="huber-loss">Huber Loss</h2>
-<p>Huber loss is a mixture of RMSE and MAE. Kind of the best of both world basically.</p>
-<p>$$$$</p>
+<p>Huber loss is a mixture of MSE and MAE. Kind of the best of both world basically. We define the Huber Loss function using a step wise functions.</p>
+<p><span class="math display">\[L_\delta (y, f(x)) = \begin{cases}
+      \frac{1}{2} (y - f(x))^2 &amp; \lvert y - f(x) \rvert\leq \delta \\
+      \delta \lvert y - f(x) \rvert-\frac{1}{2} \delta^2 &amp; otherwise
+   \end{cases}
+\]</span></p>
+<p>Note how the Huber Loss function require a parameter <span class="math inline">\(\delta\)</span> which acts as a threshold value (usually by default it is 1).</p>
+<p>Basically the function says that for value less than <span class="math inline">\(\delta\)</span> uses MSE and for loss values great than <span class="math inline">\(\delta\)</span> uses MAE.</p>
+<p>Some advantages of Huber Loss functions:</p>
+<ul>
+<li>Robust to outliers</li>
+<li>differentiable everywhere (even at the junction of the MAE and MSE). Meanings it can be used with Gradient Descent algorithms as well.</li>
+<li>The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.</li>
+</ul>
+<p>The main disadventage of the Huber Loss function is how to tune that <span class="math inline">\(\delta\)</span> parameters.</p>
 </section>
 </section>
 <section id="classfication-models" class="level1">
@@ -259,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="auc-roc-curve" class="level2">
 <h2 class="anchored" data-anchor-id="auc-roc-curve">AUC &amp; ROC Curve</h2>
 <p>need to get the prediction as a probability</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_f8febe300bdf5210f7934e8f7c002c44">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 

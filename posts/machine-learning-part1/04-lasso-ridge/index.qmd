@@ -1,0 +1,9 @@
+---
+title: "Lasso and Ridge Regressions"
+author: "Francois de Ryckel"
+date: "2024-04-22"
+categories: [Regression, Lasso, Ridge]
+editor: source
+date-modified: '2024-04-30'
+---
+

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Francois de Ryckel">
+<meta name="dcterms.date" content="2024-04-22">
 
-<title>QUANT dira-t-on? - Series: Machine Learning - Part 1</title>
+<title>QUANT dira-t-on? - Lasso and Ridge Regressions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +25,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -61,50 +61,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-reading-time','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">QUANT dira-t-on?</span>
     </a>
   </div>
@@ -115,7 +84,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./blog.html" rel="" target="">
+    <a class="nav-link" href="../../../blog.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item compact">
@@ -136,28 +105,56 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Series: Machine Learning - Part 1</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Lasso and Ridge Regressions</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Regression</div>
+                <div class="quarto-category">Lasso</div>
+                <div class="quarto-category">Ridge</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Francois de Ryckel </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 22, 2024</p>
+      </div>
+    </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">April 30, 2024</p>
+      </div>
+    </div>
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-<!-- margin-sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
@@ -165,189 +162,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Regression,Lasso,Ridge" data-listing-date-sort="1713718800000" data-listing-file-modified-sort="1713710238669" data-listing-date-modified-sort="1714410000000" data-listing-reading-time-sort="1">
-<div class="body">
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
-<h3 class="no-anchor listing-title">
-Lasso and Ridge Regressions
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
-<div class="listing-date">
-Apr 22, 2024
-</div>
-<div class="listing-reading-time">
-1 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Supervised ML,KNN,Classification,Confusion Matrix,F1 Measure" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1713673086977" data-listing-date-modified-sort="1713632400000" data-listing-reading-time-sort="18">
-<div class="body">
-<a href="./posts/machine-learning-part1/01-knn/index.html">
-<h3 class="no-anchor listing-title">
-KNN - K Nearest Neighbor
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>Using KNN in both python and R</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/01-knn/index.html">
-<div class="listing-date">
-Nov 14, 2023
-</div>
-<div class="listing-reading-time">
-18 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="sklearn,tidymodel" data-listing-date-sort="1713200400000" data-listing-file-modified-sort="1713713941762" data-listing-date-modified-sort="1713546000000" data-listing-reading-time-sort="3">
-<div class="body">
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
-<h3 class="no-anchor listing-title">
-Defining Success
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-When evaluating models for a given ML algorithm, we need to define in advance…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
-<div class="listing-date">
-Apr 16, 2024
-</div>
-<div class="listing-reading-time">
-3 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="ML,Naive-Bayes,sentiment analysis" data-listing-date-sort="1684170000000" data-listing-file-modified-sort="1691835650632" data-listing-date-modified-sort="1684170000000" data-listing-reading-time-sort="1">
-<div class="body">
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
-<h3 class="no-anchor listing-title">
-Naive-Bayes - Part 1
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>Making Naive-Bayes work in R</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
-<div class="listing-date">
-May 16, 2023
-</div>
-<div class="listing-reading-time">
-1 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="R-code,linear-regression" data-listing-date-sort="1681405200000" data-listing-file-modified-sort="1691835650631" data-listing-date-modified-sort="1682269200000" data-listing-reading-time-sort="5">
-<div class="body">
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
-<h3 class="no-anchor listing-title">
-Linear Regression
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>A dive into the math behind the linear regression algorithm.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
-<div class="listing-date">
-Apr 14, 2023
-</div>
-<div class="listing-reading-time">
-5 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="Kmeans,ML" data-listing-date-sort="1667149200000" data-listing-file-modified-sort="1700738895178" data-listing-date-modified-sort="1667149200000" data-listing-reading-time-sort="8">
-<div class="body">
-<a href="./posts/machine-learning-part1/06-kmeans-intro/index.html">
-<h3 class="no-anchor listing-title">
-Intro to Kmeans
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-T…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/06-kmeans-intro/index.html">
-<div class="listing-date">
-Oct 31, 2022
-</div>
-<div class="listing-reading-time">
-8 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="ML unsupervised,Kmeans,Tidymodel,Classification" data-listing-date-sort="1665507600000" data-listing-file-modified-sort="1713615347821" data-listing-date-modified-sort="1665507600000" data-listing-reading-time-sort="6">
-<div class="body">
-<a href="./posts/machine-learning-part1/07-kmeans-regime-change/index.html">
-<h3 class="no-anchor listing-title">
-Kmeans with regime changes
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-This post is about how to use Kmeans to classify various market regimes or to use Kmeans to classify financial observations.
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/07-kmeans-regime-change/index.html">
-<div class="listing-date">
-Oct 12, 2022
-</div>
-<div class="listing-reading-time">
-6 min
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -580,6 +395,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="https://giscus.app/client.js" data-repo="fderyckel/fderyckel.github.io" data-repo-id="R_kgDOIWAxjA" data-category="General" data-category-id="DIC_kwDOIWAxjM4CWAZU" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 

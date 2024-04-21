@@ -10,7 +10,7 @@ execute:
   cache: true
 ---
 
-One of the very first ML algorithm (because it's ease) to be exposed to is KNN.  In this post, we'll learn about KNN using Python (with the Sklearn package) and using R with packages from the tidymodel framework. 
+One of the very first ML algorithm (because of its ease) I expose is KNN.  In this post, we'll learn about KNN using Python (with the Sklearn package) and using R with packages from the tidymodel framework. 
 
 # Introduction 
 

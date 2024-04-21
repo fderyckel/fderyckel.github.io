@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-04-21T05:14:40.759Z</lastmod>
+    <lastmod>2024-04-21T15:39:13.698Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2024-04-21T05:14:38.416Z</lastmod>
+    <lastmod>2024-04-21T15:39:11.464Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/05-metrics/index.html</loc>
-    <lastmod>2024-04-20T18:09:27.814Z</lastmod>
+    <lastmod>2024-04-21T15:39:29.295Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/07-kmeans-regime-change/index.html</loc>
@@ -231,5 +231,9 @@
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/09-naives-bayes-intro/index.html</loc>
     <lastmod>2024-04-20T11:51:38.709Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/04-Lasso-Ridge/index.html</loc>
+    <lastmod>2024-04-21T14:37:37.137Z</lastmod>
   </url>
 </urlset>

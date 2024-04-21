@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/machine-learning-part1/04-lasso-ridge/index.html",
       "/posts/machine-learning-part1/01-knn/index.html",
       "/posts/machine-learning-part1/05-metrics/index.html",
       "/posts/machine-learning-part2/xgboost/index.html",
@@ -67,6 +68,7 @@
   {
     "listing": "/machine-learning-part1.html",
     "items": [
+      "/posts/machine-learning-part1/04-lasso-ridge/index.html",
       "/posts/machine-learning-part1/01-knn/index.html",
       "/posts/machine-learning-part1/05-metrics/index.html",
       "/posts/machine-learning-part1/09-naives-bayes-intro/index.html",

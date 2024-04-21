@@ -5,8 +5,6 @@ date: "2024-04-16"
 categories: [sklearn, tidymodel]
 editor: source
 date-modified: '2024-04-20'
-execute:
-  cache: true
 ---
 
 When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success.  How would we decide if this models is better than this model? Or even which are the hyper-parameters that fine-tuned a model better? 
@@ -17,11 +15,15 @@ This post is about defining what is *'best'* or *'better'* when comparing differ
 
 When modeling for regression, we somehow **measure the distance between our prediction and the actual observed value**.  When comparing models, we usually want to keep the model which give the smallest sum of distance.  
 
+IT has to be noted that quite a few of these concepts have deeper connections in ML as they are not only 'success' metrics but also loss functions of ML algorithms. 
+
 ## RMSE
 
-This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values.  Hence this measures is used when we want to avoid 'outlier' predictions (prediction that are far off.)
+This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values.  Hence this measures is used when we want to avoid 'outliers' predictions (prediction that are far off.)
 
 $$RMSE = \sqrt \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}$$
+
+The MSE (without square root) is also the loss function in the linear regression algorithm. 
 
 ## MAE
 
@@ -29,11 +31,30 @@ With **Mean Absolute Error**, we just take the average of the errors.  Useful wh
 
 $$MAE = \frac {\sum_{i=1}^{n}  \lvert y_i - \hat{y}_i \rvert}{n}$$
 
+Without the averaging process, this is also called the **L1 loss** or **Laplace Loss**.  It is robust to outliers (comparing to L2 Loss).  But Absolute Error is not smooth (aka not differentiable everywhere).  This has implication when using Gradient Descent Algorithms. 
+
 ## Huber Loss
 
-Huber loss is a mixture of RMSE and MAE.  Kind of the best of both world basically. 
+Huber loss is a mixture of MSE and MAE.  Kind of the best of both world basically. We define the Huber Loss function using a step wise functions. 
 
-$$$$
+$$L_\delta (y, f(x)) = \begin{cases} 
+      \frac{1}{2} (y - f(x))^2 & \lvert y - f(x) \rvert\leq \delta \\
+      \delta \lvert y - f(x) \rvert-\frac{1}{2} \delta^2 & otherwise
+   \end{cases}
+$$
+
+Note how the Huber Loss function require a parameter $\delta$ which acts as a threshold value (usually by default it is 1).
+
+Basically the function says that for value less than $\delta$ uses MSE and for loss values great than $\delta$ uses MAE.  
+
+Some advantages of Huber Loss functions: 
+
+* Robust to outliers
+* differentiable everywhere (even at the junction of the MAE and MSE).  Meanings it can be used with Gradient Descent algorithms as well. 
+* The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.
+
+The main disadventage of the Huber Loss function is how to tune that $\delta$ parameters. 
+
 
 
 # Classfication models 
