@@ -2,10 +2,12 @@
 title: "KNN - K Nearest Neighbor"
 author: "François de Ryckel"
 date: "2023-11-14"
-categories: [Supervised ML, KNN, Classification]
+categories: [Supervised ML, KNN, Classification, Confusion Matrix, F1 Measure]
 description: 'Using KNN in both python and R'
 editor: source
-date-modified: "2024-04-20"
+date-modified: "2024-04-21"
+execute:
+  cache: true
 ---
 
 One of the very first ML algorithm (because it's ease) to be exposed to is KNN.  In this post, we'll learn about KNN using Python (with the Sklearn package) and using R with packages from the tidymodel framework. 
@@ -61,7 +63,7 @@ In the case of **classification**, we use a majority voting system.
 ## Python 
 
 ```{python}
-#| label: scatterplot1
+#| label: py_scatterplot1
 
 x = [4, 5, 10, 4, 3, 11, 14 , 8, 10, 12]
 y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
@@ -76,7 +78,7 @@ plt.scatter(x, y, c = classes)
 Now let's create a KNN object and a new point 
 
 ```{python}
-#| label: scatterplot2
+#| label: py_scatterplot2
 
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -95,7 +97,7 @@ plt.text(x = new_x-1, y = new_y-1, s = f"new point, class:{prediction[0]}")
 ## R 
 
 ```{r}
-#| label: scatterplot1_r
+#| label: r_scatterplot1
 #| warning: false
 #| message: false
 
@@ -117,7 +119,7 @@ Using the tidymodel framework, we are first creating a recipe.  In the tidymodel
 Using 'parnsip', we create the KNN object. 
 
 ```{r}
-#| label: scatterplot2_r
+#| label: r_scatterplot2
 #| warning: false
 #| message: false
 
@@ -172,11 +174,9 @@ In this example, we create a data set of a 1000 observations (using numbers take
 ## Python 
 
 ```{python}
-#| label: scatterplot3
+#| label: py_synData_scatterplot1
 
 from sklearn.datasets import make_blobs
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
 
 # create our synthetic data
 X, y = make_blobs(n_samples = 1000, n_features = 2, 
@@ -190,7 +190,12 @@ plt.scatter(X[:,0], X[:,1], c = y, s = 20)
 Splitting our data set into training & testing + running KNN on the data 
 
 ```{python}
-# spliting our data into training and testing
+#| label: py_synData_train_test_split
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
+# splitting our data into training and testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = y, random_state = 41)
 
 knn5 = KNeighborsClassifier(n_neighbors = 5)
@@ -213,7 +218,7 @@ print('Accuracy with k = 19 is', round(accuracy_score(y_test, y_pred_19)*100, 2)
 Let's visualize both 'models' and the impact of the choice of K. 
 
 ```{python}
-#| label: scatterplot4
+#| label: py_synData_scatterplot4
 #| message: false
 
 #using subplots to compare
@@ -234,7 +239,7 @@ plt.title('Prediction with K=19')
 ## R 
 
 ```{r}
-#| label: scatterplot3_r
+#| label: r_synData_scatterplot1
 
 # create our synthetic data
 df1 <- tibble(x = rnorm(n = 250, mean = 0, sd = 2) + 4, 
@@ -263,6 +268,8 @@ This time, we split the data in a training / testing set.
 Also because the data were already scaled during the generative process; there is no need to redo that step. 
 
 ```{r}
+#| label: r_synData_scatterplot2
+
 library(rsample)
 library(yardstick)
 
@@ -293,7 +300,7 @@ knn19 |>  accuracy(truth = classes, estimate = .pred_class)
 Let’s visualize both ‘models’ and the impact of the choice of K.  Note, we have just plotted the predictions, we have not plotted the actual data points used to measure the **K nearest** observations. 
 
 ```{r}
-#| label: scatterplot5_r
+#| label: r_SynData_scatterplot5
 
 df_pred <- bind_rows(knn5, knn19)
 
@@ -308,11 +315,11 @@ ggplot(df_pred, aes(x = x, y = y, color = .pred_class)) +
 Because the data are already pretty well separated, the only changes we see easily are the ones in the junction between 2 clusters of observations. 
 
 
-# Example with a financial / time-series dataset 
+# Example with a financial dataset 
 
 This time, we are going to use a stock price to perform KNN. 
 
-## Loading the data,  setting up and feature engineering 
+## Loading, setting up and feature engineering 
 
 
 ::: {.panel-tabset}
@@ -387,6 +394,8 @@ df1a.shape
 Splitting the data set for training and testing.  Because time-series and auto-correlation, we won't randomly take observations from the set for training.  Instead, we split in the first 80% of data for training and the last 20% for testing. 
 
 ```{python}
+#| label: py_load_train_test
+
 from sklearn.model_selection import (train_test_split, GridSearchCV)
 
 x_train, x_test, y_train, y_test = train_test_split(df1a, target, test_size = 0.2, shuffle = False)
@@ -424,6 +433,8 @@ Let's create the predictors.
 
 ```{r}
 #| label: r_featengi
+#| warning: false
+#| message: false
 
 library(tidyr)
 library(timetk)
@@ -437,6 +448,12 @@ sd_roll_31d = slidify(.f = sd, .period = 31, .align = 'right')
 sd_roll_1Y = slidify(.f = sd, .period = 251, .align = 'right')
 corr_roll_1Y = slidify(.f = ~cor(.x, .y), .period = 251, .align = 'right')
 
+yo <- TTR::aroon(df[, c('high', 'low')], n = 23)
+df$aroon <- yo[, 3]
+yo <- TTR::CCI(df[, c('high', 'low', 'close')], n = 17)
+df$cci <- yo
+yo <- TTR::chaikinVolatility(df[, c('high', 'low')], n = 13)
+df$chaikinVol <- yo
 
 df1a <- df |> 
   mutate(o_c = (open - close) / close, 
@@ -464,9 +481,10 @@ df1a <- df |>
 Let's now split our training and testing set. 
 
 ```{r}
+#| label: r_trainTestSplit
+
 df_train = df1a[1:round(nrow(df1a)*0.8), ]
 df_test = df1a[(round(nrow(df1a)*0.8) + 1):nrow(df1a) , ]
-
 ```
 
 :::
@@ -482,7 +500,7 @@ Now we will start building our KNN model using a pipeline or a workflow (for R),
 ## Python
 
 ```{python}
-#| label: py_setModel
+#| label: py_setBaseModel
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
@@ -499,6 +517,7 @@ knn_model.fit(x_train, y_train)
 Go onto predictions 
 
 ```{python}
+#| label: py_baseModel_prediction
 
 from sklearn.metrics import (ConfusionMatrixDisplay, classification_report)
 from sklearn.metrics import (accuracy_score, f1_score)
@@ -511,16 +530,7 @@ y_pred_proba = knn_model.predict_proba(x_test)
 # few checking
 knn_model.classes_
 
-y_pred_proba[-10:, ]
-
-
-# checking accuracy
-acc_train = accuracy_score(y_train, knn_model.predict(x_train))
-acc_test = accuracy_score(y_test, knn_model.predict(x_test))
-f1_test = f1_score(y_test, knn_model.predict(x_test))
-
-print(f"Accuracy for training set is {acc_train:0.3} and Accuracy for testing set is {acc_test:0.3}")
-print(f"f1 score for test set is {f1_test:0.3}")
+y_pred_proba[-5:, ]
 ```
 
 
@@ -529,7 +539,7 @@ print(f"f1 score for test set is {f1_test:0.3}")
 Let's define a basic model in R using the tidymodel framework. 
 
 ```{r}
-#| label: r_setModel
+#| label: r_setBaseModel
 #| message: false
 #| warning: false
 
@@ -551,10 +561,6 @@ knn_fit <- knn_model |> fit(target ~., data = df_juiced)
 knn_pred <- predict(knn_fit, new_data = df_baked)
 df_pred <- bind_cols(df_baked |> select(date, target), knn_pred)
 
-library(yardstick)
-df_pred |> metrics(target, .pred_class)
-df_pred |> f_meas(target, .pred_class)
-df_pred |> precision(target, .pred_class)
 ```
 
 :::
@@ -567,6 +573,21 @@ df_pred |> precision(target, .pred_class)
 ## Python 
 
 ```{python}
+#| label: py_baseMoel_prediction1
+
+print(classification_report(y_test, y_pred)) 
+
+# checking accuracy and f1
+acc_train = accuracy_score(y_train, knn_model.predict(x_train))
+acc_test = accuracy_score(y_test, knn_model.predict(x_test))
+f1_test = f1_score(y_test, knn_model.predict(x_test))
+
+print(f"Accuracy for training set is {acc_train:0.3} and Accuracy for testing set is {acc_test:0.3}")
+print(f"f1 score for test set is {f1_test:0.3}")
+```
+
+```{python}
+#| label: py_baseMoel_prediction2
 
 conf_mat = ConfusionMatrixDisplay.from_estimator(
   knn_model, x_test, y_test, cmap=plt.cm.Blues
@@ -577,10 +598,8 @@ plt.show()
 ```
 
 ```{python}
-print(classification_report(y_test, y_pred))
-```
+#| label: py_baseMoel_prediction3
 
-```{python}
 from sklearn.metrics import (roc_curve, RocCurveDisplay)
 
 rocCurve = RocCurveDisplay.from_estimator(knn_model, x_test, y_test, name = 'Tuned KNN')
@@ -594,11 +613,24 @@ plt.show()
 ## R
 
 ```{r}
+#| label: r_baseMoel_prediction1
+
+library(yardstick)
+df_pred |> metrics(target, .pred_class)
+df_pred |> f_meas(target, .pred_class)
+df_pred |> precision(target, .pred_class)
+```
+
+
+```{r}
+#| label: r_baseMoel_prediction2
+
 cm <- conf_mat(data = df_pred, truth = target, estimate = .pred_class)
 autoplot(cm, type = 'heatmap')
 ```
 
 ```{r}
+#| label: r_baseMoel_prediction3
 
 knn_pred <- predict(knn_fit, new_data = df_baked, type = 'prob')
 df_pred <- bind_cols(df_baked |> select(date, target), knn_pred)
@@ -607,7 +639,6 @@ df_pred <- bind_cols(df_baked |> select(date, target), knn_pred)
 df_pred |> roc_curve(target, .pred_1) |> 
   autoplot()
 ```
-
 
 :::
 
@@ -621,6 +652,8 @@ We can always try to fine tune our KNN algorithm to see if we can get a better r
 ## Python 
 
 ```{python}
+#| label: py_tuningHyperpa1
+
 from sklearn.model_selection import TimeSeriesSplit
 
 tscv = TimeSeriesSplit(n_splits=10, gap=10)
@@ -632,15 +665,20 @@ tscv = TimeSeriesSplit(n_splits=10, gap=10)
 Let's find the best parameters through a grid search 
 
 ```{python}
+#| label: py_tuningHyperpa2
+
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import roc_auc_score, auc
 
 knn_model.get_params()
 param_grid = {'classifier__n_neighbors': np.arange(2, 51, 1)}
 
-gs = GridSearchCV(knn_model, param_grid, scoring = 'roc_auc', n_jobs = -1, cv = tscv, verbose = 1)
+gs = GridSearchCV(knn_model, param_grid, 
+                  scoring = 'f1', n_jobs = -1, 
+                  cv = tscv, 
+                  verbose = 1)
+                  
 gs.fit(x_train, y_train)
-
 
 print(f"Optimal Neighbours: {gs.best_params_['classifier__n_neighbors']}, Best, Score: {round(gs.best_score_,4)}")
 ```
@@ -648,6 +686,8 @@ print(f"Optimal Neighbours: {gs.best_params_['classifier__n_neighbors']}, Best, 
 Let's now use the best parameter found for our model. 
 
 ```{python}
+#| label: py_tuningHyperpa3
+
 from sklearn.metrics import f1_score
 
 tuned_knn_model = KNeighborsClassifier(n_neighbors = gs.best_params_['classifier__n_neighbors'])
@@ -656,11 +696,102 @@ tuned_knn_model.fit(x_train, y_train)
 
 y_pred_tuned = tuned_knn_model.predict(x_test)
 
+```
+
+## R 
+
+Using the tidymodel framework, when it comes to hyperparameters tuning, we then use a workflow to structure all the work for us. 
+
+```{r}
+#| label: r_tuningHyperpa1
+#| message: false
+#| warning: false
+
+library(rsample)
+library(workflows)
+library(tune)
+library(dials)
+library(yardstick)
+
+# create the CV validation resampls 
+tscv = rolling_origin(df_train, initial = 1200, assess = 100, lag = 20, skip = 300, cumulative = T)
+
+# create the KNN model with leaving hyperparameters for tuning
+knn_model_tuned <- nearest_neighbor(neighbors = tune(), 
+                                    weight_func = tune(), 
+                                    dist_power = tune()) |> 
+  set_mode('classification') |> 
+  set_engine('kknn')
+
+# create a grid with different values for the hyperparamter
+nn_grid <- grid_regular(neighbors(range = c(2, 51)), 
+                        weight_func(), dist_power(range = c(0.12, 2)),  
+                        levels =6)
+
+knn_param = parameters(neighbors(range = c(5, 51)), weight_func(), 
+                       dist_power(range = c(0.12, 2)))
+nn_grid_maxEnthropy = grid_max_entropy(knn_param, size = 150)
+
+# create a workflow that will bring all steps together. 
+knn_wf <- workflow(preprocessor = df_rec, spec = knn_model_tuned)
+
+# fitting the models for the various hyperparameters
+library(doParallel)
+registerDoParallel()
+knn_fit <- tune_grid(knn_wf, resamples = tscv, 
+                     metrics = metric_set(accuracy, f_meas, roc_auc), 
+                     control = control_resamples(save_pred = T, verbose = T), 
+                     grid = nn_grid_maxEnthropy)
+
+
+metrics <- knn_fit |> collect_metrics() |> 
+  arrange(.metric, desc(mean))
+
+# another cool trick with collecting predictions for all the models. 
+all_pred <- knn_fit |> select(.predictions) |> unnest(cols = c(.predictions))
+
+# now we need to decide which is the 'best' model
+# we say the best model is the one that has the best f1 score
+best_knn_model = knn_fit |> show_best(metric = 'f_meas', n =1)
+best_knn_model
+
+```
+
+
+```{r}
+#| label: r_tuningHyperpa2
+
+knn_fit |> autoplot(metric = c('accuracy', 'f_meas'))
+```
+
+We can fit the best model (the one with the parameters that gives the best f1 score) as the final model.  Then we'll make prediction using that model 
+
+```{r}
+#| label: r_tuningHyperpa3
+
+knn_model_final <- knn_model_tuned |> finalize_model(best_knn_model)
+knn_final_fit <- knn_model_final |> fit(target ~., data = df_juiced)
+
+knn_pred <- predict(knn_final_fit, new_data = df_baked)
+```
+
+
+:::
+
+## Final Metric check 
+
+::: {.panel-tabset}
+
+## Python 
+
+```{python}
+
 acc_train = accuracy_score(y_train, tuned_knn_model.predict(x_train))
 acc_test = accuracy_score(y_test, y_pred_tuned)
 f1_test = f1_score(y_test, y_pred_tuned)
 
 print(f'\n Training Accuracy \t: {acc_train :0.4} \n Test Accuracy \t\t: {acc_test :0.4}')
+print(f'\n Test f1 score \t\t: {f1_test :0.4}')
 ```
 
 ```{python}
@@ -681,13 +812,26 @@ print(classification_report(y_test, y_pred_tuned))
 ```
 
 
-## R 
+## R
 
 ```{r}
+df_pred <- bind_cols(df_baked |> select(date, target), knn_pred)
 
+
+df_pred |> metrics(target, .pred_class)
+df_pred |> f_meas(target, .pred_class)
+df_pred |> precision(target, .pred_class)
 ```
 
+
+```{r}
+cm <- conf_mat(data = df_pred, truth = target, estimate = .pred_class)
+autoplot(cm, type = 'heatmap')
+```
+
+
 :::
+
 
 ## Trading Strategy 
 

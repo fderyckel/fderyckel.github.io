@@ -6,3 +6,12 @@ kknn
 rsample
 yardstick
 readr
+tidyr
+timetk
+workflows
+tune
+scales
+dials
+foreach
+iterators
+doParallel
