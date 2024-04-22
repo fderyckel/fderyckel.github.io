@@ -12,7 +12,7 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Sun, 21 Apr 2024 17:00:00 GMT</lastBuildDate>
 <item>
-  <title>Lasso and Ridge Regressions</title>
+  <title>Regularized Regressions</title>
   <dc:creator>Francois de Ryckel</dc:creator>
   <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/04-lasso-ridge/index.html</link>
   <description><![CDATA[ 
@@ -20,6 +20,30 @@
 
 
 
+<p>Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of predictors increased, conditions of linear regression start to break: multicollinearity between variables, breaking of homoskedasticity, etc.) To address these issues, we introduce regularized regression where the coefficient of the predictors (aka <strong>the estimated coefficient</strong>) received a given penalty. The goal of that penalty is to reduce the variance of the model (with many predictors models tends to overfit the data and performed poorly on test data).</p>
+<p>The objective functions of reguliarized models are the same as for OLS except they have a penalty term. Hence, it becomes <img src="https://latex.codecogs.com/png.latex?minimize%20(SSR%20+%20P)"></p>
+<p>For Ridge Regression the additional penalty term is <img src="https://latex.codecogs.com/png.latex?%5Clambda%20%5Csum_%7Bj=1%7D%5E%7Bp%7D%20%5Cbeta_j%5E2"> The loss function becomes <img src="https://latex.codecogs.com/png.latex?minimize%20%5Cleft(%20SSR%20+%20%5Clambda%20%5Csum_%7Bj=1%7D%5E%7Bp%7D%20%5Cbeta_j%5E2%20%5Cright)"> <span id="eq-ridge_loss_function"><img src="https://latex.codecogs.com/png.latex?minimize%20%5Cleft(%20%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By_i%7D)%5E2%20+%20%5Clambda%20%5Csum_%7Bj=1%7D%5E%7Bp%7D%20%5Cbeta_j%5E2%20%5Cright)%20%5Ctag%7B1%7D"></span></p>
+<div class="callout callout-style-simple callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+indexing and notation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>The <img src="https://latex.codecogs.com/png.latex?i"> index refers to the number of observations. <img src="https://latex.codecogs.com/png.latex?y_i"> is the actual ‘target’ value of * the <img src="https://latex.codecogs.com/png.latex?i_th"> observation. <img src="https://latex.codecogs.com/png.latex?%5Chat%7By%7D_i"> is the predicted value for the <img src="https://latex.codecogs.com/png.latex?i_th"> observation.<br>
+</li>
+<li>The <img src="https://latex.codecogs.com/png.latex?j"> index refers to the number of predictors.<br>
+</li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cbeta_j"> is the coefficient of the predictors <img src="https://latex.codecogs.com/png.latex?j"></li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Clambda"> is the Ridge Penalty hyper-parameter. Note that when <img src="https://latex.codecogs.com/png.latex?%5Clambda"> is 0, there is no more Regularized Regression and it becomes just a normal OLS regression.</li>
+</ul>
+</div>
+</div>
+<p><img src="https://latex.codecogs.com/png.latex?%5Clambda"> can take any real values from <img src="https://latex.codecogs.com/png.latex?0"> to <img src="https://latex.codecogs.com/png.latex?%5Cinfty">. As <img src="https://latex.codecogs.com/png.latex?%5Clambda"> increases, it will forces the <img src="https://latex.codecogs.com/png.latex?%5Cbeta_j"> toward 0 in order to minimize the loss function.</p>
 
 
 
@@ -44,10 +68,12 @@
 <section id="regression-models" class="level1">
 <h1>Regression models</h1>
 <p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
+<p>IT has to be noted that quite a few of these concepts have deeper connections in ML as they are not only ‘success’ metrics but also loss functions of ML algorithms.</p>
 <section id="rmse" class="level2">
 <h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
 <p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)</p>
 <p><img src="https://latex.codecogs.com/png.latex?RMSE%20=%20%5Csqrt%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By%7D_i)%5E2%7D%7Bn%7D"></p>
+<p>The SSE <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By%7D_i)%5E2"> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function.</p>
 </section>
 <section id="mae" class="level2">
 <h2 class="anchored" data-anchor-id="mae">MAE</h2>
@@ -67,7 +93,7 @@
 <li>differentiable everywhere (even at the junction of the MAE and MSE). Meanings it can be used with Gradient Descent algorithms as well.</li>
 <li>The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.</li>
 </ul>
-<p>The main disadventage of the Huber Loss function is how to tune that <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> parameters.</p>
+<p>The main disadvantage of the Huber Loss function is how to tune that <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> parameters.</p>
 </section>
 </section>
 <section id="classfication-models" class="level1">
@@ -3891,16 +3917,16 @@ font-style: inherit;">FALSE</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.2.0 ──</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ broom        1.0.5     ✔ rsample      1.2.0
-✔ dials        1.2.0     ✔ tibble       3.2.1
-✔ infer        1.0.5     ✔ tidyr        1.3.0
-✔ modeldata    1.2.0     ✔ tune         1.1.2
-✔ parsnip      1.1.1     ✔ workflows    1.1.3
-✔ purrr        1.0.2     ✔ workflowsets 1.0.1
-✔ recipes      1.0.9     ✔ yardstick    1.2.0</code></pre>
+<pre><code>✔ broom        1.0.5      ✔ rsample      1.2.1 
+✔ dials        1.2.1      ✔ tibble       3.2.1 
+✔ infer        1.0.7      ✔ tidyr        1.3.1 
+✔ modeldata    1.3.0      ✔ tune         1.2.1 
+✔ parsnip      1.2.1      ✔ workflows    1.1.4 
+✔ purrr        1.0.2      ✔ workflowsets 1.1.0 
+✔ recipes      1.0.10     ✔ yardstick    1.3.1 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
@@ -3909,7 +3935,7 @@ font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
+• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -3964,6 +3990,8 @@ AIC=4455.07   AICc=4455.15   BIC=4478.42</code></pre>
 
  ]]></description>
   <category>Time-Series</category>
+  <category>ARIMA</category>
+  <category>Decomposition</category>
   <guid>https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index.html</guid>
   <pubDate>Mon, 08 Jan 2024 17:00:00 GMT</pubDate>
 </item>
@@ -4207,7 +4235,7 @@ font-style: inherit;">'2017-09-01'</span>)]</span></code></pre></div>
 
 
 
-<p>One of the very first ML algorithm (because it’s ease) to be exposed to is KNN. In this post, we’ll learn about KNN using Python (with the Sklearn package) and using R with packages from the tidymodel framework.</p>
+<p>One of the very first ML algorithm (because of its ease) I expose is KNN. In this post, we’ll learn about KNN using Python (with the Sklearn package) and using R with packages from the tidymodel framework.</p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>KNN stands for <em>K Nearest Neighbor</em>.</p>
