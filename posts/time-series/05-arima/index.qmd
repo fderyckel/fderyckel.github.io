@@ -2,7 +2,7 @@
 title: "05 - Arima"
 author: "François de Ryckel"
 date: "2024-01-9"
-categories: [Time-Series]
+categories: [Time-Series, ARIMA, Decomposition]
 description: 'Introducing Arima - Autoregressive Integrated Moving Average.'
 editor: source
 date-modified: "2024-01-22"

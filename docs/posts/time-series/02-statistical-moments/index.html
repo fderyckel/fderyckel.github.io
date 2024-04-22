@@ -152,11 +152,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">statistics</div>
+                <div class="quarto-category">Statistics</div>
                 <div class="quarto-category">Mean</div>
                 <div class="quarto-category">Skewness</div>
                 <div class="quarto-category">Kurtosis</div>
-                <div class="quarto-category">log-transformation</div>
+                <div class="quarto-category">Log-transformation</div>
                 <div class="quarto-category">Box-Cox</div>
               </div>
                   </div>
@@ -362,19 +362,19 @@ Kurtosis
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean rolling 21 days return is: 0.01117</code></pre>
+<pre><code>The mean rolling 21 days return is: 0.00886</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The mean rolling 21 days log return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span> <span class="bu">round</span>(mean_21d_log_ret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The mean rolling 21 days log return is: -0.00594</code></pre>
+<pre><code>The mean rolling 21 days log return is: -0.00794</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21dret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The standard deviation of the rolling 21 days return is: 0.19248</code></pre>
+<pre><code>The standard deviation of the rolling 21 days return is: 0.19053</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The standard deviation of the rolling 21 days return is: </span><span class="sc">%s</span><span class="st">"</span> <span class="op">%</span><span class="bu">round</span>(std_21d_log_ret, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The standard deviation of the rolling 21 days return is: 0.1832</code></pre>
+<pre><code>The standard deviation of the rolling 21 days return is: 0.18162</code></pre>
 </div>
 </div>
 <p>An histogram of the returns will help visualize the center and spread of the data.</p>
@@ -384,14 +384,14 @@ Kurtosis
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.hist(returns_21d, bins <span class="op">=</span> <span class="st">'rice'</span>, label <span class="op">=</span> <span class="st">'Rolling 21-days return'</span>)</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="614"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>We are seeing a larger right tail with indeed the mean looking around 0. An other to visualize this and putting emphasis on the outliers would be to plot the returns on a box-and-whiskers plot.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.boxplot(returns_21d, labels <span class="op">=</span> [<span class="st">'Rolling 21-days return'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x157ebda90&gt;, &lt;matplotlib.lines.Line2D object at 0x157ebdd30&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x157ebdfd0&gt;, &lt;matplotlib.lines.Line2D object at 0x157ecf2b0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x157ebd7f0&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x157ecf550&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x157ecf7f0&gt;], 'means': []}</code></pre>
+<pre><code>{'whiskers': [&lt;matplotlib.lines.Line2D object at 0x16ae19ee0&gt;, &lt;matplotlib.lines.Line2D object at 0x1780b6fc0&gt;], 'caps': [&lt;matplotlib.lines.Line2D object at 0x1780b72f0&gt;, &lt;matplotlib.lines.Line2D object at 0x1780b75f0&gt;], 'boxes': [&lt;matplotlib.lines.Line2D object at 0x1780b6b10&gt;], 'medians': [&lt;matplotlib.lines.Line2D object at 0x1780b7890&gt;], 'fliers': [&lt;matplotlib.lines.Line2D object at 0x1780b7b90&gt;], 'means': []}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -403,27 +403,27 @@ Kurtosis
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The skew of 21-day returns is: </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(skew(returns_21d), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The skew of 21-day returns is: 1.122000</code></pre>
+<pre><code>The skew of 21-day returns is: 1.135000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The kurtosis of 21-day returns is </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(kurtosis(returns_21d), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The kurtosis of 21-day returns is 3.690000</code></pre>
+<pre><code>The kurtosis of 21-day returns is 3.789000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now checking on log returns</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The skew of 21-day log returns is: </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(skew(returns_21d_log), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The skew of 21-day log returns is: 0.214000</code></pre>
+<pre><code>The skew of 21-day log returns is: 0.225000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The kurtosis of 21-day log returns is </span><span class="sc">%f</span><span class="st">'</span> <span class="op">%</span> <span class="bu">round</span>(kurtosis(returns_21d_log), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The kurtosis of 21-day log returns is 0.973000</code></pre>
+<pre><code>The kurtosis of 21-day log returns is 1.004000</code></pre>
 </div>
 </div>
 <p>The skew value is quite large and positive which confirms the right tail of the histogram</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>skewtest(returns_21d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SkewtestResult(statistic=28.030054369118826, pvalue=6.993000434657173e-173)</code></pre>
+<pre><code>SkewtestResult(statistic=28.7983570677612, pvalue=2.2490101247716843e-182)</code></pre>
 </div>
 </div>
 <p>Very small p-value. We reject the null-hypothesis. The distribution is not symetrical.</p>
@@ -532,7 +532,7 @@ exp(Y_i^{\lambda}) \; \space (\lambda = 0)
 <pre><code># A tibble: 1 × 6
   number operation type   trained skip  id          
    &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;       
-1      1 step      BoxCox TRUE    FALSE BoxCox_SJuL5</code></pre>
+1      1 step      BoxCox TRUE    FALSE BoxCox_r9cXr</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to check the estimation of lambda</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(recipe_bc, <span class="at">number =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -540,7 +540,7 @@ exp(Y_i^{\lambda}) \; \space (\lambda = 0)
 <pre><code># A tibble: 1 × 3
   terms    value id          
   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;       
-1 w_return 0.115 BoxCox_SJuL5</code></pre>
+1 w_return 0.115 BoxCox_r9cXr</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transforming the data using the estimated lambda</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>w_oil_bc <span class="ot">&lt;-</span> <span class="fu">juice</span>(recipe_bc)</span>

@@ -218,10 +218,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="regression-models" class="level1">
 <h1>Regression models</h1>
 <p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
+<p>IT has to be noted that quite a few of these concepts have deeper connections in ML as they are not only ‘success’ metrics but also loss functions of ML algorithms.</p>
 <section id="rmse" class="level2">
 <h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
 <p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)</p>
 <p><span class="math display">\[RMSE = \sqrt \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}\]</span></p>
+<p>The SSE <span class="math inline">\(\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\)</span> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function.</p>
 </section>
 <section id="mae" class="level2">
 <h2 class="anchored" data-anchor-id="mae">MAE</h2>
@@ -245,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>differentiable everywhere (even at the junction of the MAE and MSE). Meanings it can be used with Gradient Descent algorithms as well.</li>
 <li>The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.</li>
 </ul>
-<p>The main disadventage of the Huber Loss function is how to tune that <span class="math inline">\(\delta\)</span> parameters.</p>
+<p>The main disadvantage of the Huber Loss function is how to tune that <span class="math inline">\(\delta\)</span> parameters.</p>
 </section>
 </section>
 <section id="classfication-models" class="level1">

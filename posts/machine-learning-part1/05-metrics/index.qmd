@@ -7,9 +7,11 @@ editor: source
 date-modified: '2024-04-20'
 ---
 
-When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success.  How would we decide if this models is better than this model? Or even which are the hyper-parameters that fine-tuned a model better? 
+When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success.  How would we decide if this model performs well or if this model is better than this model? Or even deciding which hyper-parameters to use (aka which ones fine-tune to a better model?) 
 
 This post is about defining what is *'best'* or *'better'* when comparing different **supervised models**.  we'll have 2 main parts: measure of success for regression models and measure of success for classification models. 
+
+In ML linguo, we are talking about **Loss functions**: how to measure and minimize the errors between the predicted ($\hat y$) and the actual values ($y$).  So the loss function is used to measure the error on a single observation.  On the other hand, the **Cost Function** is the average loss over the entire dataset. 
 
 # Regression models 
 
@@ -23,7 +25,7 @@ This is probably the most well-known measure when comparing regression models. B
 
 $$RMSE = \sqrt \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}$$
 
-The MSE (without square root) is also the loss function in the linear regression algorithm. 
+The SSE $\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$  (aka sum of square error, aka without square root and average) is also the loss function in the [linear regression algorithm](../03-linear-regression/index.qmd). It is a convex function; hence we can find a minimum; or better than solving partial derivatives, one can use Gradient Descent (more feasible/practicle when it comes to ML).  
 
 ## MAE
 
@@ -53,11 +55,17 @@ Some advantages of Huber Loss functions:
 * differentiable everywhere (even at the junction of the MAE and MSE).  Meanings it can be used with Gradient Descent algorithms as well. 
 * The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.
 
-The main disadventage of the Huber Loss function is how to tune that $\delta$ parameters. 
+The main disadvantage of the Huber Loss function is how to tune that $\delta$ parameters. 
 
 
 
 # Classfication models 
+
+## The log-loss function 
+
+The log-loss function is used with logistic regressions. 
+
+
 
 ## Accuracy 
 

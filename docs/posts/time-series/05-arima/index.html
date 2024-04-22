@@ -153,6 +153,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">Time-Series</div>
+                <div class="quarto-category">ARIMA</div>
+                <div class="quarto-category">Decomposition</div>
               </div>
                   </div>
   </div>
@@ -675,16 +677,16 @@ AIC=4554.49   AICc=4554.63   BIC=4587.3</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.2.0 ──</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ broom        1.0.5     ✔ rsample      1.2.0
-✔ dials        1.2.0     ✔ tibble       3.2.1
-✔ infer        1.0.5     ✔ tidyr        1.3.0
-✔ modeldata    1.2.0     ✔ tune         1.1.2
-✔ parsnip      1.1.1     ✔ workflows    1.1.3
-✔ purrr        1.0.2     ✔ workflowsets 1.0.1
-✔ recipes      1.0.9     ✔ yardstick    1.2.0</code></pre>
+<pre><code>✔ broom        1.0.5      ✔ rsample      1.2.1 
+✔ dials        1.2.1      ✔ tibble       3.2.1 
+✔ infer        1.0.7      ✔ tidyr        1.3.1 
+✔ modeldata    1.3.0      ✔ tune         1.2.1 
+✔ parsnip      1.2.1      ✔ workflows    1.1.4 
+✔ purrr        1.0.2      ✔ workflowsets 1.1.0 
+✔ recipes      1.0.10     ✔ yardstick    1.3.1 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
@@ -693,7 +695,7 @@ AIC=4554.49   AICc=4554.63   BIC=4587.3</code></pre>
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
+• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parsnip)</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeltime)</span>

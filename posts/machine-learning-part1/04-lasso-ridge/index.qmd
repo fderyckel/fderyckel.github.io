@@ -1,9 +1,41 @@
 ---
-title: "Lasso and Ridge Regressions"
+title: "Regularized Regressions"
 author: "Francois de Ryckel"
 date: "2024-04-22"
 categories: [Regression, Lasso, Ridge]
 editor: source
 date-modified: '2024-04-30'
 ---
+
+Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp.  However, rarely all conditions are met and/or as the number of predictors increased, conditions of linear regression start to break: multicollinearity between variables, breaking of homoskedasticity, etc.) To address these issues, we introduce regularized regression where the coefficient of the predictors (aka **the estimated coefficient**) received a given penalty.  The goal of that penalty is to reduce the variance of the model (with many predictors models tends to overfit the data and performed poorly on test data). 
+
+The objective functions of reguliarized models are the same as for OLS except they have a penalty term.  Hence, it becomes $minimize (SSR + P)$
+
+For Ridge Regression the additional penalty term is $$\lambda \sum_{j=1}^{p} \beta_j^2$$   The loss function becomes $$minimize \left( SSR + \lambda \sum_{j=1}^{p} \beta_j^2 \right)$$
+$$minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \beta_j^2 \right)$$ {#eq-ridge_loss_function}
+
+::: {.callout-caution appearance="simple"} 
+
+## indexing and notation 
+
+* The $i$ index refers to the number of observations.  $y_i$ is the actual 'target' value of * the $i_th$ observation.  $\hat{y}_i$ is the predicted value for the $i_th$ observation.  
+* The $j$ index refers to the number of predictors.  
+* $\beta_j$ is the coefficient of the predictors $j$
+* $\lambda$ is the Ridge Penalty hyper-parameter.  Note that when $\lambda$ is 0, there is no more Regularized Regression and it becomes just a normal OLS regression. 
+
+:::
+
+$\lambda$ can take any real values from $0$ to $\infty$.  As $\lambda$ increases, it will forces the $\beta_j$ toward 0 in order to minimize the loss function. 
+
+
+
+
+
+
+
+
+
+
+
+
 

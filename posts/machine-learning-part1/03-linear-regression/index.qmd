@@ -12,6 +12,33 @@ Linear regression is probably the most basic example of a machine learning algor
 
 # Simple linear regression 
 
+In its most basic form, a linear regression is defined as 
+$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$ {#eq-linearRegression}
+
+::: {.callout-caution appearance="simple"} 
+
+* $y_i$ is the actual target value of the $i_th$ observation.
+* $\beta_0$ and $beta_1$ are the linear model parameters.  See below how to find them. 
+* $\epsilon_i$ is the irreducible error. 
+
+:::
+
+We can generalized the basic form above in the case we have many predictors ($p$ predictors in our formula)
+$$y_i = \beta_0 + \sum_{j=1}^p\beta_j x_i + \epsilon_i$$ {#eq-multivariables-linearRegression}
+
+We can also use a matrix notation to refer to our simple linear regression with a dataset of n-observations. 
+
+$$\textbf{Y} = \textbf{X} \cdot \beta + \epsilon$$ {#eq-matrix-linearReg}
+
+Or in more some details: 
+
+$$\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\ y_{n} \end{bmatrix} = 
+\begin{bmatrix} 1 & x_{1} \\ 1 & x_{2} \\ \vdots \\ 1 & x_{n} \end{bmatrix} \cdot 
+\begin{bmatrix} \beta_{0} \\ \beta_1 \end{bmatrix} + 
+\begin{bmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \vdots \\ \epsilon_{n} \end{bmatrix}
+$$ {#eq-matrix-linearReg-Long}
+
+
 ## Finding the coefficients from scratch 
 
 In the case of simple linear regression, we just have one independent variable and one dependent variable. 

@@ -181,6 +181,30 @@ ul.task-list li input[type="checkbox"] {
 <p>Linear regression is probably the most basic example of a machine learning algorithms.</p>
 <section id="simple-linear-regression" class="level1">
 <h1>Simple linear regression</h1>
+<p>In its most basic form, a linear regression is defined as <span id="eq-linearRegression"><span class="math display">\[y_i = \beta_0 + \beta_1 x_i + \epsilon_i \tag{1}\]</span></span></p>
+<div class="callout callout-style-simple callout-caution">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<ul>
+<li><span class="math inline">\(y_i\)</span> is the actual target value of the <span class="math inline">\(i_th\)</span> observation.</li>
+<li><span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(beta_1\)</span> are the linear model parameters. See below how to find them.</li>
+<li><span class="math inline">\(\epsilon_i\)</span> is the irreducible error.</li>
+</ul>
+</div>
+</div>
+</div>
+<p>We can generalized the basic form above in the case we have many predictors (<span class="math inline">\(p\)</span> predictors in our formula) <span id="eq-multivariables-linearRegression"><span class="math display">\[y_i = \beta_0 + \sum_{j=1}^p\beta_j x_i + \epsilon_i \tag{2}\]</span></span></p>
+<p>We can also use a matrix notation to refer to our simple linear regression with a dataset of n-observations.</p>
+<p><span id="eq-matrix-linearReg"><span class="math display">\[\textbf{Y} = \textbf{X} \cdot \beta + \epsilon \tag{3}\]</span></span></p>
+<p>Or in more some details:</p>
+<p><span id="eq-matrix-linearReg-Long"><span class="math display">\[\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\ y_{n} \end{bmatrix} =
+\begin{bmatrix} 1 &amp; x_{1} \\ 1 &amp; x_{2} \\ \vdots \\ 1 &amp; x_{n} \end{bmatrix} \cdot
+\begin{bmatrix} \beta_{0} \\ \beta_1 \end{bmatrix} +
+\begin{bmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \vdots \\ \epsilon_{n} \end{bmatrix}
+\tag{4}\]</span></span></p>
 <section id="finding-the-coefficients-from-scratch" class="level2">
 <h2 class="anchored" data-anchor-id="finding-the-coefficients-from-scratch">Finding the coefficients from scratch</h2>
 <p>In the case of simple linear regression, we just have one independent variable and one dependent variable. Let’s say we have <span class="math inline">\(n\)</span> observations <span class="math inline">\((x_i, y_i)\)</span> and we want to find a linear equations that predict y <span class="math inline">\(\hat{y_i}\)</span> based on a given <span class="math inline">\(x_i\)</span>.</p>
@@ -199,7 +223,7 @@ ul.task-list li input[type="checkbox"] {
 <li><span class="math inline">\(\hat{y_i}\)</span> is the estimated or predicted value of y. In that sense <span class="math inline">\(\hat{y_i} = \beta_0 + \beta_1 x_i\)</span>. The error term is then the difference between the actual y and the predicted y: <span class="math inline">\(\epsilon_i = y_i - \hat{y_i}\)</span></li>
 </ul>
 <p>The cost function (or loss function) is to minimize the sum of squared error. In that sense, we seek to minimize <span id="eq-loss-function"><span class="math display">\[ \text{min } SSE = min \sum_{i=1}^{n} \epsilon_i^2 =
-        \underset{\beta_0, \beta1}{argmin} \sum_{i=1}^{n} (y_i-\beta_0 - \beta_1 x_i)^2 \tag{1}\]</span></span></p>
+        \underset{\beta_0, \beta1}{argmin} \sum_{i=1}^{n} (y_i-\beta_0 - \beta_1 x_i)^2 \tag{5}\]</span></span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="errors_visual.png" class="img-fluid figure-img"></p>
@@ -209,25 +233,25 @@ ul.task-list li input[type="checkbox"] {
 <p>To minimize the SSE, we will need to use partial derivatives for both coefficients and solve it for 0.</p>
 <p>Let’s first focus on <span class="math inline">\(\beta_0\)</span></p>
 <p><span class="math display">\[\frac{\partial SSE}{\partial \beta_0} = -2 \sum_{i=1}^{n} (y_i-\beta_0 - \beta_1 x_i) = 0\]</span> Breaking down our sum: <span class="math display">\[\sum_{i=1}^{n} y_i - \sum_{i=1}^{n} \beta_0 - \sum_{i=1}^{n} \beta_1 x_i = 0\]</span> <span class="math inline">\(\beta0\)</span> and <span class="math inline">\(\beta_1\)</span> are coefficient, hence: <span class="math display">\[\sum_{i=1}^{n} y_i - n \beta_0 - \beta_1 \sum_{i=1}^{n} x_i = 0\]</span> and <span class="math display">\[\beta_0 = \frac{\sum_{i=1}^{n} y_i - \beta_1 \sum_{i=1}^{n} x_i}{n}\]</span> <span class="math inline">\(\bar{y} = \frac{\sum_{i=1}^{n} y_i}{n}\)</span> (mean of y values) and <span class="math inline">\(\bar{x}=\frac{\sum_{i=1}^{n} x_i}{n}\)</span> (mean of x values).</p>
-<p>and our previous equation can then be simplified as <span id="eq-beta0"><span class="math display">\[\beta_0 = \bar{y} - \beta_1 \bar{x} \tag{2}\]</span></span></p>
+<p>and our previous equation can then be simplified as <span id="eq-beta0"><span class="math display">\[\beta_0 = \bar{y} - \beta_1 \bar{x} \tag{6}\]</span></span></p>
 <p>Let’s now address the second partial derivative wrt <span class="math inline">\(\beta_1\)</span>.</p>
 <p><span class="math display">\[\frac{\partial SSE}{\partial \beta_1} = -2 \sum_{i=1}^{n} x_i (y_i-\beta_0 - \beta_1 x_i) = 0\]</span>.</p>
-<p>Distributing the <span class="math inline">\(x_i\)</span> and substituting in the value of <span class="math inline">\(\beta_0\)</span> from <a href="#eq-beta0">Equation&nbsp;2</a><br>
+<p>Distributing the <span class="math inline">\(x_i\)</span> and substituting in the value of <span class="math inline">\(\beta_0\)</span> from <a href="#eq-beta0">Equation&nbsp;6</a><br>
 <span class="math display">\[\sum_{i=1}^{n} (x_i y_i - x_i (\bar{y} - \beta_1 \bar{x}) - \beta_1 x_i^2) = 0\]</span>.</p>
-<p>Factoring <span class="math inline">\(\beta_1\)</span> and breaking down the sum and being careful to the sign, we get: <span id="eq-beta1a"><span class="math display">\[\beta_1 = \frac{\sum_{i=1}^{n} x_i (y_i - \bar{y})}{\sum_{i=1}^{n} x_i (x_i - \bar{x})} \tag{3}\]</span></span></p>
+<p>Factoring <span class="math inline">\(\beta_1\)</span> and breaking down the sum and being careful to the sign, we get: <span id="eq-beta1a"><span class="math display">\[\beta_1 = \frac{\sum_{i=1}^{n} x_i (y_i - \bar{y})}{\sum_{i=1}^{n} x_i (x_i - \bar{x})} \tag{7}\]</span></span></p>
 <p>Knowing <span class="math inline">\(\bar{x} = \frac{\sum_{i=1}^{n} x_i}{n}\)</span> and <span class="math inline">\(\bar{y} = \frac{\sum_{i=1}^{n} y_i}{n}\)</span>, we can get one step further (have a common denominator with over n). I have also removed the index on the sum for readability.<br>
-<span id="eq-beta1"><span class="math display">\[\beta_1 = \frac{n \Sigma x_i y_i - \Sigma x_i \Sigma y_i}{n \Sigma x_i^2 - (\Sigma x_i)^2} \tag{4}\]</span></span></p>
-<p>We can now use the values of <span class="math inline">\(\beta_0\)</span> <a href="#eq-beta0">Equation&nbsp;2</a> and <span class="math inline">\(\beta_1\)</span> <a href="#eq-beta1">Equation&nbsp;4</a> into our estimate of y: <span class="math inline">\(\hat{y_i} = \beta_0 + \beta_1 x_i\)</span></p>
+<span id="eq-beta1"><span class="math display">\[\beta_1 = \frac{n \Sigma x_i y_i - \Sigma x_i \Sigma y_i}{n \Sigma x_i^2 - (\Sigma x_i)^2} \tag{8}\]</span></span></p>
+<p>We can now use the values of <span class="math inline">\(\beta_0\)</span> <a href="#eq-beta0">Equation&nbsp;6</a> and <span class="math inline">\(\beta_1\)</span> <a href="#eq-beta1">Equation&nbsp;8</a> into our estimate of y: <span class="math inline">\(\hat{y_i} = \beta_0 + \beta_1 x_i\)</span></p>
 </section>
 <section id="linking-the-slope-and-covariance" class="level2">
 <h2 class="anchored" data-anchor-id="linking-the-slope-and-covariance">Linking the slope and covariance</h2>
 <p>While going over some textbooks or online resources, we find another formula for the slope of our regression line. That formula involve the covariance and or the Pearson coefficient of correlation.</p>
-<p><span id="eq-beta1-cov"><span class="math display">\[\beta_1 = \frac{Cov(x, y)}{\sigma^2 x} \tag{5}\]</span></span></p>
-<p>Now let’s connect both <a href="#eq-beta1a">Equation&nbsp;3</a> and <a href="#eq-beta1-cov">Equation&nbsp;5</a></p>
-<p>I’ll rewrite <a href="#eq-beta1a">Equation&nbsp;3</a> in a slightly simpler form just to lighten the notation <span class="math display">\[\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})}\]</span></p>
+<p><span id="eq-beta1-cov"><span class="math display">\[\beta_1 = \frac{Cov(x, y)}{\sigma^2 x} \tag{9}\]</span></span></p>
+<p>Now let’s connect both <a href="#eq-beta1a">Equation&nbsp;7</a> and <a href="#eq-beta1-cov">Equation&nbsp;9</a></p>
+<p>I’ll rewrite <a href="#eq-beta1a">Equation&nbsp;7</a> in a slightly simpler form just to lighten the notation <span class="math display">\[\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})}\]</span></p>
 <p>Now, it can be noted that that <span class="math inline">\(\sum (x_i - \bar{x}) = 0\)</span> or similarly <span class="math inline">\(\sum (y_i - \bar{y}) = 0\)</span>. Hence <span class="math inline">\(\bar{x} \sum (y_i - \bar{y}) = 0\)</span></p>
 <p>Considering <span class="math inline">\(\bar{x}\)</span> or <span class="math inline">\(\bar{y}\)</span> are constant, we could also write <span class="math inline">\(\sum \bar{x} (y_i - \bar{y}) = 0\)</span> and similarly <span class="math inline">\(\sum \bar{x} (x_i - \bar{x}) = 0\)</span>.</p>
-<p>With that in mind, we can now, go back on our <a href="#eq-beta1a">Equation&nbsp;3</a> <span class="math display">\[\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})} =
+<p>With that in mind, we can now, go back on our <a href="#eq-beta1a">Equation&nbsp;7</a> <span class="math display">\[\beta_1 = \frac{\sum x_i (y_i - \bar{y})}{\sum x_i (x_i - \bar{x})} =
 \frac{\sum x_i (y_i - \bar{y}) - \sum \bar{x} (y_i - \bar{y})}{\sum x_i (x_i - \bar{x}) - \sum \bar{x} (x_i - \bar{x})}\]</span></p>
 <p><span class="math display">\[\beta1 = \frac{\sum (x_i - \bar{x}) (y_i - \bar{y})}{\sum (x_i - \bar{x})^2}\]</span></p>
 <p>Defining <span class="math inline">\(Cov(x, y) = \frac{\sum (x_i - \bar{x}) (y_i - \bar{y})}{n}\)</span> and <span class="math inline">\(\sigma_x = \sqrt{\frac{\sum (x_i - \bar{x})^2}{n}}\)</span></p>

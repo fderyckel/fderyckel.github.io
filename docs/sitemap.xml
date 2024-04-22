@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-04-21T15:39:13.698Z</lastmod>
+    <lastmod>2024-04-22T10:55:22.770Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -66,7 +66,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/02-statistical-moments/index.html</loc>
-    <lastmod>2023-12-16T07:41:37.673Z</lastmod>
+    <lastmod>2024-04-22T00:06:21.252Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/03-autocorrelation/index.html</loc>
@@ -74,7 +74,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/04-ts-decomposition/index.html</loc>
-    <lastmod>2023-12-16T07:46:53.345Z</lastmod>
+    <lastmod>2024-04-22T00:23:00.525Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/prob-quant01/index.html</loc>
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2024-04-21T15:39:11.464Z</lastmod>
+    <lastmod>2024-04-22T10:55:20.429Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -138,7 +138,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2024-02-24T04:23:05.962Z</lastmod>
+    <lastmod>2024-04-22T00:23:26.290Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
@@ -166,7 +166,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index.html</loc>
-    <lastmod>2024-02-14T04:37:51.374Z</lastmod>
+    <lastmod>2024-04-22T00:23:25.867Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/ts-forecast/hotel-booking/index.html</loc>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/05-metrics/index.html</loc>
-    <lastmod>2024-04-21T15:39:29.295Z</lastmod>
+    <lastmod>2024-04-22T10:12:53.722Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/07-kmeans-regime-change/index.html</loc>
@@ -235,5 +235,13 @@
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/04-Lasso-Ridge/index.html</loc>
     <lastmod>2024-04-21T14:37:37.137Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/03-linear-regression/index.html</loc>
+    <lastmod>2024-04-22T10:55:19.904Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/04-lasso-ridge/index.html</loc>
+    <lastmod>2024-04-22T10:43:14.985Z</lastmod>
   </url>
 </urlset>
