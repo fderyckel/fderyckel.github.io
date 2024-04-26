@@ -149,7 +149,16 @@ ul.task-list li input[type="checkbox"] {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
-    
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link active" data-scroll-target="#ridge-regression">Ridge Regression</a></li>
+  <li><a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression">Lasso Regression</a></li>
+  <li><a href="#elastic-net-regression" id="toc-elastic-net-regression" class="nav-link" data-scroll-target="#elastic-net-regression">Elastic Net Regression</a></li>
+  <li><a href="#example-in-r-predicting-oil-prices" id="toc-example-in-r-predicting-oil-prices" class="nav-link" data-scroll-target="#example-in-r-predicting-oil-prices">Example in R predicting oil prices</a></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
@@ -163,7 +172,11 @@ ul.task-list li input[type="checkbox"] {
 
 <p>Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of predictors increased, conditions of linear regression start to break: multicollinearity between variables, breaking of homoskedasticity, etc.) To address these issues, we introduce regularized regression where the coefficient of the predictors (aka <strong>the estimated coefficient</strong>) received a given penalty. The goal of that penalty is to reduce the variance of the model (with many predictors models tends to overfit the data and performed poorly on test data).</p>
 <p>The objective functions of reguliarized models are the same as for OLS except they have a penalty term. Hence, it becomes <span class="math inline">\(minimize (SSR + P)\)</span></p>
-<p>For Ridge Regression the additional penalty term is <span class="math display">\[\lambda \sum_{j=1}^{p} \beta_j^2\]</span> The loss function becomes <span class="math display">\[minimize \left( SSR + \lambda \sum_{j=1}^{p} \beta_j^2 \right)\]</span> <span id="eq-ridge_loss_function"><span class="math display">\[minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \beta_j^2 \right) \tag{1}\]</span></span></p>
+<section id="ridge-regression" class="level1">
+<h1>Ridge Regression</h1>
+<p>For Ridge Regression the additional penalty term is <span class="math display">\[\lambda \sum_{j=1}^{p} \beta_j^2\]</span> The loss function becomes <span class="math display">\[minimize \left( SSR + \lambda \sum_{j=1}^{p} \beta_j^2 \right)\]</span></p>
+<p><span id="eq-ridge_loss_function"><span class="math display">\[minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \beta_j^2 \right) \tag{1}\]</span></span></p>
+<p>The cost function has a dual goal: minimize the sum of the residuals and minimize the predictors coeffecients for a given <span class="math inline">\(\lambda\)</span>.</p>
 <div class="callout callout-style-simple callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -184,9 +197,41 @@ indexing and notation
 </ul>
 </div>
 </div>
-<p><span class="math inline">\(\lambda\)</span> can take any real values from <span class="math inline">\(0\)</span> to <span class="math inline">\(\infty\)</span>. As <span class="math inline">\(\lambda\)</span> increases, it will forces the <span class="math inline">\(\beta_j\)</span> toward 0 in order to minimize the loss function.</p>
+<p><span class="math inline">\(\lambda\)</span> can take any real values from <span class="math inline">\(0\)</span> to <span class="math inline">\(\infty\)</span>. As <span class="math inline">\(\lambda\)</span> increases, it will forces the <span class="math inline">\(\beta_j\)</span> parameters toward 0 in order to minimize the loss function.</p>
+<div class="callout callout-style-simple callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Scaling
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the modeling process, we need to normalize all the predictors otherwise the one with higher values will have a bigger incident no the penalty terms.</p>
+</div>
+</div>
+<p>Some advantage of Ridge (over Lasso)</p>
+<p><strong>More stable</strong>: Ridge regression shrinks all the coefficients towards zero by a small amount, but it never sets them to zero. This makes the model more stable and less prone to variations in the data compared to Lasso. <strong>Computationally faster</strong>: The calculations involved in ridge regression are simpler than Lasso, making it faster to train the model. <strong>Better for correlated features</strong>: When you have many correlated features, Lasso might set some coefficients to zero arbitrarily. Ridge regression avoids this by shrinking all coefficients together, which can be beneficial in such cases.</p>
+<p>Disadvantages of Ridge Not ideal for feature selection as it reduces all the predictors parameters together.</p>
+</section>
+<section id="lasso-regression" class="level1">
+<h1>Lasso Regression</h1>
+<p>Lasso Regression uses a <strong>L1-style penalty</strong> in the cost function: <span class="math display">\[\lambda \sum_{j=1}^{p} \lvert \beta_j \rvert\]</span><br>
+The loss function becomes <span class="math display">\[minimize \left( SSR + \lambda \sum_{j=1}^{p} \lvert \beta_j \rvert \right)\]</span> <span id="eq-ridge_loss_function"><span class="math display">\[minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \lvert \beta_j \rvert \right) \tag{2}\]</span></span></p>
+<p>During gradient descent optimization, the Lasso penalty shrunk weights close to zero or zero. Those weights which are shrunken to zero eliminates the features present in the hypothetical function. Due to this, irrelevant features don’t participate in the predictive model. This penalization of weights makes the hypothesis more simple which encourages the sparsity ( model with few parameters ).</p>
+<p>Increasing <span class="math inline">\(\lambda\)</span> has also the effect of showing which predictors matter the most (as some predictors will be shrunk close to 0). This is one of the main advantage of Lasso in that some predictors parameters might be reduce to 0 (or close to 0) and it will make the model less complex and hence better. And for that reason as well, Lasso is also <strong>robust to multicollinearity</strong>.</p>
+</section>
+<section id="elastic-net-regression" class="level1">
+<h1>Elastic Net Regression</h1>
+<p>Elastic Net is adding a double penalty to the normal Regression cost function. And both penalty are in proportion of each other. Elastic Net combine both a L1 and L2 style penalty.</p>
+<p><span class="math display">\[minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \left( (1-\alpha) \sum_{j=1}^{p} \lvert \beta_j \rvert + \alpha \sum_{j=1}^{p} \beta_j^2 \right) \right)\]</span></p>
+</section>
+<section id="example-in-r-predicting-oil-prices" class="level1">
+<h1>Example in R predicting oil prices</h1>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

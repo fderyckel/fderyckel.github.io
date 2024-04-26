@@ -11,8 +11,13 @@ Linear models obtained with minimizing the SSR (Sum of Square Residuals) are gre
 
 The objective functions of reguliarized models are the same as for OLS except they have a penalty term.  Hence, it becomes $minimize (SSR + P)$
 
+# Ridge Regression 
+
 For Ridge Regression the additional penalty term is $$\lambda \sum_{j=1}^{p} \beta_j^2$$   The loss function becomes $$minimize \left( SSR + \lambda \sum_{j=1}^{p} \beta_j^2 \right)$$
+
 $$minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \beta_j^2 \right)$$ {#eq-ridge_loss_function}
+
+The cost function has a dual goal: minimize the sum of the residuals and minimize the predictors coeffecients for a given $\lambda$. 
 
 ::: {.callout-caution appearance="simple"} 
 
@@ -25,17 +30,43 @@ $$minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \be
 
 :::
 
-$\lambda$ can take any real values from $0$ to $\infty$.  As $\lambda$ increases, it will forces the $\beta_j$ toward 0 in order to minimize the loss function. 
+$\lambda$ can take any real values from $0$ to $\infty$.  As $\lambda$ increases, it will forces the $\beta_j$ parameters toward 0 in order to minimize the loss function.  
+
+::: {.callout-caution appearance="simple"} 
+
+## Scaling  
+
+In the modeling process, we need to normalize all the predictors otherwise the one with higher values will have a bigger incident no the penalty terms. 
+
+:::
+
+Some advantage of Ridge (over Lasso)
+
+**More stable**: Ridge regression shrinks all the coefficients towards zero by a small amount, but it never sets them to zero. This makes the model more stable and less prone to variations in the data compared to Lasso.
+**Computationally faster**: The calculations involved in ridge regression are simpler than Lasso, making it faster to train the model.
+**Better for correlated features**: When you have many correlated features, Lasso might set some coefficients to zero arbitrarily. Ridge regression avoids this by shrinking all coefficients together, which can be beneficial in such cases.
+
+Disadvantages of Ridge
+Not ideal for feature selection as it reduces all the predictors parameters together. 
+
+# Lasso Regression 
+
+Lasso Regression uses a **L1-style penalty** in the cost function: 
+$$\lambda \sum_{j=1}^{p} \lvert \beta_j \rvert$$   
+The loss function becomes $$minimize \left( SSR + \lambda \sum_{j=1}^{p} \lvert \beta_j \rvert \right)$$
+$$minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \sum_{j=1}^{p} \lvert \beta_j \rvert \right)$$ {#eq-ridge_loss_function}
+
+During gradient descent optimization, the Lasso penalty shrunk weights close to zero or zero.  Those weights which are shrunken to zero eliminates the features present in the hypothetical function. Due to this, irrelevant features don’t participate in the predictive model. This penalization of weights makes the hypothesis more simple which encourages the sparsity ( model with few parameters ).
+
+Increasing $\lambda$ has also the effect of showing which predictors matter the most (as some predictors will be shrunk close to 0).  This is one of the main advantage of Lasso in that some predictors parameters might be reduce to 0 (or close to 0) and it will make the model less complex and hence better. And for that reason as well, Lasso is also **robust to multicollinearity**. 
+
+# Elastic Net Regression 
+
+Elastic Net is adding a double penalty to the normal Regression cost function.  And both penalty are in proportion of each other. Elastic Net combine both a L1 and L2 style penalty.  
+
+$$minimize \left( \sum_{i=1}^{n}(y_i - \hat{y_i})^2 + \lambda \left( (1-\alpha) \sum_{j=1}^{p} \lvert \beta_j \rvert + \alpha \sum_{j=1}^{p} \beta_j^2 \right) \right)$$ 
 
 
-
-
-
-
-
-
-
-
-
+# Example in R predicting oil prices
 
 

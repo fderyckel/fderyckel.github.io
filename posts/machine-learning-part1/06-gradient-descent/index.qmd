@@ -1,0 +1,171 @@
+---
+title: "Gradient Descent"
+author: "Francois de Ryckel"
+date: "2024-04-26"
+categories: [Regression, Lasso, Ridge]
+editor: source
+date-modified: '2024-04-30'
+---
+
+Gradient Descent is an optimization technique used in many Machine Learning algorithms to find the minimum of a function.  It does require a convex and differentiable function to ensure we have a minimum. 
+At its core it's like searching for the lowest valley in a hilly landscape. The idea is to take **small steps** in the **steepest downhill direction** until you reach the lowest point. 
+
+Gradient Descent is used to find the parameters of the cost function.  Think the parameters in the linear regression for instance. 
+
+# Basic Gradient Descent 
+
+One of the main disadvantage of gradient descent is getting stuck to a local minimum or a saddle point and not finding the global minimum. 
+
+To perform a gradient descent, we need 
+
+* a function
+* its derivative 
+* a starting point (where do we start going down)
+* the size of a step (aka **learning rate**)
+* the number of iterations (aka how many steps do we intend to take)
+* optionally, we can set a threshold for when we stop the iterative process of going down the hill.  
+
+Let's take a quadratic function to start. 
+
+$$f(x) = 0.91 x^2 + 11x - 7$$
+
+::: {.panel-tabset}
+
+## Python 
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+# the original function 
+def cost_function(x): 
+  return(3.91*x**2 + 5*x - 59)
+
+# the derivative of our function 
+def gradient(x): 
+  return(3.91*x+5)
+
+# checking our function
+cost_function(4.5)
+
+# quick visual check 
+x = np.linspace(-10, 10, 1000)
+y = cost_function(x)
+
+plt.clf()
+plt.plot(x, y)
+plt.xlabel('x')
+plt.ylabel('cost_function(x)')
+plt.title('Plot of the cost_function(x) vs x')
+plt.show()
+```
+
+## R 
+
+```{r}
+
+```
+
+
+::: 
+
+We can now put everything together and define our gradient descent function.  
+
+$$x_{n+1} = x_n - {Gradient} \space \cdot \space {Learning \space Rate}$$
+```{python}
+def gradient_descent(f, deriv, start, learning_rate, n_iter): 
+  x = start
+  for i in range(n_iter): 
+    grad = gradient(x)
+    
+    # we now update x
+    x = x - learning_rate * grad 
+    
+  print(f"Minimum value of x: {x:.2f}")
+  print(f"Minimum value for our Cost function: {cost_function(x):.3f}")
+
+gradient_descent(cost_function, gradient, 15, 0.01, 10000)
+```
+
+We could change slightly our code to store the iterations for visualization or analysis. 
+
+```{python}
+def gradient_descent(f, deriv, start, learning_rate, n_iter): 
+  x = start
+  # initialize a list to store values 
+  cost_values = []
+  
+  for i in range(n_iter): 
+    cost = cost_function(x)
+    grad = gradient(x)
+    # update of x
+    x = x - learning_rate * grad
+    # append the value of cost to the list
+    cost_values.append(cost)
+    # print the progress
+    if i % 10 == 0  and i < 200: 
+      print(f"Iteration {i}: x = {x:.4f}, cost = {cost:.4f}")
+  
+gradient_descent(cost_function, gradient, 
+                 start = np.random.randn(), learning_rate = 0.01, 
+                 n_iter = 1000)
+```
+
+We could visualize how the process happen.  We'll return the *cost_values* list for that to our function. 
+
+```{python}
+
+# the original function 
+def cost_function(x): 
+  return(0.91*x**2 + 5*x - 59)
+
+# the derivative of our function 
+def gradient(x): 
+  return(0.91*x+5)
+
+def gradient_descent(f, deriv, start, learning_rate, n_iter): 
+  x = start
+  cost_values = []
+  x_list = [start]
+  
+  for i in range(n_iter): 
+    cost = cost_function(x)
+    grad = gradient(x)
+    x = x - learning_rate * grad
+    cost_values.append(cost)
+    x_list.append(x)
+    print("Iteration {}: x = {}, cost = {}".format(i, x, cost))
+      
+  return(x_list)
+
+x_list = gradient_descent(cost_function, gradient, 
+                          start = 7, learning_rate = 0.3, 
+                          n_iter = 5)
+
+
+x = np.linspace(-10, 10, 50)
+y = cost_function(x)
+
+plt.clf()
+plt.plot(x, y)
+for i in range(len(x_list) - 1):
+    x1 = x_list[i]
+    y1 = cost_function(x1)
+    x2 = x_list[i + 1]
+    y2 = cost_function(x2)
+    plt.plot([x1, x2], [y1, y2], 'ro--')
+    plt.text(x1 + 0.5, y1 - 2, round(y1, 2))
+# Label the final cost value
+x_final = x_list[-1]
+y_final = cost_function(x_final)
+plt.text(x_final, y_final - 5, round(y_final, 2))
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('Gradient Descent for f(x)')
+plt.show()
+```
+
+
+# Stochastic Gradient Descent 
+

@@ -3,6 +3,8 @@
     "listing": "/blog.html",
     "items": [
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
+      "/posts/machine-learning-part1/06-gradient-descent/index.html",
+      "/posts/machine-learning-part1/03-linear-regression/index.html",
       "/posts/machine-learning-part1/01-knn/index.html",
       "/posts/machine-learning-part1/05-metrics/index.html",
       "/posts/machine-learning-part2/xgboost/index.html",
@@ -27,15 +29,14 @@
       "/posts/quant-part2/03-SDE-part3/index.html",
       "/posts/quant-puzzle-01/index.html",
       "/posts/machine-learning-part1/09-naives-bayes-intro/index.html",
-      "/posts/machine-learning-part1/03-linear-regression/index.html",
       "/posts/quant-part1/random-behavior-assets/index.html",
       "/posts/lin-algebra-quant/index.html",
       "/posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html",
       "/posts/proba-quant/discrete-simulations/index.html",
       "/posts/stochastic-processes/index.html",
-      "/posts/machine-learning-part1/06-kmeans-intro/index.html",
-      "/posts/markov-chains/index.html",
-      "/posts/machine-learning-part1/07-kmeans-regime-change/index.html",
+      "/posts/machine-learning-part1/07-kmeans-intro/index.html",
+      "/posts/proba-quant/markov-chains/index.html",
+      "/posts/machine-learning-part1/08-kmeans-regime-change/index.html",
       "/posts/algebra-quant/index.html",
       "/posts/machine-learning-part2/xgboost-time-series/index.html"
     ]
@@ -62,6 +63,7 @@
     "items": [
       "/posts/proba-quant/discrete-simulations/index.html",
       "/posts/proba-quant/jensen-inequality/index.html",
+      "/posts/proba-quant/markov-chains/index.html",
       "/posts/proba-quant/prob-quant01/index.html"
     ]
   },
@@ -69,12 +71,13 @@
     "listing": "/machine-learning-part1.html",
     "items": [
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
+      "/posts/machine-learning-part1/06-gradient-descent/index.html",
+      "/posts/machine-learning-part1/03-linear-regression/index.html",
       "/posts/machine-learning-part1/01-knn/index.html",
       "/posts/machine-learning-part1/05-metrics/index.html",
       "/posts/machine-learning-part1/09-naives-bayes-intro/index.html",
-      "/posts/machine-learning-part1/03-linear-regression/index.html",
-      "/posts/machine-learning-part1/06-kmeans-intro/index.html",
-      "/posts/machine-learning-part1/07-kmeans-regime-change/index.html"
+      "/posts/machine-learning-part1/07-kmeans-intro/index.html",
+      "/posts/machine-learning-part1/08-kmeans-regime-change/index.html"
     ]
   },
   {

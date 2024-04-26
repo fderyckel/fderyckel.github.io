@@ -194,6 +194,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#classfication-models" id="toc-classfication-models" class="nav-link" data-scroll-target="#classfication-models">Classfication models</a>
   <ul class="collapse">
+  <li><a href="#type-i-and-type-ii-errors" id="toc-type-i-and-type-ii-errors" class="nav-link" data-scroll-target="#type-i-and-type-ii-errors">Type I and Type II errors</a></li>
+  <li><a href="#the-log-loss-function" id="toc-the-log-loss-function" class="nav-link" data-scroll-target="#the-log-loss-function">The log-loss function</a></li>
   <li><a href="#accuracy" id="toc-accuracy" class="nav-link" data-scroll-target="#accuracy">Accuracy</a></li>
   <li><a href="#precision" id="toc-precision" class="nav-link" data-scroll-target="#precision">Precision</a></li>
   <li><a href="#recall" id="toc-recall" class="nav-link" data-scroll-target="#recall">Recall</a></li>
@@ -213,8 +215,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How would we decide if this models is better than this model? Or even which are the hyper-parameters that fine-tuned a model better?</p>
+<p>When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How would we decide if this model performs well or if this model is better than this model? Or even deciding which hyper-parameters to use (aka which ones fine-tune to a better model?)</p>
 <p>This post is about defining what is <em>‘best’</em> or <em>‘better’</em> when comparing different <strong>supervised models</strong>. we’ll have 2 main parts: measure of success for regression models and measure of success for classification models.</p>
+<p>In ML linguo, we are talking about <strong>Loss functions</strong>: how to measure and minimize the errors between the predicted (<span class="math inline">\(\hat y\)</span>) and the actual values (<span class="math inline">\(y\)</span>). So the loss function is used to measure the error on a single observation. On the other hand, the <strong>Cost Function</strong> is the average loss over the entire dataset.</p>
 <section id="regression-models" class="level1">
 <h1>Regression models</h1>
 <p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
@@ -223,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
 <p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)</p>
 <p><span class="math display">\[RMSE = \sqrt \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}\]</span></p>
-<p>The SSE <span class="math inline">\(\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\)</span> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function.</p>
+<p>The SSE <span class="math inline">\(\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\)</span> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function; hence we can find a minimum; or better than solving partial derivatives, one can use Gradient Descent (more feasible/practicle when it comes to ML).</p>
 </section>
 <section id="mae" class="level2">
 <h2 class="anchored" data-anchor-id="mae">MAE</h2>
@@ -252,6 +255,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="classfication-models" class="level1">
 <h1>Classfication models</h1>
+<section id="type-i-and-type-ii-errors" class="level2">
+<h2 class="anchored" data-anchor-id="type-i-and-type-ii-errors">Type I and Type II errors</h2>
+<ul>
+<li><p>Type I error is the probability of a false positive; it is the probability of falsely rejecting <span class="math inline">\(H_0\)</span>, the null-hypothesis. The type I error is consistent with the chosen significant level.</p></li>
+<li><p>Type II error is the probability of a false negative; it is the probability of NOT rejecting a null-hypothesis that is actually false.</p></li>
+</ul>
+</section>
+<section id="the-log-loss-function" class="level2">
+<h2 class="anchored" data-anchor-id="the-log-loss-function">The log-loss function</h2>
+<p>The log-loss function is used with logistic regressions.</p>
+</section>
 <section id="accuracy" class="level2">
 <h2 class="anchored" data-anchor-id="accuracy">Accuracy</h2>
 <p>Shortcomings:</p>

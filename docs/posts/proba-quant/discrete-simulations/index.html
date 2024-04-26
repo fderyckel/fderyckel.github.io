@@ -146,9 +146,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="quarto-title column-body">
       <h1 class="title">Discrete Probability Simulations in R</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">statistics</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+                <div class="quarto-category">Probability</div>
+                <div class="quarto-category">Simulations</div>
               </div>
                   </div>
   </div>
@@ -209,22 +208,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>expec <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="at">size =</span> <span class="dv">1000000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(expec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3376.422</code></pre>
+<pre><code>[1] 3384.936</code></pre>
 </div>
 </div>
 <p>The calculated expectation should be: <span class="math display">\[\sum_{x=1}^{100} x^2 P(X=x) = \sum_{x=1}^{100} x^2 \frac{1}{n} = \frac{101 \cdot 201}{6} = 3383.5\]</span></p>
-<p>We could connect this to the <a href="../../../posts/proba-quant/jensen-inequality/index.html">Jensen’s inequality</a> (as we are dealing with a convex function) and show that indeed the expectation of the function is greater than the function of the expectation.</p>
+<p>We could connect this to the <a href="../../../posts/proba-quant/jensen-inequality/index.html">Jensen’s inequality</a> (as we are dealing with a convex function) and show that indeed the expectation of the function is greater than the function of the expectation: <span class="math inline">\(\mathbb{E}[f(X)] \geq f(\mathbb{E}[X])\)</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>exp_square <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">1000000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>square_exp <span class="ot">&lt;-</span> (<span class="fu">mean</span>(<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">1000000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)))<span class="sc">^</span><span class="dv">2</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(exp_square)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3389.124</code></pre>
+<pre><code>[1] 3389.425</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(square_exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2550.72</code></pre>
+<pre><code>[1] 2551.491</code></pre>
 </div>
 </div>
 

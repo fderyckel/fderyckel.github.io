@@ -2,7 +2,7 @@
 title: "Algebra For Quant"
 author: "Francois de Ryckel"
 date: "2022-10-01"
-categories: [statistics, code, analysis]
+categories: [Algebra, Infinite Series]
 editor: source
 date-modified: "2022-10-01"
 ---

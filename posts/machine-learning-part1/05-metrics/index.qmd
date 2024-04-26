@@ -61,6 +61,12 @@ The main disadvantage of the Huber Loss function is how to tune that $\delta$ pa
 
 # Classfication models 
 
+## Type I and Type II errors 
+
+* Type I error is the probability of a false positive; it is the probability of falsely rejecting $H_0$, the null-hypothesis.  The type I error is consistent with the chosen significant level.  
+
+* Type II error is the probability of a false negative; it is the probability of NOT rejecting a null-hypothesis that is actually false. 
+
 ## The log-loss function 
 
 The log-loss function is used with logistic regressions. 

@@ -5,7 +5,7 @@ date: "2023-04-14"
 description: 'A dive into the math behind the linear regression algorithm.'
 categories: [R-code, linear-regression]
 editor: source
-date-modified: "2023-04-24"
+date-modified: "2024-04-22"
 ---
 
 Linear regression is probably the most basic example of a machine learning algorithms.  
@@ -38,6 +38,9 @@ $$\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\ y_{n} \end{bmatrix} =
 \begin{bmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \vdots \\ \epsilon_{n} \end{bmatrix}
 $$ {#eq-matrix-linearReg-Long}
 
+It can be shown that the $\beta$ parameters can be estimated in the following way: 
+
+$$\hat{\beta} = \left( \textbf{X}^{\textbf{T}} \cdot \textbf{X} \right)^{-1} \textbf{X}^{\textbf{T}} \textbf{Y}$$ {#eq-Sol-matrix-linearReg}
 
 ## Finding the coefficients from scratch 
 

@@ -2,7 +2,7 @@
 title: "Discrete Probability Simulations in R"
 author: "Francois de Ryckel"
 date: "2023-11-14"
-categories: [statistics, code, analysis]
+categories: [Probability, Simulations]
 editor: source
 date-modified: "2022-11-14"
 ---
