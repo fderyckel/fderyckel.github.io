@@ -1,0 +1,10 @@
+readr
+glue
+dplyr
+tidyr
+TTR
+corrr
+purrr
+broom
+ggplot2
+lubridate
