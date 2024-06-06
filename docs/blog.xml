@@ -10,7 +10,279 @@
 <atom:link href="https://fderyckel.github.io/blog.html/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Curating notes from a Quant learning journey.</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Thu, 25 Apr 2024 17:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 14 May 2024 17:00:00 GMT</lastBuildDate>
+<item>
+  <title>Logistic Regression</title>
+  <dc:creator>Francois de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/02-logistic-regression/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Logistic Regression predict categorical variables based on quantitative data. It does this using the <strong>logit</strong> function</p>
+<p><img src="https://latex.codecogs.com/png.latex?logit%20=%20log(oods)%20=%20w_0+w_1x_1+w_2x_2+%20%5Ccdots%20+%20w_nx_n"></p>
+<p>The logit is the log of the odds. This can be mapped back into a probability (with the sigmoid function) and then back to a class.</p>
+<p>The logistic sigmoid is defined as <img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cfrac%7B1%7D%7B1+e%5E%7B-x%7D%7D%20=%20%5Cfrac%7Be%5Ex%7D%7Be%5Ex+1%7D"> The sigmoid allows to transform values from <img src="https://latex.codecogs.com/png.latex?-%5Cinfty%20%5Clt%20x%20%5Clt%20%5Cinfty"> into a <img src="https://latex.codecogs.com/png.latex?-1%20%3C%20f(x)%20%3C%201"> interval.</p>
+<p>Assume p(x) be the linear function. However, the problem is that p is the probability that should vary from 0 to 1 whereas p(x) is an unbounded linear equation. To address this problem, let us assume, log p(x) be a linear function of x and further, to bound it between a range of (0,1), we will use logit transformation.</p>
+<p><img src="https://latex.codecogs.com/png.latex?log%20%5Cleft(%20%5Cfrac%7Bp(x)%7D%7B1-p(x)%7D%20%5Cright)%20=%20%5Calpha_0%20+%20%5Calpha%20%5Ccdot%20x"></p>
+<p>Solve for <img src="https://latex.codecogs.com/png.latex?p(x)"> using exponential on both sides, isolate <img src="https://latex.codecogs.com/png.latex?p(x)"> and factoringthe coefficient. We get: <img src="https://latex.codecogs.com/png.latex?p(x)%20=%20%5Cfrac%7Be%5E%7B%5Calpha_0%20+%20%5Calpha%20%5Ccdot%20x%7D%7D%7Be%5E%7B%5Calpha_0%20+%20%5Calpha%20%5Ccdot%20x%7D+1%7D"></p>
+<p>Since Logistic regression predicts probabilities, we can fit it using likelihood. Therefore, for each training data point x, the predicted class is y. Now, the likelihood can be written as: <img src="https://latex.codecogs.com/png.latex?L(%5Calpha_0,%20%5Calpha)%20=%20%5Cprod_%7Bi=1%7D%5En%20p(x_i)%5E%7By_i%7D%20%5Cleft(1-p(x_i)%20%5Cright)%5E%7B1-y_i%7D"> Take log on both side, we can transform that product into a sum. <img src="https://latex.codecogs.com/png.latex?Log(L(%5Calpha_0,%20%5Calpha))%20=%20%5Csum_%7Bi=1%7D%5En%20y_i%20%5Ccdot%20log(p(x_i))%20+%20(1-y_i)%20%5Ccdot%20log((1-p(x_i)%20)"></p>
+<section id="examples" class="level1">
+<h1>Examples</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/XME.csv'</span>, index_col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, parse_dates <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, dayfirst<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb1-6">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.sort_index(ascending<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, inplace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb1-7">df.info()</span>
+<span id="cb1-8">df.head(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb1-9"></span>
+<span id="cb1-10">plt.plot(df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'close'</span>])</span>
+<span id="cb1-11">plt.show()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+Index: 4500 entries, 2006-06-22 to 2024-05-08
+Data columns (total 12 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   open              4500 non-null   float64
+ 1   high              4500 non-null   float64
+ 2   low               4500 non-null   float64
+ 3   close             4500 non-null   float64
+ 4   adjClose          4500 non-null   float64
+ 5   volume            4500 non-null   int64  
+ 6   unadjustedVolume  4500 non-null   int64  
+ 7   change            4500 non-null   float64
+ 8   changePercent     4500 non-null   float64
+ 9   vwap              4500 non-null   float64
+ 10  label             4500 non-null   object 
+ 11  changeOverTime    4500 non-null   float64
+dtypes: float64(9), int64(2), object(1)
+memory usage: 457.0+ KB</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/02-logistic-regression/index_files/figure-html/cell-2-output-2.png" width="581" height="411"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">df.describe().T</span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># checking for missing values</span></span>
+<span id="cb3-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#df.isnull.sum()</span></span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">25%</th>
+<th data-quarto-table-cell-role="th">50%</th>
+<th data-quarto-table-cell-role="th">75%</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">open</td>
+<td>4500.0</td>
+<td>4.224556e+01</td>
+<td>1.496800e+01</td>
+<td>11.7800</td>
+<td>3.001000e+01</td>
+<td>4.150000e+01</td>
+<td>5.173500e+01</td>
+<td>9.535000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">high</td>
+<td>4500.0</td>
+<td>4.279536e+01</td>
+<td>1.514187e+01</td>
+<td>12.1900</td>
+<td>3.040000e+01</td>
+<td>4.195500e+01</td>
+<td>5.241250e+01</td>
+<td>9.609000e+01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">low</td>
+<td>4500.0</td>
+<td>4.160857e+01</td>
+<td>1.472447e+01</td>
+<td>11.3800</td>
+<td>2.963000e+01</td>
+<td>4.100500e+01</td>
+<td>5.110250e+01</td>
+<td>9.353000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">close</td>
+<td>4500.0</td>
+<td>4.220901e+01</td>
+<td>1.494711e+01</td>
+<td>11.9700</td>
+<td>2.998750e+01</td>
+<td>4.143500e+01</td>
+<td>5.175000e+01</td>
+<td>9.458000e+01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">adjClose</td>
+<td>4500.0</td>
+<td>3.686377e+01</td>
+<td>1.241720e+01</td>
+<td>10.6000</td>
+<td>2.709750e+01</td>
+<td>3.530500e+01</td>
+<td>4.583000e+01</td>
+<td>7.545000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">volume</td>
+<td>4500.0</td>
+<td>3.141904e+06</td>
+<td>2.199371e+06</td>
+<td>0.0000</td>
+<td>1.769072e+06</td>
+<td>2.725635e+06</td>
+<td>4.039529e+06</td>
+<td>2.454848e+07</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">unadjustedVolume</td>
+<td>4500.0</td>
+<td>3.141904e+06</td>
+<td>2.199371e+06</td>
+<td>0.0000</td>
+<td>1.769072e+06</td>
+<td>2.725635e+06</td>
+<td>4.039529e+06</td>
+<td>2.454848e+07</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">change</td>
+<td>4500.0</td>
+<td>-3.655796e-02</td>
+<td>8.801642e-01</td>
+<td>-11.2400</td>
+<td>-4.200000e-01</td>
+<td>-2.001000e-02</td>
+<td>3.900000e-01</td>
+<td>3.980000e+00</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">changePercent</td>
+<td>4500.0</td>
+<td>-6.299599e-02</td>
+<td>2.019533e+00</td>
+<td>-13.8100</td>
+<td>-1.110000e+00</td>
+<td>-5.836411e-02</td>
+<td>1.020000e+00</td>
+<td>1.414000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">vwap</td>
+<td>4500.0</td>
+<td>4.221463e+01</td>
+<td>1.493961e+01</td>
+<td>11.8625</td>
+<td>2.999438e+01</td>
+<td>4.150750e+01</td>
+<td>5.178875e+01</td>
+<td>9.488750e+01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">changeOverTime</td>
+<td>4500.0</td>
+<td>-6.299599e-04</td>
+<td>2.019533e-02</td>
+<td>-0.1381</td>
+<td>-1.110000e-02</td>
+<td>-5.836411e-04</td>
+<td>1.020000e-02</td>
+<td>1.414000e-01</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" aria-labelledby="tabset-1-2-tab">
+
+</div>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>logistic-regression</category>
+  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/02-logistic-regression/index.html</guid>
+  <pubDate>Tue, 14 May 2024 17:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Gradient Descent</title>
   <dc:creator>Francois de Ryckel</dc:creator>
@@ -30,12 +302,17 @@
 <li>a function</li>
 <li>its derivative</li>
 <li>a starting point (where do we start going down)</li>
-<li>the size of steps (aka <strong>learning rate</strong>)</li>
-<li>the number of iterations</li>
+<li>the size of a step (aka <strong>learning rate</strong>)</li>
+<li>the number of iterations (aka how many steps do we intend to take)</li>
 <li>optionally, we can set a threshold for when we stop the iterative process of going down the hill.</li>
 </ul>
-<p><img src="https://latex.codecogs.com/png.latex?f(x)%20=%200.91%20X%5E2%20+%2011x%20-%207"></p>
-<div class="cell" data-execution_count="1">
+<p>Let’s take a quadratic function to start.</p>
+<p><img src="https://latex.codecogs.com/png.latex?f(x)%20=%200.91%20x%5E2%20+%2011x%20-%207"></p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -93,14 +370,19 @@ font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span>)</span>
 <span id="cb1-11"></span>
-<span id="cb1-12">cost_function(<span class="fl" style="color: #AD0000;
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4.5</span>)</span>
-<span id="cb1-13"></span>
-<span id="cb1-14"><span class="co" style="color: #5E5E5E;
+font-style: inherit;"># checking our function</span></span>
+<span id="cb1-13">cost_function(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.5</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>42.67750000000001</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># quick visual check </span></span>
-<span id="cb1-15">x <span class="op" style="color: #5E5E5E;
+<span id="cb3-2">x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -111,58 +393,209 @@ background-color: null;
 font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1000</span>)</span>
-<span id="cb1-16">y <span class="op" style="color: #5E5E5E;
+<span id="cb3-3">y <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x)</span>
-<span id="cb1-17"></span>
-<span id="cb1-18">plt.clf()</span>
-<span id="cb1-19">plt.plot(x, y)</span>
-<span id="cb1-20">plt.xlabel(<span class="st" style="color: #20794D;
+<span id="cb3-4"></span>
+<span id="cb3-5">plt.clf()</span>
+<span id="cb3-6">plt.plot(x, y)</span>
+<span id="cb3-7">plt.xlabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'x'</span>)</span>
-<span id="cb1-21">plt.ylabel(<span class="st" style="color: #20794D;
+<span id="cb3-8">plt.ylabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'cost_function(x)'</span>)</span>
-<span id="cb1-22">plt.title(<span class="st" style="color: #20794D;
+<span id="cb3-9">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Plot of the cost_function(x) vs x'</span>)</span>
-<span id="cb1-23">plt.show()</span></code></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index_files/figure-html/cell-2-output-1.png" width="593" height="449"></p>
+<span id="cb3-10">plt.show()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(purrr)</span>
+<span id="cb4-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb4-4"></span>
+<span id="cb4-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the original function </span></span>
+<span id="cb4-6">cost_function <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x){</span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.91</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">59</span>)</span>
+<span id="cb4-8">}</span>
+<span id="cb4-9"></span>
+<span id="cb4-10">gradient <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.91</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb4-12">}</span>
+<span id="cb4-13"></span>
+<span id="cb4-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># checking our function</span></span>
+<span id="cb4-15"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cost_function</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.5</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 42.6775</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># quick visual check </span></span>
+<span id="cb6-2">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">from =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">to =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map_dbl</span>(x, cost_function))</span>
+<span id="cb6-4"></span>
+<span id="cb6-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'blue'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-7">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#xlab('x') + ylab('cost_function(x)') + </span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>,  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'cost_function(x)'</span>, </span>
+<span id="cb6-9">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Plot of the cost_function(x) vs x'</span>) </span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index_files/figure-html/r_createFunctions-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <p>We can now put everything together and define our gradient descent function.</p>
 <p><img src="https://latex.codecogs.com/png.latex?x_%7Bn+1%7D%20=%20x_n%20-%20%7BGradient%7D%20%5Cspace%20%5Ccdot%20%5Cspace%20%7BLearning%20%5Cspace%20Rate%7D"></p>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> gradient_descent(f, deriv, start, learning_rate, n_iter): </span>
-<span id="cb2-2">  x <span class="op" style="color: #5E5E5E;
+<span id="cb7-2">  x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> start</span>
-<span id="cb2-3">  <span class="cf" style="color: #003B4F;
+<span id="cb7-3">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(n_iter): </span>
-<span id="cb2-4">    grad <span class="op" style="color: #5E5E5E;
+<span id="cb7-4">    grad <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> gradient(x)</span>
-<span id="cb2-5">    </span>
-<span id="cb2-6">    <span class="co" style="color: #5E5E5E;
+<span id="cb7-5">    </span>
+<span id="cb7-6">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># we now update x</span></span>
-<span id="cb2-7">    x <span class="op" style="color: #5E5E5E;
+<span id="cb7-7">    x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> learning_rate <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> grad </span>
-<span id="cb2-8">    </span>
-<span id="cb2-9">  <span class="bu" style="color: null;
+<span id="cb7-8">    </span>
+<span id="cb7-9">  <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -173,7 +606,7 @@ background-color: null;
 font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb2-10">  <span class="bu" style="color: null;
+<span id="cb7-10">  <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -184,8 +617,8 @@ background-color: null;
 font-style: inherit;">:.3f}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb2-11"></span>
-<span id="cb2-12">gradient_descent(cost_function, gradient, <span class="dv" style="color: #AD0000;
+<span id="cb7-11"></span>
+<span id="cb7-12">gradient_descent(cost_function, gradient, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">15</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -198,51 +631,51 @@ Minimum value for our Cost function: -59.000</code></pre>
 </div>
 </div>
 <p>We could change slightly our code to store the iterations for visualization or analysis.</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> gradient_descent(f, deriv, start, learning_rate, n_iter): </span>
-<span id="cb4-2">  x <span class="op" style="color: #5E5E5E;
+<span id="cb9-2">  x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> start</span>
-<span id="cb4-3">  <span class="co" style="color: #5E5E5E;
+<span id="cb9-3">  <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># initialize a list to store values </span></span>
-<span id="cb4-4">  cost_values <span class="op" style="color: #5E5E5E;
+<span id="cb9-4">  cost_values <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
-<span id="cb4-5">  </span>
-<span id="cb4-6">  <span class="cf" style="color: #003B4F;
+<span id="cb9-5">  </span>
+<span id="cb9-6">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(n_iter): </span>
-<span id="cb4-7">    cost <span class="op" style="color: #5E5E5E;
+<span id="cb9-7">    cost <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x)</span>
-<span id="cb4-8">    grad <span class="op" style="color: #5E5E5E;
+<span id="cb9-8">    grad <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> gradient(x)</span>
-<span id="cb4-9">    <span class="co" style="color: #5E5E5E;
+<span id="cb9-9">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># update of x</span></span>
-<span id="cb4-10">    x <span class="op" style="color: #5E5E5E;
+<span id="cb9-10">    x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> learning_rate <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> grad</span>
-<span id="cb4-11">    <span class="co" style="color: #5E5E5E;
+<span id="cb9-11">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># append the value of cost to the list</span></span>
-<span id="cb4-12">    cost_values.append(cost)</span>
-<span id="cb4-13">    <span class="co" style="color: #5E5E5E;
+<span id="cb9-12">    cost_values.append(cost)</span>
+<span id="cb9-13">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># print the progress</span></span>
-<span id="cb4-14">    <span class="cf" style="color: #003B4F;
+<span id="cb9-14">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">if</span> i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -259,7 +692,7 @@ background-color: null;
 font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">200</span>: </span>
-<span id="cb4-15">      <span class="bu" style="color: null;
+<span id="cb9-15">      <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -282,52 +715,52 @@ background-color: null;
 font-style: inherit;">:.4f}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb4-16">  </span>
-<span id="cb4-17">gradient_descent(cost_function, gradient, </span>
-<span id="cb4-18">                 start <span class="op" style="color: #5E5E5E;
+<span id="cb9-16">  </span>
+<span id="cb9-17">gradient_descent(cost_function, gradient, </span>
+<span id="cb9-18">                 start <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.random.randn(), learning_rate <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.01</span>, </span>
-<span id="cb4-19">                 n_iter <span class="op" style="color: #5E5E5E;
+<span id="cb9-19">                 n_iter <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1000</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Iteration 0: x = -0.1305, cost = -59.3916
-Iteration 10: x = -0.5082, cost = -60.4952
-Iteration 20: x = -0.7616, cost = -60.5584
-Iteration 30: x = -0.9317, cost = -60.2958
-Iteration 40: x = -1.0459, cost = -59.9822
-Iteration 50: x = -1.1225, cost = -59.7098
-Iteration 60: x = -1.1739, cost = -59.4992
-Iteration 70: x = -1.2084, cost = -59.3453
-Iteration 80: x = -1.2315, cost = -59.2364
-Iteration 90: x = -1.2471, cost = -59.1607
-Iteration 100: x = -1.2575, cost = -59.1088
-Iteration 110: x = -1.2645, cost = -59.0734
-Iteration 120: x = -1.2692, cost = -59.0495
-Iteration 130: x = -1.2723, cost = -59.0333
-Iteration 140: x = -1.2745, cost = -59.0224
-Iteration 150: x = -1.2759, cost = -59.0150
-Iteration 160: x = -1.2768, cost = -59.0101
-Iteration 170: x = -1.2775, cost = -59.0068
-Iteration 180: x = -1.2779, cost = -59.0046
-Iteration 190: x = -1.2782, cost = -59.0031</code></pre>
+<pre><code>Iteration 0: x = 1.2439, cost = -45.1770
+Iteration 10: x = 0.4142, cost = -55.6721
+Iteration 20: x = -0.1426, cost = -59.4457
+Iteration 30: x = -0.5163, cost = -60.5056
+Iteration 40: x = -0.7671, cost = -60.5538
+Iteration 50: x = -0.9354, cost = -60.2875
+Iteration 60: x = -1.0483, cost = -59.9742
+Iteration 70: x = -1.1241, cost = -59.7034
+Iteration 80: x = -1.1750, cost = -59.4944
+Iteration 90: x = -1.2091, cost = -59.3419
+Iteration 100: x = -1.2320, cost = -59.2340
+Iteration 110: x = -1.2474, cost = -59.1590
+Iteration 120: x = -1.2577, cost = -59.1077
+Iteration 130: x = -1.2646, cost = -59.0727
+Iteration 140: x = -1.2693, cost = -59.0489
+Iteration 150: x = -1.2724, cost = -59.0329
+Iteration 160: x = -1.2745, cost = -59.0221
+Iteration 170: x = -1.2759, cost = -59.0149
+Iteration 180: x = -1.2768, cost = -59.0100
+Iteration 190: x = -1.2775, cost = -59.0067</code></pre>
 </div>
 </div>
 <p>We could visualize how the process happen. We’ll return the <em>cost_values</em> list for that to our function.</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># the original function </span></span>
-<span id="cb6-2"><span class="kw" style="color: #003B4F;
+<span id="cb11-2"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> cost_function(x): </span>
-<span id="cb6-3">  <span class="cf" style="color: #003B4F;
+<span id="cb11-3">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span>(<span class="fl" style="color: #AD0000;
 background-color: null;
@@ -348,14 +781,14 @@ background-color: null;
 font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">59</span>)</span>
-<span id="cb6-4"></span>
-<span id="cb6-5"><span class="co" style="color: #5E5E5E;
+<span id="cb11-4"></span>
+<span id="cb11-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># the derivative of our function </span></span>
-<span id="cb6-6"><span class="kw" style="color: #003B4F;
+<span id="cb11-6"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> gradient(x): </span>
-<span id="cb6-7">  <span class="cf" style="color: #003B4F;
+<span id="cb11-7">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span>(<span class="fl" style="color: #AD0000;
 background-color: null;
@@ -366,43 +799,43 @@ background-color: null;
 font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span>)</span>
-<span id="cb6-8"></span>
-<span id="cb6-9"><span class="kw" style="color: #003B4F;
+<span id="cb11-8"></span>
+<span id="cb11-9"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> gradient_descent(f, deriv, start, learning_rate, n_iter): </span>
-<span id="cb6-10">  x <span class="op" style="color: #5E5E5E;
+<span id="cb11-10">  x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> start</span>
-<span id="cb6-11">  cost_values <span class="op" style="color: #5E5E5E;
+<span id="cb11-11">  cost_values <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
-<span id="cb6-12">  x_list <span class="op" style="color: #5E5E5E;
+<span id="cb11-12">  x_list <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [start]</span>
-<span id="cb6-13">  </span>
-<span id="cb6-14">  <span class="cf" style="color: #003B4F;
+<span id="cb11-13">  </span>
+<span id="cb11-14">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(n_iter): </span>
-<span id="cb6-15">    cost <span class="op" style="color: #5E5E5E;
+<span id="cb11-15">    cost <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x)</span>
-<span id="cb6-16">    grad <span class="op" style="color: #5E5E5E;
+<span id="cb11-16">    grad <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> gradient(x)</span>
-<span id="cb6-17">    x <span class="op" style="color: #5E5E5E;
+<span id="cb11-17">    x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> learning_rate <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> grad</span>
-<span id="cb6-18">    cost_values.append(cost)</span>
-<span id="cb6-19">    x_list.append(x)</span>
-<span id="cb6-20">    <span class="bu" style="color: null;
+<span id="cb11-18">    cost_values.append(cost)</span>
+<span id="cb11-19">    x_list.append(x)</span>
+<span id="cb11-20">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -421,15 +854,15 @@ background-color: null;
 font-style: inherit;">"</span>.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">format</span>(i, x, cost))</span>
-<span id="cb6-21">      </span>
-<span id="cb6-22">  <span class="cf" style="color: #003B4F;
+<span id="cb11-21">      </span>
+<span id="cb11-22">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span>(x_list)</span>
-<span id="cb6-23"></span>
-<span id="cb6-24">x_list <span class="op" style="color: #5E5E5E;
+<span id="cb11-23"></span>
+<span id="cb11-24">x_list <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> gradient_descent(cost_function, gradient, </span>
-<span id="cb6-25">                          start <span class="op" style="color: #5E5E5E;
+<span id="cb11-25">                          start <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -438,14 +871,19 @@ background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span>, </span>
-<span id="cb6-26">                          n_iter <span class="op" style="color: #5E5E5E;
+<span id="cb11-26">                          n_iter <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">5</span>)</span>
-<span id="cb6-27"></span>
-<span id="cb6-28"></span>
-<span id="cb6-29">x <span class="op" style="color: #5E5E5E;
+font-style: inherit;">5</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iteration 0: x = 3.589, cost = 20.590000000000003
+Iteration 1: x = 1.109203, cost = -29.33336189
+Iteration 2: x = -0.693609419, cost = -52.33438352135981
+Iteration 3: x = -2.004254047613, cost = -62.03025153122578
+Iteration 4: x = -2.9570926926146512, cost = -65.36576903655549</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -456,13 +894,13 @@ background-color: null;
 font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">50</span>)</span>
-<span id="cb6-30">y <span class="op" style="color: #5E5E5E;
+<span id="cb13-2">y <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x)</span>
-<span id="cb6-31"></span>
-<span id="cb6-32">plt.clf()</span>
-<span id="cb6-33">plt.plot(x, y)</span>
-<span id="cb6-34"><span class="cf" style="color: #003B4F;
+<span id="cb13-3"></span>
+<span id="cb13-4">plt.clf()</span>
+<span id="cb13-5">plt.plot(x, y)</span>
+<span id="cb13-6"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
@@ -475,26 +913,26 @@ background-color: null;
 font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>):</span>
-<span id="cb6-35">    x1 <span class="op" style="color: #5E5E5E;
+<span id="cb13-7">    x1 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> x_list[i]</span>
-<span id="cb6-36">    y1 <span class="op" style="color: #5E5E5E;
+<span id="cb13-8">    y1 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x1)</span>
-<span id="cb6-37">    x2 <span class="op" style="color: #5E5E5E;
+<span id="cb13-9">    x2 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> x_list[i <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>]</span>
-<span id="cb6-38">    y2 <span class="op" style="color: #5E5E5E;
+<span id="cb13-10">    y2 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x2)</span>
-<span id="cb6-39">    plt.plot([x1, x2], [y1, y2], <span class="st" style="color: #20794D;
+<span id="cb13-11">    plt.plot([x1, x2], [y1, y2], <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'ro--'</span>)</span>
-<span id="cb6-40">    plt.text(x1 <span class="op" style="color: #5E5E5E;
+<span id="cb13-12">    plt.text(x1 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -507,20 +945,20 @@ background-color: null;
 font-style: inherit;">round</span>(y1, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>))</span>
-<span id="cb6-41"><span class="co" style="color: #5E5E5E;
+<span id="cb13-13"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Label the final cost value</span></span>
-<span id="cb6-42">x_final <span class="op" style="color: #5E5E5E;
+<span id="cb13-14">x_final <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> x_list[<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>]</span>
-<span id="cb6-43">y_final <span class="op" style="color: #5E5E5E;
+<span id="cb13-15">y_final <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> cost_function(x_final)</span>
-<span id="cb6-44">plt.text(x_final, y_final <span class="op" style="color: #5E5E5E;
+<span id="cb13-16">plt.text(x_final, y_final <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -529,26 +967,19 @@ background-color: null;
 font-style: inherit;">round</span>(y_final, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>))</span>
-<span id="cb6-45"></span>
-<span id="cb6-46">plt.xlabel(<span class="st" style="color: #20794D;
+<span id="cb13-17"></span>
+<span id="cb13-18">plt.xlabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'x'</span>)</span>
-<span id="cb6-47">plt.ylabel(<span class="st" style="color: #20794D;
+<span id="cb13-19">plt.ylabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'f(x)'</span>)</span>
-<span id="cb6-48">plt.title(<span class="st" style="color: #20794D;
+<span id="cb13-20">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Gradient Descent for f(x)'</span>)</span>
-<span id="cb6-49">plt.show()</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Iteration 0: x = 3.589, cost = 20.590000000000003
-Iteration 1: x = 1.109203, cost = -29.33336189
-Iteration 2: x = -0.693609419, cost = -52.33438352135981
-Iteration 3: x = -2.004254047613, cost = -62.03025153122578
-Iteration 4: x = -2.9570926926146512, cost = -65.36576903655549</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index_files/figure-html/cell-5-output-2.png" width="596" height="449"></p>
+<span id="cb13-21">plt.show()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -559,9 +990,8 @@ Iteration 4: x = -2.9570926926146512, cost = -65.36576903655549</code></pre>
 </section>
 
  ]]></description>
+  <category>Gradient Descent</category>
   <category>Regression</category>
-  <category>Lasso</category>
-  <category>Ridge</category>
   <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index.html</guid>
   <pubDate>Thu, 25 Apr 2024 17:00:00 GMT</pubDate>
 </item>
@@ -659,12 +1089,12 @@ The loss function becomes <img src="https://latex.codecogs.com/png.latex?minimiz
 <section id="regression-models" class="level1">
 <h1>Regression models</h1>
 <p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
-<p>IT has to be noted that quite a few of these concepts have deeper connections in ML as they are not only ‘success’ metrics but also loss functions of ML algorithms.</p>
+<p>It has to be noted that quite a few of these concepts have deeper connections in ML as they are not only ‘success’ metrics but also loss functions of ML algorithms.</p>
 <section id="rmse" class="level2">
 <h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
 <p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)</p>
 <p><img src="https://latex.codecogs.com/png.latex?RMSE%20=%20%5Csqrt%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By%7D_i)%5E2%7D%7Bn%7D"></p>
-<p>The SSE <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By%7D_i)%5E2"> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function; hence we can find a minimum; or better than solving partial derivatives, one can use Gradient Descent (more feasible/practicle when it comes to ML).</p>
+<p>The SSE <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5E%7Bn%7D(y_i%20-%20%5Chat%7By%7D_i)%5E2"> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function; hence we can find a minimum; or better than solving partial derivatives, one can use <a href="../../../posts/machine-learning-part1/06-gradient-descent/index.html">Gradient Descent</a> (more feasible/practical when it comes to ML).</p>
 </section>
 <section id="mae" class="level2">
 <h2 class="anchored" data-anchor-id="mae">MAE</h2>
@@ -684,7 +1114,7 @@ The loss function becomes <img src="https://latex.codecogs.com/png.latex?minimiz
 <li>differentiable everywhere (even at the junction of the MAE and MSE). Meanings it can be used with Gradient Descent algorithms as well.</li>
 <li>The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.</li>
 </ul>
-<p>The main disadvantage of the Huber Loss function is how to tune that <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> parameters.</p>
+<p>The main disadvantage of the Huber Loss function is how to tune that <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> parameter.</p>
 </section>
 </section>
 <section id="classfication-models" class="level1">
@@ -3821,14 +4251,19 @@ font-style: inherit;">s method'</span> )</span>
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data.</p>
-<p>Our <a href="../../../posts/time-series/03-autocorrelation/index.html">previous post</a> on autocorrelation and partial autocorelation could be considered as prior material.</p>
-<p>Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations). <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t"> This AR model used <img src="https://latex.codecogs.com/png.latex?p"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?p">.</p>
+<p>This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data. Our <a href="../../../posts/time-series/03-autocorrelation/index.html">previous post</a> on autocorrelation and partial autocorelation could be considered as prior material.</p>
+<section id="autoregressive-models." class="level2">
+<h2 class="anchored" data-anchor-id="autoregressive-models.">Autoregressive models.</h2>
+<p>Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations).</p>
+<p><img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t"> This AR model used <img src="https://latex.codecogs.com/png.latex?p"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?p"> or <img src="https://latex.codecogs.com/png.latex?AR(p)">.</p>
 <ul>
 <li><img src="https://latex.codecogs.com/png.latex?%5Cdelta"> is an intercept like term</li>
 <li><img src="https://latex.codecogs.com/png.latex?Y_%7Bt-i%7D"> are the regressors (time series own lagged observations) with parameters <img src="https://latex.codecogs.com/png.latex?%5Cphi_%7Bt-i%7D"></li>
 <li><img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> is the error term</li>
 </ul>
+</section>
+<section id="moving-average-models" class="level2">
+<h2 class="anchored" data-anchor-id="moving-average-models">Moving Average Models</h2>
 <p>Moving Average (MA) is another class of linear model where the outcome variable is regressed using its own previous error terms. <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cmu%20+%20%20%5Ctheta_1%20%5Cepsilon_%7Bt-1%7D%20+%20%5Ctheta_2%20%5Cepsilon_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Ctheta_q%20%5Cepsilon_%7Bt-q%7D%20+%20%5Cepsilon_t"> This MA model used <img src="https://latex.codecogs.com/png.latex?q"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?q">.</p>
 <p>Putting it all together, the outcome variable of an ARIMA model can be predicted: <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5C%7B%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t%20%5C%7D%20+%20%5C%7B%5Cmu%20+%20%20%5Ctheta_1%20%5Cepsilon_%7Bt-1%7D%20+%20%5Ctheta_2%20%5Cepsilon_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Ctheta_q%20%5Cepsilon_%7Bt-q%7D%20+%20%5Cepsilon_t%20%5C%7D"> This can be simplify into: <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Csum_%7Bi=1%7D%5Ep%20%5Cphi_i%20Y_%7Bt-i%7D%20+%20%5Csum_%7Bj=1%7D%5Eq%20%5Ctheta_j%20%5Cepsilon_%7Bt-j%7D%20+%20%5Cepsilon_t"></p>
 <p>The parameters of an ARIMA model are (p, d, q) :</p>
@@ -3839,6 +4274,7 @@ font-style: inherit;">s method'</span> )</span>
 <li><img src="https://latex.codecogs.com/png.latex?q"> - the size of the moving average. Use previous errors to predict <img src="https://latex.codecogs.com/png.latex?Y_t"></li>
 </ul>
 <p>To apply an ARIMA model to a set of data, we will use the US CPI Energy component that we downloaded on the <a href="https://fred.stlouisfed.org/series/CPIENGSL">FED St-Louis website</a>.</p>
+</section>
 </section>
 <section id="application-using-r" class="level1">
 <h1>Application using R</h1>
@@ -4507,7 +4943,7 @@ font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
 <pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.2.0 ──</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ broom        1.0.5      ✔ rsample      1.2.1 
+<pre><code>✔ broom        1.0.6      ✔ rsample      1.2.1 
 ✔ dials        1.2.1      ✔ tibble       3.2.1 
 ✔ infer        1.0.7      ✔ tidyr        1.3.1 
 ✔ modeldata    1.3.0      ✔ tune         1.2.1 
@@ -4516,36 +4952,39 @@ font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
 ✔ recipes      1.0.10     ✔ yardstick    1.3.1 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'broom' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
 <pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard()  masks scales::discard()
 ✖ dplyr::filter()   masks stats::filter()
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(parsnip)</span>
-<span id="cb40-2"><span class="fu" style="color: #4758AB;
+<span id="cb41-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(modeltime)</span>
-<span id="cb40-3"></span>
-<span id="cb40-4">model_fit_arima <span class="ot" style="color: #003B4F;
+<span id="cb41-3"></span>
+<span id="cb41-4">model_fit_arima <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">arima_reg</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb40-5">  <span class="fu" style="color: #4758AB;
+<span id="cb41-5">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set_engine</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'auto_arima'</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb40-6">  <span class="fu" style="color: #4758AB;
+<span id="cb41-6">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">fit</span>(cpi_energy <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -4555,7 +4994,7 @@ font-style: inherit;">training</span>(cv_splits))</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>frequency = 12 observations per 1 year</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1">model_fit_arima</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1">model_fit_arima</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>parsnip model object
 
@@ -14585,323 +15024,6 @@ Year 21 has positive returns with probability 91.68499999984621</code></pre>
   <category>quant-finance</category>
   <guid>https://fderyckel.github.io/blog.html/posts/quant-puzzle-01/index.html</guid>
   <pubDate>Mon, 12 Jun 2023 17:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Naive-Bayes - Part 1</title>
-  <dc:creator>Francois de Ryckel</dc:creator>
-  <link>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/09-naives-bayes-intro/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>Some very basic ML using Naive-Bayes and the tidymodel framework.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(readr)</span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># mutate(), row_number()</span></span>
-<span id="cb1-3"></span>
-<span id="cb1-4">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'../../../raw_data/financial_news.csv'</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col_names =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sentiment'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'text'</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb1-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sentiment =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">factor</span>(sentiment))</span></code></pre></div>
-</div>
-<p>Using the tidyverse, we’ll</p>
-<ul>
-<li>split the df into a training and testing set.</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(rsample)    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># initial_split(), training(), testing()</span></span>
-<span id="cb2-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(recipes)</span>
-<span id="cb2-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(parsnip)    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># naive_bayes(), set_engine()</span></span>
-<span id="cb2-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(workflows)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># workflow()</span></span>
-<span id="cb2-5"></span>
-<span id="cb2-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(discrim)</span>
-<span id="cb2-7"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(textrecipes)</span>
-<span id="cb2-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(yardstick)</span>
-<span id="cb2-9"></span>
-<span id="cb2-10">list_splits <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">initial_split</span>(df, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">prop =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.8</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">strata =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sentiment'</span>)</span>
-<span id="cb2-11">df_train <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">training</span>(list_splits)</span>
-<span id="cb2-12">df_test <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">testing</span>(list_splits)</span>
-<span id="cb2-13"></span>
-<span id="cb2-14">list_recipe <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">recipe</span>(sentiment <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span>., <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> df_train) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-15">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">step_tokenize</span>(text) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-16">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">step_stopwords</span>(text) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-17">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">step_tokenfilter</span>(text, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">max_tokens =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb2-18">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">step_tfidf</span>(text)</span>
-<span id="cb2-19">  </span>
-<span id="cb2-20"></span>
-<span id="cb2-21">mod_nb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">naive_Bayes</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set_engine</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'naivebayes'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set_mode</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'classification'</span>)</span>
-<span id="cb2-22">mod_svm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">svm_poly</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set_engine</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'kernlab'</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set_mode</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'classification'</span>)</span>
-<span id="cb2-23">list_cv <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">vfold_cv</span>(df_train, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">v =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">strata =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sentiment'</span>)</span>
-<span id="cb2-24"></span>
-<span id="cb2-25">wf_nb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">workflow</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">add_recipe</span>(list_recipe) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">add_model</span>(mod_nb)</span>
-<span id="cb2-26">wf_nb</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
-Preprocessor: Recipe
-Model: naive_Bayes()
-
-── Preprocessor ────────────────────────────────────────────────────────────────
-4 Recipe Steps
-
-• step_tokenize()
-• step_stopwords()
-• step_tokenfilter()
-• step_tfidf()
-
-── Model ───────────────────────────────────────────────────────────────────────
-Naive Bayes Model Specification (classification)
-
-Computational engine: naivebayes </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">wf_svm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">workflow</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">add_recipe</span>(list_recipe) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">add_model</span>(mod_svm)</span>
-<span id="cb4-2"></span>
-<span id="cb4-3">fit_mod_nb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fit</span>(wf_nb, df_train)</span>
-<span id="cb4-4">pred_mod_nb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">predict</span>(fit_mod_nb, df_test)</span>
-<span id="cb4-5">pred_mod_nb_prob <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">predict</span>(fit_mod_nb, df_test, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'prob'</span>)</span>
-<span id="cb4-6"></span>
-<span id="cb4-7">fit_mod_svm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fit</span>(wf_svm, df_train)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> Setting default kernel parameters  </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">pred_mod_svm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">predict</span>(fit_mod_svm, df_test)</span>
-<span id="cb6-2">pred_mod_svm_prob <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">predict</span>(fit_mod_svm, df_test, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'prob'</span>)</span>
-<span id="cb6-3"></span>
-<span id="cb6-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">bind_cols</span>(df_test, pred_mod_nb) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">conf_mat</span>(sentiment, .pred_class)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>          Truth
-Prediction negative neutral positive
-  negative       36      22       44
-  neutral        74     531      188
-  positive       11      23       41</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">bind_cols</span>(df_test, pred_mod_svm) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">conf_mat</span>(sentiment, .pred_class)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>          Truth
-Prediction negative neutral positive
-  negative       22      12       22
-  neutral        81     540      183
-  positive       18      24       68</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#roc_nb &lt;- bind_cols(df_test, pred_mod_nb_prob) |&gt; roc_curve()</span></span></code></pre></div>
-</div>
-
-
-
- ]]></description>
-  <category>ML</category>
-  <category>Naive-Bayes</category>
-  <category>sentiment analysis</category>
-  <guid>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/09-naives-bayes-intro/index.html</guid>
-  <pubDate>Mon, 15 May 2023 17:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

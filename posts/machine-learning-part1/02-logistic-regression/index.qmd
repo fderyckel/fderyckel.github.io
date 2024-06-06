@@ -1,0 +1,76 @@
+---
+title: "Logistic Regression "
+author: "Francois de Ryckel"
+date: "2024-05-15"
+description: 'A dive into Logistic Regression.'
+categories: [logistic-regression]
+editor: source
+date-modified: "2024-05-22"
+---
+
+
+Logistic Regression predict categorical variables based on quantitative data.  It does this using the **logit** function 
+
+$$logit = log(oods) = w_0+w_1x_1+w_2x_2+ \cdots + w_nx_n$$
+
+The logit is the log of the odds.  This can be mapped back into a probability (with the sigmoid function) and then back to a class.  
+
+The logistic sigmoid is defined as 
+$$f(x) = \frac{1}{1+e^{-x}} = \frac{e^x}{e^x+1}$$
+The sigmoid allows to transform values from $-\infty \lt x \lt \infty$ into a $-1 < f(x) < 1$ interval. 
+
+Assume p(x) be the linear function. However, the problem is that p is the probability that should vary from 0 to 1 whereas p(x) is an unbounded linear equation. To address this problem, let us assume, log p(x) be a linear function of x and further, to bound it between a range of (0,1), we will use logit transformation. 
+
+$$log \left( \frac{p(x)}{1-p(x)} \right) = \alpha_0 + \alpha \cdot x$$
+
+Solve for $p(x)$ using exponential on both sides, isolate $p(x)$ and factoringthe coefficient. We get: 
+$$p(x) = \frac{e^{\alpha_0 + \alpha \cdot x}}{e^{\alpha_0 + \alpha \cdot x}+1}$$
+
+Since Logistic regression predicts probabilities, we can fit it using likelihood. Therefore, for each training data point x, the predicted class is y.  Now, the likelihood can be written as:
+$$L(\alpha_0, \alpha) = \prod_{i=1}^n p(x_i)^{y_i} \left(1-p(x_i) \right)^{1-y_i}$$
+Take log on both side, we can transform that product into a sum. 
+$$Log(L(\alpha_0, \alpha)) = \sum_{i=1}^n y_i \cdot log(p(x_i)) + (1-y_i) \cdot log((1-p(x_i) )$$
+
+
+
+```{python}
+
+```
+
+
+# Examples 
+
+::: {.panel-tabset}
+
+## Python 
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('../../../raw_data/XME.csv', index_col = 0, parse_dates = True, dayfirst=True)
+df = df.sort_index(ascending=True, inplace=False)
+df.info()
+df.head(5)
+
+plt.plot(df['close'])
+plt.show()
+```
+
+```{python}
+df.describe().T
+
+# checking for missing values
+#df.isnull.sum()
+```
+
+
+
+## R
+
+
+
+:::
+
+

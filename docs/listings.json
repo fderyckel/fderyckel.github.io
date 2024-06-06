@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/machine-learning-part1/02-logistic-regression/index.html",
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
       "/posts/machine-learning-part1/06-gradient-descent/index.html",
       "/posts/machine-learning-part1/03-linear-regression/index.html",
@@ -70,6 +71,7 @@
   {
     "listing": "/machine-learning-part1.html",
     "items": [
+      "/posts/machine-learning-part1/02-logistic-regression/index.html",
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
       "/posts/machine-learning-part1/06-gradient-descent/index.html",
       "/posts/machine-learning-part1/03-linear-regression/index.html",

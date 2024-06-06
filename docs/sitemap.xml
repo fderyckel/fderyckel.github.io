@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-04-26T03:13:45.366Z</lastmod>
+    <lastmod>2024-06-06T02:07:07.437Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -126,11 +126,11 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/probability.html</loc>
-    <lastmod>2024-04-26T03:13:42.922Z</lastmod>
+    <lastmod>2024-04-26T03:36:25.602Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/machine-learning-part1.html</loc>
-    <lastmod>2024-04-26T03:01:07.403Z</lastmod>
+    <lastmod>2024-05-13T05:53:41.927Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part2.html</loc>
@@ -138,7 +138,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/time-series.html</loc>
-    <lastmod>2024-04-22T00:23:26.290Z</lastmod>
+    <lastmod>2024-06-06T02:07:04.964Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/discrete-simulations/index.html</loc>
@@ -166,7 +166,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index.html</loc>
-    <lastmod>2024-04-22T00:23:25.867Z</lastmod>
+    <lastmod>2024-06-06T02:07:13.909Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/ts-forecast/hotel-booking/index.html</loc>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/05-metrics/index.html</loc>
-    <lastmod>2024-04-26T00:22:37.230Z</lastmod>
+    <lastmod>2024-05-13T01:11:31.873Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/07-kmeans-regime-change/index.html</loc>
@@ -254,6 +254,14 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/06-gradient-descent/index.html</loc>
-    <lastmod>2024-04-26T03:01:06.908Z</lastmod>
+    <lastmod>2024-04-26T03:35:29.211Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/proba-quant/markov-chains/index.html</loc>
+    <lastmod>2024-04-26T03:36:25.243Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/02-logistic-regression/index.html</loc>
+    <lastmod>2024-05-13T05:53:50.093Z</lastmod>
   </url>
 </urlset>

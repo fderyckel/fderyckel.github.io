@@ -2,7 +2,7 @@
 title: "Gradient Descent"
 author: "Francois de Ryckel"
 date: "2024-04-26"
-categories: [Regression, Lasso, Ridge]
+categories: [Gradient Descent, Regression]
 editor: source
 date-modified: '2024-04-30'
 ---
@@ -63,11 +63,41 @@ plt.show()
 ## R 
 
 ```{r}
+#| label: r_createFunctions
+#| message: false
+#| warning: false
+
+library(dplyr)
+library(purrr)
+library(ggplot2)
+
+# the original function 
+cost_function <- function(x){
+  return(3.91*x^2 + 5*x - 59)
+}
+
+gradient <- function(x) {
+  return(3.91*x+5)
+}
+
+# checking our function
+cost_function(4.5)
+
+# quick visual check 
+df <- tibble(x = seq(from = -10, to = 10, length.out = 1000)) |> 
+  mutate(y = map_dbl(x, cost_function))
+
+ggplot(df, aes(x, y)) + 
+  geom_line(color = 'blue') + 
+  #xlab('x') + ylab('cost_function(x)') + 
+  labs(x = 'x',  y = 'cost_function(x)', 
+       title = 'Plot of the cost_function(x) vs x') 
 
 ```
 
 
 ::: 
+
 
 We can now put everything together and define our gradient descent function.  
 

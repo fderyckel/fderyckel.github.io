@@ -7,9 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Francois de Ryckel">
-<meta name="dcterms.date" content="2024-04-16">
+<meta name="dcterms.date" content="2024-05-15">
+<meta name="description" content="A dive into Logistic Regression.">
 
-<title>QUANT dira-t-on? - Defining Success</title>
+<title>QUANT dira-t-on? - Logistic Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -95,6 +96,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -144,10 +148,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Defining Success</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">sklearn</div>
-                <div class="quarto-category">tidymodel</div>
+      <h1 class="title">Logistic Regression</h1>
+                  <div>
+        <div class="description">
+          A dive into Logistic Regression.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">logistic-regression</div>
               </div>
                   </div>
   </div>
@@ -165,14 +173,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 16, 2024</p>
+        <p class="date">May 15, 2024</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">April 20, 2024</p>
+        <p class="date-modified">May 22, 2024</p>
       </div>
     </div>
       
@@ -186,22 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#regression-models" id="toc-regression-models" class="nav-link active" data-scroll-target="#regression-models">Regression models</a>
-  <ul class="collapse">
-  <li><a href="#rmse" id="toc-rmse" class="nav-link" data-scroll-target="#rmse">RMSE</a></li>
-  <li><a href="#mae" id="toc-mae" class="nav-link" data-scroll-target="#mae">MAE</a></li>
-  <li><a href="#huber-loss" id="toc-huber-loss" class="nav-link" data-scroll-target="#huber-loss">Huber Loss</a></li>
-  </ul></li>
-  <li><a href="#classfication-models" id="toc-classfication-models" class="nav-link" data-scroll-target="#classfication-models">Classfication models</a>
-  <ul class="collapse">
-  <li><a href="#type-i-and-type-ii-errors" id="toc-type-i-and-type-ii-errors" class="nav-link" data-scroll-target="#type-i-and-type-ii-errors">Type I and Type II errors</a></li>
-  <li><a href="#the-log-loss-function" id="toc-the-log-loss-function" class="nav-link" data-scroll-target="#the-log-loss-function">The log-loss function</a></li>
-  <li><a href="#accuracy" id="toc-accuracy" class="nav-link" data-scroll-target="#accuracy">Accuracy</a></li>
-  <li><a href="#precision" id="toc-precision" class="nav-link" data-scroll-target="#precision">Precision</a></li>
-  <li><a href="#recall" id="toc-recall" class="nav-link" data-scroll-target="#recall">Recall</a></li>
-  <li><a href="#f1-score" id="toc-f1-score" class="nav-link" data-scroll-target="#f1-score">F1 score</a></li>
-  <li><a href="#auc-roc-curve" id="toc-auc-roc-curve" class="nav-link" data-scroll-target="#auc-roc-curve">AUC &amp; ROC Curve</a></li>
-  </ul></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link active" data-scroll-target="#examples">Examples</a></li>
   </ul>
 </nav>
 </nav>
@@ -215,86 +208,216 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How would we decide if this model performs well or if this model is better than this model? Or even deciding which hyper-parameters to use (aka which ones fine-tune to a better model?)</p>
-<p>This post is about defining what is <em>‘best’</em> or <em>‘better’</em> when comparing different <strong>supervised models</strong>. we’ll have 2 main parts: measure of success for regression models and measure of success for classification models.</p>
-<p>In ML linguo, we are talking about <strong>Loss functions</strong>: how to measure and minimize the errors between the predicted (<span class="math inline">\(\hat y\)</span>) and the actual values (<span class="math inline">\(y\)</span>). So the loss function is used to measure the error on a single observation. On the other hand, the <strong>Cost Function</strong> is the average loss over the entire dataset.</p>
-<section id="regression-models" class="level1">
-<h1>Regression models</h1>
-<p>When modeling for regression, we somehow <strong>measure the distance between our prediction and the actual observed value</strong>. When comparing models, we usually want to keep the model which give the smallest sum of distance.</p>
-<p>It has to be noted that quite a few of these concepts have deeper connections in ML as they are not only ‘success’ metrics but also loss functions of ML algorithms.</p>
-<section id="rmse" class="level2">
-<h2 class="anchored" data-anchor-id="rmse">RMSE</h2>
-<p>This is probably the most well-known measure when comparing regression models. Because we are squaring the distance between the predicted and the observed, this penalizes predicted values that are far off the real values. Hence this measures is used when we want to avoid ‘outliers’ predictions (prediction that are far off.)</p>
-<p><span class="math display">\[RMSE = \sqrt \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}\]</span></p>
-<p>The SSE <span class="math inline">\(\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\)</span> (aka sum of square error, aka without square root and average) is also the loss function in the <a href="../../../posts/machine-learning-part1/03-linear-regression/index.html">linear regression algorithm</a>. It is a convex function; hence we can find a minimum; or better than solving partial derivatives, one can use <a href="../../../posts/machine-learning-part1/06-gradient-descent/index.html">Gradient Descent</a> (more feasible/practical when it comes to ML).</p>
-</section>
-<section id="mae" class="level2">
-<h2 class="anchored" data-anchor-id="mae">MAE</h2>
-<p>With <strong>Mean Absolute Error</strong>, we just take the average of the errors. Useful when we don’t really care if predictions is far off from the observed data.</p>
-<p><span class="math display">\[MAE = \frac {\sum_{i=1}^{n}  \lvert y_i - \hat{y}_i \rvert}{n}\]</span></p>
-<p>Without the averaging process, this is also called the <strong>L1 loss</strong> or <strong>Laplace Loss</strong>. It is robust to outliers (comparing to L2 Loss). But Absolute Error is not smooth (aka not differentiable everywhere). This has implication when using Gradient Descent Algorithms.</p>
-</section>
-<section id="huber-loss" class="level2">
-<h2 class="anchored" data-anchor-id="huber-loss">Huber Loss</h2>
-<p>Huber loss is a mixture of MSE and MAE. Kind of the best of both world basically. We define the Huber Loss function using a step wise functions.</p>
-<p><span class="math display">\[L_\delta (y, f(x)) = \begin{cases}
-      \frac{1}{2} (y - f(x))^2 &amp; \lvert y - f(x) \rvert\leq \delta \\
-      \delta \lvert y - f(x) \rvert-\frac{1}{2} \delta^2 &amp; otherwise
-   \end{cases}
-\]</span></p>
-<p>Note how the Huber Loss function require a parameter <span class="math inline">\(\delta\)</span> which acts as a threshold value (usually by default it is 1).</p>
-<p>Basically the function says that for value less than <span class="math inline">\(\delta\)</span> uses MSE and for loss values great than <span class="math inline">\(\delta\)</span> uses MAE.</p>
-<p>Some advantages of Huber Loss functions:</p>
-<ul>
-<li>Robust to outliers</li>
-<li>differentiable everywhere (even at the junction of the MAE and MSE). Meanings it can be used with Gradient Descent algorithms as well.</li>
-<li>The transition from quadratic to linear behaviour in Huber loss results in a smoother optimization landscape compared to MSE. This can prevent issues related to gradient explosions and vanishing gradients, which may occur in certain cases with MSE.</li>
-</ul>
-<p>The main disadvantage of the Huber Loss function is how to tune that <span class="math inline">\(\delta\)</span> parameter.</p>
-</section>
-</section>
-<section id="classfication-models" class="level1">
-<h1>Classfication models</h1>
-<section id="type-i-and-type-ii-errors" class="level2">
-<h2 class="anchored" data-anchor-id="type-i-and-type-ii-errors">Type I and Type II errors</h2>
-<ul>
-<li><p>Type I error is the probability of a false positive; it is the probability of falsely rejecting <span class="math inline">\(H_0\)</span>, the null-hypothesis. The type I error is consistent with the chosen significant level.</p></li>
-<li><p>Type II error is the probability of a false negative; it is the probability of NOT rejecting a null-hypothesis that is actually false.</p></li>
-</ul>
-</section>
-<section id="the-log-loss-function" class="level2">
-<h2 class="anchored" data-anchor-id="the-log-loss-function">The log-loss function</h2>
-<p>The log-loss function is used with logistic regressions.</p>
-</section>
-<section id="accuracy" class="level2">
-<h2 class="anchored" data-anchor-id="accuracy">Accuracy</h2>
-<p>Shortcomings:</p>
-<ul>
-<li>for imbalanced dataset, we can have good accuracy by just predicting most observation with the most frequent class. For instance in the case of a rare disease or big financial meltdown, we can just predict</li>
-</ul>
-</section>
-<section id="precision" class="level2">
-<h2 class="anchored" data-anchor-id="precision">Precision</h2>
-<p>If you call it true, is it indeed true? In other words, the proportion of predicted positive that are actually positive.</p>
-</section>
-<section id="recall" class="level2">
-<h2 class="anchored" data-anchor-id="recall">Recall</h2>
-<p>If there is a positive, did the model predict a positive.</p>
-</section>
-<section id="f1-score" class="level2">
-<h2 class="anchored" data-anchor-id="f1-score">F1 score</h2>
-<p>It is the <strong>harmonic mean</strong> of both precision and recall. The harmonic mean penalizes model that have very low precision or recall. Which wouldn’t be the case with arithmetic mean.</p>
-<p><span class="math display">\[\frac{2 \cdot Precision \cdot Recall}{Precision + Recall}\]</span></p>
-</section>
-<section id="auc-roc-curve" class="level2">
-<h2 class="anchored" data-anchor-id="auc-roc-curve">AUC &amp; ROC Curve</h2>
-<p>need to get the prediction as a probability</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Logistic Regression predict categorical variables based on quantitative data. It does this using the <strong>logit</strong> function</p>
+<p><span class="math display">\[logit = log(oods) = w_0+w_1x_1+w_2x_2+ \cdots + w_nx_n\]</span></p>
+<p>The logit is the log of the odds. This can be mapped back into a probability (with the sigmoid function) and then back to a class.</p>
+<p>The logistic sigmoid is defined as <span class="math display">\[f(x) = \frac{1}{1+e^{-x}} = \frac{e^x}{e^x+1}\]</span> The sigmoid allows to transform values from <span class="math inline">\(-\infty \lt x \lt \infty\)</span> into a <span class="math inline">\(-1 &lt; f(x) &lt; 1\)</span> interval.</p>
+<p>Assume p(x) be the linear function. However, the problem is that p is the probability that should vary from 0 to 1 whereas p(x) is an unbounded linear equation. To address this problem, let us assume, log p(x) be a linear function of x and further, to bound it between a range of (0,1), we will use logit transformation.</p>
+<p><span class="math display">\[log \left( \frac{p(x)}{1-p(x)} \right) = \alpha_0 + \alpha \cdot x\]</span></p>
+<p>Solve for <span class="math inline">\(p(x)\)</span> using exponential on both sides, isolate <span class="math inline">\(p(x)\)</span> and factoringthe coefficient. We get: <span class="math display">\[p(x) = \frac{e^{\alpha_0 + \alpha \cdot x}}{e^{\alpha_0 + \alpha \cdot x}+1}\]</span></p>
+<p>Since Logistic regression predicts probabilities, we can fit it using likelihood. Therefore, for each training data point x, the predicted class is y. Now, the likelihood can be written as: <span class="math display">\[L(\alpha_0, \alpha) = \prod_{i=1}^n p(x_i)^{y_i} \left(1-p(x_i) \right)^{1-y_i}\]</span> Take log on both side, we can transform that product into a sum. <span class="math display">\[Log(L(\alpha_0, \alpha)) = \sum_{i=1}^n y_i \cdot log(p(x_i)) + (1-y_i) \cdot log((1-p(x_i) )\]</span></p>
+<section id="examples" class="level1">
+<h1>Examples</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'../../../raw_data/XME.csv'</span>, index_col <span class="op">=</span> <span class="dv">0</span>, parse_dates <span class="op">=</span> <span class="va">True</span>, dayfirst<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.sort_index(ascending<span class="op">=</span><span class="va">True</span>, inplace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df.info()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df.head(<span class="dv">5</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>plt.plot(df[<span class="st">'close'</span>])</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+Index: 4500 entries, 2006-06-22 to 2024-05-08
+Data columns (total 12 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   open              4500 non-null   float64
+ 1   high              4500 non-null   float64
+ 2   low               4500 non-null   float64
+ 3   close             4500 non-null   float64
+ 4   adjClose          4500 non-null   float64
+ 5   volume            4500 non-null   int64  
+ 6   unadjustedVolume  4500 non-null   int64  
+ 7   change            4500 non-null   float64
+ 8   changePercent     4500 non-null   float64
+ 9   vwap              4500 non-null   float64
+ 10  label             4500 non-null   object 
+ 11  changeOverTime    4500 non-null   float64
+dtypes: float64(9), int64(2), object(1)
+memory usage: 457.0+ KB</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-2-output-2.png" width="581" height="411"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.describe().T</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># checking for missing values</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#df.isnull.sum()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">25%</th>
+<th data-quarto-table-cell-role="th">50%</th>
+<th data-quarto-table-cell-role="th">75%</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">open</td>
+<td>4500.0</td>
+<td>4.224556e+01</td>
+<td>1.496800e+01</td>
+<td>11.7800</td>
+<td>3.001000e+01</td>
+<td>4.150000e+01</td>
+<td>5.173500e+01</td>
+<td>9.535000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">high</td>
+<td>4500.0</td>
+<td>4.279536e+01</td>
+<td>1.514187e+01</td>
+<td>12.1900</td>
+<td>3.040000e+01</td>
+<td>4.195500e+01</td>
+<td>5.241250e+01</td>
+<td>9.609000e+01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">low</td>
+<td>4500.0</td>
+<td>4.160857e+01</td>
+<td>1.472447e+01</td>
+<td>11.3800</td>
+<td>2.963000e+01</td>
+<td>4.100500e+01</td>
+<td>5.110250e+01</td>
+<td>9.353000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">close</td>
+<td>4500.0</td>
+<td>4.220901e+01</td>
+<td>1.494711e+01</td>
+<td>11.9700</td>
+<td>2.998750e+01</td>
+<td>4.143500e+01</td>
+<td>5.175000e+01</td>
+<td>9.458000e+01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">adjClose</td>
+<td>4500.0</td>
+<td>3.686377e+01</td>
+<td>1.241720e+01</td>
+<td>10.6000</td>
+<td>2.709750e+01</td>
+<td>3.530500e+01</td>
+<td>4.583000e+01</td>
+<td>7.545000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">volume</td>
+<td>4500.0</td>
+<td>3.141904e+06</td>
+<td>2.199371e+06</td>
+<td>0.0000</td>
+<td>1.769072e+06</td>
+<td>2.725635e+06</td>
+<td>4.039529e+06</td>
+<td>2.454848e+07</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">unadjustedVolume</td>
+<td>4500.0</td>
+<td>3.141904e+06</td>
+<td>2.199371e+06</td>
+<td>0.0000</td>
+<td>1.769072e+06</td>
+<td>2.725635e+06</td>
+<td>4.039529e+06</td>
+<td>2.454848e+07</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">change</td>
+<td>4500.0</td>
+<td>-3.655796e-02</td>
+<td>8.801642e-01</td>
+<td>-11.2400</td>
+<td>-4.200000e-01</td>
+<td>-2.001000e-02</td>
+<td>3.900000e-01</td>
+<td>3.980000e+00</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">changePercent</td>
+<td>4500.0</td>
+<td>-6.299599e-02</td>
+<td>2.019533e+00</td>
+<td>-13.8100</td>
+<td>-1.110000e+00</td>
+<td>-5.836411e-02</td>
+<td>1.020000e+00</td>
+<td>1.414000e+01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">vwap</td>
+<td>4500.0</td>
+<td>4.221463e+01</td>
+<td>1.493961e+01</td>
+<td>11.8625</td>
+<td>2.999438e+01</td>
+<td>4.150750e+01</td>
+<td>5.178875e+01</td>
+<td>9.488750e+01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">changeOverTime</td>
+<td>4500.0</td>
+<td>-6.299599e-04</td>
+<td>2.019533e-02</td>
+<td>-0.1381</td>
+<td>-1.110000e-02</td>
+<td>-5.836411e-04</td>
+<td>1.020000e-02</td>
+<td>1.414000e-01</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+
+</div>
+</div>
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

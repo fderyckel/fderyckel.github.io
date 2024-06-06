@@ -73,7 +73,7 @@ import pandas as pd
 
 yo = yf.download("SBUX", start = "2005-01-01")
 
-yo.to_csv("../../raw_data/sbux.csv")
+yo.to_csv("../../../raw_data/sbux.csv")
 
 yo['Adj Close'][-1]
 
@@ -89,7 +89,7 @@ We have imported SBUX stock price data and stored them on disk.  We'll retrieve 
 
 import pandas as pd
 
-sbux = pd.read_csv("../../raw_data/sbux.csv")
+sbux = pd.read_csv("../../../raw_data/sbux.csv")
 
 sbux.tail() 
 
