@@ -1,11 +1,11 @@
 ---
-title: "05 - Arima"
+title: "05 - AR, MA and ARIMA models"
 author: "François de Ryckel"
 date: "2024-01-9"
 categories: [Time-Series, ARIMA, Decomposition]
 description: 'Introducing Arima - Autoregressive Integrated Moving Average.'
 editor: source
-date-modified: "2024-01-22"
+date-modified: "2024-06-10"
 ---
 
 # Introduction 
@@ -13,7 +13,7 @@ date-modified: "2024-01-22"
 This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data. 
 Our [previous post](../03-autocorrelation/index.qmd) on autocorrelation and partial autocorelation could be considered as prior material.
 
-## Autoregressive models. 
+## Autoregressive models  
 
 Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations). 
 
@@ -31,8 +31,113 @@ Few characteristics of AR models
 * for stationary time-series, $-1 < \phi < 1$
 * negative $\phi$ indicates mean-reversion series
 * positive $\phi$ indicates momentum series
+* the auto-correlation ACF of the AR time-series decay at the rate of $\phi$.  So small $\phi$ will lead to steeper decay in the auto-correlation.  For instance, if $\phi = -0.5$; the first lag autocorrelation will be $-0.5$, the second lag will be $0.25$, the third lag will be $-0.125$, etc. 
+
+We can simulate an AR(1) timeseries in both R and Python. 
+
+::: {.panel-tabset}
+
+## Python
+
+In python, we use the *arima_process* module from the *statsmodels* library.  
+Because these models have been developed with ARIMA in mind, we will set up the MA parameter to 1.  Also, we set up the intercept to $1$.  
+
+```{python}
+#| label: py_arma01
+
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima_process import ArmaProcess
+
+ar1 = np.array([1, -0.9])    # the first term: the delta, the second is the phi_1
+ma1 = np.array([1])          # as ma is mandatory for ArmaProcess, we set it up to 1
+ar_obj1 = ArmaProcess(ar1, ma1)
+sim_data1 = ar_obj1.generate_sample(nsample = 500)
+plt.clf()
+plt.plot(sim_data1)
+plt.show()
+```
+
+Doing it similar with a positive $\phi$
+
+```{python}
+#| label: py_arma02
+
+ar2 = np.array([1, +0.9])
+ma2 = np.array([1])
+ar_obj2 = ArmaProcess(ar2, ma2)
+sim_data2 = ar_obj2.generate_sample(nsample = 500)
+plt.clf()
+plt.plot(sim_data2)
+plt.show()
+```
+
+### Auto-correlation 
+
+Looking at the auto-correlation decay. 
+
+```{python}
+#| label: py_arma03
+
+from statsmodels.graphics.tsaplots import plot_acf
+
+ar3 = np.array([1, -0.5])
+ma3 = np.array([1])
+ar_obj3 = ArmaProcess(ar3, ma3)
+sim_data3 = ar_obj3.generate_sample(nsample = 500) # to show fast decay with negative phi
+
+plot_acf(sim_data1, alpha = 1, lags = 20)
+plt.show()
+
+plt.clf()
+plot_acf(sim_data2, alpha = 1, lags = 20)
+plt.show()
+
+plt.clf()
+plot_acf(sim_data3, alpha = 1, lags = 20)
+plt.show()
+```
 
 
+### Estimating the parameters of AR model 
+
+```{python}
+#| label: py_arma04
+
+from statsmodels.tsa.arima.model import ARIMA
+
+model_ar = ARIMA(sim_data1, order = (1, 0, 0)) # the order ensure we are dealing with just AR model
+res = model_ar.fit()
+
+print(res.summary())
+```
+
+```{python}
+print(res.param_names)
+print(res.params)
+```
+
+Our simulated data had $0.9$ as the parameter of the autoregressive term.  The estimated parameters is quite close indeed. 
+
+### Forecasting with an AR model 
+
+We can also use the AR to make prediction. 
+
+```{python}
+
+from statsmodels.graphics.tsaplots import plot_predict
+
+res.predict(start = 490, end = 510)
+#res.plot_predict(start = 400, end = 510)
+res.plot_diagnostics()
+plt.show()
+```
+
+
+
+## R
+
+:::
 
 ## Moving Average Models
 

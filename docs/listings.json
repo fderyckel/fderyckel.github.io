@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/time-series/05-arima/index.html",
       "/posts/machine-learning-part1/02-logistic-regression/index.html",
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
       "/posts/machine-learning-part1/06-gradient-descent/index.html",
@@ -13,7 +14,6 @@
       "/posts/proba-quant/prob-quant01/index.html",
       "/posts/time-series/03-autocorrelation/index.html",
       "/posts/risk-portfolio/03-var/index.html",
-      "/posts/time-series/05-arima/index.html",
       "/posts/ts-forecast/hotel-booking/index.html",
       "/posts/quant-part1/binomials_models/index.html",
       "/posts/time-series/02-statistical-moments/index.html",
