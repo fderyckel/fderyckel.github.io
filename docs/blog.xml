@@ -4251,15 +4251,16 @@ font-style: inherit;">s method'</span> )</span>
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data. Our <a href="../../../posts/time-series/03-autocorrelation/index.html">previous post</a> on autocorrelation and partial autocorelation could be considered as prior material.</p>
-<section id="autoregressive-models" class="level2">
-<h2 class="anchored" data-anchor-id="autoregressive-models">Autoregressive models</h2>
+<p>This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data. Our <a href="../../../posts/time-series/03-autocorrelation/index.html">previous post</a> on autocorrelation and partial autocorelation could be considered as prior material. The assumption behind these models are that the time-series is stationary (or has been transformed to a stationary time series). Recall that <strong>a stationary time series has constant mean, variance and auto-correlation over time</strong>. In other words, <strong>the covariance between the <em>i-th</em> term and the <em>i + m - th</em> term is not a function of time</strong>.</p>
+</section>
+<section id="autoregressive-models" class="level1">
+<h1>Autoregressive models</h1>
 <p>Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations).</p>
-<p><img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t"> This AR model used <img src="https://latex.codecogs.com/png.latex?p"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?p"> or <img src="https://latex.codecogs.com/png.latex?AR(p)">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t"> <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Csum_%7Bi=1%7D%5E%7Bp%7D%20%5Cphi_i%20%5Ccdot%20Y_%7Bt-i%7D%20+%20%5Cepsilon_t"> This AR model used <img src="https://latex.codecogs.com/png.latex?p"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?p"> or <img src="https://latex.codecogs.com/png.latex?AR(p)">.</p>
 <ul>
 <li><img src="https://latex.codecogs.com/png.latex?%5Cdelta"> is an intercept like term</li>
 <li><img src="https://latex.codecogs.com/png.latex?Y_%7Bt-i%7D"> are the regressors (time series own lagged observations) with parameters <img src="https://latex.codecogs.com/png.latex?%5Cphi_%7Bt-i%7D"></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> is the error term</li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> is an error term. Also <img src="https://latex.codecogs.com/png.latex?%5Cepsilon_t%20%5Csim%20N%20%5Cleft(%200,%20%5Csigma%5E2%20%5Cright)"></li>
 </ul>
 <p>AR(1) is then define as <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cepsilon_t"></p>
 <p>Few characteristics of AR models</p>
@@ -4477,23 +4478,23 @@ font-style: inherit;">print</span>(res.summary())</span></code></pre></div>
 <pre><code>                               SARIMAX Results                                
 ==============================================================================
 Dep. Variable:                      y   No. Observations:                  500
-Model:                 ARIMA(1, 0, 0)   Log Likelihood                -693.698
-Date:                Fri, 07 Jun 2024   AIC                           1393.396
-Time:                        10:43:31   BIC                           1406.040
-Sample:                             0   HQIC                          1398.357
+Model:                 ARIMA(1, 0, 0)   Log Likelihood                -702.864
+Date:                Fri, 14 Jun 2024   AIC                           1411.727
+Time:                        08:51:20   BIC                           1424.371
+Sample:                             0   HQIC                          1416.689
                                 - 500                                         
 Covariance Type:                  opg                                         
 ==============================================================================
                  coef    std err          z      P&gt;|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const         -0.5670      0.463     -1.225      0.221      -1.474       0.340
-ar.L1          0.9068      0.020     45.580      0.000       0.868       0.946
-sigma2         0.9356      0.059     15.741      0.000       0.819       1.052
+const         -0.4877      0.432     -1.129      0.259      -1.334       0.359
+ar.L1          0.8982      0.021     43.704      0.000       0.858       0.939
+sigma2         0.9707      0.067     14.506      0.000       0.840       1.102
 ===================================================================================
-Ljung-Box (L1) (Q):                   0.05   Jarque-Bera (JB):                 1.76
-Prob(Q):                              0.82   Prob(JB):                         0.42
-Heteroskedasticity (H):               1.15   Skew:                             0.15
-Prob(H) (two-sided):                  0.37   Kurtosis:                         3.00
+Ljung-Box (L1) (Q):                   0.28   Jarque-Bera (JB):                 2.71
+Prob(Q):                              0.60   Prob(JB):                         0.26
+Heteroskedasticity (H):               1.12   Skew:                            -0.10
+Prob(H) (two-sided):                  0.46   Kurtosis:                         2.69
 ===================================================================================
 
 Warnings:
@@ -4511,7 +4512,7 @@ font-style: inherit;">print</span>(res.param_names)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">print</span>(res.params)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[-0.56698664  0.90676447  0.93561666]</code></pre>
+<pre><code>[-0.48768522  0.89822033  0.97072192]</code></pre>
 </div>
 </div>
 <p>Our simulated data had <img src="https://latex.codecogs.com/png.latex?0.9"> as the parameter of the autoregressive term. The estimated parameters is quite close indeed.</p>
@@ -4536,11 +4537,11 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">510</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>array([-4.71568373, -5.63195649, -5.33985692, -4.23172735, -4.32650865,
-       -3.53875143, -3.50737   , -3.03884854, -1.95986768, -0.9861391 ,
-       -0.68232354, -0.67157004, -0.66181915, -0.65297739, -0.64496   ,
-       -0.63769011, -0.63109804, -0.62512058, -0.61970043, -0.61478563,
-       -0.61032907])</code></pre>
+<pre><code>array([-1.13974043, -1.50381221, -2.11834284, -1.86643043, -1.12326524,
+        0.25178097,  1.84163869,  2.53226982,  0.70537889,  2.57223097,
+        1.97822412,  1.72724467,  1.50180983,  1.29931968,  1.1174389 ,
+        0.95406989,  0.80732853,  0.67552245,  0.55713156,  0.45079045,
+        0.3552727 ])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -4558,9 +4559,119 @@ font-style: inherit;">#res.plot_predict(start = 400, end = 510)</span></span>
 </div>
 </div>
 </div>
+<p>We could also use a specific dataset to fit an autoregressive model on.</p>
+<p>Let’s use the famous Nile data set</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" aria-controls="tabset-2-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" aria-controls="tabset-2-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb15-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb15-3"></span>
+<span id="cb15-4">df_nile <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/Nile.csv'</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(readr)</span>
+<span id="cb20-2"></span>
+<span id="cb20-3">df_nile <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'../../../raw_data/Nile.csv'</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+• `` -&gt; `...1`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 100 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): ...1, time, Nile
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># fit a model wit AR = 1</span></span>
+<span id="cb23-2">model_ar1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arima</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> df_nile<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Nile, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">order =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))</span>
+<span id="cb23-3"></span>
+<span id="cb23-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># chek the residuals of the model (should be normallly distributed)</span></span>
+<span id="cb23-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">acf</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">residuals</span>(model_ar1), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">main =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Residuals of AR(1) on Nile River.'</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/r-load-Nile-15.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="moving-average-models" class="level2">
-<h2 class="anchored" data-anchor-id="moving-average-models">Moving Average Models</h2>
+<section id="moving-average-models" class="level1">
+<h1>Moving Average Models</h1>
 <p>Moving Average (MA) is another class of linear model where the outcome variable is regressed using its own previous error terms. <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cmu%20+%20%20%5Ctheta_1%20%5Cepsilon_%7Bt-1%7D%20+%20%5Ctheta_2%20%5Cepsilon_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Ctheta_q%20%5Cepsilon_%7Bt-q%7D%20+%20%5Cepsilon_t"> This MA model used <img src="https://latex.codecogs.com/png.latex?q"> lags, hence we say it is of order <img src="https://latex.codecogs.com/png.latex?q">.</p>
 <p>Putting it all together, the outcome variable of an ARIMA model can be predicted: <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5C%7B%5Cdelta%20+%20%5Cphi_1%20Y_%7Bt-1%7D%20+%20%5Cphi_2%20Y_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Cphi_p%20Y_%7Bt-p%7D%20+%20%5Cepsilon_t%20%5C%7D%20+%20%5C%7B%5Cmu%20+%20%20%5Ctheta_1%20%5Cepsilon_%7Bt-1%7D%20+%20%5Ctheta_2%20%5Cepsilon_%7Bt-2%7D%20+%20%5Ccdots%20+%20%5Ctheta_q%20%5Cepsilon_%7Bt-q%7D%20+%20%5Cepsilon_t%20%5C%7D"> This can be simplify into: <img src="https://latex.codecogs.com/png.latex?Y_t%20=%20%5Cdelta%20+%20%5Csum_%7Bi=1%7D%5Ep%20%5Cphi_i%20Y_%7Bt-i%7D%20+%20%5Csum_%7Bj=1%7D%5Eq%20%5Ctheta_j%20%5Cepsilon_%7Bt-j%7D%20+%20%5Cepsilon_t"></p>
 <p>The parameters of an ARIMA model are (p, d, q) :</p>
@@ -4572,27 +4683,26 @@ font-style: inherit;">#res.plot_predict(start = 400, end = 510)</span></span>
 </ul>
 <p>To apply an ARIMA model to a set of data, we will use the US CPI Energy component that we downloaded on the <a href="https://fred.stlouisfed.org/series/CPIENGSL">FED St-Louis website</a>.</p>
 </section>
-</section>
 <section id="application-using-r" class="level1">
 <h1>Application using R</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(readr)</span>
-<span id="cb15-2"><span class="fu" style="color: #4758AB;
+<span id="cb24-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(dplyr)</span>
-<span id="cb15-3"><span class="fu" style="color: #4758AB;
+<span id="cb24-3"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb15-4"><span class="fu" style="color: #4758AB;
+<span id="cb24-4"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(modeltime)</span>
-<span id="cb15-5"><span class="fu" style="color: #4758AB;
+<span id="cb24-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(timetk)</span>
-<span id="cb15-6"></span>
-<span id="cb15-7">df <span class="ot" style="color: #003B4F;
+<span id="cb24-6"></span>
+<span id="cb24-7">df <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4601,14 +4711,14 @@ background-color: null;
 font-style: inherit;">'../../../raw_data/CPI_energy.csv'</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb15-8">  <span class="fu" style="color: #4758AB;
+<span id="cb24-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">select</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">date =</span> DATE, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">cpi_energy =</span> CPIENGNS)</span>
-<span id="cb15-9"><span class="fu" style="color: #4758AB;
+<span id="cb24-9"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">glimpse</span>(df)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -4622,7 +4732,7 @@ $ cpi_energy &lt;dbl&gt; 21.3, 21.5, 21.6, 21.5, 21.4, 21.4, 21.5, 21.4, 21.5, 2
 <h2 class="anchored" data-anchor-id="arima-using-the-base-r-framework">ARIMA using the base R framework</h2>
 <p>We need first to convert our df into a ts object.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">df_ts <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">df_ts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4649,13 +4759,13 @@ background-color: null;
 font-style: inherit;">2023</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">11</span>))</span>
-<span id="cb17-2"><span class="fu" style="color: #4758AB;
+<span id="cb26-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">str</span>(df_ts)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Time-Series [1:803] from 1957 to 2024: 21.3 21.5 21.6 21.5 21.4 21.4 21.5 21.4 21.5 21.4 ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ts.plot</span>(df_ts, <span class="at" style="color: #657422;
 background-color: null;
@@ -4667,16 +4777,16 @@ font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Energy CPI'</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>It is usually a wise idea to check for outliers? An easy way to do this is using a boxplot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">boxplot</span>(df_ts)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>We use the ACF to determine the MA parameter (q) of the ARIMA model.</p>
@@ -4685,7 +4795,7 @@ font-style: inherit;">boxplot</span>(df_ts)</span></code></pre></div>
 <li>An ACF plot that cuts off sharply after a few lags often indicates a suitable MA model</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">acf</span>(df_ts, <span class="at" style="color: #657422;
 background-color: null;
@@ -4693,11 +4803,11 @@ font-style: inherit;">lag.max =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggacf</span>(df_ts, <span class="at" style="color: #657422;
 background-color: null;
@@ -4705,7 +4815,7 @@ font-style: inherit;">num_lags =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Data is clearly not stationary. We will need to use differentiation to make it stationary.</p>
@@ -4715,7 +4825,7 @@ font-style: inherit;">100</span>)</span></code></pre></div>
 <li>A PACF plot that cuts off sharply after a few lags often indicates a suitable AR model</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">pacf</span>(df_ts, <span class="at" style="color: #657422;
 background-color: null;
@@ -4723,12 +4833,12 @@ font-style: inherit;">lag.max =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This can be confirm with Augmented Dickey Fuller test</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">tseries<span class="sc" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1">tseries<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4749,7 +4859,7 @@ alternative hypothesis: stationary</code></pre>
 </div>
 <p>adf test confirm non-stationarity of our ts. We can differentiate our ts to make it stationary.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">diff_ts <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1">diff_ts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4760,13 +4870,13 @@ background-color: null;
 font-style: inherit;">lag =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb27-2"><span class="fu" style="color: #4758AB;
+<span id="cb36-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ts.plot</span>(diff_ts)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">tseries<span class="sc" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1">tseries<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4785,7 +4895,7 @@ alternative hypothesis: stationary</code></pre>
 </div>
 <p>We can create our training and testing set.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">train_ts <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1">train_ts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> df_ts[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -4797,7 +4907,7 @@ font-style: inherit;">793</span>]</span></code></pre></div>
 </div>
 <p>We can now use ARIMA model using 1 and 1 for parameter (all we could see from acf)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1">result <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1">result <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4812,7 +4922,7 @@ background-color: null;
 font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>))</span>
-<span id="cb32-2">result</span></code></pre></div>
+<span id="cb41-2">result</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -4825,15 +4935,15 @@ s.e.  0.0356  0.0361
 
 sigma^2 estimated as 17.24:  log likelihood = -2251.54,  aic = 4509.07</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tsdiag</span>(result)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb44" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">predict</span>(result, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -4855,7 +4965,7 @@ Frequency = 1
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1">result_df <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1">result_df <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4870,7 +4980,7 @@ background-color: null;
 font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>))</span>
-<span id="cb37-2">result_df</span></code></pre></div>
+<span id="cb46-2">result_df</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -4883,7 +4993,7 @@ s.e.  0.0347  0.0358
 
 sigma^2 estimated as 17.52:  log likelihood = -2286.24,  aic = 4578.49</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb39" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb48" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">predict</span>(result_df, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -4901,7 +5011,7 @@ $se
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1">result_df <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb50" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1">result_df <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -4916,7 +5026,7 @@ background-color: null;
 font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>))</span>
-<span id="cb41-2">result_df</span></code></pre></div>
+<span id="cb50-2">result_df</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -4929,7 +5039,7 @@ s.e.  0.0776   0.0626  0.0531   0.0362   0.0722
 
 sigma^2 estimated as 16.92:  log likelihood = -2272.35,  aic = 4556.69</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb52" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">predict</span>(result_df, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -4947,7 +5057,7 @@ $se
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1">forecast<span class="sc" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb54" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1">forecast<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -5175,7 +5285,7 @@ AIC=4554.49   AICc=4554.63   BIC=4587.3</code></pre>
 <section id="using-modeltime-framework" class="level1">
 <h1>Using modeltime framework</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1">df <span class="sc" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb57" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1">df <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -5185,17 +5295,17 @@ font-style: inherit;">.interactive =</span> <span class="cn" style="color: #8f59
 background-color: null;
 font-style: inherit;">FALSE</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>with model time, it is pretty easy to do get the value for arima.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1">cv_splits <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb58" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1">cv_splits <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> df <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb49-2">  <span class="fu" style="color: #4758AB;
+<span id="cb58-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">time_series_split</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -5208,16 +5318,16 @@ background-color: null;
 font-style: inherit;">cumulative =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>)</span>
-<span id="cb49-3"></span>
-<span id="cb49-4">cv_splits <span class="sc" style="color: #5E5E5E;
+<span id="cb58-3"></span>
+<span id="cb58-4">cv_splits <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb49-5">  <span class="fu" style="color: #4758AB;
+<span id="cb58-5">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tk_time_series_cv_plan</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb49-6">  <span class="fu" style="color: #4758AB;
+<span id="cb58-6">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">plot_time_series_cv_plan</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -5229,11 +5339,11 @@ font-style: inherit;">.interactive =</span> <span class="cn" style="color: #8f59
 background-color: null;
 font-style: inherit;">FALSE</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://fderyckel.github.io/blog.html/posts/time-series/05-arima/index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb59" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -5258,30 +5368,30 @@ font-style: inherit;">library</span>(tidymodels)</span></code></pre></div>
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb55" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb64" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(parsnip)</span>
-<span id="cb55-2"><span class="fu" style="color: #4758AB;
+<span id="cb64-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(modeltime)</span>
-<span id="cb55-3"></span>
-<span id="cb55-4">model_fit_arima <span class="ot" style="color: #003B4F;
+<span id="cb64-3"></span>
+<span id="cb64-4">model_fit_arima <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">arima_reg</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb55-5">  <span class="fu" style="color: #4758AB;
+<span id="cb64-5">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set_engine</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'auto_arima'</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb55-6">  <span class="fu" style="color: #4758AB;
+<span id="cb64-6">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">fit</span>(cpi_energy <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -5291,7 +5401,7 @@ font-style: inherit;">training</span>(cv_splits))</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>frequency = 12 observations per 1 year</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb57" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1">model_fit_arima</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb66" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1">model_fit_arima</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>parsnip model object
 

@@ -11,18 +11,19 @@ date-modified: "2024-06-10"
 # Introduction 
 
 This post is about introducing ARIMA using the CPI data and various R framework for time series. Autoregressive because it is based on past value and moving average to smooth the time series data. 
-Our [previous post](../03-autocorrelation/index.qmd) on autocorrelation and partial autocorelation could be considered as prior material.
+Our [previous post](../03-autocorrelation/index.qmd) on autocorrelation and partial autocorelation could be considered as prior material.  The assumption behind these models are that the time-series is stationary (or has been transformed to a stationary time series).  Recall that **a stationary time series has constant mean, variance and auto-correlation over time**. In other words, **the covariance between the *i-th* term and the *i + m - th* term is not a function of time**. 
 
-## Autoregressive models  
+# Autoregressive models  
 
 Autoregression is a class of linear model where the outcome variable is regressed on its previous values (lagged observations). 
 
-$$Y_t = \delta + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t$$
+$$Y_t = \delta + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t$$ 
+$$Y_t = \delta + \sum_{i=1}^{p} \phi_i \cdot Y_{t-i} + \epsilon_t$$
 This AR model used $p$ lags, hence we say it is of order $p$ or $AR(p)$.
 
 * $\delta$ is an intercept like term
 * $Y_{t-i}$ are the regressors (time series own lagged observations) with parameters $\phi_{t-i}$
-* $\epsilon$ is the error term
+* $\epsilon$ is an error term.  Also $\epsilon_t \sim N \left( 0, \sigma^2 \right)$
 
 AR(1) is then define as $$Y_t = \delta + \phi_1 Y_{t-1} + \epsilon_t$$
 
@@ -139,7 +140,48 @@ plt.show()
 
 :::
 
-## Moving Average Models
+We could also use a specific dataset to fit an autoregressive model on.  
+
+Let's use the famous Nile data set 
+
+::: {.panel-tabset}
+
+## Python 
+
+```{python}
+#| label: py-load-Nile
+
+import pandas as pd
+import numpy as np
+
+df_nile = pd.read_csv('../../../raw_data/Nile.csv')
+
+
+```
+
+## R 
+
+```{r}
+#| label: r-load-Nile
+
+library(dplyr)
+library(readr)
+
+df_nile <- read_csv('../../../raw_data/Nile.csv')
+
+# fit a model wit AR = 1
+model_ar1 <- arima(x = df_nile$Nile, order = c(1, 0, 0))
+
+# chek the residuals of the model (should be normallly distributed)
+acf(residuals(model_ar1), main = 'Residuals of AR(1) on Nile River.')
+```
+
+
+
+:::
+
+
+# Moving Average Models
 
 Moving Average (MA) is another class of linear model where the outcome variable is regressed using its own previous error terms. 
 $$Y_t = \mu +  \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q} + \epsilon_t$$ 
