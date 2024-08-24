@@ -1,22 +1,21 @@
 ---
-title: "04 - Time-series decomposition"
+title: "04 - Time series decomposition"
 author: "François de Ryckel"
 date: "2022-10-21"
-categories: [Time-Series, Trend, Seasonality, Decomposition]
-description: 'Introducing time-series decomposition. We first show how to compose time-series using linear trend, seasonality and then white nosie.'
+categories: [Time series, Trend, Seasonality, Decomposition]
+description: 'Introducing time series decomposition. We first show how to compose time-series using linear trend, seasonality and then white noise.'
 editor: source
 date-modified: "2023-10-22"
 ---
 
 When studying time-series, we usually consider trend and seasonality.  With that in mind, we define time-series either in an additive way $$y_t = T_t + S_t + R_t$$ or in a multiplicative way $$y_t = T_t \cdot S_t \cdot R_t$$ 
 
-with: 
+with
 
-
-* $y_t$ the value of the time-serie at time $t$
-* $T_t$ the trend component at time $t$
-* $S_t$ the seasonal component at time $t$
-* $R_t$ the remainder component at time $t$
+* $y_t$ : the value of the time-serie at time $t$
+* $T_t$ :  the trend component at time $t$
+* $S_t$ :  the seasonal component at time $t$
+* $R_t$ :  the remainder component at time $t$
 
 ::: {.callout-note}
 
@@ -66,9 +65,9 @@ ggplot(df, aes(x, y)) +
   ggtitle(label = 'Compose a seasonal trend with a stochastic component')
 ```
 
-## Decomposing a time-series. 
+# Decomposing a time-series. 
 
-### In R using standard library
+## In R using standard library
 
 Let's go back to the milk example which looks like this.   
 

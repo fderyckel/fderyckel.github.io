@@ -1,9 +1,9 @@
 ---
-title: "03 - AutoCorrelation, Stationarity and Random-Walk - Part 1"
+title: "03 - Autocorrelation, Stationarity and Random-Walk - Part 1"
 author: "Francois de Ryckel"
 date: '2022-09-29'
-description: 'A dive into the concepts of autocorrelation and stationarity of time-series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise.'
-categories: [Time-Series, Autocorrelation, Stationarity, Random Walk]
+description: 'A dive into the concepts of autocorrelation and stationarity of time series.  We also get into how to plot correlogram using R and Python, random-walk, white-noise.'
+categories: [Time series, Autocorrelation, Stationarity, Random Walk]
 date-modified: '2024-02-19'
 ---
 
@@ -320,10 +320,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 df = pd.read_csv('../../../raw_data/JPM.csv')
-df['Date'] = pd.to_datetime(df['Date'])
-df = df[df['Date'] > '2019-01-01']
-df.index = df['Date']
-price = df['Adj Close']
+df['date'] = pd.to_datetime(df['date'])
+df = df[df['date'] > '2019-01-01']
+df.index = df['date']
+price = df['adjClose']
 
 
 plt.clf()
