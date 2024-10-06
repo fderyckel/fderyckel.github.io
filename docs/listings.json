@@ -2,10 +2,11 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/machine-learning-part1/10-PCA/index.html",
       "/posts/time-series/05-arima/index.html",
       "/posts/machine-learning-part1/02-logistic-regression/index.html",
-      "/posts/machine-learning-part1/06-gradient-descent/index.html",
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
+      "/posts/machine-learning-part1/06-gradient-descent/index.html",
       "/posts/machine-learning-part1/03-linear-regression/index.html",
       "/posts/machine-learning-part1/01-knn/index.html",
       "/posts/machine-learning-part1/05-metrics/index.html",
@@ -18,15 +19,15 @@
       "/posts/quant-part1/binomials_models/index.html",
       "/posts/time-series/02-statistical-moments/index.html",
       "/posts/quant-part1/normality-returns/index.html",
-      "/posts/proba-quant/jensen-inequality/index.html",
       "/posts/time-series/04-ts-decomposition/index.html",
+      "/posts/proba-quant/jensen-inequality/index.html",
       "/posts/quant-part2/02-SDE-part2/index.html",
-      "/posts/quant-part1/trinomial-model/index.html",
-      "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part2/01-SDE-Part1/index.html",
       "/posts/quant-part2/04-martingales/index.html",
-      "/posts/quant-part3/black-schole/index.html",
       "/posts/quant-part3/monte-carlo-sim/index.html",
+      "/posts/quant-part3/black-schole/index.html",
+      "/posts/quant-part1/trinomial-model/index.html",
+      "/posts/quant-part1/brownian-motion/index.html",
       "/posts/quant-part2/03-SDE-part3/index.html",
       "/posts/quant-puzzle-01/index.html",
       "/posts/machine-learning-part1/09-naives-bayes-intro/index.html",
@@ -38,8 +39,8 @@
       "/posts/machine-learning-part1/07-kmeans-intro/index.html",
       "/posts/proba-quant/markov-chains/index.html",
       "/posts/machine-learning-part1/08-kmeans-regime-change/index.html",
-      "/posts/machine-learning-part2/xgboost-time-series/index.html",
-      "/posts/algebra-quant/index.html"
+      "/posts/algebra-quant/index.html",
+      "/posts/machine-learning-part2/xgboost-time-series/index.html"
     ]
   },
   {
@@ -71,9 +72,10 @@
   {
     "listing": "/machine-learning-part1.html",
     "items": [
+      "/posts/machine-learning-part1/10-PCA/index.html",
       "/posts/machine-learning-part1/02-logistic-regression/index.html",
-      "/posts/machine-learning-part1/06-gradient-descent/index.html",
       "/posts/machine-learning-part1/04-lasso-ridge/index.html",
+      "/posts/machine-learning-part1/06-gradient-descent/index.html",
       "/posts/machine-learning-part1/03-linear-regression/index.html",
       "/posts/machine-learning-part1/01-knn/index.html",
       "/posts/machine-learning-part1/05-metrics/index.html",

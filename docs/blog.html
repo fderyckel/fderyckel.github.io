@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.313">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>QUANT dira-t-on? – blog</title>
+<title>blog – QUANT dira-t-on?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -56,8 +62,10 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script>
@@ -91,44 +99,74 @@ ul.task-list li input[type="checkbox"] {
   })
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="QUANT dira-t-on?" href="blog.xml"></head>
+<link rel="alternate" type="application/rss+xml" title="QUANT dira-t-on?" href="blog.xml" data-external="1"></head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">QUANT dira-t-on?</span>
     </a>
   </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./blog.html" aria-current="page">
- <span class="menu-text">Blog</span></a>
+    <a class="nav-link active" href="./blog.html" aria-current="page"> 
+<span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/fderyckel/blog"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/fderyckel/blog"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/Read_the_Dung"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/Read_the_Dung"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -138,9 +176,10 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(38)</span></div><div class="category" data-category="ARIMA">ARIMA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Algebra">Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Arbitrage">Arbitrage <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Autocorrelation">Autocorrelation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Binomial Model">Binomial Model <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Black-Schole">Black-Schole <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Box-Cox">Box-Cox <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Brownian Motion">Brownian Motion <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Classification">Classification <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Confusion Matrix">Confusion Matrix <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Covariance">Covariance <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Decomposition">Decomposition <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Delta Hedging">Delta Hedging <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Exotic Options">Exotic Options <span class="quarto-category-count">(1)</span></div><div class="category" data-category="F1 Measure">F1 Measure <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Gradient Descent">Gradient Descent <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Greeks">Greeks <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Histogram">Histogram <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Infinite Series">Infinite Series <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Jensen's inequality">Jensen's inequality <span class="quarto-category-count">(1)</span></div><div class="category" data-category="KNN">KNN <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Kmeans">Kmeans <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Kurtosis">Kurtosis <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Lasso">Lasso <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linear-Algebra">Linear-Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Log-transformation">Log-transformation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ML">ML <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ML unsupervised">ML unsupervised <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Markov Chain">Markov Chain <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Martingales">Martingales <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Matrix">Matrix <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Mean">Mean <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Monte-Carlo">Monte-Carlo <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Naive-Bayes">Naive-Bayes <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Normal Distribution">Normal Distribution <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Options Pricing">Options Pricing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Probability">Probability <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Probability Density Function">Probability Density Function <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Probability Distribution">Probability Distribution <span class="quarto-category-count">(1)</span></div><div class="category" data-category="QQ-plot">QQ-plot <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Quadratic Variation">Quadratic Variation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R-code">R-code <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Random Walk">Random Walk <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Regression">Regression <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Ridge">Ridge <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Risk Neutrality">Risk Neutrality <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Seasonality">Seasonality <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Simulations">Simulations <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Skewness">Skewness <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Stationarity">Stationarity <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Statistics">Statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Stochastic Calculus">Stochastic Calculus <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Supervised ML">Supervised ML <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Tidymodel">Tidymodel <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Time series">Time series <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Time-Series">Time-Series <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Trend">Trend <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Weiner Process">Weiner Process <span class="quarto-category-count">(1)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="arithmetic mean">arithmetic mean <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(3)</span></div><div class="category" data-category="forecasting">forecasting <span class="quarto-category-count">(1)</span></div><div class="category" data-category="geometric mean">geometric mean <span class="quarto-category-count">(1)</span></div><div class="category" data-category="graph">graph <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ito-integral">ito-integral <span class="quarto-category-count">(1)</span></div><div class="category" data-category="linear-regression">linear-regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="logistic-regression">logistic-regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="model">model <span class="quarto-category-count">(1)</span></div><div class="category" data-category="portfolio">portfolio <span class="quarto-category-count">(1)</span></div><div class="category" data-category="python">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="quant-finance">quant-finance <span class="quarto-category-count">(5)</span></div><div class="category" data-category="sentiment analysis">sentiment analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="sklearn">sklearn <span class="quarto-category-count">(1)</span></div><div class="category" data-category="statistics">statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stochastic-calculus">stochastic-calculus <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stochastic-integrals">stochastic-integrals <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tidymodel">tidymodel <span class="quarto-category-count">(3)</span></div><div class="category" data-category="time-series">time-series <span class="quarto-category-count">(2)</span></div><div class="category" data-category="xgboost">xgboost <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(39)</span></div><div class="category" data-category="ARIMA">ARIMA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Algebra">Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Arbitrage">Arbitrage <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Autocorrelation">Autocorrelation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Binomial Model">Binomial Model <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Black-Schole">Black-Schole <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Box-Cox">Box-Cox <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Brownian Motion">Brownian Motion <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Classification">Classification <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Confusion Matrix">Confusion Matrix <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Covariance">Covariance <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Decomposition">Decomposition <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Delta Hedging">Delta Hedging <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Exotic Options">Exotic Options <span class="quarto-category-count">(1)</span></div><div class="category" data-category="F1 Measure">F1 Measure <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Gradient Descent">Gradient Descent <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Greeks">Greeks <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Histogram">Histogram <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Infinite Series">Infinite Series <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Jensen's inequality">Jensen's inequality <span class="quarto-category-count">(1)</span></div><div class="category" data-category="KNN">KNN <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Kmeans">Kmeans <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Kurtosis">Kurtosis <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Lasso">Lasso <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linear-Algebra">Linear-Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Log-transformation">Log-transformation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ML">ML <span class="quarto-category-count">(3)</span></div><div class="category" data-category="ML unsupervised">ML unsupervised <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Markov Chain">Markov Chain <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Martingales">Martingales <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Matrix">Matrix <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Mean">Mean <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Monte-Carlo">Monte-Carlo <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Naive-Bayes">Naive-Bayes <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Normal Distribution">Normal Distribution <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Options Pricing">Options Pricing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PCA">PCA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Probability">Probability <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Probability Density Function">Probability Density Function <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Probability Distribution">Probability Distribution <span class="quarto-category-count">(1)</span></div><div class="category" data-category="QQ-plot">QQ-plot <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Quadratic Variation">Quadratic Variation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R-code">R-code <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Random Walk">Random Walk <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Regression">Regression <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Ridge">Ridge <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Risk Neutrality">Risk Neutrality <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Seasonality">Seasonality <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Simulations">Simulations <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Skewness">Skewness <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Stationarity">Stationarity <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Statistics">Statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Stochastic Calculus">Stochastic Calculus <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Supervised ML">Supervised ML <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Tidymodel">Tidymodel <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Time series">Time series <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Time-Series">Time-Series <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Trend">Trend <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Weiner Process">Weiner Process <span class="quarto-category-count">(1)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="arithmetic mean">arithmetic mean <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(3)</span></div><div class="category" data-category="forecasting">forecasting <span class="quarto-category-count">(1)</span></div><div class="category" data-category="geometric mean">geometric mean <span class="quarto-category-count">(1)</span></div><div class="category" data-category="graph">graph <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ito-integral">ito-integral <span class="quarto-category-count">(1)</span></div><div class="category" data-category="linear-regression">linear-regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="logistic-regression">logistic-regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="model">model <span class="quarto-category-count">(1)</span></div><div class="category" data-category="portfolio">portfolio <span class="quarto-category-count">(1)</span></div><div class="category" data-category="python">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="quant-finance">quant-finance <span class="quarto-category-count">(5)</span></div><div class="category" data-category="sentiment analysis">sentiment analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="sklearn">sklearn <span class="quarto-category-count">(1)</span></div><div class="category" data-category="statistics">statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stochastic-calculus">stochastic-calculus <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stochastic-integrals">stochastic-integrals <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tidymodel">tidymodel <span class="quarto-category-count">(3)</span></div><div class="category" data-category="time-series">time-series <span class="quarto-category-count">(2)</span></div><div class="category" data-category="xgboost">xgboost <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
+
 
 
 
@@ -221,16 +260,45 @@ ul.task-list li input[type="checkbox"] {
     </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Time-Series,ARIMA,Decomposition" data-listing-date-sort="1704733200000" data-listing-file-modified-sort="1719927178334" data-listing-reading-time-sort="6.475">
+<div class="quarto-post image-right" data-index="0" data-categories="ML,PCA" data-listing-date-sort="NaN" data-listing-file-modified-sort="1728193604649" data-listing-date-modified-sort="1728147600000" data-listing-reading-time-sort="1" data-listing-word-count-sort="19">
 <div class="body">
-<a href="./posts/time-series/05-arima/index.html">
 <h3 class="no-anchor listing-title">
-05 - AR, MA and ARIMA models
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external">PCA</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('ML'); return false;">
+ML
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('PCA'); return false;">
+PCA
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external">Understanding Principal Component Analysis</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external">
+<div class="listing-date">
+Invalid Date
+</div>
+<div class="listing-reading-time">
+1 min
 </div>
 </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="Time-Series,ARIMA,Decomposition" data-listing-date-sort="1704733200000" data-listing-file-modified-sort="1727873823761" data-listing-date-modified-sort="1717952400000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1295">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/time-series/05-arima/index.html" class="no-external">05 - AR, MA and ARIMA models</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/time-series/05-arima/index.html" class="no-external"></a>
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Time-Series'); return false;">
 Time-Series
@@ -242,100 +310,57 @@ ARIMA
 Decomposition
 </div>
 </div>
-<a href="./posts/time-series/05-arima/index.html">
 <div class="listing-description">
-<p>Introducing Arima - Autoregressive Integrated Moving Average.</p>
+<a href="./posts/time-series/05-arima/index.html" class="no-external">Introducing Arima - Autoregressive Integrated Moving Average.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/time-series/05-arima/index.html">
+<a href="./posts/time-series/05-arima/index.html" class="no-external">
 <div class="listing-date">
 Jan 9, 2024
 </div>
 <div class="listing-reading-time">
-6 min
+7 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="logistic-regression" data-listing-date-sort="1715706000000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="1.325">
+<div class="quarto-post image-right" data-index="2" data-categories="logistic-regression" data-listing-date-sort="1715706000000" data-listing-file-modified-sort="1727873823690" data-listing-date-modified-sort="1716310800000" data-listing-reading-time-sort="2" data-listing-word-count-sort="265">
 <div class="body">
-<a href="./posts/machine-learning-part1/02-logistic-regression/index.html">
 <h3 class="no-anchor listing-title">
-Logistic Regression
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external">Logistic Regression</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('logistic-regression'); return false;">
 logistic-regression
 </div>
 </div>
-<a href="./posts/machine-learning-part1/02-logistic-regression/index.html">
 <div class="listing-description">
-<p>A dive into Logistic Regression.</p>
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external">A dive into Logistic Regression.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/02-logistic-regression/index.html">
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external">
 <div class="listing-date">
 May 15, 2024
 </div>
 <div class="listing-reading-time">
-1 min
+2 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="Gradient Descent,Regression" data-listing-date-sort="1714064400000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="4.26">
+<div class="quarto-post image-right" data-index="3" data-categories="Regression,Lasso,Ridge" data-listing-date-sort="1713718800000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1714410000000" data-listing-reading-time-sort="4" data-listing-word-count-sort="671">
 <div class="body">
-<a href="./posts/machine-learning-part1/06-gradient-descent/index.html">
 <h3 class="no-anchor listing-title">
-Gradient Descent
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external">Regularized Regressions</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external"></a>
 </div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Gradient Descent'); return false;">
-Gradient Descent
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Regression'); return false;">
-Regression
-</div>
-</div>
-<a href="./posts/machine-learning-part1/06-gradient-descent/index.html">
-<div class="listing-description">
-Gradient Descent is an optimization technique used in many Machine Learning algorithms to find the minimum of a function.…<strong></strong><strong></strong>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/06-gradient-descent/index.html">
-<div class="listing-date">
-Apr 26, 2024
-</div>
-<div class="listing-reading-time">
-4 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="Regression,Lasso,Ridge" data-listing-date-sort="1713718800000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="3.355">
-<div class="body">
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
-<h3 class="no-anchor listing-title">
-Regularized Regressions
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Regression'); return false;">
 Regression
@@ -347,33 +372,60 @@ Lasso
 Ridge
 </div>
 </div>
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
 <div class="listing-description">
-Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of…<strong></strong>
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external">Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of…<strong></strong></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external">
 <div class="listing-date">
 Apr 22, 2024
 </div>
 <div class="listing-reading-time">
-3 min
+4 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="R-code,linear-regression" data-listing-date-sort="1681405200000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="5.52">
+<div class="quarto-post image-right" data-index="4" data-categories="Gradient Descent,Regression" data-listing-date-sort="1714064400000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1714410000000" data-listing-reading-time-sort="5" data-listing-word-count-sort="852">
 <div class="body">
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
 <h3 class="no-anchor listing-title">
-Linear Regression
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external">Gradient Descent</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Gradient Descent'); return false;">
+Gradient Descent
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Regression'); return false;">
+Regression
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external">Gradient Descent is an optimization technique used in many Machine Learning algorithms to find the minimum of a function. It does require a convex and differentiable…<strong></strong><strong></strong></a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external">
+<div class="listing-date">
+Apr 26, 2024
+</div>
+<div class="listing-reading-time">
+5 min
 </div>
 </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-categories="R-code,linear-regression" data-listing-date-sort="1681405200000" data-listing-file-modified-sort="1727873823691" data-listing-date-modified-sort="1713718800000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1104">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external">Linear Regression</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external"></a>
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
 R-code
@@ -382,33 +434,29 @@ R-code
 linear-regression
 </div>
 </div>
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
 <div class="listing-description">
-<p>A dive into the math behind the linear regression algorithm.</p>
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external">A dive into the math behind the linear regression algorithm.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external">
 <div class="listing-date">
 Apr 14, 2023
 </div>
 <div class="listing-reading-time">
-5 min
+6 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="Supervised ML,KNN,Classification,Confusion Matrix,F1 Measure" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1717811554628" data-listing-reading-time-sort="17.435">
+<div class="quarto-post image-right" data-index="6" data-categories="Supervised ML,KNN,Classification,Confusion Matrix,F1 Measure" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1727873823595" data-listing-date-modified-sort="1713632400000" data-listing-reading-time-sort="18" data-listing-word-count-sort="3487">
 <div class="body">
-<a href="./posts/machine-learning-part1/01-knn/index.html">
 <h3 class="no-anchor listing-title">
-KNN - K Nearest Neighbor
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external">KNN - K Nearest Neighbor</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Supervised ML'); return false;">
 Supervised ML
@@ -426,33 +474,29 @@ Confusion Matrix
 F1 Measure
 </div>
 </div>
-<a href="./posts/machine-learning-part1/01-knn/index.html">
 <div class="listing-description">
-<p>Using KNN in both python and R</p>
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external">Using KNN in both python and R</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/01-knn/index.html">
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external">
 <div class="listing-date">
 Nov 14, 2023
 </div>
 <div class="listing-reading-time">
-17 min
+18 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="sklearn,tidymodel" data-listing-date-sort="1713200400000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="4.1">
+<div class="quarto-post image-right" data-index="7" data-categories="sklearn,tidymodel" data-listing-date-sort="1713200400000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1713546000000" data-listing-reading-time-sort="5" data-listing-word-count-sort="820">
 <div class="body">
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
 <h3 class="no-anchor listing-title">
-Defining Success
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external">Defining Success</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('sklearn'); return false;">
 sklearn
@@ -461,33 +505,29 @@ sklearn
 tidymodel
 </div>
 </div>
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
 <div class="listing-description">
-When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How…
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external">When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How would we decide if this model performs well or…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external">
 <div class="listing-date">
 Apr 16, 2024
 </div>
 <div class="listing-reading-time">
-4 min
+5 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="xgboost,tidymodel" data-listing-date-sort="1713114000000" data-listing-file-modified-sort="1717811554684" data-listing-reading-time-sort="5.565">
+<div class="quarto-post image-right" data-index="8" data-categories="xgboost,tidymodel" data-listing-date-sort="1713114000000" data-listing-file-modified-sort="1727873823716" data-listing-date-modified-sort="1713200400000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1113">
 <div class="body">
-<a href="./posts/machine-learning-part2/xgboost/index.html">
 <h3 class="no-anchor listing-title">
-Xgboost
+<a href="./posts/machine-learning-part2/xgboost/index.html" class="no-external">Xgboost</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part2/xgboost/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('xgboost'); return false;">
 xgboost
@@ -496,33 +536,29 @@ xgboost
 tidymodel
 </div>
 </div>
-<a href="./posts/machine-learning-part2/xgboost/index.html">
 <div class="listing-description">
-Using Xgboost from a quant perspective. We do a whole cycle of model building on a financial time-series. We’ll again show how to do it with both framework <em>Sklearn</em> fo…<em></em>
+<a href="./posts/machine-learning-part2/xgboost/index.html" class="no-external">Using Xgboost from a quant perspective. We do a whole cycle of model building on a financial time-series. We’ll again show how to do it with both framework <em>Sklearn</em> for…<em></em></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part2/xgboost/index.html">
+<a href="./posts/machine-learning-part2/xgboost/index.html" class="no-external">
 <div class="listing-date">
 Apr 15, 2024
 </div>
 <div class="listing-reading-time">
-5 min
+6 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="graph,code" data-listing-date-sort="1705770000000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="2.505">
+<div class="quarto-post image-right" data-index="9" data-categories="graph,code" data-listing-date-sort="1705770000000" data-listing-file-modified-sort="1727873823740" data-listing-date-modified-sort="1708448400000" data-listing-reading-time-sort="3" data-listing-word-count-sort="501">
 <div class="body">
-<a href="./posts/quant-part2/05-quantitative-methods/index.html">
 <h3 class="no-anchor listing-title">
-quantitative Methods
+<a href="./posts/quant-part2/05-quantitative-methods/index.html" class="no-external">quantitative Methods</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part2/05-quantitative-methods/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('graph'); return false;">
 graph
@@ -531,16 +567,42 @@ graph
 code
 </div>
 </div>
-<a href="./posts/quant-part2/05-quantitative-methods/index.html">
 <div class="listing-description">
-Starting here a few examples on how to graph functions, how to solve equations and differential equations with computational methods.
+<a href="./posts/quant-part2/05-quantitative-methods/index.html" class="no-external">Starting here a few examples on how to graph functions, how to solve equations and differential equations with computational methods.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/quant-part2/05-quantitative-methods/index.html" class="no-external">
+<div class="listing-date">
+Jan 21, 2024
+</div>
+<div class="listing-reading-time">
+3 min
 </div>
 </a>
 </div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-categories="Probability Distribution" data-listing-date-sort="1664470800000" data-listing-file-modified-sort="1727873823731" data-listing-date-modified-sort="1708362000000" data-listing-reading-time-sort="2" data-listing-word-count-sort="290">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/proba-quant/prob-quant01/index.html" class="no-external">Probability For Quant 01</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/proba-quant/prob-quant01/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Probability Distribution'); return false;">
+Probability Distribution
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/proba-quant/prob-quant01/index.html" class="no-external">I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar page on Algebra. This first series is…</a>
+</div>
+</div>
 <div class="metadata">
-<a href="./posts/quant-part2/05-quantitative-methods/index.html">
+<a href="./posts/proba-quant/prob-quant01/index.html" class="no-external">
 <div class="listing-date">
-Jan 21, 2024
+Sep 30, 2022
 </div>
 <div class="listing-reading-time">
 2 min
@@ -548,48 +610,14 @@ Jan 21, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="Probability Distribution" data-listing-date-sort="1664470800000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="1.45">
+<div class="quarto-post image-right" data-index="11" data-categories="Time series,Autocorrelation,Stationarity,Random Walk" data-listing-date-sort="1664384400000" data-listing-file-modified-sort="1727873823751" data-listing-date-modified-sort="1708275600000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1275">
 <div class="body">
-<a href="./posts/proba-quant/prob-quant01/index.html">
 <h3 class="no-anchor listing-title">
-Probability For Quant 01
+<a href="./posts/time-series/03-autocorrelation/index.html" class="no-external">03 - Autocorrelation, Stationarity and Random-Walk - Part 1</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/time-series/03-autocorrelation/index.html" class="no-external"></a>
 </div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Probability Distribution'); return false;">
-Probability Distribution
-</div>
-</div>
-<a href="./posts/proba-quant/prob-quant01/index.html">
-<div class="listing-description">
-I am storing here a few nuggets of probability I encountered in my quantitative finance and machine learning journey. I have a similar page on Algebra. This first series is about…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/proba-quant/prob-quant01/index.html">
-<div class="listing-date">
-Sep 30, 2022
-</div>
-<div class="listing-reading-time">
-1 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-categories="Time series,Autocorrelation,Stationarity,Random Walk" data-listing-date-sort="1664384400000" data-listing-file-modified-sort="1720011558205" data-listing-reading-time-sort="6.375">
-<div class="body">
-<a href="./posts/time-series/03-autocorrelation/index.html">
-<h3 class="no-anchor listing-title">
-03 - Autocorrelation, Stationarity and Random-Walk - Part 1
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Time series'); return false;">
 Time series
@@ -604,33 +632,29 @@ Stationarity
 Random Walk
 </div>
 </div>
-<a href="./posts/time-series/03-autocorrelation/index.html">
 <div class="listing-description">
-<p>A dive into the concepts of autocorrelation and stationarity of time series. We also get into how to plot correlogram using R and Python, random-walk, white-noise.</p>
+<a href="./posts/time-series/03-autocorrelation/index.html" class="no-external">A dive into the concepts of autocorrelation and stationarity of time series. We also get into how to plot correlogram using R and Python, random-walk, white-noise.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/time-series/03-autocorrelation/index.html">
+<a href="./posts/time-series/03-autocorrelation/index.html" class="no-external">
 <div class="listing-date">
 Sep 29, 2022
 </div>
 <div class="listing-reading-time">
-6 min
+7 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="statistics,code,analysis" data-listing-date-sort="1707843600000" data-listing-file-modified-sort="1717811554696" data-listing-reading-time-sort="0.885">
+<div class="quarto-post image-right" data-index="12" data-categories="statistics,code,analysis" data-listing-date-sort="1707843600000" data-listing-file-modified-sort="1727873823747" data-listing-date-modified-sort="1707843600000" data-listing-reading-time-sort="1" data-listing-word-count-sort="184">
 <div class="body">
-<a href="./posts/risk-portfolio/03-var/index.html">
 <h3 class="no-anchor listing-title">
-Value at Risk using Python
+<a href="./posts/risk-portfolio/03-var/index.html" class="no-external">Value at Risk using Python</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/risk-portfolio/03-var/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('statistics'); return false;">
 statistics
@@ -642,33 +666,29 @@ code
 analysis
 </div>
 </div>
-<a href="./posts/risk-portfolio/03-var/index.html">
 <div class="listing-description">
-Computing Value at Risk (VaR) using Python.
+<a href="./posts/risk-portfolio/03-var/index.html" class="no-external">Computing Value at Risk (VaR) using Python.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/risk-portfolio/03-var/index.html">
+<a href="./posts/risk-portfolio/03-var/index.html" class="no-external">
 <div class="listing-date">
 Feb 14, 2024
 </div>
 <div class="listing-reading-time">
-0 min
+1 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-categories="time-series,forecasting" data-listing-date-sort="1703782800000" data-listing-file-modified-sort="1717811554700" data-listing-reading-time-sort="1.23">
+<div class="quarto-post image-right" data-index="13" data-categories="time-series,forecasting" data-listing-date-sort="1703782800000" data-listing-file-modified-sort="1727873823773" data-listing-date-modified-sort="1703782800000" data-listing-reading-time-sort="2" data-listing-word-count-sort="246">
 <div class="body">
-<a href="./posts/ts-forecast/hotel-booking/index.html">
 <h3 class="no-anchor listing-title">
-Hotel forecasting
+<a href="./posts/ts-forecast/hotel-booking/index.html" class="no-external">Hotel forecasting</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/ts-forecast/hotel-booking/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('time-series'); return false;">
 time-series
@@ -677,33 +697,29 @@ time-series
 forecasting
 </div>
 </div>
-<a href="./posts/ts-forecast/hotel-booking/index.html">
 <div class="listing-description">
-Forceasting hotel demands from medium post Data from Kaggle
+<a href="./posts/ts-forecast/hotel-booking/index.html" class="no-external">Forceasting hotel demands from medium post Data from Kaggle</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/ts-forecast/hotel-booking/index.html">
+<a href="./posts/ts-forecast/hotel-booking/index.html" class="no-external">
 <div class="listing-date">
 Dec 29, 2023
 </div>
 <div class="listing-reading-time">
-1 min
+2 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="13" data-categories="Binomial Model,Options Pricing,Delta Hedging,Risk Neutrality,Arbitrage" data-listing-date-sort="1680714000000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="7.105">
+<div class="quarto-post image-right" data-index="14" data-categories="Binomial Model,Options Pricing,Delta Hedging,Risk Neutrality,Arbitrage" data-listing-date-sort="1680714000000" data-listing-file-modified-sort="1727873823735" data-listing-date-modified-sort="1700845200000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1421">
 <div class="body">
-<a href="./posts/quant-part1/binomials_models/index.html">
 <h3 class="no-anchor listing-title">
-04 - Binomials models for Quantitative Finance
+<a href="./posts/quant-part1/binomials_models/index.html" class="no-external">04 - Binomials models for Quantitative Finance</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part1/binomials_models/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Binomial Model'); return false;">
 Binomial Model
@@ -721,33 +737,29 @@ Risk Neutrality
 Arbitrage
 </div>
 </div>
-<a href="./posts/quant-part1/binomials_models/index.html">
 <div class="listing-description">
-<p>Creating a basic or binomial model on pricing an option.</p>
+<a href="./posts/quant-part1/binomials_models/index.html" class="no-external">Creating a basic or binomial model on pricing an option.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-part1/binomials_models/index.html">
+<a href="./posts/quant-part1/binomials_models/index.html" class="no-external">
 <div class="listing-date">
 Apr 6, 2023
 </div>
 <div class="listing-reading-time">
-7 min
+8 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-categories="Statistics,Mean,Skewness,Kurtosis,Log-transformation,Box-Cox" data-listing-date-sort="1667322000000" data-listing-file-modified-sort="1717811554696" data-listing-reading-time-sort="8.665">
+<div class="quarto-post image-right" data-index="15" data-categories="Statistics,Mean,Skewness,Kurtosis,Log-transformation,Box-Cox" data-listing-date-sort="1667322000000" data-listing-file-modified-sort="1727873823747" data-listing-date-modified-sort="1700499600000" data-listing-reading-time-sort="9" data-listing-word-count-sort="1733">
 <div class="body">
-<a href="./posts/time-series/02-statistical-moments/index.html">
 <h3 class="no-anchor listing-title">
-02 - Statistical Moments
+<a href="./posts/time-series/02-statistical-moments/index.html" class="no-external">02 - Statistical Moments</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/time-series/02-statistical-moments/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Statistics'); return false;">
 Statistics
@@ -768,33 +780,29 @@ Log-transformation
 Box-Cox
 </div>
 </div>
-<a href="./posts/time-series/02-statistical-moments/index.html">
 <div class="listing-description">
-<p>Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts. We then provide 2 methods to transform data in order to bring it closer to a normal distribution.</p>
+<a href="./posts/time-series/02-statistical-moments/index.html" class="no-external">Introducing the first 4 moments of statistical analysis: mean, standard deviation, skewness and kurtosis. Showing how to use R and Python on these concepts. We then provide 2 methods to transform data in order to bring it closer to a normal distribution.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/time-series/02-statistical-moments/index.html">
+<a href="./posts/time-series/02-statistical-moments/index.html" class="no-external">
 <div class="listing-date">
 Nov 2, 2022
 </div>
 <div class="listing-reading-time">
-8 min
+9 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-categories="Normal Distribution,QQ-plot,Kurtosis,Skewness,Histogram" data-listing-date-sort="1681837200000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="7.165">
+<div class="quarto-post image-right" data-index="16" data-categories="Normal Distribution,QQ-plot,Kurtosis,Skewness,Histogram" data-listing-date-sort="1681837200000" data-listing-file-modified-sort="1727873823737" data-listing-date-modified-sort="1700067600000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1434">
 <div class="body">
-<a href="./posts/quant-part1/normality-returns/index.html">
 <h3 class="no-anchor listing-title">
-02 - Normality of asset returns
+<a href="./posts/quant-part1/normality-returns/index.html" class="no-external">02 - Normality of asset returns</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part1/normality-returns/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Normal Distribution'); return false;">
 Normal Distribution
@@ -812,54 +820,29 @@ Skewness
 Histogram
 </div>
 </div>
-<a href="./posts/quant-part1/normality-returns/index.html">
 <div class="listing-description">
-<p>Checking the normality of asset returns visually and quantitatively.</p>
+<a href="./posts/quant-part1/normality-returns/index.html" class="no-external">Checking the normality of asset returns visually and quantitatively.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-part1/normality-returns/index.html">
+<a href="./posts/quant-part1/normality-returns/index.html" class="no-external">
 <div class="listing-date">
 Apr 19, 2023
 </div>
 <div class="listing-reading-time">
-7 min
+8 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="16" data-categories="Probability,Jensen" s="" inequality,arithmetic="" mean,geometric="" mean'="" data-listing-date-sort="1697821200000" data-listing-file-modified-sort="1717811554688" data-listing-reading-time-sort="5.75">
-<div class="body"><a href="./posts/proba-quant/jensen-inequality/index.html">
-<h3 class="no-anchor listing-title">Jensen's Inequality</h3>
-<div class="listing-subtitle"></div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Probability'); return false;">Probability</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Jensen's inequality'); return false;">Jensen's inequality</div>
-<div class="listing-category" onclick="window.quartoListingCategory('arithmetic mean'); return false;">arithmetic mean</div>
-<div class="listing-category" onclick="window.quartoListingCategory('geometric mean'); return false;">geometric mean</div>
-</div>
-<a href="./posts/proba-quant/jensen-inequality/index.html">
-<div class="delink listing-description">
-Jensen’s inequality from Johan Jensen, Danish Mathematician…
-</div>
-</a></div>
-<div class="metadata"><a href="./posts/proba-quant/jensen-inequality/index.html">
-<div class="listing-date">Oct 21, 2023</div>
- <div class="listing-reading-time">5 min</div> 
-</a></div>
-</div>
-<div class="quarto-post image-right" data-index="17" data-categories="Time series,Trend,Seasonality,Decomposition" data-listing-date-sort="1666285200000" data-listing-file-modified-sort="1720077684647" data-listing-reading-time-sort="2.945">
+<div class="quarto-post image-right" data-index="17" data-categories="Time series,Trend,Seasonality,Decomposition" data-listing-date-sort="1666285200000" data-listing-file-modified-sort="1727873823761" data-listing-date-modified-sort="1697907600000" data-listing-reading-time-sort="3" data-listing-word-count-sort="589">
 <div class="body">
-<a href="./posts/time-series/04-ts-decomposition/index.html">
 <h3 class="no-anchor listing-title">
-04 - Time series decomposition
+<a href="./posts/time-series/04-ts-decomposition/index.html" class="no-external">04 - Time series decomposition</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/time-series/04-ts-decomposition/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Time series'); return false;">
 Time series
@@ -874,33 +857,60 @@ Seasonality
 Decomposition
 </div>
 </div>
-<a href="./posts/time-series/04-ts-decomposition/index.html">
 <div class="listing-description">
-<p>Introducing time series decomposition. We first show how to compose time-series using linear trend, seasonality and then white noise.</p>
+<a href="./posts/time-series/04-ts-decomposition/index.html" class="no-external">Introducing time series decomposition. We first show how to compose time-series using linear trend, seasonality and then white noise.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/time-series/04-ts-decomposition/index.html">
+<a href="./posts/time-series/04-ts-decomposition/index.html" class="no-external">
 <div class="listing-date">
 Oct 21, 2022
 </div>
 <div class="listing-reading-time">
-2 min
+3 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="18" data-categories="quant-finance,ito-integral,stochastic-calculus" data-listing-date-sort="1689958800000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="9.32">
+<div class="quarto-post image-right" data-index="18" data-categories="Probability,Jensen" s="" inequality,arithmetic="" mean,geometric="" mean'="" data-listing-date-sort="1697821200000" data-listing-file-modified-sort="1727873823728" data-listing-date-modified-sort="1697907600000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1150">
+
 <div class="body">
-<a href="./posts/quant-part2/02-SDE-part2/index.html">
-<h3 class="no-anchor listing-title">
-02 - Stochastic Differential Equation - Part II
-</h3>
-<div class="listing-subtitle">
+
+<h3 class="no-anchor listing-title"><a href="./posts/proba-quant/jensen-inequality/index.html" class="no-external">Jensen's Inequality</a></h3>
+<div class="listing-subtitle"><a href="./posts/proba-quant/jensen-inequality/index.html" class="no-external"></a></div>
+
+ 
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('Probability'); return false;">Probability</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('Jensen's inequality'); return false;">Jensen's inequality</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('arithmetic mean'); return false;">arithmetic mean</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('geometric mean'); return false;">geometric mean</div>
 
 </div>
-</a>
+ 
+
+<div class="delink listing-description"><a href="./posts/proba-quant/jensen-inequality/index.html" class="no-external">Jensen’s inequality from Johan Jensen, Danish Mathematician, has popped up several times through my quantitative finance journey. As I never explicitly dealt with it, I…</a></div>
+
+</div>
+<div class="metadata"><a href="./posts/proba-quant/jensen-inequality/index.html" class="no-external">
+<div class="listing-date">`Oct 21, 2023`{=html}</div>
+
+ <div class="listing-reading-time">6 min</div> 
+</a></div>
+
+</div>
+<div class="quarto-post image-right" data-index="19" data-categories="quant-finance,ito-integral,stochastic-calculus" data-listing-date-sort="1689958800000" data-listing-file-modified-sort="1727873823739" data-listing-date-modified-sort="1691773200000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1864">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/quant-part2/02-SDE-part2/index.html" class="no-external">02 - Stochastic Differential Equation - Part II</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/quant-part2/02-SDE-part2/index.html" class="no-external"></a>
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('quant-finance'); return false;">
 quant-finance
@@ -912,109 +922,29 @@ ito-integral
 stochastic-calculus
 </div>
 </div>
-<a href="./posts/quant-part2/02-SDE-part2/index.html">
 <div class="listing-description">
-<p>Some more examples of ito integrals.</p>
+<a href="./posts/quant-part2/02-SDE-part2/index.html" class="no-external">Some more examples of ito integrals.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-part2/02-SDE-part2/index.html">
+<a href="./posts/quant-part2/02-SDE-part2/index.html" class="no-external">
 <div class="listing-date">
 Jul 22, 2023
 </div>
 <div class="listing-reading-time">
-9 min
+10 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="19" data-categories="Probability,Probability Density Function" data-listing-date-sort="1680886800000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="7.305">
+<div class="quarto-post image-right" data-index="20" data-categories="quant-finance,stochastic-integrals" data-listing-date-sort="1689958800000" data-listing-file-modified-sort="1727873823739" data-listing-date-modified-sort="1690045200000" data-listing-reading-time-sort="3" data-listing-word-count-sort="585">
 <div class="body">
-<a href="./posts/quant-part1/trinomial-model/index.html">
 <h3 class="no-anchor listing-title">
-05 - Trinomials models for Quantitative Finance
+<a href="./posts/quant-part2/01-SDE-Part1/index.html" class="no-external">01 - Stochastic Differential Equation - Part I</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part2/01-SDE-Part1/index.html" class="no-external"></a>
 </div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Probability'); return false;">
-Probability
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Probability Density Function'); return false;">
-Probability Density Function
-</div>
-</div>
-<a href="./posts/quant-part1/trinomial-model/index.html">
-<div class="listing-description">
-<p>Creating a trinomial model and deriving the Forward Kolmogorov Equation.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/trinomial-model/index.html">
-<div class="listing-date">
-Apr 8, 2023
-</div>
-<div class="listing-reading-time">
-7 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="20" data-categories="Random Walk,Brownian Motion,Weiner Process,Quadratic Variation" data-listing-date-sort="1689786000000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="7.24">
-<div class="body">
-<a href="./posts/quant-part1/brownian-motion/index.html">
-<h3 class="no-anchor listing-title">
-03 - Random-walks &amp; Brownian Motions
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Random Walk'); return false;">
-Random Walk
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Brownian Motion'); return false;">
-Brownian Motion
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Weiner Process'); return false;">
-Weiner Process
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Quadratic Variation'); return false;">
-Quadratic Variation
-</div>
-</div>
-<a href="./posts/quant-part1/brownian-motion/index.html">
-<div class="listing-description">
-<p>RW (discrete) and BM (continuous) constitute the way assets returns are modelled.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part1/brownian-motion/index.html">
-<div class="listing-date">
-Jul 20, 2023
-</div>
-<div class="listing-reading-time">
-7 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="21" data-categories="quant-finance,stochastic-integrals" data-listing-date-sort="1689958800000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="2.925">
-<div class="body">
-<a href="./posts/quant-part2/01-SDE-Part1/index.html">
-<h3 class="no-anchor listing-title">
-01 - Stochastic Differential Equation - Part I
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('quant-finance'); return false;">
 quant-finance
@@ -1023,33 +953,29 @@ quant-finance
 stochastic-integrals
 </div>
 </div>
-<a href="./posts/quant-part2/01-SDE-Part1/index.html">
 <div class="listing-description">
-<p>Introducing itô integrals.</p>
+<a href="./posts/quant-part2/01-SDE-Part1/index.html" class="no-external">Introducing itô integrals.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-part2/01-SDE-Part1/index.html">
+<a href="./posts/quant-part2/01-SDE-Part1/index.html" class="no-external">
 <div class="listing-date">
 Jul 22, 2023
 </div>
 <div class="listing-reading-time">
-2 min
+3 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="22" data-categories="Stochastic Calculus,Martingales" data-listing-date-sort="1689786000000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="2.57">
+<div class="quarto-post image-right" data-index="21" data-categories="Stochastic Calculus,Martingales" data-listing-date-sort="1689786000000" data-listing-file-modified-sort="1727873823739" data-listing-date-modified-sort="1690045200000" data-listing-reading-time-sort="3" data-listing-word-count-sort="514">
 <div class="body">
-<a href="./posts/quant-part2/04-martingales/index.html">
 <h3 class="no-anchor listing-title">
-04 -Martingales
+<a href="./posts/quant-part2/04-martingales/index.html" class="no-external">04 -Martingales</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part2/04-martingales/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Stochastic Calculus'); return false;">
 Stochastic Calculus
@@ -1058,71 +984,29 @@ Stochastic Calculus
 Martingales
 </div>
 </div>
-<a href="./posts/quant-part2/04-martingales/index.html">
 <div class="listing-description">
-<p>Digging into Martingales. Making connections between martingales and itô integrals.</p>
+<a href="./posts/quant-part2/04-martingales/index.html" class="no-external">Digging into Martingales. Making connections between martingales and itô integrals.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-part2/04-martingales/index.html">
+<a href="./posts/quant-part2/04-martingales/index.html" class="no-external">
 <div class="listing-date">
 Jul 20, 2023
 </div>
 <div class="listing-reading-time">
-2 min
+3 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="23" data-categories="Black-Schole,Risk Neutrality,Greeks" data-listing-date-sort="1689613200000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="5.44">
+<div class="quarto-post image-right" data-index="22" data-categories="Black-Schole,Risk Neutrality,Exotic Options,Monte-Carlo" data-listing-date-sort="1693069200000" data-listing-file-modified-sort="1727873823740" data-listing-date-modified-sort="1690045200000" data-listing-reading-time-sort="5" data-listing-word-count-sort="875">
 <div class="body">
-<a href="./posts/quant-part3/black-schole/index.html">
 <h3 class="no-anchor listing-title">
-Black-Schole Equation
+<a href="./posts/quant-part3/monte-carlo-sim/index.html" class="no-external">Modeling Option prices using Monte-Carlo simulations</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part3/monte-carlo-sim/index.html" class="no-external"></a>
 </div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Black-Schole'); return false;">
-Black-Schole
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Risk Neutrality'); return false;">
-Risk Neutrality
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Greeks'); return false;">
-Greeks
-</div>
-</div>
-<a href="./posts/quant-part3/black-schole/index.html">
-<div class="listing-description">
-<p>Deriving the Black-Schole Equation and finding its solutions. Application with R and Python</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part3/black-schole/index.html">
-<div class="listing-date">
-Jul 18, 2023
-</div>
-<div class="listing-reading-time">
-5 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="24" data-categories="Black-Schole,Risk Neutrality,Exotic Options,Monte-Carlo" data-listing-date-sort="1693069200000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="4.375">
-<div class="body">
-<a href="./posts/quant-part3/monte-carlo-sim/index.html">
-<h3 class="no-anchor listing-title">
-Modeling Option prices using Monte-Carlo simulations
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Black-Schole'); return false;">
 Black-Schole
@@ -1137,16 +1021,144 @@ Exotic Options
 Monte-Carlo
 </div>
 </div>
-<a href="./posts/quant-part3/monte-carlo-sim/index.html">
 <div class="listing-description">
-<p>Using the BSE and Monte-Carlo Methods to value option prices</p>
+<a href="./posts/quant-part3/monte-carlo-sim/index.html" class="no-external">Using the BSE and Monte-Carlo Methods to value option prices</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/quant-part3/monte-carlo-sim/index.html" class="no-external">
+<div class="listing-date">
+Aug 27, 2023
+</div>
+<div class="listing-reading-time">
+5 min
 </div>
 </a>
 </div>
+</div>
+<div class="quarto-post image-right" data-index="23" data-categories="Black-Schole,Risk Neutrality,Greeks" data-listing-date-sort="1689613200000" data-listing-file-modified-sort="1727873823740" data-listing-date-modified-sort="1690045200000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1088">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/quant-part3/black-schole/index.html" class="no-external">Black-Schole Equation</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/quant-part3/black-schole/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Black-Schole'); return false;">
+Black-Schole
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Risk Neutrality'); return false;">
+Risk Neutrality
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Greeks'); return false;">
+Greeks
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/quant-part3/black-schole/index.html" class="no-external">Deriving the Black-Schole Equation and finding its solutions. Application with R and Python</a>
+</div>
+</div>
 <div class="metadata">
-<a href="./posts/quant-part3/monte-carlo-sim/index.html">
+<a href="./posts/quant-part3/black-schole/index.html" class="no-external">
 <div class="listing-date">
-Aug 27, 2023
+Jul 18, 2023
+</div>
+<div class="listing-reading-time">
+6 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="24" data-categories="Probability,Probability Density Function" data-listing-date-sort="1680886800000" data-listing-file-modified-sort="1727873823738" data-listing-date-modified-sort="1690045200000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1461">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/quant-part1/trinomial-model/index.html" class="no-external">05 - Trinomials models for Quantitative Finance</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/quant-part1/trinomial-model/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Probability'); return false;">
+Probability
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Probability Density Function'); return false;">
+Probability Density Function
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/quant-part1/trinomial-model/index.html" class="no-external">Creating a trinomial model and deriving the Forward Kolmogorov Equation.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/quant-part1/trinomial-model/index.html" class="no-external">
+<div class="listing-date">
+Apr 8, 2023
+</div>
+<div class="listing-reading-time">
+8 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="25" data-categories="Random Walk,Brownian Motion,Weiner Process,Quadratic Variation" data-listing-date-sort="1689786000000" data-listing-file-modified-sort="1727873823736" data-listing-date-modified-sort="1690045200000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1448">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/quant-part1/brownian-motion/index.html" class="no-external">03 - Random-walks &amp; Brownian Motions</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/quant-part1/brownian-motion/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Random Walk'); return false;">
+Random Walk
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Brownian Motion'); return false;">
+Brownian Motion
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Weiner Process'); return false;">
+Weiner Process
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Quadratic Variation'); return false;">
+Quadratic Variation
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/quant-part1/brownian-motion/index.html" class="no-external">RW (discrete) and BM (continuous) constitute the way assets returns are modelled. </a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/quant-part1/brownian-motion/index.html" class="no-external">
+<div class="listing-date">
+Jul 20, 2023
+</div>
+<div class="listing-reading-time">
+8 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="26" data-categories="time-series" data-listing-date-sort="1688317200000" data-listing-file-modified-sort="1727873823739" data-listing-date-modified-sort="1688317200000" data-listing-reading-time-sort="4" data-listing-word-count-sort="758">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/quant-part2/03-SDE-part3/index.html" class="no-external">03 - Stochastic Calculus - Part III</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/quant-part2/03-SDE-part3/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('time-series'); return false;">
+time-series
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/quant-part2/03-SDE-part3/index.html" class="no-external">Let’s consider the stochastic integral of the form <span class="math display">\[\int_0^T f(t, X(t)) dX(t)\]</span> where <span class="math inline">\(X_t\)</span> is a Brownian motion. We’ll shorten this form to <span class="math inline">\(\int_0^T f(t, X) dX\)</span></a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/quant-part2/03-SDE-part3/index.html" class="no-external">
+<div class="listing-date">
+Jul 3, 2023
 </div>
 <div class="listing-reading-time">
 4 min
@@ -1154,48 +1166,14 @@ Aug 27, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="25" data-categories="time-series" data-listing-date-sort="1688317200000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="3.79">
+<div class="quarto-post image-right" data-index="27" data-categories="R-code,quant-finance" data-listing-date-sort="1686589200000" data-listing-file-modified-sort="1727873823746" data-listing-date-modified-sort="1687194000000" data-listing-reading-time-sort="4" data-listing-word-count-sort="641">
 <div class="body">
-<a href="./posts/quant-part2/03-SDE-part3/index.html">
 <h3 class="no-anchor listing-title">
-03 - Stochastic Calculus - Part III
+<a href="./posts/quant-puzzle-01/index.html" class="no-external">Quant Puzzle #01</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-puzzle-01/index.html" class="no-external"></a>
 </div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('time-series'); return false;">
-time-series
-</div>
-</div>
-<a href="./posts/quant-part2/03-SDE-part3/index.html">
-<div class="listing-description">
-Let’s consider the stochastic integral of the form <span class="math display">\[\int_0^T f(t, X(t)) dX(t)\]</span> where <span class="math inline">\(X_t\)</span> is a Brownian motion. We’ll shorten this form to <span class="math inline">\(\int_0^T f(t, X) dX\)</span>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/quant-part2/03-SDE-part3/index.html">
-<div class="listing-date">
-Jul 3, 2023
-</div>
-<div class="listing-reading-time">
-3 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="26" data-categories="R-code,quant-finance" data-listing-date-sort="1686589200000" data-listing-file-modified-sort="1688801904128" data-listing-reading-time-sort="3.205">
-<div class="body">
-<a href="./posts/quant-puzzle-01/index.html">
-<h3 class="no-anchor listing-title">
-Quant Puzzle #01
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
 R-code
@@ -1204,33 +1182,29 @@ R-code
 quant-finance
 </div>
 </div>
-<a href="./posts/quant-puzzle-01/index.html">
 <div class="listing-description">
-This is attempt to start a series of puzzles for quant. The source for these puzzles is this noteworthy substack on quant finance
+<a href="./posts/quant-puzzle-01/index.html" class="no-external">This is attempt to start a series of puzzles for quant. The source for these puzzles is this noteworthy substack on quant finance</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-puzzle-01/index.html">
+<a href="./posts/quant-puzzle-01/index.html" class="no-external">
 <div class="listing-date">
 Jun 13, 2023
 </div>
 <div class="listing-reading-time">
-3 min
+4 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="27" data-categories="ML,Naive-Bayes,sentiment analysis" data-listing-date-sort="1684170000000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="0.86">
+<div class="quarto-post image-right" data-index="28" data-categories="ML,Naive-Bayes,sentiment analysis" data-listing-date-sort="1684170000000" data-listing-file-modified-sort="1727873823697" data-listing-date-modified-sort="1684170000000" data-listing-reading-time-sort="1" data-listing-word-count-sort="174">
 <div class="body">
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
 <h3 class="no-anchor listing-title">
-Naive-Bayes - Part 1
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external">Naive-Bayes - Part 1</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('ML'); return false;">
 ML
@@ -1242,33 +1216,29 @@ Naive-Bayes
 sentiment analysis
 </div>
 </div>
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
 <div class="listing-description">
-<p>Making Naive-Bayes work in R</p>
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external">Making Naive-Bayes work in R</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external">
 <div class="listing-date">
 May 16, 2023
 </div>
 <div class="listing-reading-time">
-0 min
+1 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="28" data-categories="R-code,quant-finance" data-listing-date-sort="1681750800000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="5.86">
+<div class="quarto-post image-right" data-index="29" data-categories="R-code,quant-finance" data-listing-date-sort="1681750800000" data-listing-file-modified-sort="1727873823738" data-listing-date-modified-sort="1681923600000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1172">
 <div class="body">
-<a href="./posts/quant-part1/random-behavior-assets/index.html">
 <h3 class="no-anchor listing-title">
-01 - Random Behavior of Financial Assets
+<a href="./posts/quant-part1/random-behavior-assets/index.html" class="no-external">01 - Random Behavior of Financial Assets</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/quant-part1/random-behavior-assets/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
 R-code
@@ -1277,33 +1247,29 @@ R-code
 quant-finance
 </div>
 </div>
-<a href="./posts/quant-part1/random-behavior-assets/index.html">
 <div class="listing-description">
-<p>We explore one of the main assumption of quantitative finance: assets returns are random.</p>
+<a href="./posts/quant-part1/random-behavior-assets/index.html" class="no-external">We explore one of the main assumption of quantitative finance: assets returns are random.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/quant-part1/random-behavior-assets/index.html">
+<a href="./posts/quant-part1/random-behavior-assets/index.html" class="no-external">
 <div class="listing-date">
 Apr 18, 2023
 </div>
 <div class="listing-reading-time">
-5 min
+6 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="29" data-categories="Linear-Algebra,Matrix,Covariance" data-listing-date-sort="1678467600000" data-listing-file-modified-sort="1717811554628" data-listing-reading-time-sort="3.32">
+<div class="quarto-post image-right" data-index="30" data-categories="Linear-Algebra,Matrix,Covariance" data-listing-date-sort="1678467600000" data-listing-file-modified-sort="1727873823595" data-listing-date-modified-sort="1678986000000" data-listing-reading-time-sort="4" data-listing-word-count-sort="664">
 <div class="body">
-<a href="./posts/lin-algebra-quant/index.html">
 <h3 class="no-anchor listing-title">
-Linear Algebra for Quantitative Finance
+<a href="./posts/lin-algebra-quant/index.html" class="no-external">Linear Algebra for Quantitative Finance</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/lin-algebra-quant/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Linear-Algebra'); return false;">
 Linear-Algebra
@@ -1315,33 +1281,29 @@ Matrix
 Covariance
 </div>
 </div>
-<a href="./posts/lin-algebra-quant/index.html">
 <div class="listing-description">
-On this post, I am…
+<a href="./posts/lin-algebra-quant/index.html" class="no-external">On this post, I am just sharing some linear algebra tools and tricks useful in quantitative finance. This is mainly a post for myself to have a place where I can remember…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/lin-algebra-quant/index.html">
+<a href="./posts/lin-algebra-quant/index.html" class="no-external">
 <div class="listing-date">
 Mar 11, 2023
 </div>
 <div class="listing-reading-time">
-3 min
+4 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="30" data-categories="portfolio,R-code,quant-finance,model" data-listing-date-sort="1677430800000" data-listing-file-modified-sort="1717811554696" data-listing-reading-time-sort="7.965">
+<div class="quarto-post image-right" data-index="31" data-categories="portfolio,R-code,quant-finance,model" data-listing-date-sort="1677430800000" data-listing-file-modified-sort="1727873823747" data-listing-date-modified-sort="1677430800000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1593">
 <div class="body">
-<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html">
 <h3 class="no-anchor listing-title">
-Portfolio Optimization Part I (in R)
+<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html" class="no-external">Portfolio Optimization Part I (in R)</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('portfolio'); return false;">
 portfolio
@@ -1356,33 +1318,29 @@ quant-finance
 model
 </div>
 </div>
-<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html">
 <div class="listing-description">
-First post on portfolio optimization from a quantitative finance lense.
+<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html" class="no-external">First post on portfolio optimization from a quantitative finance lense.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html">
+<a href="./posts/risk-portfolio/01-portfolio_optimization_parti_inR/index.html" class="no-external">
 <div class="listing-date">
 Feb 27, 2023
 </div>
 <div class="listing-reading-time">
-7 min
+8 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="31" data-categories="Probability,Simulations" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1717811554688" data-listing-reading-time-sort="0.59">
+<div class="quarto-post image-right" data-index="32" data-categories="Probability,Simulations" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1727873823728" data-listing-date-modified-sort="1668358800000" data-listing-reading-time-sort="1" data-listing-word-count-sort="118">
 <div class="body">
-<a href="./posts/proba-quant/discrete-simulations/index.html">
 <h3 class="no-anchor listing-title">
-Discrete Probability Simulations in R
+<a href="./posts/proba-quant/discrete-simulations/index.html" class="no-external">Discrete Probability Simulations in R</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/proba-quant/discrete-simulations/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Probability'); return false;">
 Probability
@@ -1391,65 +1349,57 @@ Probability
 Simulations
 </div>
 </div>
-<a href="./posts/proba-quant/discrete-simulations/index.html">
 <div class="listing-description">
-The idea behind this post is to collect various numerical methods to simulate discrete probability problems.
+<a href="./posts/proba-quant/discrete-simulations/index.html" class="no-external">The idea behind this post is to collect various numerical methods to simulate discrete probability problems.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/proba-quant/discrete-simulations/index.html">
+<a href="./posts/proba-quant/discrete-simulations/index.html" class="no-external">
 <div class="listing-date">
 Nov 14, 2023
 </div>
 <div class="listing-reading-time">
-0 min
+1 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="32" data-categories="Markov Chain" data-listing-date-sort="1668186000000" data-listing-file-modified-sort="1687156731331" data-listing-reading-time-sort="3.93">
+<div class="quarto-post image-right" data-index="33" data-categories="Markov Chain" data-listing-date-sort="1668186000000" data-listing-file-modified-sort="1727873823747" data-listing-date-modified-sort="1668186000000" data-listing-reading-time-sort="4" data-listing-word-count-sort="786">
 <div class="body">
-<a href="./posts/stochastic-processes/index.html">
 <h3 class="no-anchor listing-title">
-Stochastic processes - Discrete Time Markov Chain
+<a href="./posts/stochastic-processes/index.html" class="no-external">Stochastic processes - Discrete Time Markov Chain</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/stochastic-processes/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Markov Chain'); return false;">
 Markov Chain
 </div>
 </div>
-<a href="./posts/stochastic-processes/index.html">
 <div class="listing-description">
-This post is an introduction to Markov Chain with a presentation of Discrete Time Markov Chains.
+<a href="./posts/stochastic-processes/index.html" class="no-external">This post is an introduction to Markov Chain with a presentation of Discrete Time Markov Chains.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/stochastic-processes/index.html">
+<a href="./posts/stochastic-processes/index.html" class="no-external">
 <div class="listing-date">
 Nov 12, 2022
 </div>
 <div class="listing-reading-time">
-3 min
+4 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="33" data-categories="Kmeans,ML" data-listing-date-sort="1667149200000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="7.685">
+<div class="quarto-post image-right" data-index="34" data-categories="Kmeans,ML" data-listing-date-sort="1667149200000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1667149200000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1537">
 <div class="body">
-<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html">
 <h3 class="no-anchor listing-title">
-Intro to Kmeans
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external">Intro to Kmeans</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Kmeans'); return false;">
 Kmeans
@@ -1458,33 +1408,29 @@ Kmeans
 ML
 </div>
 </div>
-<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html">
 <div class="listing-description">
-T…
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external">The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html">
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external">
 <div class="listing-date">
 Oct 31, 2022
 </div>
 <div class="listing-reading-time">
-7 min
+8 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="34" data-categories="Random Walk,Markov Chain,code,python" data-listing-date-sort="1666285200000" data-listing-file-modified-sort="1717811554692" data-listing-reading-time-sort="4.445">
+<div class="quarto-post image-right" data-index="35" data-categories="Random Walk,Markov Chain,code,python" data-listing-date-sort="1666285200000" data-listing-file-modified-sort="1727873823730" data-listing-date-modified-sort="1666285200000" data-listing-reading-time-sort="5" data-listing-word-count-sort="889">
 <div class="body">
-<a href="./posts/proba-quant/markov-chains/index.html">
 <h3 class="no-anchor listing-title">
-Markov Chains
+<a href="./posts/proba-quant/markov-chains/index.html" class="no-external">Markov Chains</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/proba-quant/markov-chains/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Random Walk'); return false;">
 Random Walk
@@ -1499,33 +1445,29 @@ code
 python
 </div>
 </div>
-<a href="./posts/proba-quant/markov-chains/index.html">
 <div class="listing-description">
-Introduction to Markov Chains
+<a href="./posts/proba-quant/markov-chains/index.html" class="no-external">Introduction to Markov Chains</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/proba-quant/markov-chains/index.html">
+<a href="./posts/proba-quant/markov-chains/index.html" class="no-external">
 <div class="listing-date">
 Oct 21, 2022
 </div>
 <div class="listing-reading-time">
-4 min
+5 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="35" data-categories="ML unsupervised,Kmeans,Tidymodel,Classification" data-listing-date-sort="1665507600000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="5.49">
+<div class="quarto-post image-right" data-index="36" data-categories="ML unsupervised,Kmeans,Tidymodel,Classification" data-listing-date-sort="1665507600000" data-listing-file-modified-sort="1727873823693" data-listing-date-modified-sort="1665507600000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1098">
 <div class="body">
-<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html">
 <h3 class="no-anchor listing-title">
-Kmeans with regime changes
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external">Kmeans with regime changes</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('ML unsupervised'); return false;">
 ML unsupervised
@@ -1540,51 +1482,14 @@ Tidymodel
 Classification
 </div>
 </div>
-<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html">
 <div class="listing-description">
-This post is about how to use Kmeans to classify various market regimes or to use Kmeans to classify financial observations.
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external">This post is about how to use Kmeans to classify various market regimes or to use Kmeans to classify financial observations.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html">
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external">
 <div class="listing-date">
 Oct 12, 2022
-</div>
-<div class="listing-reading-time">
-5 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="36" data-categories="xgboost,tidymodel" data-listing-date-sort="1664557200000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="6.17">
-<div class="body">
-<a href="./posts/machine-learning-part2/xgboost-time-series/index.html">
-<h3 class="no-anchor listing-title">
-Translating Python Part 1 - Xgboost with Time-Series
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('xgboost'); return false;">
-xgboost
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('tidymodel'); return false;">
-tidymodel
-</div>
-</div>
-<a href="./posts/machine-learning-part2/xgboost-time-series/index.html">
-<div class="listing-description">
-This post is about using xgboost on a time-series…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part2/xgboost-time-series/index.html">
-<div class="listing-date">
-Oct 1, 2022
 </div>
 <div class="listing-reading-time">
 6 min
@@ -1592,16 +1497,14 @@ Oct 1, 2022
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="37" data-categories="Algebra,Infinite Series" data-listing-date-sort="1664557200000" data-listing-file-modified-sort="1717811554628" data-listing-reading-time-sort="0.445">
+<div class="quarto-post image-right" data-index="37" data-categories="Algebra,Infinite Series" data-listing-date-sort="1664557200000" data-listing-file-modified-sort="1727873823594" data-listing-date-modified-sort="1664557200000" data-listing-reading-time-sort="1" data-listing-word-count-sort="89">
 <div class="body">
-<a href="./posts/algebra-quant/index.html">
 <h3 class="no-anchor listing-title">
-Algebra For Quant
+<a href="./posts/algebra-quant/index.html" class="no-external">Algebra For Quant</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/algebra-quant/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Algebra'); return false;">
 Algebra
@@ -1610,19 +1513,48 @@ Algebra
 Infinite Series
 </div>
 </div>
-<a href="./posts/algebra-quant/index.html">
 <div class="listing-description">
-I am storing here a few nuggets of algebra, I need for quantitative finance and machine learning.
+<a href="./posts/algebra-quant/index.html" class="no-external">I am storing here a few nuggets of algebra, I need for quantitative finance and machine learning.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/algebra-quant/index.html">
+<a href="./posts/algebra-quant/index.html" class="no-external">
 <div class="listing-date">
 Oct 1, 2022
 </div>
 <div class="listing-reading-time">
-0 min
+1 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="38" data-categories="xgboost,tidymodel" data-listing-date-sort="1664557200000" data-listing-file-modified-sort="1727873823697" data-listing-date-modified-sort="1664557200000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1234">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/machine-learning-part2/xgboost-time-series/index.html" class="no-external">Translating Python Part 1 - Xgboost with Time-Series</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/machine-learning-part2/xgboost-time-series/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('xgboost'); return false;">
+xgboost
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('tidymodel'); return false;">
+tidymodel
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part2/xgboost-time-series/index.html" class="no-external">This post is about using xgboost on a time-series using both R with the tidymodel framework and python. It is part of a series of articles aiming at translating python…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part2/xgboost-time-series/index.html" class="no-external">
+<div class="listing-date">
+Oct 1, 2022
+</div>
+<div class="listing-reading-time">
+7 min
 </div>
 </a>
 </div>
@@ -1662,12 +1594,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1699,11 +1634,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/fderyckel\.github\.io\/blog\.html");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1713,8 +1687,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1726,9 +1709,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -1769,6 +1988,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

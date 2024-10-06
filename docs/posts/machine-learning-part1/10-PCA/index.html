@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Francois de Ryckel">
-<meta name="dcterms.date" content="2024-02-14">
+<meta name="author" content="François de Ryckel">
+<meta name="description" content="Understanding Principal Component Analysis">
 
-<title>Value at Risk using Python – QUANT dira-t-on?</title>
+<title>PCA – QUANT dira-t-on?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -149,11 +115,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Value at Risk using Python</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">statistics</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+      <h1 class="title">PCA</h1>
+                  <div>
+        <div class="description">
+          Understanding Principal Component Analysis
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">ML</div>
+                <div class="quarto-category">PCA</div>
               </div>
                   </div>
   </div>
@@ -164,21 +134,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Francois de Ryckel </p>
+               <p>François de Ryckel </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 14, 2024</p>
+        <p class="date">Invalid Date</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">February 14, 2024</p>
+        <p class="date-modified">October 6, 2024</p>
       </div>
     </div>
       
@@ -201,82 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Computing Value at Risk (VaR) using Python.</p>
-<p>VaR is the maximum amount loss that can happen within a confidence interval over a pre-dertermined interval. If the 1-day 95% confidence Interval Var is $100; this means that 95% of the time, under ‘normal’ market conditions, we do not expect to loose more than $100 per day for our portfolio.</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'../../../raw_data/FDX.csv'</span>, index_col <span class="op">=</span> <span class="dv">0</span>, parse_dates <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> df[<span class="st">'adjClose'</span>].pct_change().dropna()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>returns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                  open        high         low       close    adjClose  \
-date                                                                     
-2023-03-09  211.080000  213.310000  207.300000  207.830000  207.830002   
-2023-03-08  205.900000  209.970000  205.390000  209.540000  209.539993   
-2023-03-07  209.720000  209.720000  206.160000  206.320000  206.320007   
-2023-03-06  209.600000  211.890000  209.350000  210.130000  210.130005   
-2023-03-03  208.460000  210.100000  207.130000  209.080000  209.080002   
-...                ...         ...         ...         ...         ...   
-2001-01-08   36.671723   37.013253   36.432653   36.825411   36.835415   
-2001-01-05   38.165914   38.165914   36.722953   37.406011   37.416172   
-2001-01-04   36.714414   38.422061   36.458267   37.790232   37.800480   
-2001-01-03   32.624599   35.228761   32.445296   35.057997   35.067524   
-2001-01-02   33.683341   34.127329   32.616061   32.616061   32.624928   
-
-             volume  unadjustedVolume    change  changePercent    vwap  \
-date                                                                     
-2023-03-09  1953078           1918911 -3.250000       -1.54000  210.08   
-2023-03-08  1073890           1073900  3.640000        1.77000  208.29   
-2023-03-07  1527138           1526900 -3.400000       -1.62000  207.00   
-2023-03-06  2148072           2148000  0.530000        0.25286  210.52   
-2023-03-03  1612507           1612300  0.620000        0.29742  208.87   
-...             ...               ...       ...            ...     ...   
-2001-01-08  1120700           1120700  0.153688        0.41909   36.76   
-2001-01-05  1485800           1485800 -0.759903       -1.99000   37.43   
-2001-01-04  3410600           3410600  1.075820        2.93000   37.56   
-2001-01-03  2203000           2203000  2.433400        7.46000   34.24   
-2001-01-02   936600            936600 -1.067280       -3.17000   33.12   
-
-                     label  changeOverTime  
-date                                        
-2023-03-09    March 09, 23       -0.015400  
-2023-03-08    March 08, 23        0.017700  
-2023-03-07    March 07, 23       -0.016200  
-2023-03-06    March 06, 23        0.002529  
-2023-03-03    March 03, 23        0.002974  
-...                    ...             ...  
-2001-01-08  January 08, 01        0.004191  
-2001-01-05  January 05, 01       -0.019900  
-2001-01-04  January 04, 01        0.029300  
-2001-01-03  January 03, 01        0.074600  
-2001-01-02  January 02, 01       -0.031700  
-
-[5581 rows x 12 columns]</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>date
-2023-03-08    0.008228
-2023-03-07   -0.015367
-2023-03-06    0.018466
-2023-03-03   -0.004997
-2023-03-02   -0.010283
-                ...   
-2001-01-08    0.020345
-2001-01-05    0.015766
-2001-01-04    0.010271
-2001-01-03   -0.072300
-2001-01-02   -0.069654
-Name: adjClose, Length: 5580, dtype: float64</code></pre>
-</div>
-</div>
+<p>Principal Component Analysis is a widely method to reduce the dimensionality of a dataset, to de-correlate it.</p>
 
 
 

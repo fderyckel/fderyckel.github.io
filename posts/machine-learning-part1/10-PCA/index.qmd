@@ -1,0 +1,17 @@
+---
+title: "PCA"
+author: "François de Ryckel"
+date: "2024-10--06"
+categories: [ML, PCA]
+description: 'Understanding Principal Component Analysis'
+editor: source
+date-modified: "2024-10-06"
+---
+
+Principal Component Analysis is a widely method to reduce the dimensionality of a dataset, to de-correlate it.  
+
+Let's take an example. 
+
+```{r}
+
+```

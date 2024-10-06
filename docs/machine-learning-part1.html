@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.313">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>QUANT dira-t-on? - Series: Machine Learning - Part 1</title>
+<title>Series: Machine Learning - Part 1 – QUANT dira-t-on?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -56,8 +62,10 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script>
@@ -90,7 +98,35 @@ ul.task-list li input[type="checkbox"] {
   })
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -98,36 +134,38 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">QUANT dira-t-on?</span>
     </a>
   </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./blog.html">
- <span class="menu-text">Blog</span></a>
+    <a class="nav-link" href="./blog.html"> 
+<span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/fderyckel/blog"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/fderyckel/blog"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/Read_the_Dung"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/Read_the_Dung"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -140,7 +178,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page">
 
       
     
@@ -162,26 +200,25 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="logistic-regression" data-listing-date-sort="1715706000000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="1.325">
+<div class="quarto-post image-right" data-index="0" data-categories="ML,PCA" data-listing-date-sort="NaN" data-listing-file-modified-sort="1728193604649" data-listing-date-modified-sort="1728147600000" data-listing-reading-time-sort="1" data-listing-word-count-sort="19">
 <div class="body">
-<a href="./posts/machine-learning-part1/02-logistic-regression/index.html">
 <h3 class="no-anchor listing-title">
-Logistic Regression
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external">PCA</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-<p>A dive into Logistic Regression.</p>
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external">Understanding Principal Component Analysis</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/02-logistic-regression/index.html">
+<a href="./posts/machine-learning-part1/10-PCA/index.html" class="no-external">
 <div class="listing-date">
-May 15, 2024
+Invalid Date
 </div>
 <div class="listing-reading-time">
 1 min
@@ -189,202 +226,209 @@ May 15, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="Gradient Descent,Regression" data-listing-date-sort="1714064400000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="4.26">
+<div class="quarto-post image-right" data-index="1" data-categories="logistic-regression" data-listing-date-sort="1715706000000" data-listing-file-modified-sort="1727873823690" data-listing-date-modified-sort="1716310800000" data-listing-reading-time-sort="2" data-listing-word-count-sort="265">
 <div class="body">
-<a href="./posts/machine-learning-part1/06-gradient-descent/index.html">
 <h3 class="no-anchor listing-title">
-Gradient Descent
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external">Logistic Regression</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-Gradient Descent is an optimization technique used in many Machine Learning algorithms to find the minimum of a function.…<strong></strong><strong></strong>
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external">A dive into Logistic Regression.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/06-gradient-descent/index.html">
+<a href="./posts/machine-learning-part1/02-logistic-regression/index.html" class="no-external">
 <div class="listing-date">
-Apr 26, 2024
+May 15, 2024
 </div>
 <div class="listing-reading-time">
-4 min
+2 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="Regression,Lasso,Ridge" data-listing-date-sort="1713718800000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="3.355">
+<div class="quarto-post image-right" data-index="2" data-categories="Regression,Lasso,Ridge" data-listing-date-sort="1713718800000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1714410000000" data-listing-reading-time-sort="4" data-listing-word-count-sort="671">
 <div class="body">
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
 <h3 class="no-anchor listing-title">
-Regularized Regressions
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external">Regularized Regressions</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of…<strong></strong>
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external">Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of…<strong></strong></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html">
+<a href="./posts/machine-learning-part1/04-lasso-ridge/index.html" class="no-external">
 <div class="listing-date">
 Apr 22, 2024
 </div>
 <div class="listing-reading-time">
-3 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="R-code,linear-regression" data-listing-date-sort="1681405200000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="5.52">
-<div class="body">
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
-<h3 class="no-anchor listing-title">
-Linear Regression
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>A dive into the math behind the linear regression algorithm.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/03-linear-regression/index.html">
-<div class="listing-date">
-Apr 14, 2023
-</div>
-<div class="listing-reading-time">
-5 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="Supervised ML,KNN,Classification,Confusion Matrix,F1 Measure" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1717811554628" data-listing-reading-time-sort="17.435">
-<div class="body">
-<a href="./posts/machine-learning-part1/01-knn/index.html">
-<h3 class="no-anchor listing-title">
-KNN - K Nearest Neighbor
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-<p>Using KNN in both python and R</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/01-knn/index.html">
-<div class="listing-date">
-Nov 14, 2023
-</div>
-<div class="listing-reading-time">
-17 min
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="sklearn,tidymodel" data-listing-date-sort="1713200400000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="4.1">
-<div class="body">
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
-<h3 class="no-anchor listing-title">
-Defining Success
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/machine-learning-part1/05-metrics/index.html">
-<div class="listing-date">
-Apr 16, 2024
-</div>
-<div class="listing-reading-time">
 4 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="ML,Naive-Bayes,sentiment analysis" data-listing-date-sort="1684170000000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="0.86">
+<div class="quarto-post image-right" data-index="3" data-categories="Gradient Descent,Regression" data-listing-date-sort="1714064400000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1714410000000" data-listing-reading-time-sort="5" data-listing-word-count-sort="852">
 <div class="body">
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
 <h3 class="no-anchor listing-title">
-Naive-Bayes - Part 1
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external">Gradient Descent</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-<p>Making Naive-Bayes work in R</p>
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external">Gradient Descent is an optimization technique used in many Machine Learning algorithms to find the minimum of a function. It does require a convex and differentiable…<strong></strong><strong></strong></a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part1/06-gradient-descent/index.html" class="no-external">
+<div class="listing-date">
+Apr 26, 2024
+</div>
+<div class="listing-reading-time">
+5 min
 </div>
 </a>
 </div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-categories="R-code,linear-regression" data-listing-date-sort="1681405200000" data-listing-file-modified-sort="1727873823691" data-listing-date-modified-sort="1713718800000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1104">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external">Linear Regression</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external">A dive into the math behind the linear regression algorithm.</a>
+</div>
+</div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html">
+<a href="./posts/machine-learning-part1/03-linear-regression/index.html" class="no-external">
+<div class="listing-date">
+Apr 14, 2023
+</div>
+<div class="listing-reading-time">
+6 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-categories="Supervised ML,KNN,Classification,Confusion Matrix,F1 Measure" data-listing-date-sort="1699894800000" data-listing-file-modified-sort="1727873823595" data-listing-date-modified-sort="1713632400000" data-listing-reading-time-sort="18" data-listing-word-count-sort="3487">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external">KNN - K Nearest Neighbor</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external">Using KNN in both python and R</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part1/01-knn/index.html" class="no-external">
+<div class="listing-date">
+Nov 14, 2023
+</div>
+<div class="listing-reading-time">
+18 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="6" data-categories="sklearn,tidymodel" data-listing-date-sort="1713200400000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1713546000000" data-listing-reading-time-sort="5" data-listing-word-count-sort="820">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external">Defining Success</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external">When evaluating models for a given ML algorithm, we need to define in advance what would be our metric to measure success. How would we decide if this model performs well or…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part1/05-metrics/index.html" class="no-external">
+<div class="listing-date">
+Apr 16, 2024
+</div>
+<div class="listing-reading-time">
+5 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-categories="ML,Naive-Bayes,sentiment analysis" data-listing-date-sort="1684170000000" data-listing-file-modified-sort="1727873823697" data-listing-date-modified-sort="1684170000000" data-listing-reading-time-sort="1" data-listing-word-count-sort="174">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external">Naive-Bayes - Part 1</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external">Making Naive-Bayes work in R</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/machine-learning-part1/09-naives-bayes-intro/index.html" class="no-external">
 <div class="listing-date">
 May 16, 2023
 </div>
 <div class="listing-reading-time">
-0 min
+1 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="Kmeans,ML" data-listing-date-sort="1667149200000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="7.685">
+<div class="quarto-post image-right" data-index="8" data-categories="Kmeans,ML" data-listing-date-sort="1667149200000" data-listing-file-modified-sort="1727873823692" data-listing-date-modified-sort="1667149200000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1537">
 <div class="body">
-<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html">
 <h3 class="no-anchor listing-title">
-Intro to Kmeans
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external">Intro to Kmeans</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-T…
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external">The purpose of this article is to get a deeper dive into Kmeans as an unsupervised machine learning algorithms. To see the algorithm at work on some financial data, you can…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html">
+<a href="./posts/machine-learning-part1/07-kmeans-intro/index.html" class="no-external">
 <div class="listing-date">
 Oct 31, 2022
 </div>
 <div class="listing-reading-time">
-7 min
+8 min
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="ML unsupervised,Kmeans,Tidymodel,Classification" data-listing-date-sort="1665507600000" data-listing-file-modified-sort="1717811554672" data-listing-reading-time-sort="5.49">
+<div class="quarto-post image-right" data-index="9" data-categories="ML unsupervised,Kmeans,Tidymodel,Classification" data-listing-date-sort="1665507600000" data-listing-file-modified-sort="1727873823693" data-listing-date-modified-sort="1665507600000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1098">
 <div class="body">
-<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html">
 <h3 class="no-anchor listing-title">
-Kmeans with regime changes
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external">Kmeans with regime changes</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-This post is about how to use Kmeans to classify various market regimes or to use Kmeans to classify financial observations.
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external">This post is about how to use Kmeans to classify various market regimes or to use Kmeans to classify financial observations.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html">
+<a href="./posts/machine-learning-part1/08-kmeans-regime-change/index.html" class="no-external">
 <div class="listing-date">
 Oct 12, 2022
 </div>
 <div class="listing-reading-time">
-5 min
+6 min
 </div>
 </a>
 </div>
@@ -421,12 +465,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -458,11 +505,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/fderyckel\.github\.io\/blog\.html");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -472,8 +558,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -485,9 +580,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -528,6 +859,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
