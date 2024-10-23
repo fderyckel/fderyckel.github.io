@@ -1,17 +1,201 @@
 ---
 title: "PCA"
 author: "François de Ryckel"
-date: "2024-10--06"
-categories: [ML, PCA]
+date: "2024-10-06"
+categories: [ML, PCA, Covariance]
 description: 'Understanding Principal Component Analysis'
 editor: source
 date-modified: "2024-10-06"
 ---
 
-Principal Component Analysis is a widely method to reduce the dimensionality of a dataset, to de-correlate it.  
+Principal Component Analysis is a widely method to reduce the dimensionality of a dataset as well as to de-correlate it.  It can also be used to weight the importance of variables.  The PCA transforms variables into another set of variables called *Principal Components*.  
 
-Let's take an example. 
+It takes the data and tries to find a direction (let's say vector 1) such that variance of points projected on vector 1 is maximum.  
+
+This is unsupervised learning.  So we don't need the label of that data set.  
+
+Let's take an example without label.
+
+# Example 1 
+
+In our very basic fictious example, we have 3 variables. 
+
+```{r}
+#| echo: false
+
+library(reticulate)
+```
+
+::: {.panel-tabset}
+
+## R  
+
+```{r}
+#| message: false
+#| warning: false
+
+library(dplyr)
+
+df <- tibble(english = c(90, 90, 60, 60, 30), 
+             math = c(60, 90, 60, 60, 30), 
+             art = c(90, 30, 60, 90, 30))
+
+df
+```
+## Python 
+
+```{python}
+import pandas as pd
+
+df_py = pd.DataFrame({'english': [90, 90, 60, 60, 30], 
+                      'math': [60, 90, 60, 60, 30], 
+                      'art': [90, 30, 60, 90, 30]})
+
+df_py
+```
+
+:::
+
+
+## Step 1: find the mean of each variable 
+
+::: {.panel-tabset}
+
+## R  
+
+```{r}
+df |> summarise(across(everything(), mean))
+
+# or another way
+colMeans(as.matrix(df))
+```
+
+## Python
+
+```{python}
+df_py.mean()
+```
+
+:::
+
+## Step 2: Compute the Covariance matrix of the whole dataset  
+
+As a reminder, we find the covariance between 2 variables $X, Y$ as 
+$$cov(X, Y) = \frac{1}{n-1} \cdot \sum_{i=1}^{n} \left( (x_i - \bar{x}) (y_i - \bar{y}) \right)$$
+
+So let's show the covariance of English and Math. 
+
+* Mean of english $= 66$
+* Mean of math $ = 60$
+$$\frac{(90 - 66) \cdot (60-60) + (90 - 66) \cdot (90-60) + (60 - 66) \cdot (60-60) + (60 - 66) \cdot (60-60) + (30 - 66) \cdot (30-60)}{4}$$
+$$\frac{24 \cdot 0 + 24 \cdot 30 + -6 \cdot 0 + -6 \cdot 0 + -36 \cdot -30}{4}$$
+$$\frac{0 + 720 + 0 + 0 + 1080}{4} = \frac{1800}{4} = 450$$
+
+
+
+::: {.panel-tabset}
+
+## R  
+
+```{r}
+cov(df)
+
+# or using matrix
+cov(as.matrix(df))
+```
+
+## Python
+
+```{python}
+df_py.cov()
+```
+
+:::
+
+Using matrices, another way to compute the covariance matrix is the following: 
+$$\frac{1}{n-1} \left( \textbf{X} - \textbf{\bar{X}} \right)^T \cdot \left( \textbf{X} - \textbf{\bar{X}} \right)$$
+
+Remember, the positive covariance between math and english indicates that both subject covary in the same direction.  And the null covariance between math and art indicates that there is no predictable relationship between the art and math subject.  
+
+## Step 3: Compute the eigenvectors and eigenvalues of the covariance matrix  
+
+Recall that the eigenvectors satifies the following relationship: 
+
+$$\textbf{A} v = \textbf{\lambda} v$$
+$$\left( \textbf{A} - \textbf{\lambda} \right) v = 0$$ 
+$$det\left( \textbf{A} - \textbf{\lambda} \textbf{I} \right) = 0$$
+
+::: {.panel-tabset}
+
+## R  
+
+```{r}
+eigen(as.matrix(cov(df)))
+```
+
+## Python
+
+```{python}
+import numpy as np
+
+df_py_cov_mat = df_py.cov()
+
+eigenvalues, eigenvectors = np.linalg.eig(df_py_cov_mat)
+print(eigenvalues)
+print(eigenvectors)
+```
+
+:::
+
+It is serendipity that the first eigenvectors is the highest (aka explained most of the variance).  The second one is the second highest and third one is last.  
+
+This is a 3D space with each eigen vector being orthogonal to the other.  In an N-dimensional space, each eigenvectors are orthogonal. 
+
+To find the percentage of variance expalained by the eigenvalue $k$ (where $k$ is one of the dimension), we compute: 
+
+$$\frac{\lambda_k}{\sum_{i=1}^{n}}$$
+
+## Step 4: Compute the new data frame based on the principal components. 
+
+To transform the eigenvectors to the new subspace we used: 
+$$\textbf{W}^t \cdot X$$
+
+* $X$ is our initial data matrix.  Our df in the above steps
+* $\textbf{W}^t$ is the transpose of the eigenvector matrix. 
+
+::: {.panel-tabset}
+
+## R  
 
 ```{r}
 
 ```
+
+## Python
+
+```{python}
+
+```
+
+:::
+
+
+# Another Example. 
+
+
+::: {.panel-tabset}
+
+## R  
+```{r}
+x_mat <- matrix(NA, nrow = 10, ncol = 2)
+x_mat[, 1] <- c(14.3, 12.2, 13.7, 12.0, 13.4, 14.3, 13.0, 14.8, 11.1, 14.3)
+x_mat[, 2] <- c(7.5, 5.5, 6.7, 5.1, 5.2, 6.3, 7.6, 7.3, 5.3, 7.2)
+```
+
+## Python 
+
+:::
+
+
+Find the covariance matrix.  
+Remember we d
