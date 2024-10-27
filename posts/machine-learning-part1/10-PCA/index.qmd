@@ -5,12 +5,13 @@ date: "2024-10-06"
 categories: [ML, PCA, Covariance]
 description: 'Understanding Principal Component Analysis'
 editor: source
+html-math-method: mathml
 date-modified: "2024-10-06"
 ---
 
-Principal Component Analysis is a widely method to reduce the dimensionality of a dataset as well as to de-correlate it.  It can also be used to weight the importance of variables.  The PCA transforms variables into another set of variables called *Principal Components*.  
+Principal Component Analysis is a widely used method to reduce the dimensionality of a dataset as well as to de-correlate it.  It can also be used to weight the importance of variables.  The PCA transforms variables into another set of variables called *Principal Components*.  
 
-It takes the data and tries to find a direction (let's say vector 1) such that variance of points projected on vector 1 is maximum.  
+It takes the data and tries to find a direction (let's say vector l) such that variance of points projected on vector l is maximum.  
 
 This is unsupervised learning.  So we don't need the label of that data set.  
 
@@ -86,7 +87,7 @@ $$cov(X, Y) = \frac{1}{n-1} \cdot \sum_{i=1}^{n} \left( (x_i - \bar{x}) (y_i - \
 So let's show the covariance of English and Math. 
 
 * Mean of english $= 66$
-* Mean of math $ = 60$
+* Mean of math $= 60$
 $$\frac{(90 - 66) \cdot (60-60) + (90 - 66) \cdot (90-60) + (60 - 66) \cdot (60-60) + (60 - 66) \cdot (60-60) + (30 - 66) \cdot (30-60)}{4}$$
 $$\frac{24 \cdot 0 + 24 \cdot 30 + -6 \cdot 0 + -6 \cdot 0 + -36 \cdot -30}{4}$$
 $$\frac{0 + 720 + 0 + 0 + 1080}{4} = \frac{1800}{4} = 450$$
@@ -113,7 +114,8 @@ df_py.cov()
 :::
 
 Using matrices, another way to compute the covariance matrix is the following: 
-$$\frac{1}{n-1} \left( \textbf{X} - \textbf{\bar{X}} \right)^T \cdot \left( \textbf{X} - \textbf{\bar{X}} \right)$$
+
+$$\frac{1}{n-1} \left( \textbf{X} - \bar{X} \right)^T \cdot \left( \textbf{X} - \bar{X} \right)$$
 
 Remember, the positive covariance between math and english indicates that both subject covary in the same direction.  And the null covariance between math and art indicates that there is no predictable relationship between the art and math subject.  
 
@@ -121,9 +123,9 @@ Remember, the positive covariance between math and english indicates that both s
 
 Recall that the eigenvectors satifies the following relationship: 
 
-$$\textbf{A} v = \textbf{\lambda} v$$
-$$\left( \textbf{A} - \textbf{\lambda} \right) v = 0$$ 
-$$det\left( \textbf{A} - \textbf{\lambda} \textbf{I} \right) = 0$$
+$$\textbf{A}\cdot v = {\lambda} \cdot v$$
+$$\left( \textbf{A} - \lambda \right) v = 0$$ 
+$$det\left( \textbf{A} - \lambda \textbf{I} \right) = 0$$
 
 ::: {.panel-tabset}
 

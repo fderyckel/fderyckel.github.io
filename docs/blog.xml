@@ -21,8 +21,8 @@
 
 
 
-<p>Principal Component Analysis is a widely method to reduce the dimensionality of a dataset as well as to de-correlate it. It can also be used to weight the importance of variables. The PCA transforms variables into another set of variables called <em>Principal Components</em>.</p>
-<p>It takes the data and tries to find a direction (let’s say vector 1) such that variance of points projected on vector 1 is maximum.</p>
+<p>Principal Component Analysis is a widely used method to reduce the dimensionality of a dataset as well as to de-correlate it. It can also be used to weight the importance of variables. The PCA transforms variables into another set of variables called <em>Principal Components</em>.</p>
+<p>It takes the data and tries to find a direction (let’s say vector l) such that variance of points projected on vector l is maximum.</p>
 <p>This is unsupervised learning. So we don’t need the label of that data set.</p>
 <p>Let’s take an example without label.</p>
 <section id="example-1" class="level1">
@@ -215,11 +215,11 @@ dtype: float64</code></pre>
 </section>
 <section id="step-2-compute-the-covariance-matrix-of-the-whole-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-compute-the-covariance-matrix-of-the-whole-dataset">Step 2: Compute the Covariance matrix of the whole dataset</h2>
-<p>As a reminder, we find the covariance between 2 variables <img src="https://latex.codecogs.com/png.latex?X,%20Y"> as <img src="https://latex.codecogs.com/png.latex?cov(X,%20Y)%20=%20%5Cfrac%7B1%7D%7Bn-1%7D%20%5Ccdot%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20%5Cleft(%20(x_i%20-%20%5Cbar%7Bx%7D)%20(y_i%20-%20%5Cbar%7By%7D)%20%5Cright)"></p>
+<p>As a reminder, we find the covariance between 2 variables <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X, Y</annotation></semantics></math> as <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>o</mi><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>⋅</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mover><mi>y</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">cov(X, Y) = \frac{1}{n-1} \cdot \sum_{i=1}^{n} \left( (x_i - \bar{x}) (y_i - \bar{y}) \right)</annotation></semantics></math></p>
 <p>So let’s show the covariance of English and Math.</p>
 <ul>
-<li>Mean of english <img src="https://latex.codecogs.com/png.latex?=%2066"></li>
-<li>Mean of math $ = 60$ <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B(90%20-%2066)%20%5Ccdot%20(60-60)%20+%20(90%20-%2066)%20%5Ccdot%20(90-60)%20+%20(60%20-%2066)%20%5Ccdot%20(60-60)%20+%20(60%20-%2066)%20%5Ccdot%20(60-60)%20+%20(30%20-%2066)%20%5Ccdot%20(30-60)%7D%7B4%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B24%20%5Ccdot%200%20+%2024%20%5Ccdot%2030%20+%20-6%20%5Ccdot%200%20+%20-6%20%5Ccdot%200%20+%20-36%20%5Ccdot%20-30%7D%7B4%7D"> <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B0%20+%20720%20+%200%20+%200%20+%201080%7D%7B4%7D%20=%20%5Cfrac%7B1800%7D%7B4%7D%20=%20450"></li>
+<li>Mean of english <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>66</mn></mrow><annotation encoding="application/x-tex">= 66</annotation></semantics></math></li>
+<li>Mean of math <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">= 60</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>30</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>30</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mn>4</mn></mfrac><annotation encoding="application/x-tex">\frac{(90 - 66) \cdot (60-60) + (90 - 66) \cdot (90-60) + (60 - 66) \cdot (60-60) + (60 - 66) \cdot (60-60) + (30 - 66) \cdot (30-60)}{4}</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mn>24</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mn>24</mn><mo>⋅</mo><mn>30</mn><mo>+</mo><mi>−</mi><mn>6</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mi>−</mi><mn>6</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mi>−</mi><mn>36</mn><mo>⋅</mo><mi>−</mi><mn>30</mn></mrow><mn>4</mn></mfrac><annotation encoding="application/x-tex">\frac{24 \cdot 0 + 24 \cdot 30 + -6 \cdot 0 + -6 \cdot 0 + -36 \cdot -30}{4}</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>0</mn><mo>+</mo><mn>720</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>1080</mn></mrow><mn>4</mn></mfrac><mo>=</mo><mfrac><mn>1800</mn><mn>4</mn></mfrac><mo>=</mo><mn>450</mn></mrow><annotation encoding="application/x-tex">\frac{0 + 720 + 0 + 0 + 1080}{4} = \frac{1800}{4} = 450</annotation></semantics></math></li>
 </ul>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
@@ -264,13 +264,14 @@ art        225.0    0.0  900.0</code></pre>
 </div>
 </div>
 </div>
-<p>Using matrices, another way to compute the covariance matrix is the following: <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7Bn-1%7D%20%5Cleft(%20%5Ctextbf%7BX%7D%20-%20%5Ctextbf%7B%5Cbar%7BX%7D%7D%20%5Cright)%5ET%20%5Ccdot%20%5Cleft(%20%5Ctextbf%7BX%7D%20-%20%5Ctextbf%7B%5Cbar%7BX%7D%7D%20%5Cright)"></p>
+<p>Using matrices, another way to compute the covariance matrix is the following:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐗</mtext><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐗</mtext><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\frac{1}{n-1} \left( \textbf{X} - \bar{X} \right)^T \cdot \left( \textbf{X} - \bar{X} \right)</annotation></semantics></math></p>
 <p>Remember, the positive covariance between math and english indicates that both subject covary in the same direction. And the null covariance between math and art indicates that there is no predictable relationship between the art and math subject.</p>
 </section>
 <section id="step-3-compute-the-eigenvectors-and-eigenvalues-of-the-covariance-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="step-3-compute-the-eigenvectors-and-eigenvalues-of-the-covariance-matrix">Step 3: Compute the eigenvectors and eigenvalues of the covariance matrix</h2>
 <p>Recall that the eigenvectors satifies the following relationship:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctextbf%7BA%7D%20v%20=%20%5Ctextbf%7B%5Clambda%7D%20v"> <img src="https://latex.codecogs.com/png.latex?%5Cleft(%20%5Ctextbf%7BA%7D%20-%20%5Ctextbf%7B%5Clambda%7D%20%5Cright)%20v%20=%200"> <img src="https://latex.codecogs.com/png.latex?det%5Cleft(%20%5Ctextbf%7BA%7D%20-%20%5Ctextbf%7B%5Clambda%7D%20%5Ctextbf%7BI%7D%20%5Cright)%20=%200"></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="bold">𝐀</mtext><mo>⋅</mo><mi>v</mi><mo>=</mo><mi>λ</mi><mo>⋅</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">\textbf{A}\cdot v = {\lambda} \cdot v</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐀</mtext><mo>−</mo><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>v</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\left( \textbf{A} - \lambda \right) v = 0</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>e</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐀</mtext><mo>−</mo><mi>λ</mi><mtext mathvariant="bold">𝐈</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">det\left( \textbf{A} - \lambda \textbf{I} \right) = 0</annotation></semantics></math></p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
@@ -331,15 +332,15 @@ font-style: inherit;">print</span>(eigenvectors)</span></code></pre></div>
 </div>
 <p>It is serendipity that the first eigenvectors is the highest (aka explained most of the variance). The second one is the second highest and third one is last.</p>
 <p>This is a 3D space with each eigen vector being orthogonal to the other. In an N-dimensional space, each eigenvectors are orthogonal.</p>
-<p>To find the percentage of variance expalained by the eigenvalue <img src="https://latex.codecogs.com/png.latex?k"> (where <img src="https://latex.codecogs.com/png.latex?k"> is one of the dimension), we compute:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Clambda_k%7D%7B%5Csum_%7Bi=1%7D%5E%7Bn%7D%7D"></p>
+<p>To find the percentage of variance expalained by the eigenvalue <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> (where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> is one of the dimension), we compute:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><msub><mi>λ</mi><mi>k</mi></msub><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover></mfrac><annotation encoding="application/x-tex">\frac{\lambda_k}{\sum_{i=1}^{n}}</annotation></semantics></math></p>
 </section>
 <section id="step-4-compute-the-new-data-frame-based-on-the-principal-components." class="level2">
 <h2 class="anchored" data-anchor-id="step-4-compute-the-new-data-frame-based-on-the-principal-components.">Step 4: Compute the new data frame based on the principal components.</h2>
-<p>To transform the eigenvectors to the new subspace we used: <img src="https://latex.codecogs.com/png.latex?%5Ctextbf%7BW%7D%5Et%20%5Ccdot%20X"></p>
+<p>To transform the eigenvectors to the new subspace we used: <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext mathvariant="bold">𝐖</mtext><mi>t</mi></msup><mo>⋅</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">\textbf{W}^t \cdot X</annotation></semantics></math></p>
 <ul>
-<li><img src="https://latex.codecogs.com/png.latex?X"> is our initial data matrix. Our df in the above steps</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Ctextbf%7BW%7D%5Et"> is the transpose of the eigenvector matrix.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math> is our initial data matrix. Our df in the above steps</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mtext mathvariant="bold">𝐖</mtext><mi>t</mi></msup><annotation encoding="application/x-tex">\textbf{W}^t</annotation></semantics></math> is the transpose of the eigenvector matrix.</li>
 </ul>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" aria-controls="tabset-5-2" aria-selected="false">Python</a></li></ul>
@@ -6322,7 +6323,7 @@ Scaling
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
-<div class="cell" data-hash="index_cache/html/py_scatterplot1_9d5744e7d9c4c88e89df3625824ce2d3">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1">x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
@@ -6412,7 +6413,7 @@ font-style: inherit;">=</span> classes)</span></code></pre></div>
 </div>
 </div>
 <p>Now let’s create a KNN object and a new point</p>
-<div class="cell" data-hash="index_cache/html/py_scatterplot2_615dc31a592cc2155de0ee60f7526871">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.neighbors <span class="im" style="color: #00769E;
@@ -6836,7 +6837,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
 }
-</a></style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=3)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked=""><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=3)</pre></div> </div></div></div></div>
+</a></style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=3)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked=""><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=3)</pre></div> </div></div></div></div>
 </div>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"></span>
 <span id="cb3-2">new_x <span class="op" style="color: #5E5E5E;
@@ -6902,7 +6903,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" aria-labelledby="tabset-1-2-tab">
-<div class="cell" data-hash="index_cache/html/r_scatterplot1_560455c1405724dd9e685cf21c791e40">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(dplyr)</span>
@@ -7028,7 +7029,7 @@ font-style: inherit;">'none'</span>)</span></code></pre></div>
 </div>
 <p>Using the tidymodel framework, we are first creating a recipe. In the tidymodel framework, a recipe apply transformations to the original data set. In our case the only needed transformation is scaling. Next, we apply that scaling transformation to the new point.</p>
 <p>Using ‘parnsip’, we create the KNN object.</p>
-<div class="cell" data-hash="index_cache/html/r_scatterplot2_4824b59dcc9eba957dfc7e37abec471c">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(recipes)</span>
@@ -7252,7 +7253,7 @@ font-style: inherit;">0.2</span>)</span></code></pre></div>
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" aria-controls="tabset-2-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" aria-controls="tabset-2-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" aria-labelledby="tabset-2-1-tab">
-<div class="cell" data-hash="index_cache/html/py_synData_scatterplot1_22028de8d7746f6fa67a005b80bb68cc">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.datasets <span class="im" style="color: #00769E;
@@ -7311,7 +7312,7 @@ font-style: inherit;">20</span>)</span></code></pre></div>
 </div>
 </div>
 <p>Splitting our data set into training &amp; testing + running KNN on the data</p>
-<div class="cell" data-hash="index_cache/html/py_synData_train_test_split_d2cee03283ffe1849c9576bebd07f5ef">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.neighbors <span class="im" style="color: #00769E;
@@ -7764,7 +7765,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
 }
-</a></style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" checked=""><label for="sk-estimator-id-2" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier()</pre></div> </div></div></div></div>
+</a></style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" checked=""><label for="sk-estimator-id-2" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier()</pre></div> </div></div></div></div>
 </div>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">knn19.fit(X_train, y_train)</span></code></pre></div>
 <div class="cell-output-display">
@@ -8172,7 +8173,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
 }
-</a></style><div id="sk-container-id-3" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=19)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox" checked=""><label for="sk-estimator-id-3" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=19)</pre></div> </div></div></div></div>
+</a></style><div id="sk-container-id-3" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=19)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox" checked=""><label for="sk-estimator-id-3" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=19)</pre></div> </div></div></div></div>
 </div>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -8228,7 +8229,7 @@ font-style: inherit;">'%'</span>)</span></code></pre></div>
 </div>
 </div>
 <p>Let’s visualize both ‘models’ and the impact of the choice of K.</p>
-<div class="cell" data-hash="index_cache/html/py_synData_scatterplot4_b185e0b617ad5d6949d26f0311f5a87b">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#using subplots to compare</span></span>
@@ -8299,7 +8300,7 @@ font-style: inherit;">'Prediction with K=19'</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" aria-labelledby="tabset-2-2-tab">
-<div class="cell" data-hash="index_cache/html/r_synData_scatterplot1_a381aa93eaac8cd89a6c2454ffad7ccb">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># create our synthetic data</span></span>
@@ -8564,7 +8565,7 @@ font-style: inherit;">'none'</span>)</span></code></pre></div>
 </div>
 <p>This time, we split the data in a training / testing set.<br>
 Also because the data were already scaled during the generative process; there is no need to redo that step.</p>
-<div class="cell" data-hash="index_cache/html/r_synData_scatterplot2_269b6a5f23f68df08d897ef6ee21e125">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(rsample)</span>
@@ -8689,7 +8690,7 @@ font-style: inherit;">estimate =</span> .pred_class)</span></code></pre></div>
 <pre><code># A tibble: 1 × 3
   .metric  .estimator .estimate
   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy multiclass     0.785</code></pre>
+1 accuracy multiclass      0.84</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">knn_fit_19 <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -8735,11 +8736,11 @@ font-style: inherit;">estimate =</span> .pred_class)</span></code></pre></div>
 <pre><code># A tibble: 1 × 3
   .metric  .estimator .estimate
   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy multiclass     0.825</code></pre>
+1 accuracy multiclass      0.87</code></pre>
 </div>
 </div>
 <p>Let’s visualize both ‘models’ and the impact of the choice of K. Note, we have just plotted the predictions, we have not plotted the actual data points used to measure the <strong>K nearest</strong> observations.</p>
-<div class="cell" data-hash="index_cache/html/r_SynData_scatterplot5_cd8b40d4546df24cf7c2da4e97d0c589">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1">df_pred <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -8805,7 +8806,7 @@ font-style: inherit;">'none'</span>)</span></code></pre></div>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" aria-labelledby="tabset-3-1-tab">
 <p>Loading and checking the data</p>
-<div class="cell" data-hash="index_cache/html/py-loadFinanData_7987215e3e9f572d65c22c105975fd99">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
@@ -8936,7 +8937,7 @@ dtype: int64</code></pre>
 </div>
 <p>No missing values and we can go ahead!</p>
 <p>Setting up a few predictors.</p>
-<div class="cell" data-hash="index_cache/html/py_featengi_c160035472539e6518dacead847c8e7e">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -9170,7 +9171,7 @@ font-style: inherit;">1</span>)</span>
 </div>
 </div>
 <p>Splitting the data set for training and testing. Because time-series and auto-correlation, we won’t randomly take observations from the set for training. Instead, we split in the first 80% of data for training and the last 20% for testing.</p>
-<div class="cell" data-hash="index_cache/html/py_load_train_test_81ef7413b95649f4f6ea5d30a0976904">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
@@ -9216,7 +9217,7 @@ font-style: inherit;"> observations"</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" aria-labelledby="tabset-3-2-tab">
-<div class="cell" data-hash="index_cache/html/r-loadFinanData_e67daf046a9b41b944183a706830b2a2">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(readr)</span>
@@ -9289,7 +9290,7 @@ font-style: inherit;">is.na</span>(.))))</span></code></pre></div>
 </div>
 <p>No missing values, we can go ahead!</p>
 <p>Let’s create the predictors.</p>
-<div class="cell" data-hash="index_cache/html/r_featengi_724db9710b8b5e521689e4deda264d8f">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(tidyr)</span>
@@ -9639,7 +9640,7 @@ background-color: null;
 font-style: inherit;">drop_na</span>()</span></code></pre></div>
 </div>
 <p>Let’s now split our training and testing set.</p>
-<div class="cell" data-hash="index_cache/html/r_trainTestSplit_ac80b61dbe9c16fea1ec5123220fae2a">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb39" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1">df_train <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> df1a[<span class="dv" style="color: #AD0000;
@@ -9687,7 +9688,7 @@ font-style: inherit;">nrow</span>(df1a) , ]</span></code></pre></div>
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" aria-controls="tabset-4-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" aria-controls="tabset-4-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" aria-labelledby="tabset-4-1-tab">
-<div class="cell" data-hash="index_cache/html/py_setBaseModel_af0bfc6547879bbb1379c3d63a60cbda">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.pipeline <span class="im" style="color: #00769E;
@@ -10122,12 +10123,12 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   background-color: var(--sklearn-color-fitted-level-3);
 }
 </a></style><div id="sk-container-id-4" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[('scaler', MinMaxScaler()),
-                ('classifier', KNeighborsClassifier())])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-4" type="checkbox"><label for="sk-estimator-id-4" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;Pipeline<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>Pipeline(steps=[('scaler', MinMaxScaler()),
-                ('classifier', KNeighborsClassifier())])</pre></div> </div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-5" type="checkbox"><label for="sk-estimator-id-5" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;MinMaxScaler<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.preprocessing.MinMaxScaler.html">?<span>Documentation for MinMaxScaler</span></a></label><div class="sk-toggleable__content fitted"><pre>MinMaxScaler()</pre></div> </div></div><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-6" type="checkbox"><label for="sk-estimator-id-6" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier()</pre></div> </div></div></div></div></div></div>
+                ('classifier', KNeighborsClassifier())])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-4" type="checkbox"><label for="sk-estimator-id-4" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;Pipeline<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>Pipeline(steps=[('scaler', MinMaxScaler()),
+                ('classifier', KNeighborsClassifier())])</pre></div> </div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-5" type="checkbox"><label for="sk-estimator-id-5" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;MinMaxScaler<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.preprocessing.MinMaxScaler.html">?<span>Documentation for MinMaxScaler</span></a></label><div class="sk-toggleable__content fitted"><pre>MinMaxScaler()</pre></div> </div></div><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-6" type="checkbox"><label for="sk-estimator-id-6" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier()</pre></div> </div></div></div></div></div></div>
 </div>
 </div>
 <p>Go onto predictions</p>
-<div class="cell" data-hash="index_cache/html/py_baseModel_prediction_f3f124f9627240ae17cace4747a8208c">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.metrics <span class="im" style="color: #00769E;
@@ -10173,7 +10174,7 @@ font-style: inherit;">5</span>:, ]</span></code></pre></div>
 </div>
 <div id="tabset-4-2" class="tab-pane" aria-labelledby="tabset-4-2-tab">
 <p>Let’s define a basic model in R using the tidymodel framework.</p>
-<div class="cell" data-hash="index_cache/html/r_setBaseModel_6abb0fa8476e72c6d07932ce158b8faf">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(recipes)</span>
@@ -10286,7 +10287,7 @@ font-style: inherit;">select</span>(date, target), knn_pred)</span></code></pre>
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" aria-controls="tabset-5-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" aria-controls="tabset-5-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" aria-labelledby="tabset-5-1-tab">
-<div class="cell" data-hash="index_cache/html/py_baseMoel_prediction1_590eeab07a772e8d9714b20477fa9692">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(classification_report(y_test, y_pred)) </span></code></pre></div>
@@ -10348,7 +10349,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 <pre><code>f1 score for test set is 0.271</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/py_baseMoel_prediction2_e70ce6e086f62f7a1f9239c7b38cdd3c">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb52" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1">conf_mat <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> ConfusionMatrixDisplay.from_estimator(</span>
@@ -10369,7 +10370,7 @@ font-style: inherit;">'Confusion Matrix'</span>)</span>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/py_baseMoel_prediction3_62fc1e43c459447377909eb2d7356432">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb53" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.metrics <span class="im" style="color: #00769E;
@@ -10415,7 +10416,7 @@ font-style: inherit;">'Random 50:50'</span>)</span>
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" aria-labelledby="tabset-5-2-tab">
-<div class="cell" data-hash="index_cache/html/r_baseMoel_prediction1_136062dc13140f9fe797e69bbf2739ab">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb54" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(yardstick)</span>
@@ -10454,7 +10455,7 @@ font-style: inherit;">precision</span>(target, .pred_class)</span></code></pre><
 1 precision binary         0.491</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/r_baseMoel_prediction2_5f068d9dfc542ab0c7881a13ac4bdd83">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb60" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1">cm <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -10481,7 +10482,7 @@ font-style: inherit;">'heatmap'</span>)</span></code></pre></div>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/r_baseMoel_prediction3_2e6e03b6021047d81412203fe53b2f03">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb61" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1">knn_pred <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -10533,7 +10534,7 @@ font-style: inherit;">autoplot</span>()</span></code></pre></div>
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" aria-controls="tabset-6-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" aria-controls="tabset-6-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" aria-labelledby="tabset-6-1-tab">
-<div class="cell" data-hash="index_cache/html/py_tuningHyperpa1_0cbb8c552abe3f9db42bb87fb8c72b37">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb62" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
@@ -10559,7 +10560,7 @@ background-color: null;
 font-style: inherit;">#  print(train, test)</span></span></code></pre></div>
 </div>
 <p>Let’s find the best parameters through a grid search</p>
-<div class="cell" data-hash="index_cache/html/py_tuningHyperpa2_3cdc5571b6d35842eff606cee2feac2d">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb63" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
@@ -11023,15 +11024,15 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
              param_grid={'classifier__n_neighbors': array([ 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
        19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
        36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50])},
-             scoring='f1', verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-7" type="checkbox"><label for="sk-estimator-id-7" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;GridSearchCV<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.model_selection.GridSearchCV.html">?<span>Documentation for GridSearchCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>GridSearchCV(cv=TimeSeriesSplit(gap=10, max_train_size=None, n_splits=10, test_size=None),
+             scoring='f1', verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-7" type="checkbox"><label for="sk-estimator-id-7" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;GridSearchCV<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.model_selection.GridSearchCV.html">?<span>Documentation for GridSearchCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>GridSearchCV(cv=TimeSeriesSplit(gap=10, max_train_size=None, n_splits=10, test_size=None),
              estimator=Pipeline(steps=[('scaler', MinMaxScaler()),
                                        ('classifier', KNeighborsClassifier())]),
              n_jobs=-1,
              param_grid={'classifier__n_neighbors': array([ 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
        19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
        36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50])},
-             scoring='f1', verbose=1)</pre></div> </div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-8" type="checkbox"><label for="sk-estimator-id-8" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">estimator: Pipeline</label><div class="sk-toggleable__content fitted"><pre>Pipeline(steps=[('scaler', MinMaxScaler()),
-                ('classifier', KNeighborsClassifier())])</pre></div> </div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-9" type="checkbox"><label for="sk-estimator-id-9" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;MinMaxScaler<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.preprocessing.MinMaxScaler.html">?<span>Documentation for MinMaxScaler</span></a></label><div class="sk-toggleable__content fitted"><pre>MinMaxScaler()</pre></div> </div></div><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-10" type="checkbox"><label for="sk-estimator-id-10" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier()</pre></div> </div></div></div></div></div></div></div></div></div></div></div>
+             scoring='f1', verbose=1)</pre></div> </div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-8" type="checkbox"><label for="sk-estimator-id-8" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">best_estimator_: Pipeline</label><div class="sk-toggleable__content fitted"><pre>Pipeline(steps=[('scaler', MinMaxScaler()),
+                ('classifier', KNeighborsClassifier(n_neighbors=np.int64(9)))])</pre></div> </div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-9" type="checkbox"><label for="sk-estimator-id-9" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;MinMaxScaler<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.preprocessing.MinMaxScaler.html">?<span>Documentation for MinMaxScaler</span></a></label><div class="sk-toggleable__content fitted"><pre>MinMaxScaler()</pre></div> </div></div><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-10" type="checkbox"><label for="sk-estimator-id-10" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=np.int64(9))</pre></div> </div></div></div></div></div></div></div></div></div></div></div>
 </div>
 <div class="sourceCode cell-code" id="cb66" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><span class="bu" style="color: null;
 background-color: null;
@@ -11063,7 +11064,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 </div>
 </div>
 <p>Let’s now use the best parameter found for our model.</p>
-<div class="cell" data-hash="index_cache/html/py_tuningHyperpa3_1f386697af1ae503eec8a76f2fe91a56">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb68" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.metrics <span class="im" style="color: #00769E;
@@ -11484,7 +11485,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
 }
-</a></style><div id="sk-container-id-6" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=9)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-11" type="checkbox" checked=""><label for="sk-estimator-id-11" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=9)</pre></div> </div></div></div></div>
+</a></style><div id="sk-container-id-6" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>KNeighborsClassifier(n_neighbors=np.int64(9))</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-11" type="checkbox" checked=""><label for="sk-estimator-id-11" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;KNeighborsClassifier<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.5/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">?<span>Documentation for KNeighborsClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>KNeighborsClassifier(n_neighbors=np.int64(9))</pre></div> </div></div></div></div>
 </div>
 <div class="sourceCode cell-code" id="cb69" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"></span>
 <span id="cb69-2">y_pred_tuned <span class="op" style="color: #5E5E5E;
@@ -11494,7 +11495,7 @@ font-style: inherit;">=</span> tuned_knn_model.predict(x_test)</span></code></pr
 </div>
 <div id="tabset-6-2" class="tab-pane" aria-labelledby="tabset-6-2-tab">
 <p>Using the tidymodel framework, when it comes to hyperparameters tuning, we then use a workflow to structure all the work for us.</p>
-<div class="cell" data-hash="index_cache/html/r_tuningHyperpa1_65c54a721e3b624da9b218e382150762">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb70" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(rsample)</span>
@@ -11758,11 +11759,11 @@ font-style: inherit;">1</span>)</span>
 <pre><code># A tibble: 1 × 9
   neighbors weight_func dist_power .metric .estimator  mean     n std_err
       &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-1         5 cos               1.58 f_meas  binary     0.664    10  0.0447
+1         7 biweight          1.82 f_meas  binary     0.667    10  0.0424
 # ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/r_tuningHyperpa2_ee2e4746c10fafacdb0edcbe762b44f1">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb72" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1">knn_fit <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
@@ -11789,7 +11790,7 @@ shorter object length</code></pre>
 </div>
 </div>
 <p>We can fit the best model (the one with the parameters that gives the best f1 score) as the final model. Then we’ll make prediction using that model</p>
-<div class="cell" data-hash="index_cache/html/r_tuningHyperpa3_bd3e1003495f48f17bf1edc920be55a4">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb74" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1">knn_model_final <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> knn_model_tuned <span class="sc" style="color: #5E5E5E;
@@ -11827,7 +11828,7 @@ font-style: inherit;">new_data =</span> df_baked)</span></code></pre></div>
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" aria-controls="tabset-7-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" aria-controls="tabset-7-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" aria-labelledby="tabset-7-1-tab">
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-32_3929adce95bf838d82ff1a4d7b8b0045">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb75" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1">acc_train <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> accuracy_score(y_train, tuned_knn_model.predict(x_train))</span>
@@ -11900,7 +11901,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
  Test f1 score      : 0.4136</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-33_91d4092886358059ed9f55d57909fb25">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb79" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1">disp <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> ConfusionMatrixDisplay.from_estimator(</span>
@@ -11926,7 +11927,7 @@ font-style: inherit;">'Confusion matrix'</span>)</span>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-34_78d0289ace0add0cc802a9240663dd75">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb80" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(classification_report(y_test, y_pred_tuned))</span></code></pre></div>
@@ -11943,7 +11944,7 @@ weighted avg       0.50      0.50      0.49      1075</code></pre>
 </div>
 </div>
 <div id="tabset-7-2" class="tab-pane" aria-labelledby="tabset-7-2-tab">
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-35_521c207335dbf4ba81e8f81c78063e52">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb82" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1">df_pred <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -11964,8 +11965,8 @@ font-style: inherit;">metrics</span>(target, .pred_class)</span></code></pre></d
 <pre><code># A tibble: 2 × 3
   .metric  .estimator .estimate
   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy binary        0.508 
-2 kap      binary        0.0216</code></pre>
+1 accuracy binary        0.503 
+2 kap      binary        0.0113</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb84" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1">df_pred <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -11976,7 +11977,7 @@ font-style: inherit;">f_meas</span>(target, .pred_class)</span></code></pre></di
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 f_meas  binary         0.545</code></pre>
+1 f_meas  binary         0.534</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb86" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1">df_pred <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -11987,10 +11988,10 @@ font-style: inherit;">precision</span>(target, .pred_class)</span></code></pre><
 <pre><code># A tibble: 1 × 3
   .metric   .estimator .estimate
   &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt;
-1 precision binary         0.492</code></pre>
+1 precision binary         0.488</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-36_93ba2bab9c7cd22edf18a2c5e2b9538a">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb88" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1">cm <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -12028,7 +12029,7 @@ font-style: inherit;">'heatmap'</span>)</span></code></pre></div>
 <ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" aria-controls="tabset-8-1" aria-selected="true">Python</a></li><li class="nav-item"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" aria-controls="tabset-8-2" aria-selected="false">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" aria-labelledby="tabset-8-1-tab">
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-37_fdfdd316f3b284ce15a9461367f09900">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb89" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1">df1 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> df1a.copy()</span>
@@ -12097,7 +12098,7 @@ font-style: inherit;">=</span> df1.index.tz_localize(<span class="st" style="col
 background-color: null;
 font-style: inherit;">'utc'</span>)</span></code></pre></div>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-38_b8ff23a64a1661e6de895bcec5458519">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb90" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pyfolio <span class="im" style="color: #00769E;

@@ -104,35 +104,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../../styles.css">
 </head>
@@ -249,8 +220,8 @@ window.Quarto = {
 
 
 
-<p>Principal Component Analysis is a widely method to reduce the dimensionality of a dataset as well as to de-correlate it. It can also be used to weight the importance of variables. The PCA transforms variables into another set of variables called <em>Principal Components</em>.</p>
-<p>It takes the data and tries to find a direction (let’s say vector 1) such that variance of points projected on vector 1 is maximum.</p>
+<p>Principal Component Analysis is a widely used method to reduce the dimensionality of a dataset as well as to de-correlate it. It can also be used to weight the importance of variables. The PCA transforms variables into another set of variables called <em>Principal Components</em>.</p>
+<p>It takes the data and tries to find a direction (let’s say vector l) such that variance of points projected on vector l is maximum.</p>
 <p>This is unsupervised learning. So we don’t need the label of that data set.</p>
 <p>Let’s take an example without label.</p>
 <section id="example-1" class="level1">
@@ -339,11 +310,11 @@ dtype: float64</code></pre>
 </section>
 <section id="step-2-compute-the-covariance-matrix-of-the-whole-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-compute-the-covariance-matrix-of-the-whole-dataset">Step 2: Compute the Covariance matrix of the whole dataset</h2>
-<p>As a reminder, we find the covariance between 2 variables <span class="math inline">\(X, Y\)</span> as <span class="math display">\[cov(X, Y) = \frac{1}{n-1} \cdot \sum_{i=1}^{n} \left( (x_i - \bar{x}) (y_i - \bar{y}) \right)\]</span></p>
+<p>As a reminder, we find the covariance between 2 variables <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X, Y</annotation></semantics></math> as <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>o</mi><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>⋅</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mover><mi>y</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">cov(X, Y) = \frac{1}{n-1} \cdot \sum_{i=1}^{n} \left( (x_i - \bar{x}) (y_i - \bar{y}) \right)</annotation></semantics></math></p>
 <p>So let’s show the covariance of English and Math.</p>
 <ul>
-<li>Mean of english <span class="math inline">\(= 66\)</span></li>
-<li>Mean of math $ = 60$ <span class="math display">\[\frac{(90 - 66) \cdot (60-60) + (90 - 66) \cdot (90-60) + (60 - 66) \cdot (60-60) + (60 - 66) \cdot (60-60) + (30 - 66) \cdot (30-60)}{4}\]</span> <span class="math display">\[\frac{24 \cdot 0 + 24 \cdot 30 + -6 \cdot 0 + -6 \cdot 0 + -36 \cdot -30}{4}\]</span> <span class="math display">\[\frac{0 + 720 + 0 + 0 + 1080}{4} = \frac{1800}{4} = 450\]</span></li>
+<li>Mean of english <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>66</mn></mrow><annotation encoding="application/x-tex">= 66</annotation></semantics></math></li>
+<li>Mean of math <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">= 60</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>60</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>30</mn><mo>−</mo><mn>66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>30</mn><mo>−</mo><mn>60</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mn>4</mn></mfrac><annotation encoding="application/x-tex">\frac{(90 - 66) \cdot (60-60) + (90 - 66) \cdot (90-60) + (60 - 66) \cdot (60-60) + (60 - 66) \cdot (60-60) + (30 - 66) \cdot (30-60)}{4}</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mn>24</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mn>24</mn><mo>⋅</mo><mn>30</mn><mo>+</mo><mi>−</mi><mn>6</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mi>−</mi><mn>6</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mi>−</mi><mn>36</mn><mo>⋅</mo><mi>−</mi><mn>30</mn></mrow><mn>4</mn></mfrac><annotation encoding="application/x-tex">\frac{24 \cdot 0 + 24 \cdot 30 + -6 \cdot 0 + -6 \cdot 0 + -36 \cdot -30}{4}</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>0</mn><mo>+</mo><mn>720</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>1080</mn></mrow><mn>4</mn></mfrac><mo>=</mo><mfrac><mn>1800</mn><mn>4</mn></mfrac><mo>=</mo><mn>450</mn></mrow><annotation encoding="application/x-tex">\frac{0 + 720 + 0 + 0 + 1080}{4} = \frac{1800}{4} = 450</annotation></semantics></math></li>
 </ul>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
@@ -380,13 +351,14 @@ art        225.0    0.0  900.0</code></pre>
 </div>
 </div>
 </div>
-<p>Using matrices, another way to compute the covariance matrix is the following: <span class="math display">\[\frac{1}{n-1} \left( \textbf{X} - \textbf{\bar{X}} \right)^T \cdot \left( \textbf{X} - \textbf{\bar{X}} \right)\]</span></p>
+<p>Using matrices, another way to compute the covariance matrix is the following:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐗</mtext><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐗</mtext><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\frac{1}{n-1} \left( \textbf{X} - \bar{X} \right)^T \cdot \left( \textbf{X} - \bar{X} \right)</annotation></semantics></math></p>
 <p>Remember, the positive covariance between math and english indicates that both subject covary in the same direction. And the null covariance between math and art indicates that there is no predictable relationship between the art and math subject.</p>
 </section>
 <section id="step-3-compute-the-eigenvectors-and-eigenvalues-of-the-covariance-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="step-3-compute-the-eigenvectors-and-eigenvalues-of-the-covariance-matrix">Step 3: Compute the eigenvectors and eigenvalues of the covariance matrix</h2>
 <p>Recall that the eigenvectors satifies the following relationship:</p>
-<p><span class="math display">\[\textbf{A} v = \textbf{\lambda} v\]</span> <span class="math display">\[\left( \textbf{A} - \textbf{\lambda} \right) v = 0\]</span> <span class="math display">\[det\left( \textbf{A} - \textbf{\lambda} \textbf{I} \right) = 0\]</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="bold">𝐀</mtext><mo>⋅</mo><mi>v</mi><mo>=</mo><mi>λ</mi><mo>⋅</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">\textbf{A}\cdot v = {\lambda} \cdot v</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐀</mtext><mo>−</mo><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>v</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\left( \textbf{A} - \lambda \right) v = 0</annotation></semantics></math> <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>e</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐀</mtext><mo>−</mo><mi>λ</mi><mtext mathvariant="bold">𝐈</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">det\left( \textbf{A} - \lambda \textbf{I} \right) = 0</annotation></semantics></math></p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
@@ -429,15 +401,15 @@ $vectors
 </div>
 <p>It is serendipity that the first eigenvectors is the highest (aka explained most of the variance). The second one is the second highest and third one is last.</p>
 <p>This is a 3D space with each eigen vector being orthogonal to the other. In an N-dimensional space, each eigenvectors are orthogonal.</p>
-<p>To find the percentage of variance expalained by the eigenvalue <span class="math inline">\(k\)</span> (where <span class="math inline">\(k\)</span> is one of the dimension), we compute:</p>
-<p><span class="math display">\[\frac{\lambda_k}{\sum_{i=1}^{n}}\]</span></p>
+<p>To find the percentage of variance expalained by the eigenvalue <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> (where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> is one of the dimension), we compute:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><msub><mi>λ</mi><mi>k</mi></msub><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover></mfrac><annotation encoding="application/x-tex">\frac{\lambda_k}{\sum_{i=1}^{n}}</annotation></semantics></math></p>
 </section>
 <section id="step-4-compute-the-new-data-frame-based-on-the-principal-components." class="level2">
 <h2 class="anchored" data-anchor-id="step-4-compute-the-new-data-frame-based-on-the-principal-components.">Step 4: Compute the new data frame based on the principal components.</h2>
-<p>To transform the eigenvectors to the new subspace we used: <span class="math display">\[\textbf{W}^t \cdot X\]</span></p>
+<p>To transform the eigenvectors to the new subspace we used: <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext mathvariant="bold">𝐖</mtext><mi>t</mi></msup><mo>⋅</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">\textbf{W}^t \cdot X</annotation></semantics></math></p>
 <ul>
-<li><span class="math inline">\(X\)</span> is our initial data matrix. Our df in the above steps</li>
-<li><span class="math inline">\(\textbf{W}^t\)</span> is the transpose of the eigenvector matrix.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math> is our initial data matrix. Our df in the above steps</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mtext mathvariant="bold">𝐖</mtext><mi>t</mi></msup><annotation encoding="application/x-tex">\textbf{W}^t</annotation></semantics></math> is the transpose of the eigenvector matrix.</li>
 </ul>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Python</a></li></ul>

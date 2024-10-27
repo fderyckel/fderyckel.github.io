@@ -7,7 +7,7 @@ description: 'Using KNN in both python and R'
 editor: source
 date-modified: "2024-04-21"
 execute:
-  cache: true
+  cache: false
 ---
 
 One of the very first ML algorithm (because of its ease) I expose is KNN.  In this post, we'll learn about KNN using Python (with the Sklearn package) and using R with packages from the tidymodel framework. 
