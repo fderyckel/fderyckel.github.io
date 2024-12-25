@@ -11,9 +11,17 @@ date-modified: "2024-10-06"
 
 Principal Component Analysis is a widely used method to reduce the dimensionality of a dataset as well as to de-correlate it.  It can also be used to weight the importance of variables.  The PCA transforms variables into another set of variables called *Principal Components*.  
 
+::: {.callout-note}
+According to Hughes phenomenon, If the number of training samples is fixed and we keep on increasing the number of dimensions then the predictive power of our machine learning model first increases, but after a certain point it tends to decrease.
+
+![The Curse of Dimensionality](curse_of_dimensionality.png)
+:::
+
 It takes the data and tries to find a direction (let's say vector l) such that variance of points projected on vector l is maximum.  
 
 This is unsupervised learning.  So we don't need the label of that data set.  
+
+
 
 Let's take an example without label.
 

@@ -221,6 +221,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Principal Component Analysis is a widely used method to reduce the dimensionality of a dataset as well as to de-correlate it. It can also be used to weight the importance of variables. The PCA transforms variables into another set of variables called <em>Principal Components</em>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>According to Hughes phenomenon, If the number of training samples is fixed and we keep on increasing the number of dimensions then the predictive power of our machine learning model first increases, but after a certain point it tends to decrease.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="curse_of_dimensionality.png" class="img-fluid figure-img"></p>
+<figcaption>The Curse of Dimensionality</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>It takes the data and tries to find a direction (let’s say vector l) such that variance of points projected on vector l is maximum.</p>
 <p>This is unsupervised learning. So we don’t need the label of that data set.</p>
 <p>Let’s take an example without label.</p>

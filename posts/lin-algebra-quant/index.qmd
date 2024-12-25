@@ -32,6 +32,30 @@ The magnitude of the covariance doesn't indicate how strong the relationship is.
 The covariance between 2 vectors is defined as 
 $$cov(x, y) = \frac{\sum_{i=1}^n \left( (x_i - \mu_{x}) \cdot (y_i - \mu_{y} \right))}{(n-1)}$$
 
+# The covariance matrix 
+
+The covariance matrix is a square matrix of *n x n* dimensions.  The diagonals values of the matrix shows the variance of the variables; while the off-diagonals are showing the covariance between 2 variables.
+
+$$
+S = \begin{pmatrix}
+\text{Var}(X_1) & \text{Cov}(X_1,X_2) & \text{Cov}(X_1,X_3) & \cdots & \text{Cov}(X_1,X_n) \\
+\text{Cov}(X_2,X_1) & \text{Var}(X_2) & \text{Cov}(X_2,X_3) & \cdots & \text{Cov}(X_2,X_n) \\
+\text{Cov}(X_3,X_1) & \text{Cov}(X_3,X_2) & \text{Var}(X_3) & \cdots & \text{Cov}(X_3,X_n) \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+\text{Cov}(X_n,X_1) & \text{Cov}(X_n,X_2) & \text{Cov}(X_n,X_3) & \cdots & \text{Var}(X_n)
+\end{pmatrix}
+$$
+
+where $X_n$ are column vectors. 
+
+Some notable properties: 
+
+* The covariance matrix is always a square matrix. 
+* The covariance matrix is symmetric.  That is: $$X^T = X$$  That is because $cov(x, y) = cov(y, x)$
+* The covariance matrix has all real eigenvalues (because it is symmetric)
+* The covariance matrix is positive semi-definite; which is to say that $x^T \cdot S \cdot x \ge 0$
+
+
 # Finding the correlation between 2 vectors
 
 Correlation between 2 vectors is defined as 

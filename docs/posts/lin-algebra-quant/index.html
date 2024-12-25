@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -37,10 +37,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d1b12f2568ecbe55642fee6aa00bd082.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -189,6 +189,7 @@ window.Quarto = {
   <ul>
   <li><a href="#finding-the-inverse-of-a-3x3-matrix" id="toc-finding-the-inverse-of-a-3x3-matrix" class="nav-link active" data-scroll-target="#finding-the-inverse-of-a-3x3-matrix">Finding the inverse of a 3x3 matrix</a></li>
   <li><a href="#finding-the-covariance-between-2-vectors" id="toc-finding-the-covariance-between-2-vectors" class="nav-link" data-scroll-target="#finding-the-covariance-between-2-vectors">Finding the covariance between 2 vectors</a></li>
+  <li><a href="#the-covariance-matrix" id="toc-the-covariance-matrix" class="nav-link" data-scroll-target="#the-covariance-matrix">The covariance matrix</a></li>
   <li><a href="#finding-the-correlation-between-2-vectors" id="toc-finding-the-correlation-between-2-vectors" class="nav-link" data-scroll-target="#finding-the-correlation-between-2-vectors">Finding the correlation between 2 vectors</a></li>
   <li><a href="#going-from-correlation-to-covariance-matrix" id="toc-going-from-correlation-to-covariance-matrix" class="nav-link" data-scroll-target="#going-from-correlation-to-covariance-matrix">Going from Correlation to Covariance matrix</a></li>
   </ul>
@@ -231,6 +232,27 @@ window.Quarto = {
 </ul>
 <p>The magnitude of the covariance doesn’t indicate how strong the relationship is.</p>
 <p>The covariance between 2 vectors is defined as <span class="math display">\[cov(x, y) = \frac{\sum_{i=1}^n \left( (x_i - \mu_{x}) \cdot (y_i - \mu_{y} \right))}{(n-1)}\]</span></p>
+</section>
+<section id="the-covariance-matrix" class="level1">
+<h1>The covariance matrix</h1>
+<p>The covariance matrix is a square matrix of <em>n x n</em> dimensions. The diagonals values of the matrix shows the variance of the variables; while the off-diagonals are showing the covariance between 2 variables.</p>
+<p><span class="math display">\[
+S = \begin{pmatrix}
+\text{Var}(X_1) &amp; \text{Cov}(X_1,X_2) &amp; \text{Cov}(X_1,X_3) &amp; \cdots &amp; \text{Cov}(X_1,X_n) \\
+\text{Cov}(X_2,X_1) &amp; \text{Var}(X_2) &amp; \text{Cov}(X_2,X_3) &amp; \cdots &amp; \text{Cov}(X_2,X_n) \\
+\text{Cov}(X_3,X_1) &amp; \text{Cov}(X_3,X_2) &amp; \text{Var}(X_3) &amp; \cdots &amp; \text{Cov}(X_3,X_n) \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\text{Cov}(X_n,X_1) &amp; \text{Cov}(X_n,X_2) &amp; \text{Cov}(X_n,X_3) &amp; \cdots &amp; \text{Var}(X_n)
+\end{pmatrix}
+\]</span></p>
+<p>where <span class="math inline">\(X_n\)</span> are column vectors.</p>
+<p>Some notable properties:</p>
+<ul>
+<li>The covariance matrix is always a square matrix.</li>
+<li>The covariance matrix is symmetric. That is: <span class="math display">\[X^T = X\]</span> That is because <span class="math inline">\(cov(x, y) = cov(y, x)\)</span></li>
+<li>The covariance matrix has all real eigenvalues (because it is symmetric)</li>
+<li>The covariance matrix is positive semi-definite; which is to say that <span class="math inline">\(x^T S x \ge 0\)</span></li>
+</ul>
 </section>
 <section id="finding-the-correlation-between-2-vectors" class="level1">
 <h1>Finding the correlation between 2 vectors</h1>
@@ -346,8 +368,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -458,7 +478,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
