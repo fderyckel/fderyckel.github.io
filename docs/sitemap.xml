@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fderyckel.github.io/blog.html/blog.html</loc>
-    <lastmod>2024-10-02T12:57:03.441Z</lastmod>
+    <lastmod>2024-12-29T07:13:31.707Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/quant-part1.html</loc>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/index.html</loc>
-    <lastmod>2024-10-02T12:57:03.594Z</lastmod>
+    <lastmod>2024-12-29T07:09:54.682Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-puzzle-01/index.html</loc>
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/lin-algebra-quant/index.html</loc>
-    <lastmod>2024-12-25T05:35:55.342Z</lastmod>
+    <lastmod>2024-12-25T05:36:29.195Z</lastmod>
   </url>
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/quant-part3/black-schole/index.html</loc>
@@ -267,5 +267,17 @@
   <url>
     <loc>https://fderyckel.github.io/blog.html/posts/machine-learning-part1/10-PCA/index.html</loc>
     <lastmod>2024-10-28T08:14:21.721Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/education.html</loc>
+    <lastmod>2024-12-29T07:52:44.524Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts-education/01-pastoral-care/index.html</loc>
+    <lastmod>2024-12-29T10:39:38.309Z</lastmod>
+  </url>
+  <url>
+    <loc>https://fderyckel.github.io/blog.html/posts-education/02-MB-API-part1/index.html</loc>
+    <lastmod>2024-12-29T07:52:39.520Z</lastmod>
   </url>
 </urlset>

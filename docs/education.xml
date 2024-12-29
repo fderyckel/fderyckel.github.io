@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>QUANT dira-t-on?</title>
+<link>https://fderyckel.github.io/blog.html/education.html</link>
+<atom:link href="https://fderyckel.github.io/blog.html/education.xml" rel="self" type="application/rss+xml"/>
+<description>Curating notes from a Quant learning journey.</description>
+<generator>quarto-1.6.39</generator>
+<lastBuildDate>Sat, 28 Dec 2024 17:00:00 GMT</lastBuildDate>
+<item>
+  <title>Workflow for Pastoral Care with ManageBac</title>
+  <dc:creator>Francois de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts-education/02-MB-API-part1/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Using appscript for getting grades</p>
+
+
+
+ ]]></description>
+  <category>ManageBac</category>
+  <category>Appscript</category>
+  <guid>https://fderyckel.github.io/blog.html/posts-education/02-MB-API-part1/</guid>
+  <pubDate>Sat, 28 Dec 2024 17:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Workflow for Pastoral Care with ManageBac</title>
+  <dc:creator>Francois de Ryckel</dc:creator>
+  <link>https://fderyckel.github.io/blog.html/posts-education/01-pastoral-care/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="turning-managebac-data-into-actionable-insights" class="level1">
+<h1>Turning ManageBac data into actionable insights!</h1>
+<p>Each school I have been to over the last 20 years have a slightly different approaches when dealing with students behaviours, discipline, academic issues or social-emotional issues. This is a large umbrella of concerns that I am categorizing into the <em>“pastoral care”</em> label.</p>
+<p>The workflow will mostly depends on <strong>How</strong> and <strong>Where</strong> the relevant data are recorded. In my earlier schools, it was papers and color slips shared to the counselor that will then put it into the <em>famous</em> student file. I have been in schools were it was stored into the Powerschool sytem and now I am in a school where all pastoral care concerns are logged into ManageBac into their behavior section.</p>
+<p>The feature is mostly practical. Educators can log the note and, as appropriate, send directly an email to the students’ guardians from there. There are also options for what are the type of issues we are dealing with and what are the next steps.</p>
+<p>Here is what it looks like: <img src="https://fderyckel.github.io/blog.html/posts-education/01-pastoral-care/mbBehaviorNote.png" class="img-fluid" alt="MB behavior note"></p>
+<p>2 mains issues arise from these records:</p>
+<ul>
+<li>It’s really hard to do any trends analysis (students, cohorts, educators, curriculum, etc.)</li>
+<li>There is actually no way of tracking follow up.</li>
+</ul>
+</section>
+<section id="partial-solution" class="level1">
+<h1>Partial solution</h1>
+<p>To solve the first issue, here is what we have done:</p>
+<section id="use-mb-api." class="level2">
+<h2 class="anchored" data-anchor-id="use-mb-api.">Use MB API.</h2>
+<p>Use the ManageBac API to download all the behaviors notes every 12 hrs and store it into a Google Sheet.</p>
+<p>Here is a sample AppScript code that we wrote for that purpose. You need to API token to do this (you can find it in the admin part of MB or ask IT admin)</p>
+<div class="cell code-fold-show">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"></span>
+<span id="cb1-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getBehaviorNotes</span>() {</span>
+<span id="cb1-3">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> ss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> SpreadsheetApp<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getActiveSpreadsheet</span>()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-4">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> behaviorSheet <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ss<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getSheetByName</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'behavior'</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// data are stored in the behavior tab</span></span>
+<span id="cb1-5">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> token <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'FIND YOUR OWN on the MB SITE'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> </span>
+<span id="cb1-6"></span>
+<span id="cb1-7">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// Add column headers to 'behavior' sheet</span></span>
+<span id="cb1-8">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> headers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb1-9">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Note ID"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-10">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Student ID"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-11">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"First Name"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-12">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Last Name"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-13">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Email"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-14">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Grade"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-15">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Incident Time"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-16">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Behavior Type"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-17">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Notes"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-18">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Next Step"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-19">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Next Step Date"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-20">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Author ID"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-21">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Reported By"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-22">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Homeroom Advisor"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-23">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Visible to Parents"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-24">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Visible to Students"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-25">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Created At"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-26">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Updated At"</span></span>
+<span id="cb1-27">  ]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-28">  behaviorSheet<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getRange</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> headers<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">setValues</span>([headers])<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-29"></span>
+<span id="cb1-30">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> url <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'https://api.managebac.com/v2/behavior/notes'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-31">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> requestHeaders <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb1-32">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'auth-token'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> token</span>
+<span id="cb1-33">  }<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-34"></span>
+<span id="cb1-35">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">let</span> page <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-36">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">let</span> hasMore <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">true</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-37"></span>
+<span id="cb1-38">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">while</span> (hasMore) {</span>
+<span id="cb1-39">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> params <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb1-40">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">page</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> page<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-41">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">per_page</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-42">    }<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-43"></span>
+<span id="cb1-44">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> urlWithParams <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">${</span>url<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">?page=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">${</span>params<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">page</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">&amp;per_page=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">${</span>params<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">per_page</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-45"></span>
+<span id="cb1-46">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> options <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb1-47">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">headers</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> requestHeaders<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-48">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">method</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'GET'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-49">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">muteHttpExceptions</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">true</span></span>
+<span id="cb1-50">    }<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-51"></span>
+<span id="cb1-52">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> response <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> UrlFetchApp<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fetch</span>(urlWithParams<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> options)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-53">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">JSON</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">parse</span>(response<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getContentText</span>())<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-54"></span>
+<span id="cb1-55">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// Check if there are more pages</span></span>
+<span id="cb1-56">    hasMore <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">meta</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">current_page</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">meta</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">total_pages</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-57"></span>
+<span id="cb1-58">    data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">behavior_notes</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">forEach</span>(note <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">=&gt;</span> {</span>
+<span id="cb1-59">      <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">let</span> notes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">notes</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-60">      <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> (notes) {</span>
+<span id="cb1-61">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">try</span> {</span>
+<span id="cb1-62">          <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// a few notes have a bunch of html tags on them.  Removing all of them here.</span></span>
+<span id="cb1-63">          notes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> notes<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">replace</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/&lt;</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[^&gt;]+</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">&gt;/g</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-64">        } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">catch</span> (e) {</span>
+<span id="cb1-65">          <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">console</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">error</span>(<span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`Error processing notes: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">${</span>e<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">message</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-66">          notes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-67">        }</span>
+<span id="cb1-68">      }</span>
+<span id="cb1-69"></span>
+<span id="cb1-70">      <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> noteData <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb1-71">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-72">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">student_id</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-73">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">first_name</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-74">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">last_name</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-75">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">email</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-76">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">grade</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-77">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">incident_time</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-78">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">behavior_type</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-79">        notes<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-80">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">next_step</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-81">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">next_step_date</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-82">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">author_id</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-83">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reported_by</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-84">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">homeroom_advisor</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-85">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">visible_to_parents</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-86">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">visible_to_students</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-87">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">created_at</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb1-88">        note<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">updated_at</span></span>
+<span id="cb1-89">      ]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-90">      behaviorSheet<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">appendRow</span>(noteData)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-91">    })<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-92"></span>
+<span id="cb1-93">    page<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">++;</span></span>
+<span id="cb1-94">  }</span>
+<span id="cb1-95">}</span></code></pre></div>
+</div>
+<p>Once you tested your code, you just add a trigger to it. We choose every 12hrs (mid-day and midnight) to not abuse too much the MB API or Google bandwidth limits.</p>
+</section>
+<section id="create-a-google-looker-studio-dashboards" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-google-looker-studio-dashboards">Create a <strong>Google Looker Studio</strong> dashboards</h2>
+<p>Next step is we create a looker studio dashboard to analyse our behavior notes. The idea was to make it first usable for admin and counselors then we added our grade level lead (GLL) on it.</p>
+<p>What is Looker Studio excel at is the automatic filtration that happens once you select any of the possible filters (grade level, type of behavior, next steps, students, educators, etc.)</p>
+<p>Here is a few dashboard screenshots.</p>
+<p>Below is a screenshot of one of our summary dashboard.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://fderyckel.github.io/blog.html/posts-education/01-pastoral-care/summary.png" class="img-fluid figure-img"></p>
+<figcaption>Summary</figcaption>
+</figure>
+</div>
+<p>New notes are on top, so they can be read first. Grade Level Lead can just quickly filter to their relevant grade.</p>
+<p>And we are very glad that have also a culture where we celebrate quite a bit the accomplishments of our students (biggest category this year!).</p>
+<p>You can also look for an individual student to have the history beyond just one academic year.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://fderyckel.github.io/blog.html/posts-education/01-pastoral-care/IndividualStudent.png" class="img-fluid figure-img"></p>
+<figcaption>IIS</figcaption>
+</figure>
+</div>
+</section>
+<section id="share-updates-daily-with-appropriate-educators." class="level2">
+<h2 class="anchored" data-anchor-id="share-updates-daily-with-appropriate-educators.">Share updates daily with appropriate educators.</h2>
+<p>Next steps is to trigger a daily email (6:30am) to relevant educators with that information.</p>
+<p>Again Looker Studio makes this pretty painless as under the <em>Share</em> button there is a schedule delivery tab you can click and create the email template you want.</p>
+<p>In the case of our school, it is the Principal, Vice-Principal, Counselors, Curriculum Cordinators and Grade Level Lead.</p>
+<p>Overall, this has been appreciated by admin and GLL in staying on top of student pastoral cares despite the business of the school day.</p>
+</section>
+</section>
+<section id="whats-next" class="level1">
+<h1>What’s next?</h1>
+<p>I mentioned earlier that this was a partial solution, as we are still struggling to find an easy way to indicate when follow-up is complete. At the moment, this is done manually, with an admin team member sending an email to the educator who logged the note and requested follow-up on the next step.</p>
+<p>I am happy to hear feedback and connect with peers who are also working on similar workflows.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>ManageBac</category>
+  <category>Appscript</category>
+  <guid>https://fderyckel.github.io/blog.html/posts-education/01-pastoral-care/</guid>
+  <pubDate>Sat, 28 Dec 2024 17:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>

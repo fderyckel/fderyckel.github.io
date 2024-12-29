@@ -1,0 +1,10 @@
+---
+title: "Workflow for Pastoral Care with ManageBac"
+author: "Francois de Ryckel"
+date: "2024-12-29"
+categories: [ManageBac, Appscript]
+editor: source
+date-modified: "2024-29-12"
+---
+
+Using appscript for getting grades

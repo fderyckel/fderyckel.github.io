@@ -10,6 +10,8 @@ website:
     right:
       - text: Blog
         href: blog.qmd
+      - text: Education & Analytics
+        href: education.qmd
       - icon: github
         href: https://github.com/fderyckel/blog
       - icon: twitter

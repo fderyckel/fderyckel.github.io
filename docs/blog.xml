@@ -1505,7 +1505,6 @@ font-style: inherit;">'Gradient Descent for f(x)'</span>)</span>
 
 
 
-
 <p>Linear models obtained with minimizing the SSR (Sum of Square Residuals) are great and easy to grasp. However, rarely all conditions are met and/or as the number of predictors increased, conditions of linear regression start to break: multicollinearity between variables, breaking of homoskedasticity, etc.) To address these issues, we introduce regularized regression where the coefficient of the predictors (aka <strong>the estimated coefficient</strong>) received a given penalty. The goal of that penalty is to reduce the variance of the model (with many predictors models tends to overfit the data and performed poorly on test data).</p>
 <p>The objective functions of reguliarized models are the same as for OLS except they have a penalty term. Hence, it becomes <img src="https://latex.codecogs.com/png.latex?minimize%20(SSR%20+%20P)"></p>
 <section id="ridge-regression" class="level1">

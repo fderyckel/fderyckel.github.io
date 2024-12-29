@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -34,10 +34,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d1b12f2568ecbe55642fee6aa00bd082.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -90,6 +90,10 @@ ul.task-list li input[type="checkbox"] {
   <li class="nav-item">
     <a class="nav-link" href="./blog.html"> 
 <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./education.html"> 
+<span class="menu-text">Education &amp; Analytics</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/fderyckel/blog"> <i class="bi bi-github" role="img">
@@ -147,7 +151,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Lived in Freiburg &amp; Leipzig, Germany, for 3 years to complete my master and do some teaching gigs at Alliance Française, Leipzig Universitat and Leipzig International School</li>
 <li>Lived in Dhaka, Bangladesh for 3 years to teach at the International School Dhaka</li>
 <li>Lived in Zambia for 9 years to teach math, stats and philosophy at the American International School of Lusaka. I also started a citrus &amp; mangoes farm (over 9,000 trees) and a produce (fresh fish, fruits, and meat) trading company</li>
-<li>Lived Thuwal, Saudi Arabia on the shore of the beautiful Red Sea for 5 years. I worked as math teacher on the KAUST university Campus at TKS (The KAUST School)</li>
+<li>Lived in Thuwal, Saudi Arabia on the shore of the beautiful Red Sea for 5 years. I worked as math teacher on the KAUST university Campus at TKS (The KAUST School)</li>
 <li>Currently living in Bangkok (Thailand) as a curriculum coordinator for the KIS School.</li>
 </ul>
 <p>As a teacher, I’m always looking for good examples to incorporate in my practices. Lately I am especially interested in machine learning applications in finance and education.</p>
@@ -259,8 +263,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -371,7 +373,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

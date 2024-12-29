@@ -116,5 +116,12 @@
       "/posts/machine-learning-part2/xgboost/index.html",
       "/posts/machine-learning-part2/xgboost-time-series/index.html"
     ]
+  },
+  {
+    "listing": "/education.html",
+    "items": [
+      "/posts-education/02-MB-API-part1/index.html",
+      "/posts-education/01-pastoral-care/index.html"
+    ]
   }
 ]
